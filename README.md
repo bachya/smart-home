@@ -1,4 +1,4 @@
-# Aaron's Smart Home
+# Aaron's Smart Home ⭐
 
 ![The Home Screen](https://github.com/bachya/smart-home/wiki/img/home.png)
 
