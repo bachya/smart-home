@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Generate constraint switches for all AppDaemon features"""
 import argparse
-import glob
 import yaml
 
 APPS_FILES = './settings/appdaemon/apps/*.yaml'
