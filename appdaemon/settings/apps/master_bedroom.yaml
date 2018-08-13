@@ -1,0 +1,92 @@
+---
+master_bedroom_lights_automation:
+  module: switches
+  class: SwitchAutomation
+  dependencies:
+    - do_not_disturb
+    - guest_mode
+    - presence_manager
+    - vacation_mode
+  entities:
+    switch: light.salt_lamp_master_bedroom
+  features:
+    - name: sleep_timer
+      entities:
+        timer_slider: input_number.master_bedroom_salt_lamp_timer
+      constraint:
+        name: Enable sleep timer
+        icon: mdi:sleep
+        initial: true
+    - name: toggle_at_time
+      properties:
+        schedule_time: sunset
+        seasonal_offset: true
+        state: "on"
+      mode_alterations:
+        guest_mode: disable
+        vacation_mode: disable
+      constraint:
+        key: on_at_sunset
+        name: Turn on at sunset
+        icon: mdi:weather-sunset
+        initial: true
+master_bathroom_fan_automation:
+  module: switches
+  class: SwitchAutomation
+  dependencies:
+    - do_not_disturb
+    - guest_mode
+    - presence_manager
+    - vacation_mode
+  entities:
+    switch: switch.master_bathroom_fan
+  features:
+    - name: sleep_timer
+      entities:
+        timer_slider: input_number.master_bathroom_fan_timer
+      constraint:
+        name: "Bathroom: enable sleep timer"
+        icon: mdi:sleep
+        initial: true
+master_bathroom_toilet_fan_automation:
+  module: switches
+  class: SwitchAutomation
+  dependencies:
+    - do_not_disturb
+    - guest_mode
+    - presence_manager
+    - vacation_mode
+  entities:
+    switch: switch.master_toilet_fan
+  features:
+    - name: sleep_timer
+      entities:
+        timer_slider: input_number.master_bathroom_toilet_fan_timer
+      constraint:
+        name: "Toilet: enable sleep timer"
+        icon: mdi:sleep
+        initial: true
+    - name: toggle_at_time
+      properties:
+        schedule_time: "17:00:00"
+        state: "off"
+      mode_alterations:
+        guest_mode: disable
+        vacation_mode: disable
+      constraint:
+        key: off_at_5pm
+        name: "Toilet: off at 5pm"
+        icon: mdi:fan
+        initial: true
+    - name: toggle_at_time
+      properties:
+        schedule_time: "10:00:00"
+        state: "on"
+      mode_alterations:
+        guest_mode: disable
+        vacation_mode: disable
+      constraint:
+        key: on_at_10am
+        name: "Toilet: on at 10am"
+        icon: mdi:fan
+        initial: true

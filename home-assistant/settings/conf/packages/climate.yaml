@@ -1,0 +1,34 @@
+---
+sensor:
+  - platform: min_max
+    name: "Average Indoor Temperature"
+    type: "mean"
+    round_digits: 1
+    entity_ids:
+      - sensor.climate_2_temperature
+      - sensor.fiddle_leaf_fig_temperature
+      - sensor.thermostat_thermostat_temperature
+  - platform: min_max
+    name: "Average Indoor Humidity"
+    type: "mean"
+    round_digits: 1
+    entity_ids:
+      - sensor.climate_2_humidity
+      - sensor.thermostat_thermostat_humidity
+
+switch:
+  - platform: template
+    switches:
+      climate_away_mode:
+        friendly_name: Climate Away Mode
+        value_template: >
+          {{ states.climate.thermostat.attributes.away_mode == 'on'}}
+        icon_template: mdi:arrow-left-drop-circle
+        turn_on:
+          service: nest.set_mode
+          data:
+            home_mode: away
+        turn_off:
+          service: nest.set_mode
+          data:
+            home_mode: home

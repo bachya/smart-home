@@ -1,0 +1,20 @@
+---
+sensor:
+  - platform: miflora
+    name: Fiddle Leaf Fig
+    mac: "12:34:56:ab:cd:ef"
+    adapter: hci0
+    force_update: false
+    monitored_conditions:
+      - moisture
+      - light
+      - temperature
+      - conductivity
+      - battery
+  - platform: template
+    sensors:
+      fiddle_leaf_fig_battery_dynamic:
+        friendly_name: Fiddle Leaf Fig
+        value_template: "{{ states.sensor.fiddle_leaf_fig_battery.state }}"
+        unit_of_measurement: "%"
+        device_class: battery

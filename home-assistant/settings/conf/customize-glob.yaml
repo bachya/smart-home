@@ -1,0 +1,28 @@
+---
+"light.salt_lamp_*":
+  friendly_name: Switch
+"sensor.*_cpu_temperature":
+  friendly_name: CPU Temp
+"sensor.*_disk_used":
+  friendly_name: Disk Used
+  icon: mdi:harddisk
+"sensor.*_ram_used":
+  friendly_name: RAM Used
+  icon: mdi:memory
+"sensor.*_swap_used":
+  friendly_name: Swap Used
+  icon: mdi:memory
+"sensor.*_total":
+  friendly_name: Process Count
+  icon: mdi:counter
+"sensor.*_uptime":
+  friendly_name: Uptime
+  icon: mdi:clock-outline
+"sensor.climate_*_humidity":
+  friendly_name: Humidity
+"sensor.climate_*_pressure":
+  friendly_name: Pressure
+"sensor.climate_*_temperature":
+  friendly_name: Temperature
+"sensor.schlage_*":
+  hidden: true

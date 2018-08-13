@@ -1,0 +1,91 @@
+---
+group:
+  living_room_lights:
+    entities:
+      - switch.reading_lamp
+      - switch.sofa_lamp
+
+media_player:
+  - platform: roku
+    host: 172.16.10.33
+
+remote:
+  - platform: harmony
+    name: Samsung TV
+    host: harmony-hub-1.myserver.com
+    activity: 22580039
+
+script:
+  switch_roku_to_plex:
+    sequence:
+      - service: media_player.select_source
+        data:
+          entity_id: media_player.living_room_roku
+          source: Plex
+
+scene:
+  name: Watch Plex
+  entities:
+    switch.media_center:
+      state: true
+    remote.samsung_tv:
+      state: true
+    script.switch_roku_to_plex:
+      state: true
+
+sensor:
+  - platform: template
+    sensors:
+      front_door_lock_battery:
+        friendly_name: Front Door Lock
+        value_template: "{{ states.zwave.front_door.attributes.battery_level }}"
+        unit_of_measurement: "%"
+        device_class: battery
+      roku_source:
+        friendly_name: Roku Source
+        value_template: >
+          {{ states.media_player.living_room_roku.attributes.app_name }}
+        icon_template: >
+          {%
+            set state =
+              states.media_player.living_room_roku.attributes.app_name
+          %}
+          {% if state == 'Netflix'%}
+            mdi:netflix
+          {% elif state == 'Hulu'%}
+            mdi:hulu
+          {% elif state == 'XFINITY Stream'%}
+            mdi:television-classic
+          {% elif state == 'YouTube'%}
+            mdi:youtube-play
+          {% elif state == 'Aquatic Life'%}
+            mdi:fish
+          {% elif state == 'Plex'%}
+            mdi:plex
+          {% else %}
+            mdi:apps
+          {% endif %}
+
+shell_command:
+  turn_off_media_center: >
+    ssh bachya@media-center.myserver.com sudo /sbin/poweroff
+
+switch:
+  - platform: command_line
+    switches:
+      ps4:
+        friendly_name: Playstation 4
+        command_on: 'ps4-waker -c /config/.ps4-waker.json'
+        command_off: 'ps4-waker -c /config/.ps4-waker.json standby'
+        command_state: 'nc -z -w 5 ps4.myserver.com 9295'
+  - platform: wake_on_lan
+    mac_address: 12:34:56:ab:cd:ef
+    name: Media Center
+    host: media-center.myserver.com
+    turn_off:
+      service: shell_command.turn_off_media_center
+
+wemo:
+  static:
+    - wemo-1.myserver.com
+    - wemo-2.myserver.com

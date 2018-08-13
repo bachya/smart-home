@@ -1,0 +1,26 @@
+#!/bin/bash
+set -euxo pipefail
+
+function ask_for_sudo() {
+  # Ask for the administrator password upfront:
+  sudo -v &> /dev/null
+
+  # Update existing `sudo` time stamp until this script has finished:
+  # https://gist.github.com/cowboy/3118588
+  while true; do
+    sudo -n true
+    sleep 60
+    kill -0 "$$" || exit
+  done &> /dev/null &
+}
+
+# Input the sudo and key passwords once:
+ask_for_sudo
+
+# Renew the certs:
+sudo docker run --name certbot -it --rm \
+  -v /etc/letsencrypt:/etc/letsencrypt \
+  -v /var/lib/letsencrypt:/var/lib/letsencrypt \
+  --entrypoint='' \
+  certbot/certbot \
+  sh -c 'certbot certonly --manual -d myserver.com -d *.myserver.com --email email@address.com --manual-public-ip-logging-ok --agree-tos --server https://acme-v02.api.letsencrypt.org/directory --rsa-key-size 4096 --preferred-challenges dns'

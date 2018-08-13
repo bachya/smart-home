@@ -1,0 +1,155 @@
+---
+input_boolean:
+  vacuum_schedule_monday:
+    name: "Monday"
+    icon: mdi:calendar
+    initial: true
+  vacuum_schedule_tuesday:
+    name: "Tuesday"
+    icon: mdi:calendar
+    initial: false
+  vacuum_schedule_wednesday:
+    name: "Wednesday"
+    icon: mdi:calendar
+    initial: false
+  vacuum_schedule_thursday:
+    name: "Thursday"
+    icon: mdi:calendar
+    initial: true
+  vacuum_schedule_friday:
+    name: "Friday"
+    icon: mdi:calendar
+    initial: false
+  vacuum_schedule_saturday:
+    name: "Saturday"
+    icon: mdi:calendar
+    initial: false
+  vacuum_schedule_sunday:
+    name: "Sunday"
+    icon: mdi:calendar
+    initial: false
+
+input_select:
+  wolfie_room_select:
+    name: Room
+    options:
+      - Kitchen
+      - Table
+  wolfie_bin_status:
+    name: Bin Status
+    options:
+      - Empty
+      - Full
+
+script:
+  clean_kitchen:
+    sequence:
+      - service: vacuum.send_command
+        data:
+          entity_id: vacuum.xiaomi_vacuum_cleaner
+          command: app_zoned_clean
+          params: [
+            [25594, 23349, 28034, 24584, 1], [28034, 24584, 28693, 22922]
+          ]
+  clean_room:
+    alias: "Start"
+    sequence:
+      - service: script.turn_on
+        data_template:
+          entity_id: >
+            {% if is_state("input_select.wolfie_room_select", "Kitchen") %}
+              script.clean_kitchen
+            {% elif is_state("input_select.wolfie_room_select", "Table") %}
+              script.clean_table
+            {% endif %}
+  clean_table:
+    sequence:
+      - service: vacuum.send_command
+        data:
+          entity_id: vacuum.xiaomi_vacuum_cleaner
+          command: app_zoned_clean
+          params: [[27904, 26182, 29002, 24543, 1]]
+  empty_wolfie:
+    sequence:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.wolfie_bin_status
+          option: Empty
+
+sensor:
+  - platform: template
+    sensors:
+      vacuum_status:
+        friendly_name: Status
+        value_template: >
+          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.status }}
+        icon_template: >
+          {% set val = states.vacuum.xiaomi_vacuum_cleaner.attributes.status %}
+          {% if val == 'Charging' %}
+            mdi:battery-charging
+          {% elif val == 'Cleaning' %}
+            mdi:move-resize
+          {% elif val == 'Returning home' %}
+            mdi:keyboard-return
+          {% elif val == 'Idle' %}
+            mdi:dots-horizontal
+          {% elif val == 'Paused' %}
+            mdi:pause-circle
+          {% else %}
+            mdi:help-circle
+          {% endif %}
+      vacuum_fan_speed:
+        friendly_name: Fan Speed
+        value_template: >
+          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.fan_speed }}
+        icon_template: mdi:speedometer
+      vacuum_battery:
+        friendly_name: Vacuum Battery
+        value_template: >
+          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.battery_level }}
+        unit_of_measurement: "%"
+        device_class: battery
+      vacuum_cleaning_time:
+        friendly_name: Time of Last Cycle
+        value_template: >
+          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.cleaning_time }}
+        icon_template: mdi:timer
+      vacuum_cleaned_area:
+        friendly_name: Area of Last Cycle
+        unit_of_measurement: m ²
+        value_template: >
+          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.cleaned_area }}
+        icon_template: mdi:ruler
+      vacuum_do_not_disturb:
+        friendly_name: Do Not Disturb
+        value_template: >
+          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.do_not_disturb }}
+        icon_template: >
+          {%
+            set val =
+              states.vacuum.xiaomi_vacuum_cleaner.attributes.do_not_disturb
+          %}
+          {% if val == 'on' %}
+            mdi:do-not-disturb
+          {% else %}
+            mdi:do-not-disturb-off
+          {% endif %}
+
+switch:
+  - platform: template
+    switches:
+      wolfie_cycle:
+        friendly_name: Activate
+        value_template: "{{ is_state('sensor.vacuum_status', 'Cleaning') }}"
+        icon_template: "mdi:google-circles-group"
+        turn_on:
+          event: VACUUM_START
+        turn_off:
+          service: vacuum.turn_off
+          data:
+            entity_id: vacuum.xiaomi_vacuum_cleaner
+
+vacuum:
+  - platform: xiaomi_miio
+    host: wolfie.myserver.com
+    token: !secret xiaomi_vacuum_token

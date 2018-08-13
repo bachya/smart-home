@@ -1,0 +1,100 @@
+---
+fireplace_automation:
+  module: switches
+  class: SwitchAutomation
+  dependencies:
+    - do_not_disturb
+    - guest_mode
+    - presence_manager
+    - vacation_mode
+  entities:
+    switch: switch.fireplace
+  features:
+    - name: presence_failsafe
+      mode_alterations:
+        guest_mode: disable
+      constraint:
+        name: Disable fireplace when away
+        icon: mdi:fire
+        initial: true
+living_room_lights_automation:
+  module: switches
+  class: SwitchAutomation
+  dependencies:
+    - do_not_disturb
+    - guest_mode
+    - presence_manager
+    - vacation_mode
+  entities:
+    switch: group.living_room_lights
+  features:
+    - name: toggle_at_time
+      entities:
+        switch: switch.reading_lamp
+      properties:
+        presence_required: true
+        schedule_time: sunset
+        seasonal_offset: true
+        state: "on"
+      mode_alterations:
+        guest_mode: disable
+        vacation_mode: disable
+      constraint:
+        key: on_at_sunset
+        name: Turn on at sunset
+        icon: mdi:weather-sunset
+        initial: true
+    - name: turn_on_upon_arrival
+      properties:
+        trigger_on_first_only: true
+      mode_alterations:
+        guest_mode: disable
+      constraint:
+        name: Turn on upon arrival
+        icon: mdi:car
+        initial: true
+    - name: turn_on_when_cloudy
+      entities:
+        cloud_cover: sensor.dark_sky_cloud_coverage
+      properties:
+        above: 85.0
+        presence_required: true
+      mode_alterations:
+        guest_mode: disable
+        vacation_mode: disable
+      constraint:
+        name: Turn on when cloudy
+        icon: mdi:cloud
+        initial: true
+    - name: vacation_mode
+      mode_alterations:
+        guest_mode: disable
+        vacation_mode: enable
+      constraint:
+        name: Simulate vacation mode
+        icon: mdi:beach
+        initial: true
+living_room_tv:
+  module: harmony
+  class: HarmonyRemote
+  entity: remote.samsung_tv
+  activities:
+    play_ps4: 27901089
+    watch_roku: 39586383
+    watch_tv: 27901129
+living_room_powder_room_fan_automation:
+  module: switches
+  class: SwitchAutomation
+  entities:
+    switch: group.living_room_lights
+  features:
+    - name: toggle_if_toggled
+      entities:
+        switch: switch.powder_room_fan
+      properties:
+        delay_minutes: 1
+        desired_state: "on"
+      constraint:
+        name: Turn on if turned off
+        icon: mdi:light-switch
+        initial: true

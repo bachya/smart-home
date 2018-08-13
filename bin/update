@@ -1,0 +1,75 @@
+#!/bin/bash
+set -euxo pipefail
+
+function ask_for_sudo() {
+  sudo -v &> /dev/null
+
+  # Update existing `sudo` time stamp until this script has finished:
+  # https://gist.github.com/cowboy/3118588
+  while true; do
+    sudo -n true
+    sleep 60
+    kill -0 "$$" || exit
+  done &> /dev/null &
+}
+
+function copy_config_data() {
+  volume_name=$1
+  relative_settings_path=$2
+
+  docker volume create $volume_name
+
+  docker run --rm \
+    -v `pwd`$relative_settings_path:/src \
+    -v $volume_name:/data \
+    -w /src \
+    busybox \
+    cp -a . /data
+}
+
+# Input the sudo and key passwords once:
+ask_for_sudo
+eval `ssh-agent`
+ssh-add ~/.ssh/id_ed25519
+
+# Make sure the OS is up to date:
+sudo apt update && sudo apt upgrade -y
+
+# Pull the latest repo information:
+git pull origin $(git rev-parse --abbrev-ref HEAD)
+git submodule update --init --recursive
+git remote prune origin
+
+# Update AppDaemon configs:
+copy_config_data "hub_appdaemon-config" "/appdaemon/settings"
+
+# Update dasher configs:
+copy_config_data "hub_dasher-config" "/dasher/settings"
+
+# Update Glances configs:
+copy_config_data "hub_glances-config" "/glances/settings"
+
+# Update ha-dockermon configs:
+copy_config_data "hub_ha-dockermon-config" "/ha-dockermon/settings"
+
+# Update Home Assistant configs:
+copy_config_data "hub_hass-config" "/home-assistant/settings"
+
+# Update iBeacon configs:
+copy_config_data "hub_ibeacon-config" "/ibeacon/settings"
+
+# Update Mosquitto configs:
+copy_config_data "hub_mosquitto-config" "/mosquitto/settings"
+
+# Update NGINX configs:
+copy_config_data "hub_fail2ban-config" "/nginx/settings/fail2ban"
+copy_config_data "hub_nginx-config" "/nginx/settings/nginx"
+
+# Re-build the containers if necessary:
+docker-compose build
+
+# Restart the containers:
+docker-compose down --remove-orphans
+docker rmi $(docker images --filter "dangling=true" -q --no-trunc) || true
+docker rm $(docker ps -qa --no-trunc --filter "status=exited") || true
+docker-compose up -d

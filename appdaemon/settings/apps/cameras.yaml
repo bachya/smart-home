@@ -1,0 +1,79 @@
+---
+garage_camera_automation:
+  module: switches
+  class: SwitchAutomation
+  dependencies:
+    - presence_manager
+  features:
+    - name: toggle_at_time
+      entities:
+        switch: switch.garage_camera_infrared_led
+      properties:
+        schedule_time: sunset
+        seasonal_offset: true
+        state: "on"
+      constraint:
+        key: auto_night_mode
+        name: "Garage Cam: Auto Night Mode"
+        icon: mdi:weather-sunset
+        initial: true
+    - name: toggle_at_time
+      entities:
+        switch: switch.garage_camera_night_mode
+      properties:
+        schedule_time: sunset
+        seasonal_offset: true
+        state: "on"
+      constraint:
+        key: auto_night_mode
+        name: "Garage Cam: Auto Night Mode"
+        icon: mdi:weather-sunset
+        initial: true
+    - name: toggle_at_time
+      entities:
+        switch: switch.garage_camera_infrared_led_filter
+      properties:
+        schedule_time: sunset
+        seasonal_offset: true
+        state: "off"
+      constraint:
+        key: auto_night_mode
+        name: "Garage Cam: Auto Night Mode"
+        icon: mdi:weather-sunset
+        initial: true
+    - name: toggle_at_time
+      entities:
+        switch: switch.garage_camera_infrared_led
+      properties:
+        schedule_time: sunrise
+        seasonal_offset: true
+        state: "off"
+      constraint:
+        key: auto_night_mode
+        name: "Garage Cam: Auto Night Mode"
+        icon: mdi:weather-sunset
+        initial: true
+    - name: toggle_at_time
+      entities:
+        switch: switch.garage_camera_night_mode
+      properties:
+        schedule_time: sunrise
+        seasonal_offset: true
+        state: "off"
+      constraint:
+        key: auto_night_mode
+        name: "Garage Cam: Auto Night Mode"
+        icon: mdi:weather-sunset
+        initial: true
+    - name: toggle_at_time
+      entities:
+        switch: switch.garage_camera_infrared_led_filter
+      properties:
+        schedule_time: sunrise
+        seasonal_offset: true
+        state: "on"
+      constraint:
+        key: auto_night_mode
+        name: "Garage Cam: Auto Night Mode"
+        icon: mdi:weather-sunset
+        initial: true

@@ -1,0 +1,78 @@
+---
+sensor:
+  # Installed Versions
+  - platform: command_line
+    name: AppDaemon Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://pypi.python.org/pypi/appdaemon/json
+    value_template: '{{ value_json.info.version }}'
+    scan_interval: 300
+  - platform: command_line
+    name: ha-dockermon Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/philhawthorne/ha-dockermon/tags
+    value_template: '{{ value_json[0].name[1:] }}'
+    scan_interval: 300
+  - platform: command_line
+    name: HASS Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://pypi.python.org/pypi/homeassistant/json
+    value_template: '{{ value_json.info.version }}'
+    scan_interval: 300
+  - platform: command_line
+    name: OpenIPC Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/openipcamera/openipc-firmware/tags
+    value_template: '{{ value_json[0].name }}'
+    scan_interval: 300
+  - platform: command_line
+    name: Tasmota Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/arendst/Sonoff-Tasmota/releases/latest
+    value_template: '{{ value_json.tag_name[1:] }}'
+    scan_interval: 300
+  - platform: command_line
+    name: Yi Hack Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/shadow-1/yi-hack-v3/releases/latest
+    value_template: '{{ value_json.tag_name }}'
+    scan_interval: 300
+  - platform: file
+    name: AppDaemon Installed
+    file_path: /shared/.AD_VERSION
+  - platform: file
+    name: ha-dockermon Installed
+    file_path: /shared/.HADM_VERSION
+  - platform: version
+    name: HASS Installed
+
+    # Networking
+  - platform: cert_expiry
+    name: SSL Expiry
+    host: !secret ssl_cert_host
+  - platform: speedtest
+    minute:
+      - 0
+      - 30
+    monitored_conditions:
+      - ping
+      - download
+      - upload

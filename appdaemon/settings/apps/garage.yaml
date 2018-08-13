@@ -1,0 +1,17 @@
+---
+garage_lights_automation:
+  module: switches
+  class: SwitchAutomation
+  dependencies:
+    - do_not_disturb
+    - presence_manager
+  entities:
+    switch: switch.garage_lights
+  features:
+    - name: turn_on_upon_arrival
+      properties:
+        trigger_on_first_only: false
+      constraint:
+        name: Turn on upon arrival
+        icon: mdi:car
+        initial: true

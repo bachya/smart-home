@@ -1,0 +1,22 @@
+---
+do_not_disturb:
+  module: mode
+  class: Mode
+  constraint:
+    name: Do Not Disturb
+    icon: mdi:bell-off
+    initial: false
+guest_mode:
+  module: mode
+  class: Mode
+  constraint:
+    name: Guest Mode
+    icon: mdi:hotel
+    initial: false
+vacation_mode:
+  module: mode
+  class: Mode
+  constraint:
+    name: Vacation Mode
+    icon: mdi:beach
+    initial: false

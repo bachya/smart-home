@@ -1,0 +1,99 @@
+---
+binary_sensor:
+  - platform: mqtt
+    name: "Garage Camera Motion Detected"
+    device_class: motion
+    state_topic: "home/garage-camera/motion"
+
+camera:
+  - platform: ffmpeg
+    name: Garage Camera
+    input: -rtsp_transport tcp -i rtsp://garage-camera.myserver.com:8554/unicast
+  - platform: nest
+  - platform: yi
+    name: Kitchen Camera
+    host: kitchen-camera.myserver.com
+    username: !secret yi_username
+    password: !secret yi_password
+    ffmpeg_arguments: -s 800x450
+  - platform: yi
+    name: Guest Bedroom Camera
+    host: guest-bedroom-camera.myserver.com
+    username: !secret yi_username
+    password: !secret yi_password
+    ffmpeg_arguments: -s 800x450
+
+sensor:
+  - platform: mqtt
+    name: "Garage Camera Detected Brightness"
+    icon: "mdi:brightness-6"
+    state_topic: "home/garage-camera/brightness"
+    unit_of_measurement: "%"
+  - platform: mqtt
+    name: "Garage Camera Bitrate"
+    icon: "mdi:speedometer"
+    state_topic: "home/garage-camera"
+    value_template: "{{ value_json.bitrate.split(' ')[0] }}"
+    unit_of_measurement: "Mb/s"
+  - platform: mqtt
+    name: "Garage Camera Signal Level"
+    icon: "mdi:signal"
+    state_topic: "home/garage-camera"
+    value_template: "{{ value_json.signal_level[:-1] }}"
+    unit_of_measurement: "%"
+  - platform: mqtt
+    name: "Garage Camera Link Quality"
+    icon: "mdi:signal"
+    state_topic: "home/garage-camera"
+    value_template: "{{ value_json.link_quality[:-1] }}"
+    unit_of_measurement: "%"
+  - platform: mqtt
+    name: "Garage Camera Noise Level"
+    icon: "mdi:signal"
+    state_topic: "home/garage-camera"
+    value_template: "{{ value_json.noise_level[:-1] }}"
+    unit_of_measurement: "%"
+
+switch:
+  - platform: mqtt
+    name: "Garage Camera Infrared LED"
+    icon: "mdi:led-variant-on"
+    state_topic: "home/garage-camera/leds/ir"
+    command_topic: "home/garage-camera/leds/ir/set"
+    payload_on: "ON"
+    payload_off: "OFF"
+  - platform: mqtt
+    name: "Garage Camera Infrared LED Filter"
+    icon: "mdi:led-variant-on"
+    state_topic: "home/garage-camera/ir_cut"
+    command_topic: "home/garage-camera/ir_cut/set"
+    payload_on: "ON"
+    payload_off: "OFF"
+  - platform: mqtt
+    name: "Garage Camera Motion Detection"
+    icon: "mdi:walk"
+    state_topic: "home/garage-camera/motion/detection"
+    command_topic: "home/garage-camera/motion/detection/set"
+    payload_on: "ON"
+    payload_off: "OFF"
+  - platform: mqtt
+    name: "Garage Camera Night Mode"
+    icon: "mdi:weather-night"
+    state_topic: "home/garage-camera/night_mode"
+    command_topic: "home/garage-camera/night_mode/set"
+    payload_on: "ON"
+    payload_off: "OFF"
+  - platform: mqtt
+    name: "Garage Camera RTSP (h264)"
+    icon: "mdi:video"
+    state_topic: "home/garage-camera/rtsp_h264_server"
+    command_topic: "home/garage-camera/night_mode/rtsp_h264_server/set"
+    payload_on: "ON"
+    payload_off: "OFF"
+  - platform: mqtt
+    name: "Garage Camera RTSP (MJPEG)"
+    icon: "mdi:video"
+    state_topic: "home/garage-camera/rtsp_mjpeg_server"
+    command_topic: "home/garage-camera/night_mode/rtsp_mjpeg_server/set"
+    payload_on: "ON"
+    payload_off: "OFF"

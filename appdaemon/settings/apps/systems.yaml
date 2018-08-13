@@ -1,0 +1,127 @@
+---
+hass_automation:
+  module: hass
+  class: HomeAssistantAutomation
+  dependencies:
+    - do_not_disturb
+    - guest_mode
+    - notification_manager
+    - presence_manager
+    - vacation_mode
+  features:
+    - name: auto_themes
+      properties:
+        dark_schedule_time: "20:00:00"
+        light_schedule_time: "08:00:00"
+      constraint:
+        name: Auto light/dark themes
+        icon: mdi:theme-light-dark
+        initial: true
+    - name: auto_vacation_mode
+      constraint:
+        name: Auto enable/disable vacation mode
+        icon: mdi:beach
+        initial: true
+    - name: bad_login_notification
+      entities:
+        notification: persistent_notification.httplogin
+      constraint:
+        name: Bad login notifications
+        icon: mdi:alert-circle
+        initial: true
+    - name: detect_blackout
+      entities:
+        blackout_switch: input_boolean.in_blackout
+      constraint:
+        name: Detect in-blackout
+        icon: mdi:theme-light-dark
+        initial: true
+    - name: new_version_notification
+      entities:
+        available: sensor.appdaemon_available
+      properties:
+        app_name: AppDaemon
+    - name: new_version_notification
+      entities:
+        available: sensor.hadockermon_available
+      properties:
+        app_name: ha-dockermon
+    - name: new_version_notification
+      entities:
+        available: sensor.hass_available
+      properties:
+        app_name: Home Assistant
+    - name: new_version_notification
+      entities:
+        available: sensor.openipc_available
+      properties:
+        app_name: OpenIPC
+    - name: new_tasmota_version_notification
+      entities:
+        available: sensor.tasmota_available
+      properties:
+        app_name: Tasmota
+        tasmota_hosts:
+          - climate-sensor-2.myserver.com
+          - rf-bridge.myserver.com
+          - salt-lamp-1.myserver.com
+          - salt-lamp-2.myserver.com
+    - name: new_version_notification
+      entities:
+        available: sensor.yi_hack_available
+      properties:
+        app_name: Yi Hack
+  constraint:
+    name: Notify of new versions
+    icon: mdi:home-assistant
+    initial: true
+systems_automation:
+  module: systems
+  class: SystemsAutomation
+  dependencies:
+    - do_not_disturb
+    - guest_mode
+    - notification_manager
+    - presence_manager
+    - vacation_mode
+  features:
+    - name: low_batteries
+      properties:
+        batteries_to_monitor:
+          - sensor.fiddle_leaf_fig_battery
+          - sensor.front_door_lock_battery
+          - sensor.garage_fire_door_lock_battery
+        battery_level_threshold: 20
+      constraint:
+        name: Notify of low batteries
+        icon: mdi:battery
+        initial: true
+    - name: left_in_state
+      entities:
+        entity: switch.media_center
+      properties:
+        seconds: 43200
+        state: "on"
+      constraint:
+        key: media_center_left_on
+        name: Media Center left on
+        icon: mdi:server
+        initial: true
+    - name: nightly_tasks
+      entities:
+        auto_arm: input_boolean.security_automation_auto_nighttime_lockup
+      properties:
+        tasks_schedule_time: "01:00:00"
+      constraint:
+        name: Nightly tasks
+        icon: mdi:clock
+        initial: true
+    - name: ssl_expiration
+      entities:
+        ssl_expiry: sensor.ssl_expiry
+      properties:
+        expiry_threshold: 7
+      constraint:
+        name: Notify of SSL expiration
+        icon: mdi:certificate
+        initial: true

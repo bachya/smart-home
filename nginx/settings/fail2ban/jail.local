@@ -1,0 +1,6 @@
+[nginx-naxsi]
+enabled = true
+port = http,https
+filter = nginx-naxsi
+logpath = /var/log/nginx/*error.log
+bantime=172800

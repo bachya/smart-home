@@ -1,0 +1,7 @@
+---
+device_tracker:
+  - platform: tile
+    username: !secret tile_username
+    password: !secret tile_password
+    monitored_variables:
+      - TILE

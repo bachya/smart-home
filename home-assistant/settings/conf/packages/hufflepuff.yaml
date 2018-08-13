@@ -1,0 +1,40 @@
+---
+sensor:
+  - platform: glances
+    name: Hufflepuff
+    host: hufflepuff.myserver.com
+    resources:
+      - "disk_use_percent"
+      - "memory_use_percent"
+      - "swap_use_percent"
+  - platform: command_line
+    name: Hufflepuff CPU Temperature
+    command: >
+      ssh -i /config/id_ed25519 -o StrictHostKeyChecking=no
+      bachya@hufflepuff.myserver.com
+      cat /sys/class/thermal/thermal_zone*/temp 2>/dev/null |
+      awk \'{ sum += $1; n++ } END { if (n > 0) print (sum / n) / 1000; }\'
+    unit_of_measurement: "°C"
+  - platform: command_line
+    name: Hufflepuff Uptime
+    command: >
+      ssh -i /config/id_ed25519 -o StrictHostKeyChecking=no
+      bachya@hufflepuff.myserver.com
+      cat /proc/uptime | awk \'{ print $1 / 86400 }\' | cut -f1 -d"."
+    unit_of_measurement: "days"
+
+shell_command:
+  restart_glances_hufflepuff: >-
+    curl -u "hassuser:glances_password"
+    http://hufflepuff.myserver.com:8126/container/glances/restart
+
+switch:
+  - platform: rest
+    resource: http://hufflepuff.myserver.com:8126/container/glances
+    name: Hufflepuff Glances
+    body_on: '{"state": "start"}'
+    body_off: '{"state": "stop"}'
+    is_on_template: >
+      {{ value_json is not none and value_json.state == "running" }}
+    username: !secret ha_dockermon_username
+    password: !secret ha_dockermon_password

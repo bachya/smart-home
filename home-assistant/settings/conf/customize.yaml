@@ -1,0 +1,208 @@
+---
+binary_sensor.garage_camera_motion_detected:
+  friendly_name: "Motion Detected"
+binary_sensor.in_bed:
+  icon: "mdi:sleep"
+cover.garage_door:
+  icon: "mdi:garage"
+group.appliance_automations:
+  friendly_name: "Appliances"
+group.climate_automations:
+  friendly_name: "Climate"
+group.hass_automations:
+  friendly_name: "Home Assistant"
+group.living_room_light_automations:
+  friendly_name: "Living Room Lights"
+group.master_bedroom_light_automations:
+  friendly_name: "Master Bedroom Lights"
+group.mode_automations:
+  friendly_name: "Modes"
+group.office_light_automations:
+  friendly_name: "Office Lights"
+group.outdoor_light_automations:
+  friendly_name: "Outdoor Lights"
+group.package_automations:
+  friendly_name: "Packages"
+group.plant_automations:
+  friendly_name: "Plants"
+group.security_automations:
+  friendly_name: "Security"
+group.system_automations:
+  friendly_name: "Systems"
+group.trash_automations:
+  friendly_name: "Trash"
+group.sonos:
+  hidden: true
+input_select.dishwasher_status:
+  icon: "mdi:washing-machine"
+media_player.living_room_roku:
+  friendly_name: "Living Room Roku"
+  hidden: true
+scene.depart_home:
+  icon: "mdi:garage"
+scene.drive_home:
+  emulated_hue_hidden: true
+  icon: "mdi:garage-open"
+scene.good_night:
+  icon: "mdi:sleep"
+scene.walk_home:
+  emulated_hue_hidden: true
+  icon: "mdi:home"
+scene.watch_plex:
+  icon: "mdi:plex"
+sensor.aaron_geocode:
+  entity_picture: "/local/aaron-home.jpg"
+  friendly_name: "Aaron"
+sensor.appdaemon_available:
+  icon: "mdi:language-python"
+sensor.appdaemon_installed:
+  icon: "mdi:language-python"
+sensor.average_indoor_humidity:
+  friendly_name: "Avg. Humidity"
+  icon: "mdi:water-percent"
+sensor.average_indoor_temperature:
+  friendly_name: "Avg. Temperature"
+  icon: "mdi:thermometer"
+sensor.britt_geocode:
+  entity_picture: "/local/britt-home.png"
+  friendly_name: "Britt"
+sensor.dishwasher_power:
+  icon: "mdi:power-plug"
+sensor.fiddle_leaf_fig_moisture:
+  friendly_name: "Moisture"
+  icon: "mdi:water-percent"
+sensor.fiddle_leaf_fig_temperature:
+  friendly_name: "Temperature"
+sensor.fiddle_leaf_fig_conductivity:
+  friendly_name: "Fertility"
+  icon: "mdi:test-tube"
+sensor.fiddle_leaf_fig_light_intensity:
+  friendly_name: "Brightness"
+  icon: mdi:white-balance-sunny
+sensor.garage_camera_bitrate:
+  friendly_name: "Bitrate"
+sensor.garage_camera_detected_brightness:
+  friendly_name: "Detected Brightness"
+sensor.garage_camera_link_quality:
+  friendly_name: "Link Quality"
+sensor.garage_camera_noise_level:
+  friendly_name: "Noise Level"
+sensor.garage_camera_signal_level:
+  friendly_name: "Signal Level"
+sensor.github_version:
+  icon: "mdi:github-box"
+sensor.hadockermon_available:
+  icon: "mdi:toggle-switch-off"
+sensor.hadockermon_installed:
+  icon: "mdi:toggle-switch-off"
+sensor.hass_available:
+  icon: "mdi:home-assistant"
+sensor.hass_installed:
+  icon: "mdi:home-assistant"
+sensor.tasmota_available:
+  icon: "mdi:wifi"
+sensor.speedtest_download:
+  icon: "mdi:cloud-download"
+sensor.speedtest_upload:
+  icon: "mdi:cloud-upload"
+sensor.thermostat_thermostat_humidity:
+  friendly_name: "Indoor Humidity"
+  icon: "mdi:water-percent"
+sensor.thermostat_thermostat_hvac_state:
+  friendly_name: "Indoor HVAC State"
+  icon: "mdi:fan"
+switch.appdaemon:
+  icon: "mdi:language-python"
+switch.backyard_lights:
+  icon: "mdi:lightbulb"
+switch.christmas_tree:
+  icon: "mdi:pine-tree"
+switch.dasher:
+  icon: "mdi:radiobox-marked"
+switch.durmstrang_glances:
+  friendly_name: "Glances"
+  icon: "mdi:server-security"
+switch.fireplace:
+  icon: "mdi:fire"
+switch.front_patio_light:
+  icon: "mdi:lightbulb"
+switch.garage_camera_infrared_led:
+  friendly_name: "IR LED"
+switch.garage_camera_infrared_led_filter:
+  friendly_name: "Filter"
+switch.garage_camera_motion_detection:
+  friendly_name: "Motion Detection"
+switch.garage_camera_motion_tracking:
+  friendly_name: "Motion Tracking"
+switch.garage_camera_night_mode:
+  friendly_name: "Night Mode"
+switch.garage_camera_rtsp_h264:
+  friendly_name: "RTSP (h264)"
+switch.garage_camera_rtsp_mjpeg:
+  friendly_name: "RTSP (MJPEG)"
+switch.garage_lights:
+  icon: "mdi:lightbulb"
+switch.grafana:
+  icon: "mdi:chart-bar"
+switch.gryffindor_glances:
+  friendly_name: "Glances"
+  icon: "mdi:server-security"
+switch.home_assistant:
+  icon: "mdi:home-assistant"
+switch.hub_glances:
+  friendly_name: "Glances"
+  icon: "mdi:server-security"
+switch.hufflepuff_glances:
+  friendly_name: "Glances"
+  icon: "mdi:server-security"
+switch.influxdb:
+  icon: "mdi:database"
+switch.kitchen_patio_light:
+  icon: "mdi:lightbulb"
+switch.media_center:
+  icon: "mdi:server"
+switch.master_bathroom_fan:
+  icon: "mdi:fan"
+switch.master_toilet_fan:
+  icon: "mdi:fan"
+switch.mosquitto:
+  icon: "mdi:access-point-network"
+switch.mysql:
+  icon: "mdi:database"
+switch.nginx:
+  icon: "mdi:server"
+sensor.openipc_available:
+  icon: "mdi:cctv"
+switch.powder_room_fan:
+  icon: "mdi:fan"
+sensor.yi_hack_available:
+  icon: "mdi:cctv"
+switch.program_morning:
+  icon: "mdi:water"
+switch.program_morning_no_planter:
+  icon: "mdi:water"
+switch.program_evening:
+  icon: "mdi:water"
+switch.program_evening_no_planter:
+  icon: "mdi:water"
+switch.ps4:
+  icon: "mdi:playstation"
+switch.ravenclaw_glances:
+  friendly_name: "Glances"
+  icon: "mdi:server-security"
+switch.ravenclaw_hass_elder_bachs:
+  friendly_name: Home Assistant
+  icon: "mdi:home-assistant"
+switch.reading_lamp:
+  icon: "mdi:lightbulb"
+switch.slytherin_glances:
+  friendly_name: "Glances"
+  icon: "mdi:server-security"
+switch.sofa_lamp:
+  icon: "mdi:lightbulb"
+switch.zone_landscaping:
+  icon: "mdi:water"
+switch.zone_flower_box:
+  icon: "mdi:water"
+vacuum.xiaomi_vacuum_cleaner:
+  friendly_name: "Clean"

@@ -1,0 +1,21 @@
+---
+db_url: !secret recorder_db_url
+exclude:
+  domains:
+    - media_player
+    - weblink
+    - zwave
+  entities:
+    - sensor.front_door_access_control
+    - sensor.front_door_alarm_level
+    - sensor.front_door_alarm_type
+    - sensor.front_door_sourcenodeid
+    - sensor.front_door_system
+    - sensor.garage_door_access_control
+    - sensor.garage_door_alarm_level
+    - sensor.garage_door_alarm_type
+    - sensor.garage_door_sourcenodeid
+    - sensor.garage_door_system
+    - sun.sun
+purge_interval: 2
+purge_keep_days: 5

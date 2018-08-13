@@ -1,0 +1,4 @@
+---
+presence_manager:
+  module: presence
+  class: PresenceManager

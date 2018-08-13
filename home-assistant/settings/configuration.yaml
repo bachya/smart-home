@@ -1,0 +1,35 @@
+---
+# Base Configuration:
+homeassistant: !include conf/homeassistant.yaml
+
+# Core Configuration
+config:
+frontend: !include conf/frontend.yaml
+history:
+http: !include conf/http.yaml
+influxdb: !include conf/influxdb.yaml
+logbook:
+logger: !include conf/logger.yaml
+map:
+panel_iframe: !include conf/panels.yaml
+recorder: !include conf/recorder.yaml
+updater:
+zeroconf:
+
+# Components:
+cloud: !include_dir_merge_named conf/cloud/
+device_tracker: !include conf/platforms/device-trackers.yaml
+emulated_hue: !include conf/platforms/emulated-hue.yaml
+ffmpeg: !include conf/platforms/ffmpeg.yaml
+group: !include_dir_named conf/groups/
+ifttt: !include conf/platforms/ifttt.yaml
+input_boolean: !include_dir_merge_named conf/input-booleans/
+ios: !include conf/platforms/ios.yaml
+mqtt: !include conf/platforms/mosquitto.yaml
+nest: !include conf/platforms/nest.yaml
+notify: !include_dir_list conf/platforms/notifiers.yaml
+proximity: !include conf/platforms/proximity.yaml
+tts: !include conf/platforms/tts.yaml
+weblink: !include conf/weblinks.yaml
+zone: !include conf/zones.yaml
+zwave: !include conf/platforms/zwave.yaml

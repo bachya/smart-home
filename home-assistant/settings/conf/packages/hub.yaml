@@ -1,0 +1,132 @@
+---
+sensor:
+  - platform: glances
+    name: Hub
+    host: localhost
+    resources:
+      - "disk_use_percent"
+      - "memory_use_percent"
+      - "swap_use_percent"
+  - platform: command_line
+    name: Hub CPU Temperature
+    command: >
+      cat /sys/class/thermal/thermal_zone*/temp 2>/dev/null |
+      awk \'{ sum += $1; n++ } END { if (n > 0) print (sum / n) / 1000; }\'
+    unit_of_measurement: "°C"
+  - platform: command_line
+    name: Hub Uptime
+    command: >
+      cat /proc/uptime | awk \'{ print $1 / 86400 }\' | cut -f1 -d"."
+    unit_of_measurement: "days"
+
+shell_command:
+  restart_appdaemon_hub: >-
+    curl -u "hassuser:glances_password"
+    http://localhost:8126/container/appdaemon/restart
+  restart_dasher_hub: >-
+    curl -u "hassuser:glances_password"
+    http://localhost:8126/container/dasher/restart
+  restart_glances_hub: >-
+    curl -u "hassuser:glances_password"
+    http://localhost:8126/container/glances/restart
+  restart_grafana_hub: >-
+    curl -u "hassuser:glances_password"
+    http://localhost:8126/container/grafana/restart
+  restart_hass_hub: >-
+    curl -u "hassuser:glances_password"
+    http://localhost:8126/container/hass/restart
+  restart_influxdb_hub: >-
+    curl -u "influxdbuser:glances_password"
+    http://localhost:8126/container/influxdb/restart
+  restart_mosquitto_hub: >-
+    curl -u "mosquittouser:glances_password"
+    http://localhost:8126/container/mosquitto/restart
+  restart_mysql_hub: >-
+    curl -u "mysqluser:glances_password"
+    http://localhost:8126/container/mysql/restart
+  restart_nginx_hub: >-
+    curl -u "nginxuser:glances_password"
+    http://localhost:8126/container/nginx/restart
+
+switch:
+  - platform: rest
+    resource: http://localhost:8126/container/appdaemon
+    name: AppDaemon
+    body_on: '{"state": "start"}'
+    body_off: '{"state": "stop"}'
+    is_on_template: >
+      {{ value_json is not none and value_json.state == "running" }}
+    username: !secret ha_dockermon_username
+    password: !secret ha_dockermon_password
+  - platform: rest
+    resource: http://localhost:8126/container/dasher
+    name: Dasher
+    body_on: '{"state": "start"}'
+    body_off: '{"state": "stop"}'
+    is_on_template: >
+      {{ value_json is not none and value_json.state == "running" }}
+    username: !secret ha_dockermon_username
+    password: !secret ha_dockermon_password
+  - platform: rest
+    resource: http://localhost:8126/container/glances
+    name: Hub Glances
+    body_on: '{"state": "start"}'
+    body_off: '{"state": "stop"}'
+    is_on_template: >
+      {{ value_json is not none and value_json.state == "running" }}
+    username: !secret ha_dockermon_username
+    password: !secret ha_dockermon_password
+  - platform: rest
+    resource: http://localhost:8126/container/grafana
+    name: Grafana
+    body_on: '{"state": "start"}'
+    body_off: '{"state": "stop"}'
+    is_on_template: >
+      {{ value_json is not none and value_json.state == "running" }}
+    username: !secret ha_dockermon_username
+    password: !secret ha_dockermon_password
+  - platform: rest
+    resource: http://localhost:8126/container/hass
+    name: Home Assistant
+    body_on: '{"state": "start"}'
+    body_off: '{"state": "stop"}'
+    is_on_template: >
+      {{ value_json is not none and value_json.state == "running" }}
+    username: !secret ha_dockermon_username
+    password: !secret ha_dockermon_password
+  - platform: rest
+    resource: http://localhost:8126/container/influxdb
+    name: InfluxDB
+    body_on: '{"state": "start"}'
+    body_off: '{"state": "stop"}'
+    is_on_template: >
+      {{ value_json is not none and value_json.state == "running" }}
+    username: !secret ha_dockermon_username
+    password: !secret ha_dockermon_password
+  - platform: rest
+    resource: http://localhost:8126/container/mosquitto
+    name: Mosquitto
+    body_on: '{"state": "start"}'
+    body_off: '{"state": "stop"}'
+    is_on_template: >
+      {{ value_json is not none and value_json.state == "running" }}
+    username: !secret ha_dockermon_username
+    password: !secret ha_dockermon_password
+  - platform: rest
+    resource: http://localhost:8126/container/mysql
+    name: MySQL
+    body_on: '{"state": "start"}'
+    body_off: '{"state": "stop"}'
+    is_on_template: >
+      {{ value_json is not none and value_json.state == "running" }}
+    username: !secret ha_dockermon_username
+    password: !secret ha_dockermon_password
+  - platform: rest
+    resource: http://localhost:8126/container/nginx
+    name: NGINX
+    body_on: '{"state": "start"}'
+    body_off: '{"state": "stop"}'
+    is_on_template: >
+      {{ value_json is not none and value_json.state == "running" }}
+    username: !secret ha_dockermon_username
+    password: !secret ha_dockermon_password

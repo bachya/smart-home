@@ -1,0 +1,6 @@
+---
+- name: FWI
+  icon: mdi:domain
+  latitude: !secret fwi_latitude
+  longitude: !secret fwi_longitude
+  radius: 250

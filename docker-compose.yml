@@ -1,0 +1,195 @@
+---
+version: "3"
+
+services:
+
+  appdaemon:
+    build:
+      context: ./appdaemon/docker
+      args:
+        version: 3.0.1
+    command: /usr/src/app/start.sh
+    container_name: appdaemon
+    depends_on:
+      - hass
+    image: bachya/appdaemon
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - appdaemon-config:/config:ro
+      - shared:/shared
+
+  dasher:
+    build: ./dasher/docker
+    command: npm run start
+    container_name: dasher
+    depends_on:
+      - hass
+    image: bachya/dasher
+    network_mode: "host"
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - dasher-config:/usr/app/dasher/config/:ro
+
+  glances:
+    build: ./glances/docker
+    command: /usr/bin/supervisord -c /etc/supervisor.conf
+    container_name: glances
+    image: bachya/glances
+    ports:
+      - "61208:61208/tcp"
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - glances-config:/etc/glances:ro
+
+  grafana:
+    container_name: grafana
+    depends_on:
+      - influxdb
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin_password
+      GF_SECURITY_ADMIN_USER: admin_user
+      GF_SERVER_DOMAIN: 12a0asd9821h.myserver.com
+    image: grafana/grafana:5.2.2
+    ports:
+      - "3000:3000/tcp"
+    restart: unless-stopped
+    user: "104"
+    volumes:
+      - grafana-config:/var/lib/grafana
+
+  ha-dockermon:
+    build:
+      context: ./ha-dockermon/docker
+      args:
+        version: 0.0.5
+    command: /usr/src/app/start.sh
+    container_name: ha-dockermon
+    environment:
+      - config_dir=/config
+    image: bachya/ha-dockermon
+    ports:
+      - "8126:8126/tcp"
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ha-dockermon-config:/config:ro
+      - shared:/shared
+
+  hass:
+    build:
+      context: ./home-assistant/docker
+      args:
+        version: 0.75.3
+    container_name: hass
+    depends_on:
+      - glances
+      - ha-dockermon
+      - influxdb
+      - mosquitto
+      - mysql
+    devices:
+      - "/dev/zwave:/dev/zwave"
+    image: bachya/home-assistant
+    network_mode: "host"
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - hass-config:/config
+      - shared:/shared
+
+  ibeacon:
+    build: ./ibeacon/docker
+    container_name: ibeacon
+    image: bachya/ibeacon
+    network_mode: "host"
+    privileged: true
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ibeacon-config:/config
+
+  influxdb:
+    container_name: influxdb
+    image: influxdb:1.6.0-alpine
+    environment:
+      INFLUXDB_DB: db
+      INFLUXDB_USER: db_user
+      INFLUXDB_USER_PASSWORD: db_password
+    ports:
+      - "8086:8086/tcp"
+    restart: unless-stopped
+    volumes:
+      - influxdb-config:/var/lib/influxdb
+
+  mosquitto:
+    build: ./mosquitto/docker
+    command: /usr/bin/supervisord -c /etc/supervisor.conf
+    container_name: mosquitto
+    image: bachya/mosquitto
+    ports:
+      - "1883:1883"
+    restart: unless-stopped
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/ssl:/etc/ssl:ro
+      - /usr/share/ca-certificates:/usr/share/ca-certificates:ro
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
+      - mosquitto-config:/config
+
+  mysql:
+    container_name: mysql
+    environment:
+      MYSQL_DATABASE: recorder_db
+      MYSQL_PASSWORD: recorder_password
+      MYSQL_ROOT_PASSWORD: mysql_root_password
+      MYSQL_USER: recorder_user
+    image: bianjp/mariadb-alpine:latest
+    ports:
+      - "3306:3306/tcp"
+    restart: unless-stopped
+    volumes:
+      - /var/lib/docker/mysql:/var/lib/mysql
+
+  nginx:
+    build:
+      context: ./nginx/docker
+      args:
+        geoip_version: 1.6.11
+        naxsi_version: 0.56
+        nginx_version: 1.15.0
+    cap_add:
+      - NET_ADMIN
+    command: /usr/bin/supervisord -c /etc/supervisor.conf
+    container_name: nginx
+    image: bachya/nginx
+    ports:
+      - "443:443/tcp"
+      - "18883:18883/tcp"
+    restart: unless-stopped
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/ssl:/etc/ssl:ro
+      - fail2ban-config:/etc/fail2ban
+      - nginx-config:/etc/nginx
+
+volumes:
+
+  appdaemon-config:
+  dasher-config:
+  fail2ban-config:
+  glances-config:
+  grafana-config:
+  ha-dockermon-config:
+  hass-config:
+  ibeacon-config:
+  influxdb-config:
+  mosquitto-config:
+  nginx-config:
+  shared:

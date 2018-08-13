@@ -1,0 +1,4 @@
+---
+expose_by_default: false
+exposed_domains:
+  - scene

@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+"""Generate constraint switches for all AppDaemon features"""
+import argparse
+import glob
+import yaml
+
+APPS_FILES = './settings/appdaemon/apps/*.yaml'
+
+PARSER = argparse.ArgumentParser()
+PARSER.add_argument('path')
+PARSER.add_argument('--details', action='store_true')
+ARGS = PARSER.parse_args()
+
+
+OUTPUT = {}  # type: ignore
+with open(ARGS.path, 'r') as file:
+    DATA = yaml.load(file)
+    for entity_name, automation_attrs in DATA.items():
+        global_constraint = automation_attrs.get('constraint')
+        for feature in automation_attrs.get('features', {}):
+            if feature.get('constraint'):
+                constraint = feature['constraint']
+            else:
+                constraint = global_constraint
+
+            if constraint.get('key'):
+                key = '{0}_{1}'.format(entity_name, constraint['key'])
+            else:
+                key = '{0}_{1}'.format(entity_name, feature['name'])
+
+            if key not in OUTPUT:
+                OUTPUT[key] = {
+                    'name': constraint['name'],
+                    'icon': constraint['icon'],
+                    'initial': constraint['initial']
+                }
+
+if ARGS.details:
+    print(yaml.dump(OUTPUT, default_flow_style=False))
+else:
+    KEYS = sorted(['input_boolean.{0}'.format(k) for k in OUTPUT])
+    print('\n'.join(KEYS))

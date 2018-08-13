@@ -1,0 +1,213 @@
+---
+aarons_keys_automation_left_somewhere:
+  icon: mdi:key
+  initial: true
+  name: Notify AMB keys missing
+aarons_wallet_automation_left_somewhere:
+  icon: mdi:wallet
+  initial: true
+  name: Notify AMB wallet missing
+backyard_lights_automation_off_at_11pm:
+  icon: mdi:lightbulb
+  initial: true
+  name: Turn off at 11pm (weekends)
+backyard_lights_automation_off_at_930pm:
+  icon: mdi:lightbulb
+  initial: true
+  name: Turn off at 9:30pm (weekdays)
+backyard_lights_automation_on_at_sunset:
+  icon: mdi:weather-sunset
+  initial: true
+  name: Turn on at sunset
+climate_automation_adjust_on_proximity:
+  icon: mdi:car-side
+  initial: true
+  name: Adjust on proximity
+climate_automation_notify_bad_aqi:
+  icon: mdi:weather-windy
+  initial: true
+  name: Bad AQI notifications
+dishwasher_automation_notify_done:
+  icon: mdi:washing-machine
+  initial: true
+  name: Notifications when clean
+fiddle_leaf_fig_automation_low_moisture:
+  icon: mdi:flower
+  initial: true
+  name: Notify of low moisture
+fireplace_automation_presence_failsafe:
+  icon: mdi:fire
+  initial: true
+  name: Disable fireplace when away
+front_patio_light_automation_off_at_11pm:
+  icon: mdi:lightbulb
+  initial: true
+  name: Turn off at 11pm
+front_patio_light_automation_on_at_sunset:
+  icon: mdi:weather-sunset
+  initial: true
+  name: Turn on at sunset
+front_patio_light_automation_vacation_mode:
+  icon: mdi:beach
+  initial: true
+  name: Simulate vacation mode
+garage_camera_automation_auto_night_mode:
+  icon: mdi:weather-sunset
+  initial: true
+  name: 'Garage Cam: Auto Night Mode'
+garage_lights_automation_turn_on_upon_arrival:
+  icon: mdi:car
+  initial: true
+  name: Turn on upon arrival
+hass_automation_auto_themes:
+  icon: mdi:theme-light-dark
+  initial: true
+  name: Auto light/dark themes
+hass_automation_auto_vacation_mode:
+  icon: mdi:beach
+  initial: true
+  name: Auto enable/disable vacation mode
+hass_automation_bad_login_notification:
+  icon: mdi:alert-circle
+  initial: true
+  name: Bad login notifications
+hass_automation_detect_blackout:
+  icon: mdi:theme-light-dark
+  initial: true
+  name: Detect in-blackout
+hass_automation_new_tasmota_version_notification:
+  icon: mdi:home-assistant
+  initial: true
+  name: Notify of new versions
+hass_automation_new_version_notification:
+  icon: mdi:home-assistant
+  initial: true
+  name: Notify of new versions
+kitchen_patio_light_automation_off_at_11pm:
+  icon: mdi:lightbulb
+  initial: true
+  name: Turn off at 11pm
+kitchen_patio_light_automation_on_at_sunset:
+  icon: mdi:weather-sunset
+  initial: true
+  name: Turn on at sunset
+kitchen_patio_light_automation_vacation_mode:
+  icon: mdi:beach
+  initial: true
+  name: Simulate vacation mode
+living_room_lights_automation_on_at_sunset:
+  icon: mdi:weather-sunset
+  initial: true
+  name: Turn on at sunset
+living_room_lights_automation_turn_on_upon_arrival:
+  icon: mdi:car
+  initial: true
+  name: Turn on upon arrival
+living_room_lights_automation_turn_on_when_cloudy:
+  icon: mdi:cloud
+  initial: true
+  name: Turn on when cloudy
+living_room_lights_automation_vacation_mode:
+  icon: mdi:beach
+  initial: true
+  name: Simulate vacation mode
+living_room_powder_room_fan_automation_toggle_if_toggled:
+  icon: mdi:light-switch
+  initial: true
+  name: Turn on if turned off
+master_bathroom_fan_automation_sleep_timer:
+  icon: mdi:sleep
+  initial: true
+  name: 'Bathroom: enable sleep timer'
+master_bathroom_toilet_fan_automation_off_at_5pm:
+  icon: mdi:fan
+  initial: true
+  name: 'Toilet: off at 5pm'
+master_bathroom_toilet_fan_automation_on_at_10am:
+  icon: mdi:fan
+  initial: true
+  name: 'Toilet: on at 10am'
+master_bathroom_toilet_fan_automation_sleep_timer:
+  icon: mdi:sleep
+  initial: true
+  name: 'Toilet: enable sleep timer'
+master_bedroom_lights_automation_on_at_sunset:
+  icon: mdi:weather-sunset
+  initial: true
+  name: Turn on at sunset
+master_bedroom_lights_automation_sleep_timer:
+  icon: mdi:sleep
+  initial: true
+  name: Enable sleep timer
+notification_automation_manage_home_notifications:
+  icon: mdi:car
+  initial: true
+  name: Manage home notifications
+office_lights_automation_off_at_10pm:
+  icon: mdi:lightbulb
+  initial: true
+  name: Turn off at 10pm
+office_lights_automation_on_at_sunset:
+  icon: mdi:weather-sunset
+  initial: true
+  name: Turn on at sunset
+office_lights_automation_sleep_timer:
+  icon: mdi:sleep
+  initial: true
+  name: Enable sleep timer
+security_automation_absent_insecure:
+  icon: mdi:lock-open
+  initial: true
+  name: Absent & insecure alerts
+security_automation_auto_departure_lockup:
+  icon: mdi:car-side
+  initial: true
+  name: Automatic departure lock up
+security_automation_auto_nighttime_lockup:
+  icon: mdi:clock
+  initial: true
+  name: Automatically lock up at night
+security_automation_garage_left_open:
+  icon: mdi:garage
+  initial: true
+  name: Notify if garage left open
+security_automation_notify_on_change:
+  icon: mdi:shield-half-full
+  initial: false
+  name: Notify when state changes
+subaru_legacy_automation_notify_eta:
+  icon: mdi:car
+  initial: true
+  name: Notify of ETA
+subaru_legacy_automation_notify_low_fuel:
+  icon: mdi:gas-station
+  initial: true
+  name: Notify of low fuel
+systems_automation_low_batteries:
+  icon: mdi:battery
+  initial: true
+  name: Notify of low batteries
+systems_automation_media_center_left_on:
+  icon: mdi:server
+  initial: true
+  name: Media Center left on
+systems_automation_nightly_tasks:
+  icon: mdi:clock
+  initial: true
+  name: Nightly tasks
+systems_automation_ssl_expiration:
+  icon: mdi:certificate
+  initial: true
+  name: Notify of SSL expiration
+trash_automation_notify_of_pickup:
+  icon: mdi:delete
+  initial: true
+  name: Notify of pickups
+wolfie_automation_monitor_consumables:
+  icon: mdi:google-circles-group
+  initial: true
+  name: Low supply notifications
+wolfie_automation_scheduled_cycle:
+  icon: mdi:google-circles-group
+  initial: true
+  name: Automatic schedule

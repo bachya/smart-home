@@ -1,0 +1,23 @@
+---
+subaru_legacy_automation:
+  module: car
+  class: CarAutomation
+  dependencies:
+    - do_not_disturb
+    - notification_manager
+    - presence_manager
+  entities:
+    car: device_tracker.2010_subaru_legacy
+  features:
+    - name: notify_eta
+      constraint:
+        name: Notify of ETA
+        icon: mdi:car
+        initial: true
+    - name: notify_low_fuel
+      properties:
+        fuel_threshold: 10
+      constraint:
+        name: Notify of low fuel
+        icon: mdi:gas-station
+        initial: true

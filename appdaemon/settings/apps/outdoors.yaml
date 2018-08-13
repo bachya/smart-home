@@ -1,0 +1,132 @@
+---
+backyard_lights_automation:
+  module: switches
+  class: SwitchAutomation
+  dependencies:
+    - do_not_disturb
+    - guest_mode
+    - presence_manager
+  entities:
+    switch: switch.backyard_lights
+  features:
+    - name: toggle_at_time
+      properties:
+        run_on_days:
+          - Friday
+          - Saturday
+        schedule_time: "23:00:00"
+        state: "off"
+      constraint:
+        key: off_at_11pm
+        name: Turn off at 11pm (weekends)
+        icon: mdi:lightbulb
+        initial: true
+    - name: toggle_at_time
+      properties:
+        run_on_days:
+          - Sunday
+          - Monday
+          - Tuesday
+          - Wednesday
+          - Thursday
+        schedule_time: "21:30:00"
+        state: "off"
+      constraint:
+        key: off_at_930pm
+        name: Turn off at 9:30pm (weekdays)
+        icon: mdi:lightbulb
+        initial: true
+    - name: toggle_at_time
+      properties:
+        schedule_time: sunset
+        seasonal_offset: true
+        state: "on"
+      mode_alterations:
+        vacation_mode: disable
+      constraint:
+        key: on_at_sunset
+        name: Turn on at sunset
+        icon: mdi:weather-sunset
+        initial: true
+front_patio_light_automation:
+  module: switches
+  class: SwitchAutomation
+  dependencies:
+    - do_not_disturb
+    - guest_mode
+    - presence_manager
+    - vacation_mode
+  entities:
+    switch: switch.front_patio_light
+  features:
+    - name: toggle_at_time
+      properties:
+        schedule_time: "23:00:00"
+        state: "off"
+      mode_alterations:
+        vacation_mode: disable
+      constraint:
+        key: off_at_11pm
+        name: Turn off at 11pm
+        icon: mdi:lightbulb
+        initial: true
+    - name: toggle_at_time
+      properties:
+        schedule_time: sunset
+        seasonal_offset: true
+        state: "on"
+      mode_alterations:
+        vacation_mode: disable
+      constraint:
+        key: on_at_sunset
+        name: Turn on at sunset
+        icon: mdi:weather-sunset
+        initial: true
+    - name: vacation_mode
+      mode_alterations:
+        guest_mode: disable
+      constraint:
+        name: Simulate vacation mode
+        icon: mdi:beach
+        initial: true
+kitchen_patio_light_automation:
+  module: switches
+  class: SwitchAutomation
+  dependencies:
+    - do_not_disturb
+    - guest_mode
+    - presence_manager
+    - vacation_mode
+  entities:
+    switch: switch.kitchen_patio_light
+  features:
+    - name: toggle_at_time
+      properties:
+        schedule_time: "23:00:00"
+        state: "off"
+      mode_alterations:
+        vacation_mode: disable
+      constraint:
+        key: off_at_11pm
+        name: Turn off at 11pm
+        icon: mdi:lightbulb
+        initial: true
+    - name: toggle_at_time
+      properties:
+        schedule_time: sunset
+        seasonal_offset: true
+        state: "on"
+      mode_alterations:
+        vacation_mode: disable
+      constraint:
+        key: on_at_sunset
+        name: Turn on at sunset
+        icon: mdi:weather-sunset
+        initial: true
+    - name: vacation_mode
+      mode_alterations:
+        guest_mode: disable
+      constraint:
+        name: Simulate vacation mode
+        icon: mdi:beach
+        initial: true

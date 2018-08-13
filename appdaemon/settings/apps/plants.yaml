@@ -1,0 +1,24 @@
+---
+fiddle_leaf_fig_automation:
+  module: plants
+  class: PlantAutomation
+  dependencies:
+    - do_not_disturb
+    - guest_mode
+    - notification_manager
+    - presence_manager
+    - vacation_mode
+  friendly_name: Fred
+  features:
+    - name: low_moisture
+      entities:
+        current_moisture: sensor.fiddle_leaf_fig_moisture
+      properties:
+        moisture_threshold: 25
+      mode_alterations:
+        do_not_disturb: disable
+        vacation_mode: disable
+      constraint:
+        name: Notify of low moisture
+        icon: mdi:flower
+        initial: true

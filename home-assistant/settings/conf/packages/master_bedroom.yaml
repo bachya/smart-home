@@ -1,0 +1,77 @@
+---
+binary_sensor:
+  - platform: bayesian
+    name: In Bed
+    prior: 0.375
+    probability_threshold: 0.95
+    observations:
+      - entity_id: input_boolean.in_blackout
+        prob_given_true: 0.90
+        platform: state
+        to_state: "on"
+      - entity_id: light.salt_lamp_master_bedroom
+        prob_given_true: 0.888888889
+        platform: state
+        to_state: "off"
+      - entity_id: input_number.master_bedroom_salt_lamp_timer
+        prob_given_true: 0.888888889
+        platform: numeric_state
+        above: 0
+
+input_number:
+  master_bathroom_fan_timer:
+    name: Sleep Timer
+    initial: 0
+    min: 0
+    max: 90
+    step: 5
+    unit_of_measurement: minutes
+    icon: mdi:timer
+  master_bathroom_toilet_fan_timer:
+    name: Sleep Timer
+    initial: 0
+    min: 0
+    max: 90
+    step: 5
+    unit_of_measurement: minutes
+    icon: mdi:timer
+  master_bedroom_salt_lamp_timer:
+    name: Sleep Timer
+    initial: 0
+    min: 0
+    max: 90
+    step: 5
+    unit_of_measurement: minutes
+    icon: mdi:timer
+
+light:
+  - platform: mqtt
+    name: "Salt Lamp (Master Bedroom)"
+    state_topic: "stat/salt-lamp-1/POWER1"
+    command_topic: "cmnd/salt-lamp-1/POWER1"
+    availability_topic: "tele/salt-lamp-1/LWT"
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: true
+
+sensor:
+  - platform: mqtt
+    name: "Climate 2 Temperature"
+    state_topic: "tele/climate-sensor-2/SENSOR"
+    value_template: "{{ value_json['BME280'].Temperature }}"
+    unit_of_measurement: "°F"
+    device_class: temperature
+  - platform: mqtt
+    name: "Climate 2 Humidity"
+    state_topic: "tele/climate-sensor-2/SENSOR"
+    value_template: "{{ value_json['BME280'].Humidity }}"
+    unit_of_measurement: "%"
+    device_class: humidity
+  - platform: mqtt
+    name: "Climate 2 Pressure"
+    icon: "mdi:cloud"
+    state_topic: "tele/climate-sensor-2/SENSOR"
+    value_template: "{{ value_json['BME280'].Pressure }}"
+    unit_of_measurement: "hPa"

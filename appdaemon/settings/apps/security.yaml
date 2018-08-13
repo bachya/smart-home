@@ -1,0 +1,59 @@
+---
+security_automation:
+  module: security
+  class: SecurityAutomation
+  dependencies:
+    - do_not_disturb
+    - guest_mode
+    - notification_manager
+    - presence_manager
+    - security_system
+    - vacation_mode
+  features:
+    - name: absent_insecure
+      entities:
+        state: sensor.secure_status
+      mode_alterations:
+        do_not_disturb: disable
+        guest_mode: disable
+      constraint:
+        name: Absent & insecure alerts
+        icon: mdi:lock-open
+        initial: true
+    - name: auto_departure_lockup
+      mode_alterations:
+        guest_mode: disable
+      constraint:
+        name: Automatic departure lock up
+        icon: mdi:car-side
+        initial: true
+    - name: auto_nighttime_lockup
+      entities:
+        in_bed: binary_sensor.in_bed
+      mode_alterations:
+        guest_mode: disable
+      constraint:
+        name: Automatically lock up at night
+        icon: mdi:clock
+        initial: true
+    - name: garage_left_open
+      entities:
+        garage_door: cover.garage_door
+      properties:
+        time_left_open: 10
+      constraint:
+        name: Notify if garage left open
+        icon: mdi:garage
+        initial: true
+    - name: notify_on_change
+      entities:
+        state: sensor.secure_status
+      mode_alterations:
+        vacation_mode: enable
+      constraint:
+        name: Notify when state changes
+        icon: mdi:shield-half-full
+        initial: false
+security_system:
+  module: security
+  class: SecuritySystem

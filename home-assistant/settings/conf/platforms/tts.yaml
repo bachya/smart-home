@@ -1,0 +1,6 @@
+---
+- platform: amazon_polly
+  aws_access_key_id: !secret aws_polly_id
+  aws_secret_access_key: !secret aws_polly_secret
+  region_name: us-west-2
+  voice: Joanna

@@ -1,0 +1,11 @@
+geoip_country /usr/local/share/GeoIP/GeoIP.dat;
+
+map $geoip_country_code $allowed_country {
+  default no;
+  US yes;
+}
+
+geo $lan_ip {
+  default no;
+  172.16.10.0/24 yes;
+}

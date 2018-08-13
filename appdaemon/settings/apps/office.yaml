@@ -1,0 +1,44 @@
+---
+office_lights_automation:
+  module: switches
+  class: SwitchAutomation
+  dependencies:
+    - do_not_disturb
+    - guest_mode
+    - presence_manager
+    - vacation_mode
+  entities:
+    switch: light.salt_lamp_office
+  features:
+    - name: sleep_timer
+      entities:
+        timer_slider: input_number.office_salt_lamp_timer
+      constraint:
+        name: Enable sleep timer
+        icon: mdi:sleep
+        initial: true
+    - name: toggle_at_time
+      properties:
+        schedule_time: "22:00:00"
+        state: "off"
+      mode_alterations:
+        guest_mode: disable
+        vacation_mode: disable
+      constraint:
+        key: off_at_10pm
+        name: Turn off at 10pm
+        icon: mdi:lightbulb
+        initial: true
+    - name: toggle_at_time
+      properties:
+        schedule_time: sunset
+        seasonal_offset: true
+        state: "on"
+      mode_alterations:
+        guest_mode: disable
+        vacation_mode: disable
+      constraint:
+        key: on_at_sunset
+        name: Turn on at sunset
+        icon: mdi:weather-sunset
+        initial: true

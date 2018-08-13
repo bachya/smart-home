@@ -1,0 +1,629 @@
+---
+title: Bach Home
+views:
+
+  - title: Overview
+    icon: mdi:home-assistant
+    id: overview
+    cards:
+
+      - type: vertical-stack
+        cards:
+          - type: glance
+            title: People
+            entities:
+              - sensor.aaron_presence_status
+              - sensor.britt_presence_status
+            column_width: calc(100% / 2)
+          - type: glance
+            title: Valuables
+            entities:
+              - device_tracker.tile_aarons_keys
+              - device_tracker.tile_aarons_wallet
+            column_width: calc(100% / 2)
+
+      - type: entities
+        title: Security Status
+        entities:
+          - sensor.secure_status
+          - input_boolean.security_automation_auto_departure_lockup
+          - input_boolean.security_automation_notify_on_change
+          - scene.depart_home
+          - scene.drive_home
+          - scene.walk_home
+          - scene.good_night
+        column_width: calc(100% / 2)
+        show_header_toggle: false
+
+      - type: entities
+        title: Modes
+        entities:
+          - input_boolean.mode_do_not_disturb
+          - input_boolean.mode_guest_mode
+          - input_boolean.mode_vacation_mode
+        show_header_toggle: false
+
+      - type: entities
+        title: Climate
+        entities:
+          - sensor.average_indoor_temperature
+          - sensor.average_indoor_humidity
+          - switch.climate_away_mode
+        show_header_toggle: false
+
+  - title: Automation Controls
+    icon: mdi:home-automation
+    id: automation-controls
+    cards:
+
+      - type: entities
+        title: Aaron's Car
+        entities:
+          - input_boolean.subaru_legacy_automation_notify_eta
+          - input_boolean.subaru_legacy_automation_notify_low_fuel
+
+      - type: entities
+        title: Backyard Lights
+        entities:
+          - input_boolean.backyard_lights_automation_off_at_11pm
+          - input_boolean.backyard_lights_automation_off_at_930pm
+          - input_boolean.backyard_lights_automation_on_at_sunset
+
+      - type: entities
+        title: Cameras
+        entities:
+          - input_boolean.garage_camera_automation_auto_night_mode
+
+      - type: entities
+        title: Climate
+        entities:
+          - input_boolean.climate_automation_adjust_on_proximity
+          - input_boolean.climate_automation_notify_bad_aqi
+
+      - type: entities
+        title: Dishwasher
+        entities:
+          - input_boolean.dishwasher_automation_notify_done
+
+      - type: entities
+        title: Fiddle Leaf Fig
+        entities:
+          - input_boolean.fiddle_leaf_fig_automation_low_moisture
+
+      - type: entities
+        title: Fireplace
+        entities:
+          - input_boolean.fireplace_automation_presence_failsafe
+
+      - type: entities
+        title: Garage Lights
+        entities:
+          - input_boolean.garage_lights_automation_turn_on_upon_arrival
+
+      - type: entities
+        title: Home Assistant
+        entities:
+          - input_boolean.hass_automation_auto_themes
+          - input_boolean.hass_automation_auto_vacation_mode
+          - input_boolean.hass_automation_bad_login_notification
+          - input_boolean.hass_automation_detect_blackout
+          - input_boolean.hass_automation_new_version_notification
+          - input_boolean.notification_automation_manage_home_notifications
+
+      - type: entities
+        title: Kitchen Patio Light
+        entities:
+          - input_boolean.kitchen_patio_light_automation_off_at_11pm
+          - input_boolean.kitchen_patio_light_automation_on_at_sunset
+          - input_boolean.kitchen_patio_light_automation_vacation_mode
+
+      - type: entities
+        title: Living Room Lights
+        entities:
+          - input_boolean.living_room_lights_automation_on_at_sunset
+          - input_boolean.living_room_lights_automation_turn_on_upon_arrival
+          - input_boolean.living_room_lights_automation_turn_on_when_cloudy
+          - input_boolean.living_room_lights_automation_vacation_mode
+
+      - type: entities
+        title: Master Bathroom Fans
+        entities:
+          - input_boolean.master_bathroom_fan_automation_sleep_timer
+          - input_boolean.master_bathroom_toilet_fan_automation_off_at_5pm
+          - input_boolean.master_bathroom_toilet_fan_automation_on_at_10am
+          - input_boolean.master_bathroom_toilet_fan_automation_sleep_timer
+
+      - type: entities
+        title: Master Bedroom Lights
+        entities:
+          - input_boolean.master_bedroom_lights_automation_on_at_sunset
+          - input_boolean.master_bedroom_lights_automation_sleep_timer
+
+      - type: entities
+        title: Office Lights
+        entities:
+          - input_boolean.office_lights_automation_off_at_10pm
+          - input_boolean.office_lights_automation_on_at_sunset
+          - input_boolean.office_lights_automation_sleep_timer
+
+      - type: entities
+        title: Front Patio Light
+        entities:
+          - input_boolean.front_patio_light_automation_off_at_11pm
+          - input_boolean.front_patio_light_automation_on_at_sunset
+          - input_boolean.front_patio_light_automation_vacation_mode
+
+      - type: entities
+        title: Powder Room Fan
+        entities:
+          - input_boolean.living_room_powder_room_fan_automation_toggle_if_toggled
+
+      - type: entities
+        title: Security
+        entities:
+          - input_boolean.security_automation_absent_insecure
+          - input_boolean.security_automation_auto_departure_lockup
+          - input_boolean.security_automation_auto_nighttime_lockup
+          - input_boolean.security_automation_garage_left_open
+          - input_boolean.security_automation_notify_on_change
+
+      - type: entities
+        title: Systems
+        entities:
+          - input_boolean.systems_automation_low_batteries
+          - input_boolean.systems_automation_media_center_left_on
+          - input_boolean.systems_automation_nightly_tasks
+          - input_boolean.systems_automation_ssl_expiration
+
+      - type: entities
+        title: Trash
+        entities:
+          - input_boolean.trash_automation_notify_of_pickup
+
+      - type: entities
+        title: Valuables
+        entities:
+          - input_boolean.aarons_keys_automation_left_somewhere
+          - input_boolean.aarons_wallet_automation_left_somewhere
+
+      - type: entities
+        title: Wolfie
+        entities:
+          - input_boolean.wolfie_automation_monitor_consumables
+          - input_boolean.wolfie_automation_scheduled_cycle
+
+  - title: Cameras
+    icon: mdi:cctv
+    id: cameras
+    cards:
+
+      - type: picture-entity
+        entity: camera.front_door
+      - type: picture-entity
+        entity: camera.garage_camera
+      - type: picture-entity
+        entity: camera.guest_bedroom_camera
+      - type: picture-entity
+        entity: camera.kitchen_camera
+
+  - title: Front Door
+    icon: mdi:door
+    id: front-door
+    cards:
+
+      - type: picture-glance
+        title: Front Door
+        camera_image: camera.front_door
+        entities:
+          - lock.front_door
+          - sensor.front_door_lock_battery
+
+  - title: Garage
+    icon: mdi:garage
+    id: garage
+    cards:
+
+      - type: picture-glance
+        camera_image: camera.garage_camera
+        entities:
+          - cover.garage_door
+          - switch.garage_lights
+
+      - type: entities
+        title: Camera
+        entities:
+          - binary_sensor.garage_camera_motion_detected
+          - sensor.garage_camera_bitrate
+          - sensor.garage_camera_detected_brightness
+          - sensor.garage_camera_link_quality
+          - sensor.garage_camera_noise_level
+          - sensor.garage_camera_signal_level
+          - switch.garage_camera_night_mode
+          - switch.garage_camera_infrared_led
+          - switch.garage_camera_infrared_led_filter
+          - switch.garage_camera_motion_detection
+          - switch.garage_camera_rtsp_h264
+          - switch.garage_camera_rtsp_mjpeg
+        show_header_toggle: false
+
+      - type: entities
+        title: Cars
+        entities:
+          - device_tracker.2010_subaru_legacy
+
+      - type: entities
+        title: Sprinkler System
+        entities:
+          - switch.program_morning
+          - switch.program_evening
+          - switch.zone_landscaping
+          - switch.zone_flower_box
+        show_header_toggle: false
+
+      - type: entities
+        title: Trash
+        entities:
+          - sensor.extra_trash_pickup
+          - sensor.recycling_pickup
+          - sensor.trash_pickup
+
+  - title: Guest Bedroom
+    icon: mdi:briefcase
+    id: guest-bedroom
+    cards:
+
+      - type: picture-entity
+        entity: camera.guest_bedroom_camera
+
+  - title: Kitchen
+    icon: mdi:stove
+    id: kitchen
+    cards:
+
+      - type: picture-entity
+        entity: camera.kitchen_camera
+
+      - type: entities
+        title: Climate
+        entities:
+          - climate.thermostat
+          - sensor.thermostat_thermostat_humidity
+          - sensor.thermostat_thermostat_hvac_state
+
+      - type: entities
+        title: Dishwasher
+        entities:
+          - input_select.dishwasher_status
+          - sensor.dishwasher_power
+
+      - type: entities
+        title: Fire Door
+        entities:
+          - lock.garage_fire_door
+          - sensor.garage_fire_door_lock_battery
+
+      - type: entities
+        title: Security Systems
+        entities:
+          - alarm_control_panel.simplisafe
+
+  - title: Living Room
+    icon: mdi:sofa
+    id: living-room
+    cards:
+
+      - type: entities
+        title: Fiddle Leaf Fig
+        entities:
+          - sensor.fiddle_leaf_fig_moisture
+          - sensor.fiddle_leaf_fig_temperature
+          - sensor.fiddle_leaf_fig_conductivity
+          - sensor.fiddle_leaf_fig_light_intensity
+          - sensor.fiddle_leaf_fig_battery_dynamic
+
+      - type: entities
+        title: Fireplace
+        entities:
+          - switch.fireplace
+        show_header_toggle: false
+
+      - type: entities
+        title: Lights
+        entities:
+          - switch.reading_lamp
+          - switch.sofa_lamp
+
+      - type: entities
+        title: Powder Room
+        entities:
+          - switch.powder_room_fan
+        show_header_toggle: false
+
+      - type: entities
+        title: TV
+        entities:
+          - remote.samsung_tv
+          - switch.media_center
+          - switch.ps4
+          - scene.watch_plex
+        show_header_toggle: false
+
+  - title: Master Bedroom
+    icon: mdi:hotel
+    id: master-bedroom
+    cards:
+
+      - type: entities
+        title: Bathroom Fans
+        entities:
+          - switch.master_bathroom_fan
+          - input_number.master_bathroom_fan_timer
+          - switch.master_toilet_fan
+          - input_number.master_bathroom_toilet_fan_timer
+
+      - type: entities
+        title: Climate
+        entities:
+          - sensor.climate_2_temperature
+          - sensor.climate_2_humidity
+          - sensor.climate_2_pressure
+
+      - type: entities
+        title: Salt Lamp
+        entities:
+          - light.salt_lamp_master_bedroom
+          - input_number.master_bedroom_salt_lamp_timer
+        show_header_toggle: false
+
+  - title: Office
+    icon: mdi:desktop-mac
+    id: office
+    cards:
+
+      - type: entities
+        title: Salt Lamp
+        entities:
+          - light.salt_lamp_office
+          - input_number.office_salt_lamp_timer
+        show_header_toggle: false
+
+  - title: Outdoors
+    icon: mdi:white-balance-sunny
+    id: outdoors
+    cards:
+
+      - type: entities
+        title: Air Quality
+        entities:
+          - sensor.us_air_pollution_level
+          - sensor.us_air_quality_index
+          - sensor.us_main_pollutant
+
+      - type: entities
+        title: Allergies & Disease
+        entities:
+          - sensor.allergy_index_today
+          - sensor.allergy_index_tomorrow
+          - sensor.allergy_index_yesterday
+          - sensor.allergy_index_forecasted_average
+          - sensor.allergy_index_historical_average
+          - sensor.cold__flu_forecasted_average
+
+      - type: entities
+        title: Climate
+        entities:
+          - sensor.dark_sky_temperature
+          - sensor.dark_sky_humidity
+          - sensor.dark_sky_cloud_coverage
+          - sensor.dark_sky_precip
+          - sensor.dark_sky_precip_probability
+          - sensor.dark_sky_pressure
+          - sensor.dark_sky_wind_speed
+
+      - type: entities
+        title: Lights
+        entities:
+          - switch.backyard_lights
+          - switch.front_patio_light
+          - switch.kitchen_patio_light
+
+  - title: Systems
+    icon: mdi:server-network
+    id: systems
+    cards:
+
+      - type: entities
+        title: Durmstrang
+        entities:
+          - sensor.durmstrang_cpu_temperature
+          - sensor.durmstrang_uptime
+          - sensor.durmstrang_disk_used
+          - sensor.durmstrang_ram_used
+          - sensor.durmstrang_swap_used
+          - switch.durmstrang_glances
+        show_header_toggle: false
+
+      - type: entities
+        title: Gryffindor
+        entities:
+          - sensor.gryffindor_cpu_temperature
+          - sensor.gryffindor_uptime
+          - sensor.gryffindor_disk_used
+          - sensor.gryffindor_ram_used
+          - sensor.gryffindor_swap_used
+          - switch.gryffindor_glances
+        show_header_toggle: false
+
+      - type: entities
+        title: Hub
+        entities:
+          - sensor.hub_cpu_temperature
+          - sensor.hub_uptime
+          - sensor.hub_disk_used
+          - sensor.hub_ram_used
+          - sensor.hub_swap_used
+          - switch.appdaemon
+          - switch.dasher
+          - switch.hub_glances
+          - switch.grafana
+          - switch.home_assistant
+          - switch.influxdb
+          - switch.mosquitto
+          - switch.mysql
+          - switch.nginx
+        show_header_toggle: false
+
+      - type: entities
+        title: Hufflepuff
+        entities:
+          - sensor.hufflepuff_cpu_temperature
+          - sensor.hufflepuff_uptime
+          - sensor.hufflepuff_disk_used
+          - sensor.hufflepuff_ram_used
+          - sensor.hufflepuff_swap_used
+          - switch.hufflepuff_glances
+        show_header_toggle: false
+
+      - type: entities
+        title: Ravenclaw
+        entities:
+          - sensor.ravenclaw_cpu_temperature
+          - sensor.ravenclaw_uptime
+          - sensor.ravenclaw_disk_used
+          - sensor.ravenclaw_ram_used
+          - sensor.ravenclaw_swap_used
+          - switch.ravenclaw_glances
+          - switch.ravenclaw_hass_elder_bachs
+        show_header_toggle: false
+
+      - type: entities
+        title: Slytherin
+        entities:
+          - sensor.slytherin_cpu_temperature
+          - sensor.slytherin_uptime
+          - sensor.slytherin_disk_used
+          - sensor.slytherin_ram_used
+          - sensor.slytherin_swap_used
+          - switch.slytherin_glances
+        show_header_toggle: false
+
+      - type: entities
+        title: Links
+        entities:
+          - type: weblink
+            name: Climate Sensor (Master Bathroom)
+            url: http://climate-sensor-2.myserver.com
+            icon: mdi:thermometer
+          - type: weblink
+            name: Durmstrang Glances
+            url: http://durmstrang.myserver.com:61208
+            icon: mdi:settings
+          - type: weblink
+            name: Gryffindor Glances
+            url: http://gryffindor.myserver.com:61208
+            icon: mdi:settings
+          - type: weblink
+            name: Hub Glances
+            url: http://hub.myserver.com:61208
+            icon: mdi:settings
+          - type: weblink
+            name: Hufflepuff Glances
+            url: http://hufflepuff.myserver.com:61208
+            icon: mdi:settings
+          - type: weblink
+            name: Ravenclaw Glances
+            url: http://ravenclaw.myserver.com:61208
+            icon: mdi:settings
+          - type: weblink
+            name: Salt Lamp (Master Bedroom)
+            url: http://salt-lamp-1.myserver.com
+            icon: mdi:lava-lamp
+          - type: weblink
+            name: Salt Lamp (Office)
+            url: http://salt-lamp-2.myserver.com
+            icon: mdi:lava-lamp
+          - type: weblink
+            name: Sonoff RF Bridge
+            url: http://rf-bridge.myserver.com
+            icon: mdi:access-point
+          - type: weblink
+            name: Slytherin Glances
+            url: http://slytherin.myserver.com:61208
+            icon: mdi:settings
+          - type: weblink
+            name: UniFi Cloud Key
+            url: https://cloud-key.myserver.com:8443
+            icon: mdi:router-wireless
+          - type: weblink
+            name: Wyze Camera (Garage)
+            url: http://garage-camera.myserver.com
+            icon: mdi:cctv
+          - type: weblink
+            name: Yi Camera (Guest Bedroom)
+            url: http://guest-bedroom-camera.myserver.com
+            icon: mdi:cctv
+          - type: weblink
+            name: Yi Camera (Kitchen)
+            url: http://kitchen-camera.myserver.com
+            icon: mdi:cctv
+
+      - type: entities
+        title: Network
+        entities:
+          - sensor.speedtest_download
+          - sensor.speedtest_upload
+          - sensor.speedtest_ping
+          - sensor.ssl_expiry
+
+      - type: entities
+        title: Versions
+        entities:
+          - sensor.appdaemon_available
+          - sensor.appdaemon_installed
+          - sensor.hadockermon_available
+          - sensor.hadockermon_installed
+          - sensor.hass_available
+          - sensor.hass_installed
+          - sensor.openipc_available
+          - sensor.tasmota_available
+          - sensor.lowest_tasmota_installed
+          - sensor.yi_hack_available
+
+  - title: Wolfie
+    icon: mdi:google-circles-group
+    id: wolfie
+    cards:
+
+      - type: entities
+        title: Run Cycle
+        entities:
+          - switch.wolfie_cycle
+          - input_select.wolfie_bin_status
+        show_header_toggle: false
+
+      - type: entities
+        title: Clean Room
+        entities:
+          - input_select.wolfie_room_select
+          - script.clean_room
+
+      - type: entities
+        title: Schedule
+        entities:
+          - input_boolean.vacuum_schedule_monday
+          - input_boolean.vacuum_schedule_tuesday
+          - input_boolean.vacuum_schedule_wednesday
+          - input_boolean.vacuum_schedule_thursday
+          - input_boolean.vacuum_schedule_friday
+          - input_boolean.vacuum_schedule_saturday
+          - input_boolean.vacuum_schedule_sunday
+
+      - type: entities
+        title: Stats
+        entities:
+          - sensor.vacuum_status
+          - sensor.vacuum_do_not_disturb
+          - sensor.vacuum_battery
+          - sensor.vacuum_fan_speed
+          - sensor.vacuum_cleaning_time
+          - sensor.vacuum_cleaned_area

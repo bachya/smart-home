@@ -1,0 +1,3 @@
+---
+polling_interval: 30000
+usb_path: /dev/zwave

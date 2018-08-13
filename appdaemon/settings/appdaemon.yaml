@@ -1,0 +1,12 @@
+---
+appdaemon:
+  api_key: !secret api_key
+  api_port: 5051
+  threads: 10
+  missing_app_warnings: false
+  production_mode: true
+  plugins:
+    HASS:
+      type: hass
+      ha_key: !secret ha_key
+      ha_url: http://hub.myserver.com:8123

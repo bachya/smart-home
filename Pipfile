@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pyyaml = "*"
+
+[dev-packages]
+"flake8" = "*"
+demjson = "*"
+gixy = "*"
+pydocstyle = "*"
+yamllint = "*"
+
+[requires]
+python_version = "3.7"

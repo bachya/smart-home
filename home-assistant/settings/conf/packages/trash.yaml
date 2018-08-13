@@ -1,0 +1,8 @@
+---
+sensor:
+  - platform: denvertrash
+    api_key: !secret google_api_key
+    monitored_conditions:
+      - extra_trash
+      - recycling
+      - trash

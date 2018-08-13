@@ -1,0 +1,11 @@
+---
+alexa:
+  module: alexa
+  class: Alexa
+  dependencies:
+    - dishwasher
+    - presence_manager
+    - security_system
+    - trash_manager
+    - tts
+    - wolfie
