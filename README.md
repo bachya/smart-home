@@ -1,6 +1,6 @@
 # Aaron's Smart Home
 
-[[ https://github.com/bachya/smart-home/wiki/img/home.png ]]
+![The Home Screen](https://github.com/bachya/smart-home/wiki/img/home.png)
 
 This repository contains (almost) everything needed to run my smart home. I
 make the details freely available in the hope that other home automation
