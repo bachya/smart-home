@@ -13,6 +13,6 @@ RUN ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime \
     && echo "$TZ" > /etc/timezone
 
 # Copy configuration files:
-COPY conf/supervisor.conf /etc/supervisor.conf
+COPY conf/supervisor/supervisor.conf /etc/supervisor.conf
 
 CMD ["supervisord", "-c", "/etc/supervisor.conf"]

@@ -76,7 +76,7 @@ RUN ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime \
 
 # Copy configuration files:
 RUN mkdir /var/run/fail2ban
-COPY conf/supervisor.conf /etc/supervisor.conf
+COPY conf/supervisor/supervisor.conf /etc/supervisor.conf
 
 # Create a www-data user and group:
 RUN set -x ; \
