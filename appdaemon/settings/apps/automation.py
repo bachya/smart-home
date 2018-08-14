@@ -108,5 +108,5 @@ class Feature:
         self.hass.listen_event(
             callback,
             'ios.notification_action_fired',
-            action,
+            actionName=action,
             constrain_input_boolean=self.constraint)
