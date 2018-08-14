@@ -30,6 +30,5 @@ nest: !include conf/platforms/nest.yaml
 notify: !include_dir_list conf/platforms/notifiers.yaml
 proximity: !include conf/platforms/proximity.yaml
 tts: !include conf/platforms/tts.yaml
-weblink: !include conf/weblinks.yaml
 zone: !include conf/zones.yaml
 zwave: !include conf/platforms/zwave.yaml
