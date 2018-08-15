@@ -1,8 +1,6 @@
 ---
 binary_sensor.garage_camera_motion_detected:
   friendly_name: "Motion Detected"
-binary_sensor.in_bed:
-  icon: "mdi:sleep"
 cover.garage_door:
   icon: "mdi:garage"
 group.appliance_automations:

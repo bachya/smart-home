@@ -182,35 +182,17 @@ class AutoNighttimeLockup(Feature):
 
     def initialize(self) -> None:
         """Initialize."""
-        self.hass.listen_state(
-            self.in_bed,
-            self.entities['in_bed'],
-            new='on',
-            constrain_input_boolean=self.constraint,
-            constrain_anyone='home')
         self.hass.run_daily(
             self.midnight,
             time(0, 0, 0),
             constrain_input_boolean=self.constraint,
             constrain_anyone='home')
 
-    def activate(self) -> None:
-        """Activate the "Good Night" scene for home lockup."""
-        if not self.hass.security_system.secure:
-            self.hass.log('Activating "Good Night"')
-
-            self.hass.call_service(
-                'scene/turn_on', entity_id='scene.good_night')
-
-    def in_bed(  # pylint: disable=too-many-arguments
-            self, entity: Union[str, dict], attribute: str, old: str, new: str,
-            kwargs: dict) -> None:
-        """Lock up the house when we're in bed."""
-        self.activate()
-
     def midnight(self, kwargs: dict) -> None:
         """Lock up the house at midnight."""
-        self.activate()
+        self.hass.log('Activating "Good Night"')
+
+        self.hass.call_service('scene/turn_on', entity_id='scene.good_night')
 
 
 class GarageLeftOpen(Feature):

@@ -28,8 +28,6 @@ security_automation:
         icon: mdi:car-side
         initial: true
     - name: auto_nighttime_lockup
-      entities:
-        in_bed: binary_sensor.in_bed
       mode_alterations:
         guest_mode: disable
       constraint:

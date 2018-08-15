@@ -1,23 +1,4 @@
 ---
-binary_sensor:
-  - platform: bayesian
-    name: In Bed
-    prior: 0.375
-    probability_threshold: 0.95
-    observations:
-      - entity_id: input_boolean.in_blackout
-        prob_given_true: 0.90
-        platform: state
-        to_state: "on"
-      - entity_id: light.salt_lamp_master_bedroom
-        prob_given_true: 0.888888889
-        platform: state
-        to_state: "off"
-      - entity_id: input_number.master_bedroom_salt_lamp_timer
-        prob_given_true: 0.888888889
-        platform: numeric_state
-        above: 0
-
 input_number:
   master_bathroom_fan_timer:
     name: Sleep Timer
