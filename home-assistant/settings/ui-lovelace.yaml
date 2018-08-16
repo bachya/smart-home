@@ -584,10 +584,12 @@ views:
           - sensor.hadockermon_installed
           - sensor.hass_available
           - sensor.hass_installed
-          - sensor.openipc_available
           - sensor.tasmota_available
           - sensor.lowest_tasmota_installed
+          - sensor.xiaomi_hack_available
+          - sensor.xiaomi_hack_installed
           - sensor.yi_hack_available
+          - sensor.yi_hack_installed
 
   - title: Wolfie
     icon: mdi:google-circles-group

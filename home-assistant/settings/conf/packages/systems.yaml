@@ -1,6 +1,6 @@
 ---
 sensor:
-  # Installed Versions
+  # Available Versions
   - platform: command_line
     name: AppDaemon Available
     command: >-
@@ -29,15 +29,6 @@ sensor:
     value_template: '{{ value_json.info.version }}'
     scan_interval: 300
   - platform: command_line
-    name: OpenIPC Available
-    command: >-
-      curl -L
-      -H "User-Agent: Home Assistant"
-      -H "Content-Type: application/json"
-      https://api.github.com/repos/openipcamera/openipc-firmware/tags
-    value_template: '{{ value_json[0].name }}'
-    scan_interval: 300
-  - platform: command_line
     name: Tasmota Available
     command: >-
       curl -L
@@ -45,6 +36,15 @@ sensor:
       -H "Content-Type: application/json"
       https://api.github.com/repos/arendst/Sonoff-Tasmota/releases/latest
     value_template: '{{ value_json.tag_name[1:] }}'
+    scan_interval: 300
+  - platform: command_line
+    name: Xiaomi Hack Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/EliasKotlyar/Xiaomi-Dafang-Hacks/commits
+    value_template: '{{ value_json[0].commit.committer.date.split("T")[0] }}'
     scan_interval: 300
   - platform: command_line
     name: Yi Hack Available
@@ -55,6 +55,20 @@ sensor:
       https://api.github.com/repos/shadow-1/yi-hack-v3/releases/latest
     value_template: '{{ value_json.tag_name }}'
     scan_interval: 300
+  # Installed Versions
+  - platform: command_line
+    name: Xiaomi Hack Installed
+    command: >
+      ssh -i /config/id_rsa -o StrictHostKeyChecking=no
+      root@garage-camera.phil.iot
+      cat /system/sdcard/.lastCommitDate
+    value_template: '{{ value.split("T")[0] }}'
+  - platform: command_line
+    name: Yi Hack Installed
+    command: >
+      ssh -i /config/id_rsa -o StrictHostKeyChecking=no
+      root@kitchen-camera.phil.lan
+      cat /home/yi-hack-v3/.hackinfo | grep VERSION | awk -F= \'{ print $2 }\'
   - platform: file
     name: AppDaemon Installed
     file_path: /shared/.AD_VERSION

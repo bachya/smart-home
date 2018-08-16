@@ -51,11 +51,6 @@ hass_automation:
         available: sensor.hass_available
       properties:
         app_name: Home Assistant
-    - name: new_version_notification
-      entities:
-        available: sensor.openipc_available
-      properties:
-        app_name: OpenIPC
     - name: new_tasmota_version_notification
       entities:
         available: sensor.tasmota_available
@@ -66,6 +61,11 @@ hass_automation:
           - rf-bridge.myserver.com
           - salt-lamp-1.myserver.com
           - salt-lamp-2.myserver.com
+    - name: new_version_notification
+      entities:
+        available: sensor.xiaomi_hack_available
+      properties:
+        app_name: Xiaomia Hack
     - name: new_version_notification
       entities:
         available: sensor.yi_hack_available

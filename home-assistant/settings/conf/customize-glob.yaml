@@ -18,11 +18,21 @@
 "sensor.*_uptime":
   friendly_name: Uptime
   icon: mdi:clock-outline
+"sensor.appdaemon_*":
+  icon: "mdi:language-python"
 "sensor.climate_*_humidity":
   friendly_name: Humidity
 "sensor.climate_*_pressure":
   friendly_name: Pressure
 "sensor.climate_*_temperature":
   friendly_name: Temperature
-"sensor.schlage_*":
-  hidden: true
+"sensor.hadockermon_*":
+  icon: "mdi:toggle-switch-off"
+"sensor.hass_*":
+  icon: "mdi:home-assistant"
+"sensor.tasmota_*":
+  icon: "mdi:wifi"
+"sensor.xiaomi_hack_*":
+  icon: "mdi:cctv"
+"sensor.yi_hack_*":
+  icon: "mdi:cctv"
