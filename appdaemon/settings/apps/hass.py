@@ -165,14 +165,20 @@ class NewVersionNotification(Feature):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Notify me when there's a new app version."""
-        self.hass.log(
-            'New {0} version detected: {1}'.format(
-                self.properties['app_name'], new))
+        new_version = version.parse(
+            self.hass.get_state(self.entities['available']))
+        installed_version = version.parse(
+            self.hass.get_state(self.entities['installed']))
 
-        self.hass.notification_manager.send(
-            'New {0}'.format(self.properties['app_name']),
-            'Version detected: {0}'.format(new),
-            target='Aaron')
+        if new_version > installed_version:
+            self.hass.log(
+                'New {0} version detected: {1}'.format(
+                    self.properties['app_name'], new))
+
+            self.hass.notification_manager.send(
+                'New {0}'.format(self.properties['app_name']),
+                'Version detected: {0}'.format(new),
+                target='Aaron')
 
 
 class NewTasmotaVersionNotification(NewVersionNotification):
