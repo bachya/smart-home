@@ -9,18 +9,10 @@ garage_lights_automation:
     switch: switch.garage_lights
   features:
     - name: turn_on_upon_arrival
-      conditions:
-        - cloudy
       properties:
-        trigger_on_first_only: false
-      enabled_toggle:
-        name: Turn on upon arrival
-        icon: mdi:car
-        initial: true
-    - name: turn_on_upon_arrival
-      conditions:
-        - nighttime
-      properties:
+        possible_conditions:
+          constrain_cloudy: true
+          constrain_sun: "down"
         trigger_on_first_only: false
       enabled_toggle:
         name: Turn on upon arrival

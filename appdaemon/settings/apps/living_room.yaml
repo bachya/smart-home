@@ -45,20 +45,10 @@ living_room_lights_automation:
         icon: mdi:weather-sunset
         initial: true
     - name: turn_on_upon_arrival
-      conditions:
-        - cloudy
       properties:
-        trigger_on_first_only: true
-      mode_alterations:
-        guest_mode: disable
-      enabled_toggle:
-        name: Turn on upon arrival
-        icon: mdi:car
-        initial: true
-    - name: turn_on_upon_arrival
-      conditions:
-        - nighttime
-      properties:
+        possible_conditions:
+          constrain_cloudy: true
+          constrain_sun: "down"
         trigger_on_first_only: true
       mode_alterations:
         guest_mode: disable

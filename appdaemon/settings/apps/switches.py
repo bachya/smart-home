@@ -181,23 +181,27 @@ class ToggleIfToggled(BaseFeature):
 class TurnOnUponArrival(BaseFeature):
     """Define a feature to turn a switch on when one of us arrives."""
 
-    CONDITIONS_CONSTRAINTS_MAP = {
-        'cloudy': ('constrain_cloudy', True),
-        'nighttime': ('constrain_sun', 'down')
-    }
-
     def initialize(self) -> None:
         """Initialize."""
-        kwargs = self.generate_conditions(self.CONDITIONS_CONSTRAINTS_MAP)
+        if self.properties.get('possible_conditions'):
+            for name, value in self.properties['possible_conditions'].items():
+                self.listen_for_arrival({name: value})
+        else:
+            self.listen_for_arrival()
+
+    def listen_for_arrival(self, constraint_kwargs: dict = None) -> None:
+        """Create an event listen for someone arriving."""
+        if not constraint_kwargs:
+            constraint_kwargs = {}
         if self.properties.get('trigger_on_first_only'):
-            kwargs['first'] = True
+            constraint_kwargs['first'] = True
 
         self.hass.listen_event(
             self.someone_arrived,
             'PRESENCE_CHANGE',
             new=self.hass.presence_manager.HomeStates.just_arrived.value,
             constrain_input_boolean=self.enabled_toggle,
-            **kwargs)
+            **constraint_kwargs)
 
     def someone_arrived(
             self, event_name: str, data: dict, kwargs: dict) -> None:

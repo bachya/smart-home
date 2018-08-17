@@ -40,7 +40,6 @@ class Automation(Base):
                     **self.entities,
                     **feature.get('entities', {})
                 },
-                conditions=feature.get('conditions', {}),
                 properties={
                     **self.properties,
                     **feature.get('properties', {})
@@ -72,12 +71,10 @@ class Feature:  # pylint: disable=too-many-instance-attributes
             name: str,
             *,
             entities: dict = None,
-            conditions: dict = None,
             properties: dict = None,
             enabled_toggle_config: dict = None,
             mode_alterations: dict = None) -> None:
         """Initiliaze."""
-        self.conditions = conditions
         self.entities = entities
         self.handles = {}  # type: ignore
         self.hass = hass
@@ -111,14 +108,6 @@ class Feature:  # pylint: disable=too-many-instance-attributes
     def initialize(self) -> None:
         """Define an initializer method."""
         raise NotImplementedError
-
-    def generate_conditions(self, condition_constraint_map: dict) -> dict:
-        """Generate a constraints kwargs list from a mapping."""
-        kwargs = {}
-        for condition in self.conditions:  # type: ignore
-            name, value = condition_constraint_map[condition]
-            kwargs[name] = value
-        return kwargs
 
     def listen_ios_event(self, callback: Callable, action: str) -> None:
         """Register a callback for an iOS event."""
