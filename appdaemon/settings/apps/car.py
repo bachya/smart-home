@@ -79,10 +79,19 @@ class NotifyLowFuel(Feature):
 
                 self.hass.log(
                     'Low fuel detected detected: {0}'.format(name))
-                self.hass.notification_manager.create_omnifocus_task(
-                    'Get gas for {0}'.format(name))
+
                 self.registered = True
+                self.handles[
+                    self.hass.
+                    friendly_name] = self.hass.notification_manager.repeat(
+                        '{0} is Low ⛽'.format(self.hass.friendly_name),
+                        "{0} needs gas; fill 'er up!.".format(
+                            self.hass.friendly_name),
+                        self.properties['notification_interval'],
+                        target='home')
             else:
                 self.registered = False
+                if self.hass.friendly_name in self.handles:
+                    self.handles.pop(self.hass.friendly_name)()
         except ValueError:
             return

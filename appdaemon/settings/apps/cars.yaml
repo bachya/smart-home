@@ -8,6 +8,7 @@ subaru_legacy_automation:
     - presence_manager
   entities:
     car: device_tracker.2010_subaru_legacy
+  friendly_name: Aaron's Car
   features:
     - name: notify_eta
       enabled_toggle:
@@ -17,6 +18,7 @@ subaru_legacy_automation:
     - name: notify_low_fuel
       properties:
         fuel_threshold: 10
+        notification_interval: 7200
       enabled_toggle:
         name: Notify of low fuel
         icon: mdi:gas-station
