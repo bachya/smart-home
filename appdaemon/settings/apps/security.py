@@ -216,7 +216,7 @@ class GarageLeftOpen(Feature):
             self.left_open,
             self.entities['garage_door'],
             new='open',
-            duration=60 * int(self.properties['time_left_open']),
+            duration=self.properties['time_left_open'],
             constrain_input_boolean=self.enabled_toggle)
 
     def closed(  # pylint: disable=too-many-arguments
@@ -233,7 +233,7 @@ class GarageLeftOpen(Feature):
         self.handles[self.HANDLE] = self.hass.notification_manager.repeat(
             'Garage Open 🚗',
             "The garage has been left open for a while.",
-            60 * 60,
+            self.properties['notification_interval'],
             blackout_start_time=None,
             blackout_end_time=None,
             data={'push': {

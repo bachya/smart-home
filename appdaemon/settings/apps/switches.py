@@ -171,9 +171,8 @@ class ToggleIfToggled(BaseFeature):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Toggle the switch back."""
-        if self.properties.get('delay_minutes'):
-            self.hass.run_in(
-                self.delay_complete, self.properties['delay_minutes'] * 60)
+        if self.properties.get('delay'):
+            self.hass.run_in(self.delay_complete, self.properties['delay'])
         else:
             self.toggle(self.properties['desired_state'])
 

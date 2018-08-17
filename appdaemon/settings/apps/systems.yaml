@@ -98,6 +98,7 @@ systems_automation:
           - sensor.front_door_lock_battery
           - sensor.garage_fire_door_lock_battery
         battery_level_threshold: 20
+        notification_interval: 900
       enabled_toggle:
         name: Notify of low batteries
         icon: mdi:battery

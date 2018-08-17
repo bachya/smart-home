@@ -48,7 +48,7 @@ class LowBatteries(Feature):
                 'Low Batteries 🔋',
                 '{0} is at {1}%. Replace the batteries ASAP!'.format(
                     name, value),
-                60 * 15,
+                self.properties['notification_interval'],
                 target='home')
         else:
             try:

@@ -165,7 +165,7 @@ class ScheduledCycle(Feature):
                 self.HANDLE_BIN] = self.hass.notification_manager.repeat(
                     'Wolfie Full 🤖',
                     "Empty him now and you won't have to do it later!",
-                    60 * 60,
+                    self.properties['notification_interval_full'],
                     target='home',
                     data={'push': {
                         'category': 'wolfie'
@@ -200,7 +200,7 @@ class ScheduledCycle(Feature):
             self.HANDLE_STUCK] = self.hass.notification_manager.repeat(
                 'Wolfie Stuck 😢',
                 "Help him get back on track or home.",
-                60 * 5,
+                self.properties['notification_interval_stuck'],
                 target='home',
             )
 

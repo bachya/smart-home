@@ -80,7 +80,7 @@ living_room_powder_room_fan_automation:
   features:
     - name: toggle_if_toggled
       properties:
-        delay_minutes: 1
+        delay: 60
         desired_state: "on"
       enabled_toggle:
         name: Turn on if turned off

@@ -91,7 +91,7 @@ class NotifyDone(Feature):
                 self.HANDLE_CLEAN] = self.hass.notification_manager.repeat(
                     'Dishwasher Clean 🍽',
                     "Empty it now and you won't have to do it later!",
-                    60 * 60,
+                    self.properties['notification_interval'],
                     when=self.hass.datetime() + timedelta(minutes=15),
                     target='home',
                     data={'push': {

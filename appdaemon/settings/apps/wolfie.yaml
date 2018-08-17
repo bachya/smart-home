@@ -38,6 +38,8 @@ wolfie_automation:
     - name: scheduled_cycle
       properties:
         ios_emptied_key: WOLFIE_EMPTIED
+        notification_interval_full: 3600
+        notification_interval_stuck: 300
         schedule_switches:
           - input_boolean.vacuum_schedule_monday
           - input_boolean.vacuum_schedule_tuesday

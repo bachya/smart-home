@@ -15,6 +15,7 @@ fiddle_leaf_fig_automation:
         current_moisture: sensor.fiddle_leaf_fig_moisture
       properties:
         moisture_threshold: 25
+        notification_interval: 3600
       mode_alterations:
         do_not_disturb: disable
         vacation_mode: disable

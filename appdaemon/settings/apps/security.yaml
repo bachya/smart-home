@@ -38,7 +38,8 @@ security_automation:
       entities:
         garage_door: cover.garage_door
       properties:
-        time_left_open: 10
+        notification_interval: 300
+        time_left_open: 600
       enabled_toggle:
         name: Notify if garage left open
         icon: mdi:garage

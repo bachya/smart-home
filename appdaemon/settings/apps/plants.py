@@ -44,7 +44,7 @@ class LowMoisture(Feature):
                     '{0} is Dry 💧'.format(self.hass.friendly_name),
                     '{0} is at {1}% moisture and needs water.'.format(
                         self.hass.friendly_name, self.current_moisture),
-                    60 * 60,
+                    self.properties['notification_interval'],
                     target='home')
         else:
             self._low_moisture = False
