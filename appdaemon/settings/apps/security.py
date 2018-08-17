@@ -104,20 +104,20 @@ class AbsentInsecure(Feature):
             self.response_from_push_notification,
             'ios.notification_action_fired',
             actionName='LOCK_UP_AWAY',
-            constrain_input_boolean=self.constraint,
+            constrain_input_boolean=self.enabled_toggle,
             action='away')
         self.hass.listen_event(
             self.response_from_push_notification,
             'ios.notification_action_fired',
             actionName='LOCK_UP_HOME',
-            constrain_input_boolean=self.constraint,
+            constrain_input_boolean=self.enabled_toggle,
             action='home')
         self.hass.listen_state(
             self.house_insecure,
             self.entities['state'],
             new='Open',
             duration=60 * 5,
-            constrain_input_boolean=self.constraint,
+            constrain_input_boolean=self.enabled_toggle,
             constrain_noone='just_arrived,home')
 
     def house_insecure(  # pylint: disable=too-many-arguments
@@ -164,7 +164,7 @@ class AutoDepartureLockup(Feature):
         self.hass.listen_event(
             self.everyone_gone,
             'PROXIMITY_CHANGE',
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def everyone_gone(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to 'PROXIMITY_CHANGE' events."""
@@ -185,7 +185,7 @@ class AutoNighttimeLockup(Feature):
         self.hass.run_daily(
             self.midnight,
             time(0, 0, 0),
-            constrain_input_boolean=self.constraint,
+            constrain_input_boolean=self.enabled_toggle,
             constrain_anyone='home')
 
     def midnight(self, kwargs: dict) -> None:
@@ -206,18 +206,18 @@ class GarageLeftOpen(Feature):
             self.response_from_push_notification,
             'ios.notification_action_fired',
             actionName='GARAGE_CLOSE',
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
         self.hass.listen_state(
             self.closed,
             self.entities['garage_door'],
             new='closed',
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
         self.hass.listen_state(
             self.left_open,
             self.entities['garage_door'],
             new='open',
             duration=60 * int(self.properties['time_left_open']),
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def closed(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -265,7 +265,7 @@ class NotifyOnChange(Feature):
         self.hass.listen_state(
             self.state_changed,
             self.entities['state'],
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def state_changed(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,

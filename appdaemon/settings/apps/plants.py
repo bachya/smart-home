@@ -26,7 +26,7 @@ class LowMoisture(Feature):
         self.hass.listen_state(
             self.low_moisture_detected,
             self.entities['current_moisture'],
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def low_moisture_detected(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,

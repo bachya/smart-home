@@ -13,26 +13,26 @@ hass_automation:
       properties:
         dark_schedule_time: "20:00:00"
         light_schedule_time: "08:00:00"
-      constraint:
+      enabled_toggle:
         name: Auto light/dark themes
         icon: mdi:theme-light-dark
         initial: true
     - name: auto_vacation_mode
-      constraint:
+      enabled_toggle:
         name: Auto enable/disable vacation mode
         icon: mdi:beach
         initial: true
     - name: bad_login_notification
       entities:
         notification: persistent_notification.httplogin
-      constraint:
+      enabled_toggle:
         name: Bad login notifications
         icon: mdi:alert-circle
         initial: true
     - name: detect_blackout
       entities:
         blackout_switch: input_boolean.in_blackout
-      constraint:
+      enabled_toggle:
         name: Detect in-blackout
         icon: mdi:theme-light-dark
         initial: true
@@ -77,7 +77,7 @@ hass_automation:
         installed: sensor.yi_hack_installed
       properties:
         app_name: Yi Hack
-  constraint:
+  enabled_toggle:
     name: Notify of new versions
     icon: mdi:home-assistant
     initial: true
@@ -98,7 +98,7 @@ systems_automation:
           - sensor.front_door_lock_battery
           - sensor.garage_fire_door_lock_battery
         battery_level_threshold: 20
-      constraint:
+      enabled_toggle:
         name: Notify of low batteries
         icon: mdi:battery
         initial: true
@@ -108,7 +108,7 @@ systems_automation:
       properties:
         seconds: 43200
         state: "on"
-      constraint:
+      enabled_toggle:
         key: media_center_left_on
         name: Media Center left on
         icon: mdi:server
@@ -118,7 +118,7 @@ systems_automation:
         auto_arm: input_boolean.security_automation_auto_nighttime_lockup
       properties:
         tasks_schedule_time: "01:00:00"
-      constraint:
+      enabled_toggle:
         name: Nightly tasks
         icon: mdi:clock
         initial: true
@@ -127,7 +127,7 @@ systems_automation:
         ssl_expiry: sensor.ssl_expiry
       properties:
         expiry_threshold: 7
-      constraint:
+      enabled_toggle:
         name: Notify of SSL expiration
         icon: mdi:certificate
         initial: true

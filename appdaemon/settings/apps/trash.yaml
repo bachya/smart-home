@@ -10,7 +10,7 @@ trash_automation:
     - vacation_mode
   features:
     - name: notify_of_pickup
-      constraint:
+      enabled_toggle:
         name: Notify of pickups
         icon: mdi:delete
         initial: true

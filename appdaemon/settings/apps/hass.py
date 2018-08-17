@@ -47,12 +47,12 @@ class AutoThemes(Feature):
             self.theme_changed,
             self.hass.parse_time(self.properties['light_schedule_time']),
             theme=self.Themes.default,
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
         self.hass.run_daily(
             self.theme_changed,
             self.hass.parse_time(self.properties['dark_schedule_time']),
             theme=self.Themes.dark,
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def theme_changed(self, kwargs: dict) -> None:
         """Change the theme to a "day" variant in the morning."""
@@ -70,14 +70,14 @@ class AutoVacationMode(Feature):
             new=self.hass.presence_manager.HomeStates.extended_away.value,
             first=False,
             action='on',
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
         self.hass.listen_event(
             self.presence_changed,
             'PRESENCE_CHANGE',
             new=self.hass.presence_manager.HomeStates.just_arrived.value,
             first=True,
             action='off',
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def presence_changed(
             self, event_name: str, data: dict, kwargs: dict) -> None:
@@ -102,7 +102,7 @@ class BadLoginNotification(Feature):
         self.hass.listen_state(
             self.bad_login_detected,
             self.entities['notification'],
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def bad_login_detected(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -129,12 +129,12 @@ class DetectBlackout(Feature):
             self.boundary_reached,
             self.hass.parse_time(BLACKOUT_START),
             state='on',
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
         self.hass.run_daily(
             self.boundary_reached,
             self.hass.parse_time(BLACKOUT_END),
             state='off',
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def boundary_reached(self, kwargs: dict) -> None:
         """Set the blackout sensor appropriately based on time."""
@@ -159,7 +159,7 @@ class NewVersionNotification(Feature):
         self.hass.listen_state(
             self.version_change_detected,
             self.entities['available'],
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def version_change_detected(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,

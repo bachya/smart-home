@@ -5,7 +5,8 @@
 from typing import Union
 
 from automation import Automation, Feature  # type: ignore
-from const import BLACKOUT_END, BLACKOUT_START  # type: ignore
+from const import (  # type: ignore
+    BLACKOUT_END, BLACKOUT_START, THRESHOLD_CLOUDY)
 from util.scheduler import run_on_days  # type: ignore
 
 
@@ -49,7 +50,7 @@ class PresenceFailsafe(BaseFeature):
             self.entities['switch'],
             new='on',
             constrain_noone='just_arrived,home',
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def switch_activated(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -69,12 +70,12 @@ class SleepTimer(BaseFeature):
         self.hass.listen_state(
             self.timer_changed,
             self.entities['timer_slider'],
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
         self.hass.listen_state(
             self.switch_turned_off,
             self.entities['switch'],
             new='off',
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def switch_turned_off(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -131,7 +132,7 @@ class ToggleAtTime(BaseFeature):
                 self.toggle_on_schedule,
                 state=self.properties['state'],
                 offset=self.properties.get('seasonal_offset', False),
-                constrain_input_boolean=self.constraint,
+                constrain_input_boolean=self.enabled_toggle,
                 constrain_anyone='just_arrived,home'
                 if self.properties.get('presence_required') else None)
         else:
@@ -142,13 +143,13 @@ class ToggleAtTime(BaseFeature):
                     self.properties['run_on_days'],
                     self.hass.parse_time(self.properties['schedule_time']),
                     state=self.properties['state'],
-                    constrain_input_boolean=self.constraint)
+                    constrain_input_boolean=self.enabled_toggle)
             else:
                 self.hass.run_daily(
                     self.toggle_on_schedule,
                     self.hass.parse_time(self.properties['schedule_time']),
                     state=self.properties['state'],
-                    constrain_input_boolean=self.constraint)
+                    constrain_input_boolean=self.enabled_toggle)
 
 
 class ToggleIfToggled(BaseFeature):
@@ -160,7 +161,7 @@ class ToggleIfToggled(BaseFeature):
             self.switch_toggled,
             self.entities['switch'],
             old=self.properties['desired_state'],
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def delay_complete(self, kwargs: dict) -> None:
         """Toggle the switch back after a delay."""
@@ -180,23 +181,23 @@ class ToggleIfToggled(BaseFeature):
 class TurnOnUponArrival(BaseFeature):
     """Define a feature to turn a switch on when one of us arrives."""
 
+    CONDITIONS_CONSTRAINTS_MAP = {
+        'cloudy': ('constrain_cloudy', True),
+        'nighttime': ('constrain_sun', 'down')
+    }
+
     def initialize(self) -> None:
         """Initialize."""
+        kwargs = self.generate_conditions(self.CONDITIONS_CONSTRAINTS_MAP)
         if self.properties.get('trigger_on_first_only'):
-            self.hass.listen_event(
-                self.someone_arrived,
-                'PRESENCE_CHANGE',
-                new=self.hass.presence_manager.HomeStates.just_arrived.value,
-                first=True,
-                constrain_input_boolean=self.constraint,
-                constrain_sun='down')
-        else:
-            self.hass.listen_event(
-                self.someone_arrived,
-                'PRESENCE_CHANGE',
-                new=self.hass.presence_manager.HomeStates.just_arrived.value,
-                constrain_input_boolean=self.constraint,
-                constrain_sun='down')
+            kwargs['first'] = True
+
+        self.hass.listen_event(
+            self.someone_arrived,
+            'PRESENCE_CHANGE',
+            new=self.hass.presence_manager.HomeStates.just_arrived.value,
+            constrain_input_boolean=self.enabled_toggle,
+            **kwargs)
 
     def someone_arrived(
             self, event_name: str, data: dict, kwargs: dict) -> None:
@@ -211,11 +212,6 @@ class TurnOnWhenCloudy(BaseFeature):
 
     def initialize(self) -> None:
         """Initialize."""
-        if (not self.properties.get('above')
-                and not self.properties.get('below')):
-            self.hass.error('Must provide an above/below threshold')
-            return
-
         self.cloudy = False
 
         self.hass.listen_state(
@@ -223,7 +219,7 @@ class TurnOnWhenCloudy(BaseFeature):
             self.entities['cloud_cover'],
             constrain_start_time=BLACKOUT_END,
             constrain_end_time=BLACKOUT_START,
-            constrain_input_boolean=self.constraint,
+            constrain_input_boolean=self.enabled_toggle,
             constrain_anyone='just_arrived,home'
             if self.properties.get('presence_required') else None)
 
@@ -236,14 +232,12 @@ class TurnOnWhenCloudy(BaseFeature):
         except ValueError:
             cloud_cover = 0.0
 
-        if (self.properties.get('above') and not self.cloudy
-                and cloud_cover >= self.properties['above']):
+        if (not self.cloudy and cloud_cover >= THRESHOLD_CLOUDY):
             self.hass.log('Cloud cover above {0}%'.format(cloud_cover))
 
             self.toggle('on')
             self.cloudy = True
-        elif (self.properties.get('below') and self.cloudy
-              and cloud_cover < self.properties['below']):
+        elif (self.cloudy and cloud_cover < THRESHOLD_CLOUDY):
             self.hass.log('Cloud cover below {0}%'.format(cloud_cover))
 
             self.toggle('off')

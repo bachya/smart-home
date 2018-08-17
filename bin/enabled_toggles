@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate constraint switches for all AppDaemon features"""
+"""Generate enable toggles for all AppDaemon features"""
 import argparse
 import yaml
 
@@ -15,23 +15,23 @@ OUTPUT = {}  # type: ignore
 with open(ARGS.path, 'r') as file:
     DATA = yaml.load(file)
     for entity_name, automation_attrs in DATA.items():
-        global_constraint = automation_attrs.get('constraint')
+        global_enabled_toggle = automation_attrs.get('enabled_toggle')
         for feature in automation_attrs.get('features', {}):
-            if feature.get('constraint'):
-                constraint = feature['constraint']
+            if feature.get('enabled_toggle'):
+                enabled_toggle = feature['enabled_toggle']
             else:
-                constraint = global_constraint
+                enabled_toggle = global_enabled_toggle
 
-            if constraint.get('key'):
-                key = '{0}_{1}'.format(entity_name, constraint['key'])
+            if enabled_toggle.get('key'):
+                key = '{0}_{1}'.format(entity_name, enabled_toggle['key'])
             else:
                 key = '{0}_{1}'.format(entity_name, feature['name'])
 
             if key not in OUTPUT:
                 OUTPUT[key] = {
-                    'name': constraint['name'],
-                    'icon': constraint['icon'],
-                    'initial': constraint['initial']
+                    'name': enabled_toggle['name'],
+                    'icon': enabled_toggle['icon'],
+                    'initial': enabled_toggle['initial']
                 }
 
 if ARGS.details:

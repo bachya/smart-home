@@ -16,7 +16,7 @@ backyard_lights_automation:
           - Saturday
         schedule_time: "23:00:00"
         state: "off"
-      constraint:
+      enabled_toggle:
         key: off_at_11pm
         name: Turn off at 11pm (weekends)
         icon: mdi:lightbulb
@@ -31,7 +31,7 @@ backyard_lights_automation:
           - Thursday
         schedule_time: "21:30:00"
         state: "off"
-      constraint:
+      enabled_toggle:
         key: off_at_930pm
         name: Turn off at 9:30pm (weekdays)
         icon: mdi:lightbulb
@@ -41,9 +41,7 @@ backyard_lights_automation:
         schedule_time: sunset
         seasonal_offset: true
         state: "on"
-      mode_alterations:
-        vacation_mode: disable
-      constraint:
+      enabled_toggle:
         key: on_at_sunset
         name: Turn on at sunset
         icon: mdi:weather-sunset
@@ -65,7 +63,7 @@ front_patio_light_automation:
         state: "off"
       mode_alterations:
         vacation_mode: disable
-      constraint:
+      enabled_toggle:
         key: off_at_11pm
         name: Turn off at 11pm
         icon: mdi:lightbulb
@@ -77,7 +75,7 @@ front_patio_light_automation:
         state: "on"
       mode_alterations:
         vacation_mode: disable
-      constraint:
+      enabled_toggle:
         key: on_at_sunset
         name: Turn on at sunset
         icon: mdi:weather-sunset
@@ -85,7 +83,7 @@ front_patio_light_automation:
     - name: vacation_mode
       mode_alterations:
         guest_mode: disable
-      constraint:
+      enabled_toggle:
         name: Simulate vacation mode
         icon: mdi:beach
         initial: true
@@ -106,7 +104,7 @@ kitchen_patio_light_automation:
         state: "off"
       mode_alterations:
         vacation_mode: disable
-      constraint:
+      enabled_toggle:
         key: off_at_11pm
         name: Turn off at 11pm
         icon: mdi:lightbulb
@@ -118,7 +116,7 @@ kitchen_patio_light_automation:
         state: "on"
       mode_alterations:
         vacation_mode: disable
-      constraint:
+      enabled_toggle:
         key: on_at_sunset
         name: Turn on at sunset
         icon: mdi:weather-sunset
@@ -126,7 +124,7 @@ kitchen_patio_light_automation:
     - name: vacation_mode
       mode_alterations:
         guest_mode: disable
-      constraint:
+      enabled_toggle:
         name: Simulate vacation mode
         icon: mdi:beach
         initial: true

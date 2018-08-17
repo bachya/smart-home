@@ -13,7 +13,7 @@ office_lights_automation:
     - name: sleep_timer
       entities:
         timer_slider: input_number.office_salt_lamp_timer
-      constraint:
+      enabled_toggle:
         name: Enable sleep timer
         icon: mdi:sleep
         initial: true
@@ -24,7 +24,7 @@ office_lights_automation:
       mode_alterations:
         guest_mode: disable
         vacation_mode: disable
-      constraint:
+      enabled_toggle:
         key: off_at_10pm
         name: Turn off at 10pm
         icon: mdi:lightbulb
@@ -37,7 +37,7 @@ office_lights_automation:
       mode_alterations:
         guest_mode: disable
         vacation_mode: disable
-      constraint:
+      enabled_toggle:
         key: on_at_sunset
         name: Turn on at sunset
         icon: mdi:weather-sunset

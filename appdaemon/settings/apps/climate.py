@@ -96,11 +96,11 @@ class AdjustOnProximity(Feature):
             'PRESENCE_CHANGE',
             new=self.hass.presence_manager.HomeStates.just_arrived.value,
             first=True,
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
         self.hass.listen_event(
             self.proximity_changed,
             'PROXIMITY_CHANGE',
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def proximity_changed(
             self, event_name: str, data: dict, kwargs: dict) -> None:
@@ -169,7 +169,7 @@ class NotifyBadAqi(Feature):
             self.bad_aqi_detected,
             self.entities['hvac_state'],
             new='cooling',
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def bad_aqi_detected(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str,

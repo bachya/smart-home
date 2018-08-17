@@ -23,7 +23,7 @@ class LowBatteries(Feature):
                 self.low_battery_detected,
                 entity,
                 attribute='all',
-                constrain_input_boolean=self.constraint)
+                constrain_input_boolean=self.enabled_toggle)
 
     def low_battery_detected(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str,
@@ -69,7 +69,7 @@ class LeftInState(Feature):
             self.entities['entity'],
             new=self.properties['state'],
             duration=self.properties['seconds'],
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def limit_reached(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -93,7 +93,7 @@ class NightlyTasks(Feature):
         self.hass.run_daily(
             self.night_has_arrived,
             self.hass.parse_time(self.properties['tasks_schedule_time']),
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def night_has_arrived(self, kwargs: dict) -> None:
         """Perform nightly tasks."""
@@ -110,7 +110,7 @@ class SslExpiration(Feature):
         self.hass.listen_state(
             self.ssl_expiration_approaching,
             self.entities['ssl_expiry'],
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def ssl_expiration_approaching(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,

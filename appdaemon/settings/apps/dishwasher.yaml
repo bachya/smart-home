@@ -26,7 +26,7 @@ dishwasher_automation:
       mode_alterations:
         do_not_disturb: disable
         vacation_mode: disable
-      constraint:
+      enabled_toggle:
         name: Notifications when clean
         icon: mdi:washing-machine
         initial: true

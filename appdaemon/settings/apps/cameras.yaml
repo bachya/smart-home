@@ -12,7 +12,7 @@ garage_camera_automation:
         schedule_time: sunset
         seasonal_offset: true
         state: "on"
-      constraint:
+      enabled_toggle:
         key: auto_night_mode
         name: "Garage Cam: Auto Night Mode"
         icon: mdi:weather-sunset
@@ -24,7 +24,7 @@ garage_camera_automation:
         schedule_time: sunset
         seasonal_offset: true
         state: "on"
-      constraint:
+      enabled_toggle:
         key: auto_night_mode
         name: "Garage Cam: Auto Night Mode"
         icon: mdi:weather-sunset
@@ -36,7 +36,7 @@ garage_camera_automation:
         schedule_time: sunset
         seasonal_offset: true
         state: "off"
-      constraint:
+      enabled_toggle:
         key: auto_night_mode
         name: "Garage Cam: Auto Night Mode"
         icon: mdi:weather-sunset
@@ -48,7 +48,7 @@ garage_camera_automation:
         schedule_time: sunrise
         seasonal_offset: true
         state: "off"
-      constraint:
+      enabled_toggle:
         key: auto_night_mode
         name: "Garage Cam: Auto Night Mode"
         icon: mdi:weather-sunset
@@ -60,7 +60,7 @@ garage_camera_automation:
         schedule_time: sunrise
         seasonal_offset: true
         state: "off"
-      constraint:
+      enabled_toggle:
         key: auto_night_mode
         name: "Garage Cam: Auto Night Mode"
         icon: mdi:weather-sunset
@@ -72,7 +72,7 @@ garage_camera_automation:
         schedule_time: sunrise
         seasonal_offset: true
         state: "on"
-      constraint:
+      enabled_toggle:
         key: auto_night_mode
         name: "Garage Cam: Auto Night Mode"
         icon: mdi:weather-sunset

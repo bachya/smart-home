@@ -10,14 +10,14 @@ subaru_legacy_automation:
     car: device_tracker.2010_subaru_legacy
   features:
     - name: notify_eta
-      constraint:
+      enabled_toggle:
         name: Notify of ETA
         icon: mdi:car
         initial: true
     - name: notify_low_fuel
       properties:
         fuel_threshold: 10
-      constraint:
+      enabled_toggle:
         name: Notify of low fuel
         icon: mdi:gas-station
         initial: true

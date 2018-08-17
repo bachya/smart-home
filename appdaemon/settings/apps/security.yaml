@@ -16,21 +16,21 @@ security_automation:
       mode_alterations:
         do_not_disturb: disable
         guest_mode: disable
-      constraint:
+      enabled_toggle:
         name: Absent & insecure alerts
         icon: mdi:lock-open
         initial: true
     - name: auto_departure_lockup
       mode_alterations:
         guest_mode: disable
-      constraint:
+      enabled_toggle:
         name: Automatic departure lock up
         icon: mdi:car-side
         initial: true
     - name: auto_nighttime_lockup
       mode_alterations:
         guest_mode: disable
-      constraint:
+      enabled_toggle:
         name: Automatically lock up at night
         icon: mdi:clock
         initial: true
@@ -39,7 +39,7 @@ security_automation:
         garage_door: cover.garage_door
       properties:
         time_left_open: 10
-      constraint:
+      enabled_toggle:
         name: Notify if garage left open
         icon: mdi:garage
         initial: true
@@ -48,7 +48,7 @@ security_automation:
         state: sensor.secure_status
       mode_alterations:
         vacation_mode: enable
-      constraint:
+      enabled_toggle:
         name: Notify when state changes
         icon: mdi:shield-half-full
         initial: false

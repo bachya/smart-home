@@ -19,7 +19,7 @@ class LeftSomewhere(Feature):
             'PRESENCE_CHANGE',
             person=self.properties['target'],
             new=self.hass.presence_manager.HomeStates.home.value,
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def arrived_home(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Start a timer after the person has arrived."""

@@ -7,7 +7,10 @@ from typing import Union
 
 import appdaemon.plugins.hass.hassapi as hass  # type: ignore
 
-from const import BLACKOUT_START, BLACKOUT_END  # type: ignore
+from const import (  # type: ignore
+    BLACKOUT_START, BLACKOUT_END, THRESHOLD_CLOUDY)
+
+SENSOR_CLOUD_COVER = 'sensor.dark_sky_cloud_coverage'
 
 
 class Base(hass.Hass):
@@ -27,6 +30,7 @@ class Base(hass.Hass):
         # Register custom constraints:
         self.register_constraint('constrain_anyone')
         self.register_constraint('constrain_blackout')
+        self.register_constraint('constrain_cloudy')
         self.register_constraint('constrain_everyone')
         self.register_constraint('constrain_noone')
         self.register_constraint('constrain_sun')
@@ -53,6 +57,14 @@ class Base(hass.Hass):
         if state == 'in':
             return in_blackout
         return not in_blackout
+
+    def constrain_cloudy(self, value: bool) -> bool:
+        """Constrain execution based whether it's cloudy or not."""
+        cloud_cover = self.get_state(SENSOR_CLOUD_COVER)
+        if (value and cloud_cover >= THRESHOLD_CLOUDY) or (
+                not value and cloud_cover < THRESHOLD_CLOUDY):
+            return True
+        return False
 
     def constrain_everyone(self, value: str) -> bool:
         """Constrain execution to whether everyone is in a state."""

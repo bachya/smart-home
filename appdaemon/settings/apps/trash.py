@@ -79,7 +79,7 @@ class NotifyOfPickup(Feature):
             self.hass,
             self.time_to_notify, ['Sunday'],
             datetime.time(20, 0, 0),
-            constrain_input_boolean=self.constraint,
+            constrain_input_boolean=self.enabled_toggle,
             constrain_anyone='home')
 
     def time_to_notify(self, kwargs: dict) -> None:

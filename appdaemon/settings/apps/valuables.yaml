@@ -13,7 +13,7 @@ aarons_keys_automation:
       properties:
         duration: 600
         target: Aaron
-      constraint:
+      enabled_toggle:
         name: Notify AMB keys missing
         icon: mdi:key
         initial: true
@@ -31,7 +31,7 @@ aarons_wallet_automation:
       properties:
         duration: 600
         target: Aaron
-      constraint:
+      enabled_toggle:
         name: Notify AMB wallet missing
         icon: mdi:wallet
         initial: true

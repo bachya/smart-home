@@ -17,7 +17,7 @@ class Automation(Base):
         super().initialize()
 
         self.friendly_name = self.args.get('friendly_name')
-        constraint = self.args.get('constraint')
+        enabled_toggle = self.args.get('enabled_toggle')
 
         if self.args.get('manager_app'):
             self.manager_app = getattr(self, self.args['manager_app'])
@@ -34,14 +34,20 @@ class Automation(Base):
 
             features = []  # type: ignore
             feature_obj = feature_class(
-                self, name, {
+                self,
+                name,
+                entities={
                     **self.entities,
                     **feature.get('entities', {})
-                }, {
+                },
+                conditions=feature.get('conditions', {}),
+                properties={
                     **self.properties,
                     **feature.get('properties', {})
-                }, feature.get('constraint', constraint),
-                feature.get('mode_alterations', {}))
+                },
+                enabled_toggle_config=feature.get(
+                    'enabled_toggle', enabled_toggle),
+                mode_alterations=feature.get('mode_alterations', {}))
 
             if not feature_obj.repeatable and feature_obj in features:
                 self.error(
@@ -50,45 +56,48 @@ class Automation(Base):
                 continue
 
             self.log(
-                'Initializing feature {0} (constraint: {1})'.format(
-                    name, feature_obj.constraint))
+                'Initializing feature {0} (enabled_toggle: {1})'.format(
+                    name, feature_obj.enabled_toggle))
 
             features.append(feature_obj)
             feature_obj.initialize()
 
 
-class Feature:
+class Feature:  # pylint: disable=too-many-instance-attributes
     """Define an automation feature."""
 
     def __init__(  # pylint: disable=too-many-arguments
             self,
             hass: Automation,
             name: str,
+            *,
             entities: dict = None,
+            conditions: dict = None,
             properties: dict = None,
-            constraint_config: dict = None,
+            enabled_toggle_config: dict = None,
             mode_alterations: dict = None) -> None:
         """Initiliaze."""
+        self.conditions = conditions
         self.entities = entities
         self.handles = {}  # type: ignore
         self.hass = hass
         self.name = name
         self.properties = properties
 
-        if constraint_config:
-            if constraint_config.get('key'):
-                self.constraint = 'input_boolean.{0}_{1}'.format(
-                    hass.name, constraint_config['key'])
+        if enabled_toggle_config:
+            if enabled_toggle_config.get('key'):
+                self.enabled_toggle = 'input_boolean.{0}_{1}'.format(
+                    hass.name, enabled_toggle_config['key'])
             else:
-                self.constraint = 'input_boolean.{0}_{1}'.format(
+                self.enabled_toggle = 'input_boolean.{0}_{1}'.format(
                     hass.name, name)
         else:
-            self.constraint = None  # type: ignore
+            self.enabled_toggle = None  # type: ignore
 
         if mode_alterations:
             for mode, value in mode_alterations.items():
                 mode_app = getattr(self.hass, mode)
-                mode_app.register_constraint_alteration(self.constraint, value)
+                mode_app.register_enabled_toggle(self.enabled_toggle, value)
 
     def __eq__(self, other):
         """Define equality based on name."""
@@ -103,10 +112,18 @@ class Feature:
         """Define an initializer method."""
         raise NotImplementedError
 
+    def generate_conditions(self, condition_constraint_map: dict) -> dict:
+        """Generate a constraints kwargs list from a mapping."""
+        kwargs = {}
+        for condition in self.conditions:  # type: ignore
+            name, value = condition_constraint_map[condition]
+            kwargs[name] = value
+        return kwargs
+
     def listen_ios_event(self, callback: Callable, action: str) -> None:
         """Register a callback for an iOS event."""
         self.hass.listen_event(
             callback,
             'ios.notification_action_fired',
             actionName=action,
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)

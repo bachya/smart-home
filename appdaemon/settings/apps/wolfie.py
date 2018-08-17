@@ -20,7 +20,7 @@ class MonitorConsumables(Feature):
                 self.consumable_changed,
                 self.hass.manager_app.entities['vacuum'],
                 attribute=consumable,
-                constrain_input_boolean=self.constraint)
+                constrain_input_boolean=self.enabled_toggle)
 
     def consumable_changed(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -60,11 +60,11 @@ class ScheduledCycle(Feature):
         self.hass.listen_event(
             self.alarm_changed,
             'ALARM_CHANGE',
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
         self.hass.listen_event(
             self.start_by_switch,
             'VACUUM_START',
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
         self.listen_ios_event(
             self.response_from_push_notification,
             self.properties['ios_emptied_key'])
@@ -73,36 +73,36 @@ class ScheduledCycle(Feature):
             self.hass.manager_app.entities['status'],
             old=self.hass.manager_app.States.returning_home.value,
             new=self.hass.manager_app.States.charging.value,
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
         self.hass.listen_state(
             self.bin_state_changed,
             self.hass.manager_app.entities['bin_state'],
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
         self.hass.listen_state(
             self.errored,
             self.hass.manager_app.entities['status'],
             new=self.hass.manager_app.States.charger_disconnected.value,
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
         self.hass.listen_state(
             self.error_cleared,
             self.hass.manager_app.entities['status'],
             old=self.hass.manager_app.States.charger_disconnected.value,
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
         self.hass.listen_state(
             self.errored,
             self.hass.manager_app.entities['status'],
             new=self.hass.manager_app.States.error.value,
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
         self.hass.listen_state(
             self.error_cleared,
             self.hass.manager_app.entities['status'],
             old=self.hass.manager_app.States.error.value,
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
         for toggle in self.properties['schedule_switches']:
             self.hass.listen_state(
                 self.schedule_changed,
                 toggle,
-                constrain_input_boolean=self.constraint)
+                constrain_input_boolean=self.enabled_toggle)
 
     def alarm_changed(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to 'ALARM_CHANGE' events."""
@@ -183,7 +183,7 @@ class ScheduledCycle(Feature):
             self.start_by_schedule,
             self.active_days,
             self.hass.parse_time(self.properties['schedule_time']),
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def error_cleared(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,

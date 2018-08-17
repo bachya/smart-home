@@ -18,7 +18,7 @@ fiddle_leaf_fig_automation:
       mode_alterations:
         do_not_disturb: disable
         vacation_mode: disable
-      constraint:
+      enabled_toggle:
         name: Notify of low moisture
         icon: mdi:flower
         initial: true

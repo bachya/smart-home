@@ -31,28 +31,29 @@ class Mode(hass.Hass):
 
     def initialize(self) -> None:
         """Initialize."""
-        self._constraints_to_disable = []  # type: ignore
-        self._constraints_to_enable = []  # type: ignore
+        self._enabled_toggles_to_disable = []  # type: ignore
+        self._enabled_toggles_to_enable = []  # type: ignore
         self.switch = 'input_boolean.mode_{0}'.format(self.name)
 
         self.listen_state(self.switch_toggled_cb, entity=self.switch)
 
-    def register_constraint_alteration(
-            self, constraint_name: str, value: str) -> None:
-        """Record how a constraint switch should respond when in this mode."""
-        location = getattr(self, '_constraints_to_{0}'.format(value))
-        if constraint_name in location:
+    def register_enabled_toggle(
+            self, enabled_toggle_name: str, value: str) -> None:
+        """Record how a enable toggle should respond when in this mode."""
+        location = getattr(self, '_enabled_toggles_to_{0}'.format(value))
+        if enabled_toggle_name in location:
             self.log(
-                'Switch behavior already exists: {0}'.format(constraint_name),
+                'Switch behavior already exists: {0}'.format(
+                    enabled_toggle_name),
                 level='WARNING')
             return
 
-        location.append(constraint_name)
+        location.append(enabled_toggle_name)
 
     def switch_toggled_cb(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
-        """Make alterations when a mode constraint is toggled."""
+        """Make alterations when a mode enabled_toggle is toggled."""
         self.fire_event('MODE_CHANGE', mode=self.name, state=new)
 
         if new == 'on':
@@ -62,7 +63,7 @@ class Mode(hass.Hass):
             func1 = self.turn_on
             func2 = self.turn_off
 
-        for constraint in self._constraints_to_disable:
-            func1(constraint)
-        for constraint in self._constraints_to_enable:
-            func2(constraint)
+        for enabled_toggle in self._enabled_toggles_to_disable:
+            func1(enabled_toggle)
+        for enabled_toggle in self._enabled_toggles_to_enable:
+            func2(enabled_toggle)

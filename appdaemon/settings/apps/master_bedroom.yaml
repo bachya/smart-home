@@ -13,7 +13,7 @@ master_bedroom_lights_automation:
     - name: sleep_timer
       entities:
         timer_slider: input_number.master_bedroom_salt_lamp_timer
-      constraint:
+      enabled_toggle:
         name: Enable sleep timer
         icon: mdi:sleep
         initial: true
@@ -25,7 +25,7 @@ master_bedroom_lights_automation:
       mode_alterations:
         guest_mode: disable
         vacation_mode: disable
-      constraint:
+      enabled_toggle:
         key: on_at_sunset
         name: Turn on at sunset
         icon: mdi:weather-sunset
@@ -44,7 +44,7 @@ master_bathroom_fan_automation:
     - name: sleep_timer
       entities:
         timer_slider: input_number.master_bathroom_fan_timer
-      constraint:
+      enabled_toggle:
         name: "Bathroom: enable sleep timer"
         icon: mdi:sleep
         initial: true
@@ -62,7 +62,7 @@ master_bathroom_toilet_fan_automation:
     - name: sleep_timer
       entities:
         timer_slider: input_number.master_bathroom_toilet_fan_timer
-      constraint:
+      enabled_toggle:
         name: "Toilet: enable sleep timer"
         icon: mdi:sleep
         initial: true
@@ -73,7 +73,7 @@ master_bathroom_toilet_fan_automation:
       mode_alterations:
         guest_mode: disable
         vacation_mode: disable
-      constraint:
+      enabled_toggle:
         key: off_at_5pm
         name: "Toilet: off at 5pm"
         icon: mdi:fan
@@ -85,7 +85,7 @@ master_bathroom_toilet_fan_automation:
       mode_alterations:
         guest_mode: disable
         vacation_mode: disable
-      constraint:
+      enabled_toggle:
         key: on_at_10am
         name: "Toilet: on at 10am"
         icon: mdi:fan

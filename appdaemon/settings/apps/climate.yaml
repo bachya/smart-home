@@ -14,7 +14,7 @@ climate_automation:
       properties:
         outside_threshold_high: 85
         outside_threshold_low: 35
-      constraint:
+      enabled_toggle:
         name: Adjust on proximity
         icon: mdi:car-side
         initial: true
@@ -27,7 +27,7 @@ climate_automation:
       mode_alterations:
         do_not_disturb: disable
         vacation_mode: disable
-      constraint:
+      enabled_toggle:
         name: Bad AQI notifications
         icon: mdi:weather-windy
         initial: true

@@ -2,15 +2,6 @@
 BLACKOUT_START = '22:00:00'
 BLACKOUT_END = '08:00:00'
 
-HANDLER_DISHWASHER_CLEAN = 'dishwasher_clean'
-HANDLER_LOW_BATTERY = 'low_battery_{0}'
-HANDLER_PLANT_NEEDS_WATER = 'plant_needs_water_{0}'
-HANDLER_SWITCH_SLEEP_TIMER = 'switch_sleep_timer_{0}'
-HANDLER_SWITCH_VACATION_MODE = 'switch_vacation_mode_{0}'
-HANDLER_VACUUM_FULL = 'vacuum_full'
-HANDLER_VACUUM_SCHEDULE = 'vacuum_schedule'
-HANDLER_VACUUM_STUCK = 'vacuum_stuck'
-
 PEOPLE = {
     'Aaron': {
         'car': 'device_tracker.2010_subaru_legacy',
@@ -28,3 +19,5 @@ PEOPLE = {
         'push_device_id': '3CCFD32B-8C04-4A0D-94C2-6E934E8B6705'
     }
 }
+
+THRESHOLD_CLOUDY = 70.0

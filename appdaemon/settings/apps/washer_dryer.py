@@ -52,11 +52,11 @@ class NotifyDone(Feature):
         self.hass.listen_state(
             self.power_changed,
             self.hass.manager_app.entities['power'],
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
         self.hass.listen_state(
             self.status_changed,
             self.hass.manager_app.entities['status'],
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def power_changed(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,

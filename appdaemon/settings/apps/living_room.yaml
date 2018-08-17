@@ -13,7 +13,7 @@ fireplace_automation:
     - name: presence_failsafe
       mode_alterations:
         guest_mode: disable
-      constraint:
+      enabled_toggle:
         name: Disable fireplace when away
         icon: mdi:fire
         initial: true
@@ -39,17 +39,30 @@ living_room_lights_automation:
       mode_alterations:
         guest_mode: disable
         vacation_mode: disable
-      constraint:
+      enabled_toggle:
         key: on_at_sunset
         name: Turn on at sunset
         icon: mdi:weather-sunset
         initial: true
     - name: turn_on_upon_arrival
+      conditions:
+        - cloudy
       properties:
         trigger_on_first_only: true
       mode_alterations:
         guest_mode: disable
-      constraint:
+      enabled_toggle:
+        name: Turn on upon arrival
+        icon: mdi:car
+        initial: true
+    - name: turn_on_upon_arrival
+      conditions:
+        - nighttime
+      properties:
+        trigger_on_first_only: true
+      mode_alterations:
+        guest_mode: disable
+      enabled_toggle:
         name: Turn on upon arrival
         icon: mdi:car
         initial: true
@@ -57,12 +70,11 @@ living_room_lights_automation:
       entities:
         cloud_cover: sensor.dark_sky_cloud_coverage
       properties:
-        above: 85.0
         presence_required: true
       mode_alterations:
         guest_mode: disable
         vacation_mode: disable
-      constraint:
+      enabled_toggle:
         name: Turn on when cloudy
         icon: mdi:cloud
         initial: true
@@ -70,7 +82,7 @@ living_room_lights_automation:
       mode_alterations:
         guest_mode: disable
         vacation_mode: enable
-      constraint:
+      enabled_toggle:
         name: Simulate vacation mode
         icon: mdi:beach
         initial: true
@@ -94,7 +106,7 @@ living_room_powder_room_fan_automation:
       properties:
         delay_minutes: 1
         desired_state: "on"
-      constraint:
+      enabled_toggle:
         name: Turn on if turned off
         icon: mdi:light-switch
         initial: true

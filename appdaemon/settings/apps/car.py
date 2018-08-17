@@ -63,7 +63,7 @@ class NotifyLowFuel(Feature):
             self.low_fuel_found,
             self.entities['car'],
             attribute='fuel_level',
-            constrain_input_boolean=self.constraint)
+            constrain_input_boolean=self.enabled_toggle)
 
     def low_fuel_found(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str,
