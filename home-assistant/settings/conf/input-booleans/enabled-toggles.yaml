@@ -108,7 +108,7 @@ living_room_lights_automation_vacation_mode:
   initial: true
   name: Simulate vacation mode
 living_room_powder_room_fan_automation_toggle_if_toggled:
-  icon: mdi:light-switch
+  icon: mdi:fan
   initial: true
   name: Turn on if turned off
 master_bathroom_fan_automation_sleep_timer:

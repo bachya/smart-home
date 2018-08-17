@@ -76,15 +76,13 @@ living_room_powder_room_fan_automation:
   module: switches
   class: SwitchAutomation
   entities:
-    switch: group.living_room_lights
+    switch: switch.powder_room_fan
   features:
     - name: toggle_if_toggled
-      entities:
-        switch: switch.powder_room_fan
       properties:
         delay_minutes: 1
         desired_state: "on"
       enabled_toggle:
         name: Turn on if turned off
-        icon: mdi:light-switch
+        icon: "mdi:fan"
         initial: true
