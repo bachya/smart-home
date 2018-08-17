@@ -160,7 +160,6 @@ class ToggleIfToggled(BaseFeature):
         self.hass.listen_state(
             self.switch_toggled,
             self.entities['switch'],
-            old=self.properties['desired_state'],
             constrain_input_boolean=self.enabled_toggle)
 
     def delay_complete(self, kwargs: dict) -> None:
@@ -171,10 +170,15 @@ class ToggleIfToggled(BaseFeature):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Toggle the switch back."""
-        if self.properties.get('delay'):
-            self.hass.run_in(self.delay_complete, self.properties['delay'])
+        if new != self.properties['desired_state']:
+            if self.properties.get('delay'):
+                self.handles[self.hass.friendly_name] = self.hass.run_in(
+                    self.delay_complete, self.properties['delay'])
+            else:
+                self.toggle(self.properties['desired_state'])
         else:
-            self.toggle(self.properties['desired_state'])
+            if self.hass.friendly_name in self.handles:
+                self.handles.pop(self.hass.friendly_name)()
 
 
 class TurnOnUponArrival(BaseFeature):

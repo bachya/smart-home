@@ -75,6 +75,7 @@ living_room_tv:
 living_room_powder_room_fan_automation:
   module: switches
   class: SwitchAutomation
+  friendly_name: Powder Roon Fan
   entities:
     switch: switch.powder_room_fan
   features:
