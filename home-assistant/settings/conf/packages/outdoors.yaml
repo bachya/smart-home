@@ -1,4 +1,14 @@
 ---
+openuv:
+  api_key: !secret openuv_api_key
+  sensors:
+    monitored_conditions:
+      - current_ozone_level
+      - current_uv_index
+      - max_uv_index
+      - safe_exposure_time_type_1
+      - safe_exposure_time_type_3
+
 sensor:
   - platform: airvisual
     api_key: !secret airvisual_api_key

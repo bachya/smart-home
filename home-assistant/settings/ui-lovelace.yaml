@@ -397,6 +397,7 @@ views:
           - sensor.us_air_pollution_level
           - sensor.us_air_quality_index
           - sensor.us_main_pollutant
+          - sensor.current_ozone_level
 
       - type: entities
         title: Allergies & Disease
@@ -425,6 +426,14 @@ views:
           - switch.backyard_lights
           - switch.front_patio_light
           - switch.kitchen_patio_light
+
+      - type: entities
+        title: UV
+        entities:
+          - sensor.current_uv_index
+          - sensor.max_uv_index
+          - sensor.aaron_safe_exposure_time
+          - sensor.britt_safe_exposure_time
 
   - title: Systems
     icon: mdi:server-network
