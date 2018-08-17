@@ -103,10 +103,6 @@ living_room_lights_automation_turn_on_upon_arrival:
   icon: mdi:car
   initial: true
   name: Turn on upon arrival
-living_room_lights_automation_turn_on_when_cloudy:
-  icon: mdi:cloud
-  initial: true
-  name: Turn on when cloudy
 living_room_lights_automation_vacation_mode:
   icon: mdi:beach
   initial: true

@@ -66,18 +66,6 @@ living_room_lights_automation:
         name: Turn on upon arrival
         icon: mdi:car
         initial: true
-    - name: turn_on_when_cloudy
-      entities:
-        cloud_cover: sensor.dark_sky_cloud_coverage
-      properties:
-        presence_required: true
-      mode_alterations:
-        guest_mode: disable
-        vacation_mode: disable
-      enabled_toggle:
-        name: Turn on when cloudy
-        icon: mdi:cloud
-        initial: true
     - name: vacation_mode
       mode_alterations:
         guest_mode: disable

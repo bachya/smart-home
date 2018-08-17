@@ -122,7 +122,6 @@ views:
         entities:
           - input_boolean.living_room_lights_automation_on_at_sunset
           - input_boolean.living_room_lights_automation_turn_on_upon_arrival
-          - input_boolean.living_room_lights_automation_turn_on_when_cloudy
           - input_boolean.living_room_lights_automation_vacation_mode
 
       - type: entities
