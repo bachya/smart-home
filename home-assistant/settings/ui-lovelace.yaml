@@ -216,6 +216,9 @@ views:
         entities:
           - lock.front_door
           - sensor.front_door_lock_battery
+          - binary_sensor.front_door_camera_motion_detected
+          - binary_sensor.front_door_camera_person_detected
+          - binary_sensor.front_door_camera_sound_detected
 
   - title: Garage
     icon: mdi:garage
