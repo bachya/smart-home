@@ -59,17 +59,16 @@ sensor.britt_geocode:
   friendly_name: "Britt"
 sensor.dishwasher_power:
   icon: "mdi:power-plug"
-sensor.fiddle_leaf_fig_moisture:
-  friendly_name: "Moisture"
-  icon: "mdi:water-percent"
-sensor.fiddle_leaf_fig_temperature:
-  friendly_name: "Temperature"
+sensor.fiddle_leaf_fig_battery:
+  friendly_name: "Battery"
 sensor.fiddle_leaf_fig_conductivity:
   friendly_name: "Fertility"
-  icon: "mdi:test-tube"
 sensor.fiddle_leaf_fig_light_intensity:
   friendly_name: "Brightness"
-  icon: mdi:white-balance-sunny
+sensor.fiddle_leaf_fig_moisture:
+  friendly_name: "Moisture"
+sensor.fiddle_leaf_fig_temperature:
+  friendly_name: "Temperature"
 sensor.garage_camera_bitrate:
   friendly_name: "Bitrate"
 sensor.garage_camera_detected_brightness:

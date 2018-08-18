@@ -1,20 +1,37 @@
 ---
 sensor:
-  - platform: miflora
-    name: Fiddle Leaf Fig
-    mac: "12:34:56:ab:cd:ef"
-    adapter: hci0
-    force_update: false
-    monitored_conditions:
-      - moisture
-      - light
-      - temperature
-      - conductivity
-      - battery
-  - platform: template
-    sensors:
-      fiddle_leaf_fig_battery_dynamic:
-        friendly_name: Fiddle Leaf Fig
-        value_template: "{{ states.sensor.fiddle_leaf_fig_battery.state }}"
-        unit_of_measurement: "%"
-        device_class: battery
+  - platform: mqtt
+    name: Fiddle Leaf Fig Moisture
+    state_topic: "miflora/Fred"
+    value_template: "{{ value_json.moisture }}"
+    unit_of_measurement: "%"
+    icon: "mdi:water-percent"
+    force_update: true
+  - platform: mqtt
+    name: Fiddle Leaf Fig Light Intensity
+    state_topic: "miflora/Fred"
+    value_template: "{{ value_json.light }}"
+    device_class: illuminance
+    unit_of_measurement: "lx"
+    force_update: true
+  - platform: mqtt
+    name: Fiddle Leaf Fig Temperature
+    state_topic: "miflora/Fred"
+    value_template: "{{ value_json.temperature }}"
+    device_class: temperature
+    unit_of_measurement: "°C"
+    force_update: true
+  - platform: mqtt
+    name: Fiddle Leaf Fig Conductivity
+    state_topic: "miflora/Fred"
+    value_template: "{{ value_json.conductivity }}"
+    unit_of_measurement: "µS/cm"
+    icon: "mdi:test-tube"
+    force_update: true
+  - platform: mqtt
+    name: Fiddle Leaf Fig Battery
+    state_topic: "miflora/Fred"
+    value_template: "{{ value_json.battery }}"
+    device_class: battery
+    unit_of_measurement: "%"
+    force_update: true

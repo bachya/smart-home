@@ -318,7 +318,7 @@ views:
           - sensor.fiddle_leaf_fig_temperature
           - sensor.fiddle_leaf_fig_conductivity
           - sensor.fiddle_leaf_fig_light_intensity
-          - sensor.fiddle_leaf_fig_battery_dynamic
+          - sensor.fiddle_leaf_fig_battery
 
       - type: entities
         title: Fireplace
