@@ -60,7 +60,7 @@ class Base(hass.Hass):
 
     def constrain_cloudy(self, value: bool) -> bool:
         """Constrain execution based whether it's cloudy or not."""
-        cloud_cover = self.get_state(SENSOR_CLOUD_COVER)
+        cloud_cover = float(self.get_state(SENSOR_CLOUD_COVER))
         if (value and cloud_cover >= THRESHOLD_CLOUDY) or (
                 not value and cloud_cover < THRESHOLD_CLOUDY):
             return True
