@@ -91,14 +91,14 @@ sensor.thermostat_thermostat_humidity:
 sensor.thermostat_thermostat_hvac_state:
   friendly_name: "Indoor HVAC State"
   icon: "mdi:fan"
+switch.amazon_dash:
+  icon: "mdi:amazon"
 switch.appdaemon:
   icon: "mdi:language-python"
 switch.backyard_lights:
   icon: "mdi:lightbulb"
 switch.christmas_tree:
   icon: "mdi:pine-tree"
-switch.dasher:
-  icon: "mdi:radiobox-marked"
 switch.durmstrang_glances:
   friendly_name: "Glances"
   icon: "mdi:server-security"

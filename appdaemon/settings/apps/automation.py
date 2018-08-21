@@ -22,7 +22,7 @@ class Automation(Base):
         if self.args.get('manager_app'):
             self.manager_app = getattr(self, self.args['manager_app'])
 
-        for feature in self.args.get('features'):
+        for feature in self.args.get('features', []):
             name = feature['name']
 
             feature_class = getattr(

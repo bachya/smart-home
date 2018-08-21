@@ -1,0 +1,9 @@
+---
+amazon_basics_batteries:
+  module: dash
+  class: DashAutomation
+  dependencies:
+    - security_system
+  friendly_name: Amazon Basics Batteries
+  entities:
+    action_list: input_select.dash_amazon_basics_batteries

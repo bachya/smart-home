@@ -23,9 +23,9 @@ shell_command:
   restart_appdaemon_hub: >-
     curl -u "hassuser:glances_password"
     http://localhost:8126/container/appdaemon/restart
-  restart_dasher_hub: >-
-    curl -u "hassuser:glances_password"
-    http://localhost:8126/container/dasher/restart
+  restart_amazon_dash_hub: >-
+    curl -u "hassuser:DUiwH;p%9yfL6ExeEuUT"
+    http://localhost:8126/container/amazon-dash/restart
   restart_glances_hub: >-
     curl -u "hassuser:glances_password"
     http://localhost:8126/container/glances/restart
@@ -59,8 +59,8 @@ switch:
     username: !secret ha_dockermon_username
     password: !secret ha_dockermon_password
   - platform: rest
-    resource: http://localhost:8126/container/dasher
-    name: Dasher
+    resource: http://localhost:8126/container/amazon-dash
+    name: Amazon Dash
     body_on: '{"state": "start"}'
     body_off: '{"state": "stop"}'
     is_on_template: >

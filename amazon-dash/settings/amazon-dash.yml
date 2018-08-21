@@ -1,0 +1,10 @@
+---
+settings:
+  delay: 10
+devices:
+  18:74:2E:FC:F0:AB:
+    name: Amazon Basics Batteries
+    homeassistant: http://hub.phil.lan:8123
+    access: zz3Y9JDQUchNblG=QJzBnuSs
+    event: AMAZON_DASH_PRESS
+    data: '{"button_label": "Amazon Basics Batteries"}'

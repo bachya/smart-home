@@ -445,6 +445,11 @@ views:
     cards:
 
       - type: entities
+        title: Amazon Dash Behaviors
+        entities:
+          - input_select.dash_amazon_basics_batteries
+
+      - type: entities
         title: Durmstrang
         entities:
           - sensor.durmstrang_cpu_temperature
@@ -474,8 +479,8 @@ views:
           - sensor.hub_disk_used
           - sensor.hub_ram_used
           - sensor.hub_swap_used
+          - switch.amazon_dash
           - switch.appdaemon
-          - switch.dasher
           - switch.hub_glances
           - switch.grafana
           - switch.home_assistant

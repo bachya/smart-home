@@ -19,18 +19,17 @@ services:
       - appdaemon-config:/config:ro
       - shared:/shared
 
-  dasher:
-    build: ./dasher/docker
-    command: npm run start
-    container_name: dasher
+  amazon-dash:
+    command: amazon-dash run --config /config/amazon-dash.yml
+    container_name: amazon-dash
     depends_on:
       - hass
-    image: bachya/dasher
+    image: bachya/amazon-dash:latest
     network_mode: "host"
     restart: unless-stopped
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - dasher-config:/usr/app/dasher/config/:ro
+      - /var/lib/docker/volumes/hub_amazon-dash-config/_data/amazon-dash.yml:/config/amazon-dash.yml
 
   glances:
     build: ./glances/docker
@@ -182,7 +181,7 @@ services:
 volumes:
 
   appdaemon-config:
-  dasher-config:
+  amazon-dash-config:
   fail2ban-config:
   glances-config:
   grafana-config:

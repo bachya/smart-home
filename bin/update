@@ -43,8 +43,9 @@ git remote prune origin
 # Update AppDaemon configs:
 copy_config_data "hub_appdaemon-config" "/appdaemon/settings"
 
-# Update dasher configs:
-copy_config_data "hub_dasher-config" "/dasher/settings"
+# Update amazon-dash configs:
+copy_config_data "hub_amazon-dash-config" "/amazon-dash/settings"
+sudo chown -R root:root /var/lib/docker/volumes/hub_amazon-dash-config/_data/
 
 # Update Glances configs:
 copy_config_data "hub_glances-config" "/glances/settings"
