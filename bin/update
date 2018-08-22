@@ -71,6 +71,7 @@ docker-compose build
 
 # Restart the containers:
 docker-compose down --remove-orphans
-docker rmi $(docker images --filter "dangling=true" -q --no-trunc) || true
-docker rm $(docker ps -qa --no-trunc --filter "status=exited") || true
+docker image prune -f
+docker container prune -f
 docker-compose up -d
+docker volume prune -f
