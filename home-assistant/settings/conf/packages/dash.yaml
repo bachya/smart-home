@@ -8,3 +8,11 @@ input_select:
       - Activate "Good Night"
     initial: Toggle Master Bedroom Salt Lamp
     icon: mdi:amazon
+  dash_neat:
+    name: Neat
+    options:
+      - Arm security system
+      - Toggle Master Bedroom Salt Lamp
+      - Activate "Good Night"
+    initial: Toggle Master Bedroom Salt Lamp
+    icon: mdi:amazon

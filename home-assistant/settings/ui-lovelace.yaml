@@ -356,6 +356,12 @@ views:
     cards:
 
       - type: entities
+        title: Amazon Dash Buttons
+        entities:
+          - input_select.dash_amazon_basics_batteries
+          - input_select.dash_neat
+
+      - type: entities
         title: Bathroom Fans
         entities:
           - switch.master_bathroom_fan
@@ -443,11 +449,6 @@ views:
     icon: mdi:server-network
     id: systems
     cards:
-
-      - type: entities
-        title: Amazon Dash Behaviors
-        entities:
-          - input_select.dash_amazon_basics_batteries
 
       - type: entities
         title: Durmstrang

@@ -8,3 +8,9 @@ devices:
     access: 1234567890abceefg
     event: AMAZON_DASH_PRESS
     data: '{"button_label": "Amazon Basics Batteries"}'
+  6C:56:97:54:19:28:
+    name: Neat
+    homeassistant: http://hub.phil.lan:8123
+    access: q^CpeaMcrMVg(maMWMD9RumDD
+    event: AMAZON_DASH_PRESS
+    data: '{"button_label": "Neat"}'
