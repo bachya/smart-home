@@ -29,7 +29,7 @@ services:
     restart: unless-stopped
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /var/lib/docker/volumes/hub_amazon-dash-config/_data/amazon-dash.yml:/config/amazon-dash.yml
+      - amazon-dash-config:/config:ro
 
   glances:
     build: ./glances/docker
