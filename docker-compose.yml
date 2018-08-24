@@ -172,6 +172,10 @@ services:
       - NET_ADMIN
     command: /usr/bin/supervisord -c /etc/supervisor.conf
     container_name: nginx
+    depends_on:
+      - appdaemon
+      - grafana
+      - hass
     image: bachya/nginx
     networks:
       default:
