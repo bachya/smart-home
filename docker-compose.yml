@@ -1,6 +1,12 @@
 ---
 version: "3"
 
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 192.168.0.0/16
+
 services:
 
   appdaemon:
@@ -167,6 +173,9 @@ services:
     command: /usr/bin/supervisord -c /etc/supervisor.conf
     container_name: nginx
     image: bachya/nginx
+    networks:
+      default:
+        ipv4_address: 192.168.7.7
     ports:
       - "443:443/tcp"
       - "18883:18883/tcp"
