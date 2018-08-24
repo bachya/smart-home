@@ -1,5 +1,4 @@
 ---
-auth_providers: !include auth_providers.yaml
 customize: !include customize.yaml
 customize_glob: !include customize-glob.yaml
 elevation: !secret base_elevation
