@@ -60,8 +60,9 @@ class NotificationManager(App):
                 target_date = self.date()
                 active_time = self.time()
 
-            if not (notification.blackout_start_time <= active_time <=
-                    self.parse_time(notification.blackout_end_time)):
+            if not (self.parse_time(notification.blackout_start_time) <=
+                    active_time <= self.parse_time(
+                        notification.blackout_end_time)):
                 target_date = target_date + timedelta(days=1)
 
             notification.when = datetime.combine(
