@@ -70,7 +70,7 @@ hass_automation:
         available: sensor.xiaomi_hack_available
         installed: sensor.xiaomi_hack_installed
       properties:
-        app_name: Xiaomia Hack
+        app_name: Xiaomi Hack
     - name: new_version_notification
       entities:
         available: sensor.yi_hack_available
