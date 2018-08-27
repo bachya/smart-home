@@ -9,6 +9,8 @@ from app import App  # type: ignore
 from automation import Automation, Feature  # type: ignore
 from util.scheduler import run_on_days  # type: ignore
 
+HANDLE_SCHEDULE = 'schedule'
+
 
 class MonitorConsumables(Feature):
     """Define a feature to notify when a consumable gets low."""
@@ -54,7 +56,6 @@ class ScheduledCycle(Feature):
         """Initialize."""
         self.initiated_by_app = False
 
-        self._schedule_handle = None
         self.create_schedule()
 
         self.hass.listen_event(
@@ -176,9 +177,11 @@ class ScheduledCycle(Feature):
 
     def create_schedule(self) -> None:
         """Create the vacuuming schedule from the on booleans."""
-        self.hass.cancel_timer(self._schedule_handle)
+        schedule_handles = self.handles.pop(HANDLE_SCHEDULE)
+        for handle in schedule_handles:
+            self.hass.cancel_timer(handle)
 
-        self._schedule_handle = run_on_days(  # type: ignore
+        self.handles[HANDLE_SCHEDULE] = run_on_days(  # type: ignore
             self.hass,
             self.start_by_schedule,
             self.active_days,
