@@ -178,7 +178,8 @@ class ToggleIfToggled(BaseFeature):
                 self.toggle(self.properties['desired_state'])
         else:
             if self.hass.friendly_name in self.handles:
-                self.handles.pop(self.hass.friendly_name)()
+                handle = self.handles.pop(self.hass.friendly_name)
+                self.hass.cancel_timer(handle)
 
 
 class TurnOnUponArrival(BaseFeature):
