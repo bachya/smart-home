@@ -9,7 +9,9 @@ from app import App  # type: ignore
 from automation import Automation, Feature  # type: ignore
 from util.scheduler import run_on_days  # type: ignore
 
+HANDLE_BIN = 'vacuum_bin'
 HANDLE_SCHEDULE = 'schedule'
+HANDLE_STUCK = 'vacuum_stuck'
 
 
 class MonitorConsumables(Feature):
@@ -37,9 +39,6 @@ class MonitorConsumables(Feature):
 
 class ScheduledCycle(Feature):
     """Define a feature to run the vacuum on a schedule."""
-
-    HANDLE_BIN = 'vacuum_bin'
-    HANDLE_STUCK = 'vacuum_stuck'
 
     @property
     def active_days(self) -> list:
@@ -162,18 +161,17 @@ class ScheduledCycle(Feature):
             kwargs: dict) -> None:
         """Listen for changes in bin status."""
         if new == self.hass.manager_app.BinStates.full.value:
-            self.handles[
-                self.HANDLE_BIN] = self.hass.notification_manager.repeat(
-                    'Wolfie Full 🤖',
-                    "Empty him now and you won't have to do it later!",
-                    self.properties['notification_interval_full'],
-                    target='home',
-                    data={'push': {
-                        'category': 'wolfie'
-                    }})
+            self.handles[HANDLE_BIN] = self.hass.notification_manager.repeat(
+                'Wolfie Full 🤖',
+                "Empty him now and you won't have to do it later!",
+                self.properties['notification_interval_full'],
+                target='home',
+                data={'push': {
+                    'category': 'wolfie'
+                }})
         elif new == self.hass.manager_app.BinStates.empty.value:
-            if self.HANDLE_BIN in self.handles:
-                self.handles.pop(self.HANDLE_BIN)()
+            if HANDLE_BIN in self.handles:
+                self.handles.pop(HANDLE_BIN)()
 
     def create_schedule(self) -> None:
         """Create the vacuuming schedule from the on booleans."""
@@ -192,20 +190,19 @@ class ScheduledCycle(Feature):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Clear the error when Wolfie is no longer stuck."""
-        if self.HANDLE_STUCK in self.handles:
-            self.handles.pop(self.HANDLE_STUCK)()
+        if HANDLE_STUCK in self.handles:
+            self.handles.pop(HANDLE_STUCK)()
 
     def errored(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Brief when Wolfie's had an error."""
-        self.handles[
-            self.HANDLE_STUCK] = self.hass.notification_manager.repeat(
-                'Wolfie Stuck 😢',
-                "Help him get back on track or home.",
-                self.properties['notification_interval_stuck'],
-                target='home',
-            )
+        self.handles[HANDLE_STUCK] = self.hass.notification_manager.repeat(
+            'Wolfie Stuck 😢',
+            "Help him get back on track or home.",
+            self.properties['notification_interval_stuck'],
+            target='home',
+        )
 
     def response_from_push_notification(
             self, event_name: str, data: dict, kwargs: dict) -> None:

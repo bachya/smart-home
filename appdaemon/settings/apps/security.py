@@ -9,6 +9,8 @@ from typing import Union
 from app import App  # type: ignore
 from automation import Automation, Feature  # type: ignore
 
+HANDLE_GARAGE_OPEN = 'garage_open'
+
 
 class SecuritySystem(App):
     """Define a class to represent the app."""
@@ -198,8 +200,6 @@ class AutoNighttimeLockup(Feature):
 class GarageLeftOpen(Feature):
     """Define a feature to notify us when the garage is left open."""
 
-    HANDLE = 'garage_open'
-
     def initialize(self) -> None:
         """Initialize."""
         self.hass.listen_event(
@@ -223,22 +223,23 @@ class GarageLeftOpen(Feature):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Cancel notification when the garage is closed."""
-        if self.HANDLE in self.handles:
-            self.handles.pop(self.HANDLE)()
+        if HANDLE_GARAGE_OPEN in self.handles:
+            self.handles.pop(HANDLE_GARAGE_OPEN)()
 
     def left_open(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Send notifications when the garage has been left open."""
-        self.handles[self.HANDLE] = self.hass.notification_manager.repeat(
-            'Garage Open 🚗',
-            "The garage has been left open for a while.",
-            self.properties['notification_interval'],
-            blackout_start_time=None,
-            blackout_end_time=None,
-            data={'push': {
-                'category': 'garage'
-            }})
+        self.handles[
+            HANDLE_GARAGE_OPEN] = self.hass.notification_manager.repeat(
+                'Garage Open 🚗',
+                "The garage has been left open for a while.",
+                self.properties['notification_interval'],
+                blackout_start_time=None,
+                blackout_end_time=None,
+                data={'push': {
+                    'category': 'garage'
+                }})
 
     def response_from_push_notification(
             self, event_name: str, data: dict, kwargs: dict) -> None:

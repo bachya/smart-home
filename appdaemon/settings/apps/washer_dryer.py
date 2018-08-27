@@ -9,6 +9,8 @@ from typing import Union
 from app import App  # type: ignore
 from automation import Automation, Feature  # type: ignore
 
+HANDLE_CLEAN = 'clean'
+
 
 class WasherDryer(App):
     """Define an app to represent a washer/dryer-type appliance."""
@@ -41,8 +43,6 @@ class WasherDryerAutomation(Automation):
 
 class NotifyDone(Feature):
     """Define a feature to notify a target when the appliancer is done."""
-
-    HANDLE_CLEAN = 'clean'
 
     def initialize(self) -> None:
         """Initialize."""
@@ -87,19 +87,18 @@ class NotifyDone(Feature):
             kwargs: dict) -> None:
         """Deal with changes to the status."""
         if new == self.hass.manager_app.States.clean.value:
-            self.handles[
-                self.HANDLE_CLEAN] = self.hass.notification_manager.repeat(
-                    'Dishwasher Clean 🍽',
-                    "Empty it now and you won't have to do it later!",
-                    self.properties['notification_interval'],
-                    when=self.hass.datetime() + timedelta(minutes=15),
-                    target='home',
-                    data={'push': {
-                        'category': 'dishwasher'
-                    }})
+            self.handles[HANDLE_CLEAN] = self.hass.notification_manager.repeat(
+                'Dishwasher Clean 🍽',
+                "Empty it now and you won't have to do it later!",
+                self.properties['notification_interval'],
+                when=self.hass.datetime() + timedelta(minutes=15),
+                target='home',
+                data={'push': {
+                    'category': 'dishwasher'
+                }})
         elif old == self.hass.manager_app.States.clean.value:
-            if self.HANDLE_CLEAN in self.handles:
-                self.handles.pop(self.HANDLE_CLEAN)()
+            if HANDLE_CLEAN in self.handles:
+                self.handles.pop(HANDLE_CLEAN)()
 
     def response_from_push_notification(
             self, event_name: str, data: dict, kwargs: dict) -> None:
