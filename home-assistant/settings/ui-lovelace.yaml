@@ -441,6 +441,7 @@ views:
         entities:
           - binary_sensor.protection_window
           - sensor.current_uv_index
+          - sensor.current_uv_level
           - sensor.max_uv_index
           - sensor.aaron_safe_exposure_time
           - sensor.britt_safe_exposure_time

@@ -5,6 +5,7 @@ openuv:
     monitored_conditions:
       - current_ozone_level
       - current_uv_index
+      - current_uv_level
       - max_uv_index
       - safe_exposure_time_type_1
       - safe_exposure_time_type_3
