@@ -88,7 +88,7 @@ services:
     build:
       context: ./home-assistant/docker
       args:
-        version: 0.77.0
+        version: 0.77.1
     container_name: hass
     depends_on:
       - glances
