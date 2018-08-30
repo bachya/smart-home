@@ -56,9 +56,6 @@ copy_config_data "hub_ha-dockermon-config" "/ha-dockermon/settings"
 # Update Home Assistant configs:
 copy_config_data "hub_hass-config" "/home-assistant/settings"
 
-# Update iBeacon configs:
-copy_config_data "hub_ibeacon-config" "/ibeacon/settings"
-
 # Update Mosquitto configs:
 copy_config_data "hub_mosquitto-config" "/mosquitto/settings"
 

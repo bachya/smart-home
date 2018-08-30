@@ -107,17 +107,6 @@ services:
       - hass-config:/config
       - shared:/shared
 
-  ibeacon:
-    build: ./ibeacon/docker
-    container_name: ibeacon
-    image: bachya/ibeacon
-    network_mode: "host"
-    privileged: true
-    restart: unless-stopped
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ibeacon-config:/config
-
   influxdb:
     container_name: influxdb
     image: influxdb:1.6.0-alpine
@@ -200,7 +189,6 @@ volumes:
   grafana-config:
   ha-dockermon-config:
   hass-config:
-  ibeacon-config:
   influxdb-config:
   mosquitto-config:
   nginx-config:
