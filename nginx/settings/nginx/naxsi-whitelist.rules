@@ -1,12 +1,18 @@
 # AppDaemon
 # ---------
-
 # Ignore the fact that Alexa response bodies are "too big":
 BasicRule wl:2 "mz:BODY|$URL:/api/appdaemon/alexa";
 
+# Grafana
+# -----
+# Ignore Grafana issues that prevent it from loading through NAXSI:
+BasicRule wl:1001 "mz:$ARGS_VAR:q";
+BasicRule wl:1016 "mz:$BODY_VAR:password";
+BasicRule wl:1100 "mz:$BODY_VAR:url";
+BasicRule wl:1315 "mz:$HEADERS_VAR:cookie";
+
 # NGINX
 # -----
-
 # Allow HASS auth (0.77 and beyond) to work:
 BasicRule wl:0 "mz:$URL_X:^/auth|BODY";
 BasicRule wl:1101 "mz:$URL_X:^/auth|ARGS";
