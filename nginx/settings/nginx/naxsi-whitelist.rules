@@ -1,13 +1,13 @@
 # AppDaemon
 # ---------
 
-# Catch-all to ignore everything having to do with AppDaemon's Alexa traffic:
-BasicRule wl:0 "mz:BODY|$URL:/api/appdaemon/alexa";
+# Ignore the fact that Alexa response bodies are "too big":
+BasicRule wl:2 "mz:BODY|$URL:/api/appdaemon/alexa";
 
 # NGINX
 # -----
 
-# Rules to allow HASS auth (0.77 and beyond) to work:
+# Allow HASS auth (0.77 and beyond) to work:
 BasicRule wl:0 "mz:$URL_X:^/auth|BODY";
 BasicRule wl:1101 "mz:$URL_X:^/auth|ARGS";
 BasicRule wl:1101 "mz:$URL_X:^/frontend_latest|ARGS";
