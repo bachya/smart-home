@@ -175,9 +175,9 @@ class ScheduledCycle(Feature):
 
     def create_schedule(self) -> None:
         """Create the vacuuming schedule from the on booleans."""
-        schedule_handles = self.handles.pop(HANDLE_SCHEDULE)
-        for handle in schedule_handles:
-            self.hass.cancel_timer(handle)
+        if HANDLE_SCHEDULE in self.handles:
+            for handle in self.handles.pop(HANDLE_SCHEDULE):
+                self.hass.cancel_timer(handle)
 
         self.handles[HANDLE_SCHEDULE] = run_on_days(  # type: ignore
             self.hass,
