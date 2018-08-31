@@ -70,6 +70,7 @@ class NotificationManager(App):
 
             self.log(
                 'Rescheduling notification: {0}'.format(notification.title))
+            self.log('New datetime: {0}'.format(notification.when))
         else:
             notification.when = self.datetime() + timedelta(seconds=1)
 
