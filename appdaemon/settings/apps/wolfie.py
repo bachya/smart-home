@@ -264,23 +264,12 @@ class Vacuum(App):
     class States(Enum):
         """Define an enum for vacuum states."""
 
-        charger_disconnected = 'Charger disconnected'
-        charging_problem = 'Charging problem'
-        charging = 'Charging'
         cleaning = 'Cleaning'
-        docking = 'Docking'
+        docked = 'Docked'
         error = 'Error'
-        going_to_target = 'Going to target'
         idle = 'Idle'
-        manual_mode = 'Manual mode'
         paused = 'Paused'
-        remote_control_active = 'Remote control active'
-        returning_home = 'Returning home'
-        shutting_down = 'Shutting down'
-        spot_cleaning = 'Spot cleaning'
-        starting = 'Starting'
-        updating = 'Updating'
-        zoned_cleaning = 'Zoned cleaning'
+        returning = 'Returning'
 
     def start(self) -> None:
         """Start a cleaning cycle."""
