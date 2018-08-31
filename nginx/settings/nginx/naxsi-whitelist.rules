@@ -11,9 +11,12 @@ BasicRule wl:1016 "mz:$BODY_VAR:password";
 BasicRule wl:1100 "mz:$BODY_VAR:url";
 BasicRule wl:1315 "mz:$HEADERS_VAR:cookie";
 
-# NGINX
+# HASS
 # -----
 # Allow HASS auth (0.77 and beyond) to work:
 BasicRule wl:0 "mz:BODY|$URL_X:^/auth";
 BasicRule wl:1101 "mz:ARGS|$URL_X:^/auth";
 BasicRule wl:1101 "mz:ARGS|$URL_X:^/frontend_latest";
+
+# Deal with double quoting in Jinja templates:
+BasicRule wl:0 "mz:$BODY_VAR:template|$URL_X:^/api/template";
