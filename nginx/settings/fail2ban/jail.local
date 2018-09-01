@@ -1,8 +1,7 @@
 [DEFAULT]
 ignoreip = 172.16.10.0/24
 bantime = 172800
-findtime = 60
-maxretry = 3
+maxretry = 2
 
 [nginx-4xx]
 enabled = true
