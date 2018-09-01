@@ -1,6 +1,6 @@
 ---
 automation:
-  alias: 'Start HomeKit'
+  alias: Start HomeKit
   trigger:
     - platform: event
       event_type: zwave.network_complete
