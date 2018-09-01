@@ -208,7 +208,7 @@ class TurnOnUponArrival(BaseFeature):
     def someone_arrived(
             self, event_name: str, data: dict, kwargs: dict) -> None:
         """Turn on after dark when someone comes homes."""
-        self.hass.log('Someone came home when dark; turning on the switch')
+        self.hass.log('Someone came home; turning on the switch')
 
         self.toggle('on')
 
