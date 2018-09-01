@@ -38,7 +38,10 @@ services:
       - amazon-dash-config:/config:ro
 
   glances:
-    build: ./glances/docker
+    build:
+      context: ./glances/docker
+      args:
+        version: 3.0
     command: /usr/bin/supervisord -c /etc/supervisor.conf
     container_name: glances
     image: bachya/glances

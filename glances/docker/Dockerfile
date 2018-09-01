@@ -1,5 +1,7 @@
 FROM alpine:3.6
 
+ARG version
+
 RUN apk update \
     && apk add --update \
       bash \
@@ -13,7 +15,7 @@ RUN apk update \
       tzdata \
     && pip3 install --upgrade \
       pip \
-      glances==2.10.0 \
+      glances==${version} \
       bottle==0.12.13 \
       docker==2.4.2 \
     && rm -rf /var/cache/apk/*
