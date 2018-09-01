@@ -152,33 +152,33 @@ class ToggleAtTime(BaseFeature):
                     constrain_input_boolean=self.enabled_toggle)
 
 
-class ToggleIfToggled(BaseFeature):
-    """Define a feature to immediately toggle a switch back."""
+class ToggleOnState(BaseFeature):
+    """Define a feature to toggle the switch when an entity enters a state."""
 
     def initialize(self) -> None:
         """Initialize."""
         self.hass.listen_state(
-            self.switch_toggled,
-            self.entities['switch'],
+            self.state_changed,
+            self.entities['target'],
             constrain_input_boolean=self.enabled_toggle)
 
     def delay_complete(self, kwargs: dict) -> None:
         """Toggle the switch back after a delay."""
-        self.toggle(self.properties['desired_state'])
+        self.toggle(self.properties['switch_state'])
 
-    def switch_toggled(  # pylint: disable=too-many-arguments
+    def state_changed(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
-        """Toggle the switch back."""
-        if new != self.properties['desired_state']:
+        """Toggle the switch depending on the target entity's state."""
+        if new == self.properties['target_state']:
             if self.properties.get('delay'):
-                self.handles[self.hass.friendly_name] = self.hass.run_in(
+                self.handles[self.hass.name] = self.hass.run_in(
                     self.delay_complete, self.properties['delay'])
             else:
-                self.toggle(self.properties['desired_state'])
+                self.toggle(self.properties['switch_state'])
         else:
-            if self.hass.friendly_name in self.handles:
-                handle = self.handles.pop(self.hass.friendly_name)
+            if self.hass.name in self.handles:
+                handle = self.handles.pop(self.hass.name)
                 self.hass.cancel_timer(handle)
 
 

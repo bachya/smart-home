@@ -98,6 +98,7 @@ views:
       - type: entities
         title: Garage Lights
         entities:
+          - input_boolean.garage_lights_automation_turn_off_when_garage_closed
           - input_boolean.garage_lights_automation_turn_on_upon_arrival
 
       - type: entities

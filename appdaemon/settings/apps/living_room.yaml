@@ -75,14 +75,16 @@ living_room_tv:
 living_room_powder_room_fan_automation:
   module: switches
   class: SwitchAutomation
-  friendly_name: Powder Roon Fan
   entities:
     switch: switch.powder_room_fan
   features:
-    - name: toggle_if_toggled
+    - name: toggle_on_state
+      entities:
+        target: switch.powder_room_fan
       properties:
         delay: 60
-        desired_state: "on"
+        switch_state: "on"
+        target_state: "off"
       enabled_toggle:
         name: Turn on if turned off
         icon: "mdi:fan"

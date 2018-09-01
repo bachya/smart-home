@@ -8,6 +8,18 @@ garage_lights_automation:
   entities:
     switch: switch.garage_lights
   features:
+    - name: toggle_on_state
+      entities:
+        target: cover.garage_door
+      properties:
+        delay: 300
+        switch_state: "off"
+        target_state: "closed"
+      enabled_toggle:
+        key: turn_off_when_garage_closed
+        name: Turn off 5 minutes after door closes
+        icon: "mdi:garage"
+        initial: true
     - name: turn_on_upon_arrival
       properties:
         possible_conditions:

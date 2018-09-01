@@ -55,6 +55,10 @@ garage_camera_automation_auto_night_mode:
   icon: mdi:weather-sunset
   initial: true
   name: 'Garage Cam: Auto Night Mode'
+garage_lights_automation_turn_off_when_garage_closed:
+  icon: mdi:garage
+  initial: true
+  name: Turn off 5 minutes after door closes
 garage_lights_automation_turn_on_upon_arrival:
   icon: mdi:car
   initial: true
