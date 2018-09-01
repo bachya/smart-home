@@ -19,6 +19,7 @@ subaru_legacy_automation:
       properties:
         fuel_threshold: 10
         notification_interval: 7200
+        notification_target: Aaron
       enabled_toggle:
         name: Notify of low fuel
         icon: mdi:gas-station

@@ -88,7 +88,7 @@ class NotifyLowFuel(Feature):
                         "{0} needs gas; fill 'er up!.".format(
                             self.hass.friendly_name),
                         self.properties['notification_interval'],
-                        target='home')
+                        target=self.properties['notification_target'])
             else:
                 self.registered = False
                 if self.hass.friendly_name in self.handles:
