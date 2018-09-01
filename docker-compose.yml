@@ -69,7 +69,7 @@ services:
     build:
       context: ./ha-dockermon/docker
       args:
-        version: 0.0.9
+        version: 0.0.10
     command: /usr/src/app/start.sh
     container_name: ha-dockermon
     environment:
