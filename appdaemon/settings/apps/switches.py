@@ -162,10 +162,6 @@ class ToggleOnState(BaseFeature):
             self.entities['target'],
             constrain_input_boolean=self.enabled_toggle)
 
-    def delay_complete(self, kwargs: dict) -> None:
-        """Toggle the switch back after a delay."""
-        self.toggle(self.properties['switch_state'])
-
     def state_changed(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
@@ -173,7 +169,9 @@ class ToggleOnState(BaseFeature):
         if new == self.properties['target_state']:
             if self.properties.get('delay'):
                 self.handles[self.hass.name] = self.hass.run_in(
-                    self.delay_complete, self.properties['delay'])
+                    self.toggle_on_schedule,
+                    self.properties['delay'],
+                    state=self.properties['switch_state'])
             else:
                 self.toggle(self.properties['switch_state'])
         else:
