@@ -4,9 +4,9 @@ sensor:
     name: Ravenclaw
     host: ravenclaw.myserver.com
     resources:
-      - "disk_use_percent"
-      - "memory_use_percent"
-      - "swap_use_percent"
+      - disk_use_percent
+      - memory_use_percent
+      - processor_load
   - platform: command_line
     name: Ravenclaw CPU Temperature
     command: >

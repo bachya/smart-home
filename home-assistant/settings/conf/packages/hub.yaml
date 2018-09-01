@@ -3,10 +3,11 @@ sensor:
   - platform: glances
     name: Hub
     host: localhost
+    version: 3
     resources:
-      - "disk_use_percent"
-      - "memory_use_percent"
-      - "swap_use_percent"
+      - disk_use_percent
+      - memory_use_percent
+      - processor_load
   - platform: command_line
     name: Hub CPU Temperature
     command: >

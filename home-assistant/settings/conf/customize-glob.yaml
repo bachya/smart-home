@@ -1,6 +1,8 @@
 ---
 "light.salt_lamp_*":
   friendly_name: Switch
+"sensor.*_cpu_load":
+  friendly_name: CPU
 "sensor.*_cpu_temperature":
   friendly_name: CPU Temp
 "sensor.*_disk_used":
@@ -8,9 +10,6 @@
   icon: mdi:harddisk
 "sensor.*_ram_used":
   friendly_name: RAM Used
-  icon: mdi:memory
-"sensor.*_swap_used":
-  friendly_name: Swap Used
   icon: mdi:memory
 "sensor.*_total":
   friendly_name: Process Count

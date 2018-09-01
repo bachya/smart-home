@@ -459,7 +459,7 @@ views:
           - sensor.durmstrang_uptime
           - sensor.durmstrang_disk_used
           - sensor.durmstrang_ram_used
-          - sensor.durmstrang_swap_used
+          - sensor.durmstrang_cpu_load
           - switch.durmstrang_glances
         show_header_toggle: false
 
@@ -470,7 +470,7 @@ views:
           - sensor.gryffindor_uptime
           - sensor.gryffindor_disk_used
           - sensor.gryffindor_ram_used
-          - sensor.gryffindor_swap_used
+          - sensor.gryffindor_cpu_load
           - switch.gryffindor_glances
         show_header_toggle: false
 
@@ -481,7 +481,7 @@ views:
           - sensor.hub_uptime
           - sensor.hub_disk_used
           - sensor.hub_ram_used
-          - sensor.hub_swap_used
+          - sensor.hub_cpu_load
           - switch.amazon_dash
           - switch.appdaemon
           - switch.hub_glances
@@ -500,7 +500,7 @@ views:
           - sensor.hufflepuff_uptime
           - sensor.hufflepuff_disk_used
           - sensor.hufflepuff_ram_used
-          - sensor.hufflepuff_swap_used
+          - sensor.hufflepuff_cpu_load
           - switch.hufflepuff_glances
         show_header_toggle: false
 
@@ -511,7 +511,7 @@ views:
           - sensor.ravenclaw_uptime
           - sensor.ravenclaw_disk_used
           - sensor.ravenclaw_ram_used
-          - sensor.ravenclaw_swap_used
+          - sensor.ravenclaw_cpu_load
           - switch.ravenclaw_glances
           - switch.ravenclaw_hass_elder_bachs
         show_header_toggle: false
@@ -523,7 +523,7 @@ views:
           - sensor.slytherin_uptime
           - sensor.slytherin_disk_used
           - sensor.slytherin_ram_used
-          - sensor.slytherin_swap_used
+          - sensor.slytherin_cpu_load
           - switch.slytherin_glances
         show_header_toggle: false
 
