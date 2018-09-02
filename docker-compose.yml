@@ -159,7 +159,7 @@ services:
       args:
         geoip_version: 1.6.11
         naxsi_version: 0.56
-        nginx_version: 1.15.0
+        nginx_version: 1.15.3
     cap_add:
       - NET_ADMIN
     command: /usr/bin/supervisord -c /etc/supervisor.conf
