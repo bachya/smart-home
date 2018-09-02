@@ -185,8 +185,8 @@ services:
 
 volumes:
 
-  appdaemon-config:
   amazon-dash-config:
+  appdaemon-config:
   fail2ban-config:
   glances-config:
   grafana-config:
