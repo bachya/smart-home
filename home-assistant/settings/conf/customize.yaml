@@ -99,9 +99,6 @@ switch.backyard_lights:
   icon: "mdi:lightbulb"
 switch.christmas_tree:
   icon: "mdi:pine-tree"
-switch.durmstrang_glances:
-  friendly_name: "Glances"
-  icon: "mdi:server-security"
 switch.fireplace:
   icon: "mdi:fire"
 switch.front_patio_light:
@@ -124,17 +121,8 @@ switch.garage_lights:
   icon: "mdi:lightbulb"
 switch.grafana:
   icon: "mdi:chart-bar"
-switch.gryffindor_glances:
-  friendly_name: "Glances"
-  icon: "mdi:server-security"
 switch.home_assistant:
   icon: "mdi:home-assistant"
-switch.hub_glances:
-  friendly_name: "Glances"
-  icon: "mdi:server-security"
-switch.hufflepuff_glances:
-  friendly_name: "Glances"
-  icon: "mdi:server-security"
 switch.influxdb:
   icon: "mdi:database"
 switch.kitchen_patio_light:
@@ -151,6 +139,8 @@ switch.mysql:
   icon: "mdi:database"
 switch.nginx:
   icon: "mdi:server"
+switch.media_center_plex:
+  icon: "mdi:plex"
 switch.powder_room_fan:
   icon: "mdi:fan"
 switch.program_morning:
@@ -163,17 +153,11 @@ switch.program_evening_no_planter:
   icon: "mdi:water"
 switch.ps4:
   icon: "mdi:playstation"
-switch.ravenclaw_glances:
-  friendly_name: "Glances"
-  icon: "mdi:server-security"
 switch.ravenclaw_hass_elder_bachs:
   friendly_name: Home Assistant
   icon: "mdi:home-assistant"
 switch.reading_lamp:
   icon: "mdi:lightbulb"
-switch.slytherin_glances:
-  friendly_name: "Glances"
-  icon: "mdi:server-security"
 switch.sofa_lamp:
   icon: "mdi:lightbulb"
 switch.zone_landscaping:

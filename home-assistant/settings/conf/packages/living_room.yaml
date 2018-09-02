@@ -66,10 +66,6 @@ sensor:
             mdi:apps
           {% endif %}
 
-shell_command:
-  turn_off_media_center: >
-    ssh bachya@media-center.myserver.com sudo /sbin/poweroff
-
 switch:
   - platform: command_line
     switches:
@@ -77,13 +73,7 @@ switch:
         friendly_name: Playstation 4
         command_on: 'ps4-waker -c /config/.ps4-waker.json'
         command_off: 'ps4-waker -c /config/.ps4-waker.json standby'
-        command_state: 'nc -z -w 5 ps4.myserver.com 9295'
-  - platform: wake_on_lan
-    mac_address: 12:34:56:ab:cd:ef
-    name: Media Center
-    host: media-center.myserver.com
-    turn_off:
-      service: shell_command.turn_off_media_center
+        command_state: 'nc -z -w 5 ps4.phil.lan 9295'
 
 wemo:
   static:

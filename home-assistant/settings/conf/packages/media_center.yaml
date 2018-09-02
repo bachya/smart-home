@@ -1,0 +1,60 @@
+---
+sensor:
+  - platform: glances
+    name: Media Center
+    host: media-center.phil.lan
+    version: 3
+    resources:
+      - disk_use_percent
+      - memory_use_percent
+      - processor_load
+  - platform: command_line
+    name: Media Center CPU Temperature
+    command: >
+      ssh -i /config/id_ed25519 -o StrictHostKeyChecking=no
+      bachya@media-center.phil.lan
+      cat /sys/class/thermal/thermal_zone*/temp 2>/dev/null |
+      awk \'{ sum += $1; n++ } END { if (n > 0) print (sum / n) / 1000; }\'
+    unit_of_measurement: "°C"
+  - platform: command_line
+    name: Media Center Uptime
+    command: >
+      ssh -i /config/id_ed25519 -o StrictHostKeyChecking=no
+      bachya@media-center.phil.lan
+      cat /proc/uptime | awk \'{ print $1 / 86400 }\' | cut -f1 -d"."
+    unit_of_measurement: "days"
+
+shell_command:
+  restart_glances_media_center: >-
+    curl -u "hassuser:DUiwH;p%9yfL6ExeEuUT"
+    http://media-center.phil.lan:8126/container/glances/restart
+  restart_plex_media_center: >-
+    curl -u "hassuser:DUiwH;p%9yfL6ExeEuUT"
+    http://media-center.phil.lan:8126/container/plex/restart
+  turn_off_media_center: 'ssh bachya@media-center.phil.lan sudo /sbin/poweroff'
+
+switch:
+  - platform: rest
+    resource: http://media-center.phil.lan:8126/container/glances
+    name: Media Center Glances
+    body_on: '{"state": "start"}'
+    body_off: '{"state": "stop"}'
+    is_on_template: >
+      {{ value_json is not none and value_json.state == "running" }}
+    username: !secret ha_dockermon_username
+    password: !secret ha_dockermon_password
+  - platform: rest
+    resource: http://media-center.phil.lan:8126/container/plex
+    name: Media Center Plex
+    body_on: '{"state": "start"}'
+    body_off: '{"state": "stop"}'
+    is_on_template: >
+      {{ value_json is not none and value_json.state == "running" }}
+    username: !secret ha_dockermon_username
+    password: !secret ha_dockermon_password
+  - platform: wake_on_lan
+    mac_address: 4C:CC:6A:69:90:D4
+    name: Media Center
+    host: media-center.phil.lan
+    turn_off:
+      service: shell_command.turn_off_media_center

@@ -35,3 +35,6 @@
   icon: "mdi:cctv"
 "sensor.yi_hack_*":
   icon: "mdi:cctv"
+"switch.*_glances":
+  friendly_name: "Glances"
+  icon: "mdi:server-security"
