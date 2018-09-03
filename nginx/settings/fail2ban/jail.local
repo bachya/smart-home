@@ -15,6 +15,12 @@ action = iptables-multiport[name=NAXSI, port="http,https"]
 filter = nginx-naxsi
 logpath = /var/log/nginx/*error.log
 
+[nginx-noscript]
+enabled = true
+action = iptables-multiport[name=NoScript, port="http,https"]
+filter = nginx-noscript
+logpath = /var/log/nginx/*access*.log
+
 [nginx-req-limit]
 enabled = true
 action = iptables-multiport[name=ReqLimit, port="http,https"]
