@@ -20,6 +20,7 @@ map $http_user_agent $blockedagent {
   ~*nmap 1;
   ~*openvas 1;
   ~*profound 1;
+  ~*pxbroker 1;
   ~*python 1;
   ~*python-requests 1;
   ~*redback 1;
