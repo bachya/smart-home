@@ -7,13 +7,13 @@ maxretry = 2
 enabled = true
 action = iptables-multiport[name=4xxResponse, port="http,https"]
 filter = nginx-4xx
-logpath = /var/log/nginx/access.log
+logpath = /var/log/nginx/*access*.log
 
 [nginx-naxsi]
 enabled = true
 action = iptables-multiport[name=NAXSI, port="http,https"]
 filter = nginx-naxsi
-logpath = /var/log/nginx/*error.log
+logpath = /var/log/nginx/*error*.log
 
 [nginx-noscript]
 enabled = true
@@ -25,4 +25,4 @@ logpath = /var/log/nginx/*access*.log
 enabled = true
 action = iptables-multiport[name=ReqLimit, port="http,https"]
 filter = nginx-req-limit
-logpath = /var/log/nginx/*error.log
+logpath = /var/log/nginx/*error*.log
