@@ -21,6 +21,13 @@ action = iptables-multiport[name=NoScript, port="http,https"]
 filter = nginx-noscript
 logpath = /var/log/nginx/*access*.log
 
+[nginx-proxy]
+enabled = true
+action = iptables-multiport[name=NoProxy, port="http,https"]
+filter = nginx-proxy
+logpath = /var/log/nginx*/*access*.log
+maxretry = 0
+
 [nginx-req-limit]
 enabled = true
 action = iptables-multiport[name=ReqLimit, port="http,https"]
