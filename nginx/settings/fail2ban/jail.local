@@ -14,3 +14,9 @@ enabled = true
 action = iptables-multiport[name=NAXSI, port="http,https"]
 filter = nginx-naxsi
 logpath = /var/log/nginx/*error.log
+
+[nginx-req-limit]
+enabled = true
+action = iptables-multiport[name=ReqLimit, port="http,https"]
+filter = nginx-req-limit
+logpath = /var/log/nginx/*error.log
