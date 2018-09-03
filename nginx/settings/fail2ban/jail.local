@@ -8,28 +8,33 @@ enabled = true
 action = iptables-multiport[name=4xxResponse, port="http,https"]
 filter = nginx-4xx
 logpath = /var/log/nginx/*access*.log
+backend = auto
 
 [nginx-naxsi]
 enabled = true
 action = iptables-multiport[name=NAXSI, port="http,https"]
 filter = nginx-naxsi
 logpath = /var/log/nginx/*error*.log
+backend = auto
 
 [nginx-noscript]
 enabled = true
 action = iptables-multiport[name=NoScript, port="http,https"]
 filter = nginx-noscript
 logpath = /var/log/nginx/*access*.log
+backend = auto
 
-[nginx-proxy]
+[nginx-noproxy]
 enabled = true
 action = iptables-multiport[name=NoProxy, port="http,https"]
-filter = nginx-proxy
+filter = nginx-noproxy
 logpath = /var/log/nginx*/*access*.log
 maxretry = 0
+backend = auto
 
 [nginx-req-limit]
 enabled = true
 action = iptables-multiport[name=ReqLimit, port="http,https"]
 filter = nginx-req-limit
 logpath = /var/log/nginx/*error*.log
+backend = auto
