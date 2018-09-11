@@ -30,7 +30,7 @@ services:
     container_name: amazon-dash
     depends_on:
       - hass
-    image: bachya/amazon-dash:latest
+    image: nekmo/amazon-dash:latest
     network_mode: "host"
     restart: unless-stopped
     volumes:
