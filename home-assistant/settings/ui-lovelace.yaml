@@ -120,7 +120,9 @@ views:
       - type: entities
         title: Master Bathroom Fans
         entities:
+          - input_boolean.master_bathroom_fan_double_tap_timer_automation
           - input_boolean.master_bathroom_fan_sleep_timer_automation
+          - input_boolean.master_toilet_fan_double_tap_timer_automation
           - input_boolean.master_toilet_fan_off_at_5pm_automation
           - input_boolean.master_toilet_fan_on_at_10am_automation
           - input_boolean.master_toilet_fan_sleep_timer_automation

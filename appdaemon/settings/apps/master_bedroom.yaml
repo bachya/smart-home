@@ -33,6 +33,20 @@ master_bedroom_lights_on_at_sunset_automation:
     icon: mdi:weather-sunset
     initial: true
 
+master_bathroom_fan_double_tap_timer_automation:
+  module: switches
+  class: DoubleTapTimerSwitch
+  dependencies:
+    - presence_manager
+  entities:
+    switch: switch.master_bathroom_fan
+  properties:
+    duration: 600
+  enabled_config:
+    name: "Bathroom: double tap 10-minute timer"
+    icon: mdi:timer
+    initial: true
+
 master_bathroom_fan_sleep_timer_automation:
   module: switches
   class: SleepTimer
@@ -57,6 +71,20 @@ master_toilet_fan_sleep_timer_automation:
   enabled_config:
     name: "Toilet: enable sleep timer"
     icon: mdi:sleep
+    initial: true
+
+master_toilet_fan_double_tap_timer_automation:
+  module: switches
+  class: DoubleTapTimerSwitch
+  dependencies:
+    - presence_manager
+  entities:
+    switch: switch.master_toilet_fan
+  properties:
+    duration: 600
+  enabled_config:
+    name: "Toilet: double tap 10-minute timer"
+    icon: mdi:timer
     initial: true
 
 master_toilet_fan_off_at_5pm_automation:

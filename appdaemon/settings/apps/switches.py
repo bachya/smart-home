@@ -9,8 +9,8 @@ from const import (  # type: ignore
     BLACKOUT_END, BLACKOUT_START, THRESHOLD_CLOUDY)
 from util.scheduler import run_on_days  # type: ignore
 
+HANDLE_TIMER = 'timer'
 HANDLE_TOGGLE_STATE = 'toggle_state'
-HANDLE_SLEEP_TIMER = 'sleep_timer'
 HANDLE_VACATION_MODE_OFF = 'vacation_mode_off'
 HANDLE_VACATION_MODE_ON = 'vacation_mode_on'
 
@@ -59,12 +59,51 @@ class BaseZwaveSwitch(BaseSwitch):
             constrain_input_boolean=self.enabled_entity_id)
 
     def double_down(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Raise if someone doesn't implement a listener."""
-        raise NotImplementedError
+        """Stub out method signature."""
+        pass
 
     def double_up(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Raise if someone doesn't implement a listener."""
-        raise NotImplementedError
+        """Stub out method signature."""
+        pass
+
+
+class DoubleTapTimerSwitch(BaseZwaveSwitch):
+    """Define a feature to double tap a switch on for a time."""
+
+    def initialize(self) -> None:
+        """Initialize."""
+        super().initialize()
+
+        self.listen_state(
+            self.switch_turned_off,
+            self.entities['switch'],
+            new='off',
+            constrain_input_boolean=self.enabled_entity_id)
+
+    def double_up(self, event_name: str, data: dict, kwargs: dict) -> None:
+        """Turn on the target switch with a double up tap."""
+        self.log(
+            'Starting {0}-second time for switch'.format(
+                self.properties['duration']))
+
+        self.toggle('on')
+        self.handles[HANDLE_TIMER] = self.run_in(
+            self.timer_completed, self.properties['duration'])
+
+    def switch_turned_off(  # pylint: disable=too-many-arguments
+            self, entity: Union[str, dict], attribute: str, old: str, new: str,
+            kwargs: dict) -> None:
+        """Cancel any timer if the switch is turned off."""
+        if HANDLE_TIMER in self.handles:
+            handle = self.handles.pop(HANDLE_TIMER)
+            self.cancel_timer(handle)
+
+    def timer_completed(self, kwargs: dict) -> None:
+        """Turn off a switch at the end of the timer."""
+        self.log('Double-tapped timer over; turning switch off')
+
+        self.toggle('off')
+        self.handles.pop(HANDLE_TIMER, None)
 
 
 class DoubleTapToggleSwitch(BaseZwaveSwitch):
@@ -98,6 +137,7 @@ class PresenceFailsafe(BaseSwitch):
             kwargs: dict) -> None:
         """Turn the switch off if no one is home."""
         self.log('No one home; not allowing switch to activate')
+
         self.toggle('off')
 
 
@@ -137,13 +177,13 @@ class SleepTimer(BaseSwitch):
             self.log('Deactivating sleep timer')
 
             self.toggle('off')
-            handle = self.handles.pop(HANDLE_SLEEP_TIMER)
+            handle = self.handles.pop(HANDLE_TIMER)
             self.cancel_timer(handle)
         else:
             self.log('Activating sleep timer: {0} minutes'.format(minutes))
 
             self.toggle('on')
-            self.handles[HANDLE_SLEEP_TIMER] = self.run_in(
+            self.handles[HANDLE_TIMER] = self.run_in(
                 self.timer_completed, minutes * 60)
 
     def timer_completed(self, kwargs: dict) -> None:
