@@ -26,8 +26,7 @@ views:
         title: Security Status
         entities:
           - sensor.secure_status
-          - input_boolean.security_automation_auto_departure_lockup
-          - input_boolean.security_automation_notify_on_change
+          - input_boolean.auto_departure_lockup_automation
           - scene.depart_home
           - scene.drive_home
           - scene.walk_home
@@ -59,138 +58,130 @@ views:
       - type: entities
         title: Aaron's Car
         entities:
-          - input_boolean.subaru_legacy_automation_notify_eta
-          - input_boolean.subaru_legacy_automation_notify_low_fuel
+          - input_boolean.subaru_legacy_notify_eta_automation
+          - input_boolean.subaru_legacy_notify_low_fuel_automation
 
       - type: entities
         title: Backyard Lights
         entities:
-          - input_boolean.backyard_lights_automation_off_at_11pm
-          - input_boolean.backyard_lights_automation_off_at_930pm
-          - input_boolean.backyard_lights_automation_on_at_sunset
+          - input_boolean.backyard_lights_off_at_11pm_automation
+          - input_boolean.backyard_lights_off_at_930pm_automation
+          - input_boolean.backyard_lights_on_at_sunset_automation
+          - input_boolean.kitchen_patio_light_double_tap_backyard_lights_automation
 
       - type: entities
         title: Cameras
         entities:
-          - input_boolean.garage_camera_automation_auto_night_mode
+          - input_boolean.garage_camera_auto_night_mode
 
       - type: entities
         title: Climate
         entities:
-          - input_boolean.climate_automation_adjust_on_proximity
-          - input_boolean.climate_automation_notify_bad_aqi
+          - input_boolean.adjust_climate_on_proximity_automation
+          - input_boolean.notify_bad_aqi_automation
 
       - type: entities
         title: Dishwasher
         entities:
-          - input_boolean.dishwasher_automation_notify_done
+          - input_boolean.dishwasher_cycle_automation
 
       - type: entities
         title: Fiddle Leaf Fig
         entities:
-          - input_boolean.fiddle_leaf_fig_automation_low_moisture
+          - input_boolean.fiddle_leaf_fig_low_moisture_automation
 
       - type: entities
         title: Fireplace
         entities:
-          - input_boolean.fireplace_automation_presence_failsafe
+          - input_boolean.fireplace_failsafe_automation
 
       - type: entities
         title: Garage Lights
         entities:
-          - input_boolean.garage_lights_automation_turn_off_when_garage_closed
-          - input_boolean.garage_lights_automation_turn_on_upon_arrival
+          - input_boolean.garage_lights_off_after_garage_close_automation
+          - input_boolean.garage_lights_on_upon_arrival_automation
 
       - type: entities
         title: Home Assistant
         entities:
-          - input_boolean.hass_automation_auto_themes
-          - input_boolean.hass_automation_auto_vacation_mode
-          - input_boolean.hass_automation_bad_login_notification
-          - input_boolean.hass_automation_detect_blackout
-          - input_boolean.hass_automation_new_version_notification
-          - input_boolean.notification_automation_manage_home_notifications
-
-      - type: entities
-        title: Kitchen Patio Light
-        entities:
-          - input_boolean.kitchen_patio_light_automation_off_at_11pm
-          - input_boolean.kitchen_patio_light_automation_on_at_sunset
-          - input_boolean.kitchen_patio_light_automation_vacation_mode
+          - input_boolean.auto_themes_automation
+          - input_boolean.auto_vacation_mode_alterations_automation
+          - input_boolean.bad_login_notifications_automation
+          - input_boolean.detect_blackout_automation
+          - input_boolean.notify_of_new_versions
 
       - type: entities
         title: Living Room Lights
         entities:
-          - input_boolean.living_room_lights_automation_on_at_sunset
-          - input_boolean.living_room_lights_automation_turn_on_upon_arrival
-          - input_boolean.living_room_lights_automation_vacation_mode
+          - input_boolean.living_room_lights_on_at_sunset_automation
+          - input_boolean.living_room_lights_on_upon_arrival_automation
+          - input_boolean.living_room_lights_vacation_mode_automation
 
       - type: entities
         title: Master Bathroom Fans
         entities:
-          - input_boolean.master_bathroom_fan_automation_sleep_timer
-          - input_boolean.master_bathroom_toilet_fan_automation_off_at_5pm
-          - input_boolean.master_bathroom_toilet_fan_automation_on_at_10am
-          - input_boolean.master_bathroom_toilet_fan_automation_sleep_timer
+          - input_boolean.master_bathroom_fan_sleep_timer_automation
+          - input_boolean.master_toilet_fan_off_at_5pm_automation
+          - input_boolean.master_toilet_fan_on_at_10am_automation
+          - input_boolean.master_toilet_fan_sleep_timer_automation
 
       - type: entities
         title: Master Bedroom Lights
         entities:
-          - input_boolean.master_bedroom_lights_automation_on_at_sunset
-          - input_boolean.master_bedroom_lights_automation_sleep_timer
+          - input_boolean.master_bedroom_lights_on_at_sunset_automation
+          - input_boolean.master_bedroom_lights_sleep_timer_automation
 
       - type: entities
         title: Office Lights
         entities:
-          - input_boolean.office_lights_automation_off_at_10pm
-          - input_boolean.office_lights_automation_on_at_sunset
-          - input_boolean.office_lights_automation_sleep_timer
+          - input_boolean.office_lights_off_at_10pm_automation
+          - input_boolean.office_lights_on_at_sunset_automation
+          - input_boolean.office_lights_sleep_timer_automation
 
       - type: entities
-        title: Front Patio Light
+        title: Patio Lights
         entities:
-          - input_boolean.front_patio_light_automation_off_at_11pm
-          - input_boolean.front_patio_light_automation_on_at_sunset
-          - input_boolean.front_patio_light_automation_vacation_mode
+          - input_boolean.patio_lights_off_at_11pm_automation
+          - input_boolean.patio_lights_on_at_sunset_automation
+          - input_boolean.patio_lights_vacation_mode_automation
 
       - type: entities
         title: Powder Room Fan
         entities:
-          - input_boolean.living_room_powder_room_fan_automation_toggle_if_toggled
+          - input_boolean.powder_room_fan_auto_turn_on_automation
 
       - type: entities
         title: Security
         entities:
-          - input_boolean.security_automation_absent_insecure
-          - input_boolean.security_automation_auto_departure_lockup
-          - input_boolean.security_automation_auto_nighttime_lockup
-          - input_boolean.security_automation_garage_left_open
-          - input_boolean.security_automation_notify_on_change
+          - input_boolean.auto_departure_lockup_automation
+          - input_boolean.auto_nighttime_lockup_automation
+          - input_boolean.notify_of_garage_open_automation
+          - input_boolean.notify_when_absent_insecure_automation
+          - input_boolean.notify_when_status_changes_automation
 
       - type: entities
         title: Systems
         entities:
-          - input_boolean.systems_automation_low_batteries
-          - input_boolean.systems_automation_media_center_left_on
-          - input_boolean.systems_automation_nightly_tasks
-          - input_boolean.systems_automation_ssl_expiration
+          - input_boolean.media_center_left_on
+          - input_boolean.notify_of_low_batteries_automation
+          - input_boolean.notify_of_ssl_expiration_automation
 
       - type: entities
         title: Trash
         entities:
-          - input_boolean.trash_automation_notify_of_pickup
+          - input_boolean.notify_of_trash_pickup_automation
 
       - type: entities
         title: Valuables
         entities:
-          - input_boolean.aarons_keys_automation_left_somewhere
-          - input_boolean.aarons_wallet_automation_left_somewhere
+          - input_boolean.notify_when_aarons_keys_missing_automation
+          - input_boolean.notify_when_aarons_wallet_missing_automation
 
       - type: entities
         title: Wolfie
         entities:
-          - input_boolean.wolfie_automation_monitor_consumables
-          - input_boolean.wolfie_automation_scheduled_cycle
+          - input_boolean.notify_when_wolfie_consumable_low_automation
+          - input_boolean.wolfie_scheduled_cycle_automation
 
   - title: Cameras
     icon: mdi:cctv

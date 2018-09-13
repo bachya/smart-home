@@ -5,8 +5,7 @@
 from enum import Enum
 from typing import Union
 
-from app import App  # type: ignore
-from automation import Automation, Feature  # type: ignore
+from automation import Automation, Base  # type: ignore
 from util.scheduler import run_on_days  # type: ignore
 
 HANDLE_BIN = 'vacuum_bin'
@@ -14,30 +13,32 @@ HANDLE_SCHEDULE = 'schedule'
 HANDLE_STUCK = 'vacuum_stuck'
 
 
-class MonitorConsumables(Feature):
+class MonitorConsumables(Automation):
     """Define a feature to notify when a consumable gets low."""
 
     def initialize(self) -> None:
         """Initialize."""
+        super().initialize()
+
         for consumable in self.properties['consumables']:
-            self.hass.listen_state(
+            self.listen_state(
                 self.consumable_changed,
-                self.hass.manager_app.entities['vacuum'],
+                self.manager_app.entities['vacuum'],
                 attribute=consumable,
-                constrain_input_boolean=self.enabled_toggle)
+                constrain_input_boolean=self.enabled_entity_id)
 
     def consumable_changed(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Create a task when a consumable is getting low."""
         if int(new) < self.properties['consumable_threshold']:
-            self.hass.log('Consumable is low: {0}'.format(attribute))
+            self.log('Consumable is low: {0}'.format(attribute))
 
-            self.hass.notification_manager.create_omnifocus_task(
+            self.notification_manager.create_omnifocus_task(
                 'Order a new Wolfie consumable: {0}'.format(attribute))
 
 
-class ScheduledCycle(Feature):
+class ScheduledCycle(Automation):
     """Define a feature to run the vacuum on a schedule."""
 
     @property
@@ -45,7 +46,7 @@ class ScheduledCycle(Feature):
         """Get the days that the vacuuming schedule should run."""
         on_days = []
         for toggle in self.properties['schedule_switches']:
-            state = self.hass.get_state(toggle, attribute='all')
+            state = self.get_state(toggle, attribute='all')
             if state['state'] == 'on':
                 on_days.append(state['attributes']['friendly_name'])
 
@@ -53,115 +54,104 @@ class ScheduledCycle(Feature):
 
     def initialize(self) -> None:
         """Initialize."""
-        self.initiated_by_app = False
+        super().initialize()
 
+        self.initiated_by_app = False
         self.create_schedule()
 
-        self.hass.listen_event(
+        self.listen_event(
             self.alarm_changed,
             'ALARM_CHANGE',
-            constrain_input_boolean=self.enabled_toggle)
-        self.hass.listen_event(
+            constrain_input_boolean=self.enabled_entity_id)
+        self.listen_event(
             self.start_by_switch,
             'VACUUM_START',
-            constrain_input_boolean=self.enabled_toggle)
+            constrain_input_boolean=self.enabled_entity_id)
         self.listen_ios_event(
             self.response_from_push_notification,
             self.properties['ios_emptied_key'])
-        self.hass.listen_state(
+        self.listen_state(
             self.all_done,
-            self.hass.manager_app.entities['status'],
-            old=self.hass.manager_app.States.returning_home.value,
-            new=self.hass.manager_app.States.charging.value,
-            constrain_input_boolean=self.enabled_toggle)
-        self.hass.listen_state(
+            self.manager_app.entities['status'],
+            old=self.manager_app.States.returning.value,
+            new=self.manager_app.States.docked.value,
+            constrain_input_boolean=self.enabled_entity_id)
+        self.listen_state(
             self.bin_state_changed,
-            self.hass.manager_app.entities['bin_state'],
-            constrain_input_boolean=self.enabled_toggle)
-        self.hass.listen_state(
+            self.manager_app.entities['bin_state'],
+            constrain_input_boolean=self.enabled_entity_id)
+        self.listen_state(
             self.errored,
-            self.hass.manager_app.entities['status'],
-            new=self.hass.manager_app.States.charger_disconnected.value,
-            constrain_input_boolean=self.enabled_toggle)
-        self.hass.listen_state(
+            self.manager_app.entities['status'],
+            new=self.manager_app.States.error.value,
+            constrain_input_boolean=self.enabled_entity_id)
+        self.listen_state(
             self.error_cleared,
-            self.hass.manager_app.entities['status'],
-            old=self.hass.manager_app.States.charger_disconnected.value,
-            constrain_input_boolean=self.enabled_toggle)
-        self.hass.listen_state(
-            self.errored,
-            self.hass.manager_app.entities['status'],
-            new=self.hass.manager_app.States.error.value,
-            constrain_input_boolean=self.enabled_toggle)
-        self.hass.listen_state(
-            self.error_cleared,
-            self.hass.manager_app.entities['status'],
-            old=self.hass.manager_app.States.error.value,
-            constrain_input_boolean=self.enabled_toggle)
+            self.manager_app.entities['status'],
+            old=self.manager_app.States.error.value,
+            constrain_input_boolean=self.enabled_entity_id)
         for toggle in self.properties['schedule_switches']:
-            self.hass.listen_state(
+            self.listen_state(
                 self.schedule_changed,
                 toggle,
-                constrain_input_boolean=self.enabled_toggle)
+                constrain_input_boolean=self.enabled_entity_id)
 
     def alarm_changed(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to 'ALARM_CHANGE' events."""
-        state = self.hass.manager_app.States(
-            self.hass.get_state(self.hass.manager_app.entities['status']))
+        state = self.manager_app.States(
+            self.get_state(self.manager_app.entities['status']))
 
         # Scenario 1: Vacuum is charging and is told to start:
-        if ((self.initiated_by_app
-             and state == self.hass.manager_app.States.charging)
-                and data['state'] ==
-                self.hass.security_system.AlarmStates.home.value):
-            self.hass.log('Activating vacuum (post-security)')
+        if ((self.initiated_by_app and state == self.manager_app.States.docked)
+                and
+                data['state'] == self.security_system.AlarmStates.home.value):
+            self.log('Activating vacuum (post-security)')
 
-            self.hass.turn_on(self.hass.manager_app.entities['vacuum'])
+            self.turn_on(self.manager_app.entities['vacuum'])
 
         # Scenario 2: Vacuum is running when alarm is set to "Away":
-        elif (state == self.hass.manager_app.States.cleaning and data['state']
-              == self.hass.security_system.AlarmStates.away.value):
-            self.hass.log('Security mode is "Away"; pausing until "Home"')
+        elif (state == self.manager_app.States.cleaning and
+              data['state'] == self.security_system.AlarmStates.away.value):
+            self.log('Security mode is "Away"; pausing until "Home"')
 
-            self.hass.call_service(
+            self.call_service(
                 'vacuum/start_pause',
-                entity_id=self.hass.manager_app.entities['vacuum'])
-            self.hass.security_system.state = (
-                self.hass.security_system.AlarmStates.home)
+                entity_id=self.manager_app.entities['vacuum'])
+            self.security_system.state = (
+                self.security_system.AlarmStates.home)
 
         # Scenario 3: Vacuum is paused when alarm is set to "Home":
-        elif (state == self.hass.manager_app.States.paused and data['state'] ==
-              self.hass.security_system.AlarmStates.home.value):
-            self.hass.log('Alarm in "Home"; resuming')
+        elif (state == self.manager_app.States.paused and
+              data['state'] == self.security_system.AlarmStates.home.value):
+            self.log('Alarm in "Home"; resuming')
 
-            self.hass.call_service(
+            self.call_service(
                 'vacuum/start_pause',
-                entity_id=self.hass.manager_app.entities['vacuum'])
+                entity_id=self.manager_app.entities['vacuum'])
 
     def all_done(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Re-arm security (if needed) when done."""
-        self.hass.log('Vacuuming cycle all done')
+        self.log('Vacuuming cycle all done')
 
-        if (self.hass.presence_manager.noone(
-                self.hass.presence_manager.HomeStates.just_arrived,
-                self.hass.presence_manager.HomeStates.home)):
-            self.hass.log('Changing alarm state to "away"')
+        if (self.presence_manager.noone(
+                self.presence_manager.HomeStates.just_arrived,
+                self.presence_manager.HomeStates.home)):
+            self.log('Changing alarm state to "away"')
 
-            self.hass.security_system.state = (
-                self.hass.security_system.AlarmStates.away)
+            self.security_system.state = (
+                self.security_system.AlarmStates.away)
 
-        self.hass.manager_app.bin_state = (
-            self.hass.manager_app.BinStates.full)
+        self.manager_app.bin_state = (self.manager_app.BinStates.full)
         self.initiated_by_app = False
 
     def bin_state_changed(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Listen for changes in bin status."""
-        if new == self.hass.manager_app.BinStates.full.value:
-            self.handles[HANDLE_BIN] = self.hass.notification_manager.repeat(
+        if new == self.manager_app.BinStates.full.value:
+            self.handles[HANDLE_BIN] = self.notification_manager.repeat(
                 'Wolfie Full 🤖',
                 "Empty him now and you won't have to do it later!",
                 self.properties['notification_interval_full'],
@@ -169,7 +159,7 @@ class ScheduledCycle(Feature):
                 data={'push': {
                     'category': 'wolfie'
                 }})
-        elif new == self.hass.manager_app.BinStates.empty.value:
+        elif new == self.manager_app.BinStates.empty.value:
             if HANDLE_BIN in self.handles:
                 self.handles.pop(HANDLE_BIN)()
 
@@ -177,14 +167,14 @@ class ScheduledCycle(Feature):
         """Create the vacuuming schedule from the on booleans."""
         if HANDLE_SCHEDULE in self.handles:
             for handle in self.handles.pop(HANDLE_SCHEDULE):
-                self.hass.cancel_timer(handle)
+                self.cancel_timer(handle)
 
         self.handles[HANDLE_SCHEDULE] = run_on_days(  # type: ignore
-            self.hass,
+            self,
             self.start_by_schedule,
             self.active_days,
-            self.hass.parse_time(self.properties['schedule_time']),
-            constrain_input_boolean=self.enabled_toggle)
+            self.parse_time(self.properties['schedule_time']),
+            constrain_input_boolean=self.enabled_entity_id)
 
     def error_cleared(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -197,7 +187,7 @@ class ScheduledCycle(Feature):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Brief when Wolfie's had an error."""
-        self.handles[HANDLE_STUCK] = self.hass.notification_manager.repeat(
+        self.handles[HANDLE_STUCK] = self.notification_manager.repeat(
             'Wolfie Stuck 😢',
             "Help him get back on track or home.",
             self.properties['notification_interval_stuck'],
@@ -207,14 +197,13 @@ class ScheduledCycle(Feature):
     def response_from_push_notification(
             self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to iOS notification to empty vacuum."""
-        self.hass.log('Responding to iOS request that vacuum is empty')
+        self.log('Responding to iOS request that vacuum is empty')
 
-        self.hass.manager_app.bin_state = (
-            self.hass.manager_app.BinStates.empty)
+        self.manager_app.bin_state = (self.manager_app.BinStates.empty)
 
-        target = self.hass.notification_manager.get_target_from_push_id(
+        target = self.notification_manager.get_target_from_push_id(
             data['sourceDevicePermanentID'])
-        self.hass.notification_manager.send(
+        self.notification_manager.send(
             'Vacuum Emptied',
             '{0} emptied the vacuum.'.format(target),
             target='not {0}'.format(target))
@@ -228,18 +217,18 @@ class ScheduledCycle(Feature):
     def start_by_schedule(self, kwargs: dict) -> None:
         """Start cleaning via the schedule."""
         if not self.initiated_by_app:
-            self.hass.manager_app.start()
+            self.manager_app.start()
             self.initiated_by_app = True
 
     def start_by_switch(
             self, event_name: str, data: dict, kwargs: dict) -> None:
         """Start cleaning via the switch."""
         if not self.initiated_by_app:
-            self.hass.manager_app.start()
+            self.manager_app.start()
             self.initiated_by_app = True
 
 
-class Vacuum(App):
+class Vacuum(Base):
     """Define an app to represent a vacuum-type appliance."""
 
     @property
@@ -283,7 +272,3 @@ class Vacuum(App):
             self.log('Activating vacuum')
 
             self.turn_on(self.entities['vacuum'])
-
-
-class VacuumAutomation(Automation):
-    """Define a class to represent automations for vacuums."""

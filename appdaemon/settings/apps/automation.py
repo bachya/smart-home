@@ -1,12 +1,90 @@
 """Define generic automation objects and logic."""
 
-# pylint: disable=attribute-defined-outside-init
+# pylint: disable=attribute-defined-outside-init,import-error
 
-import sys
-from typing import Callable
+from typing import Callable, Dict, Union  # pylint: disable=unused-import
 
-from core import Base  # type: ignore
-from util import underscore_to_camel  # type: ignore
+from appdaemon.plugins.hass.hassapi import Hass  # type: ignore
+
+from const import (  # type: ignore
+    BLACKOUT_START, BLACKOUT_END, THRESHOLD_CLOUDY)
+
+SENSOR_CLOUD_COVER = 'sensor.dark_sky_cloud_coverage'
+
+
+class Base(Hass):
+    """Define a base automation object."""
+
+    def initialize(self) -> None:
+        """Initialize."""
+        # Define a holding place for HASS entity IDs:
+        self.entities = self.args.get('entities', {})
+
+        # Define a holding place for any scheduler handles that the automation
+        # wants to keep track of:
+        self.handles = {}  # type: Dict[str, str]
+
+        # Define a holding place for key/value properties for this automation:
+        self.properties = self.args.get('properties', {})
+
+        # Take every dependecy and create a reference to it:
+        for app in self.args.get('dependencies', []):
+            if not getattr(self, app, None):
+                setattr(self, app, self.get_app(app))
+
+        # Register custom constraints:
+        self.register_constraint('constrain_anyone')
+        self.register_constraint('constrain_blackout')
+        self.register_constraint('constrain_cloudy')
+        self.register_constraint('constrain_everyone')
+        self.register_constraint('constrain_noone')
+        self.register_constraint('constrain_sun')
+
+    def _constrain_presence(self, method: str,
+                            value: Union[str, None]) -> bool:
+        """Constrain presence in a generic fashion."""
+        if not value:
+            return True
+
+        return getattr(self.presence_manager, method)(
+            *[self.presence_manager.HomeStates[s] for s in value.split(',')])
+
+    def constrain_anyone(self, value: str) -> bool:
+        """Constrain execution to whether anyone is in a state."""
+        return self._constrain_presence('anyone', value)
+
+    def constrain_blackout(self, state: str) -> bool:
+        """Constrain execution based on blackout state."""
+        if state not in ['in', 'out']:
+            raise ValueError('Unknown blackout state: {0}'.format(state))
+
+        in_blackout = self.now_is_between(BLACKOUT_START, BLACKOUT_END)
+        if state == 'in':
+            return in_blackout
+        return not in_blackout
+
+    def constrain_cloudy(self, value: bool) -> bool:
+        """Constrain execution based whether it's cloudy or not."""
+        cloud_cover = float(self.get_state(SENSOR_CLOUD_COVER))
+        if (value and cloud_cover >= THRESHOLD_CLOUDY) or (
+                not value and cloud_cover < THRESHOLD_CLOUDY):
+            return True
+        return False
+
+    def constrain_everyone(self, value: str) -> bool:
+        """Constrain execution to whether everyone is in a state."""
+        return self._constrain_presence('everyone', value)
+
+    def constrain_noone(self, value: str) -> bool:
+        """Constrain execution to whether no one is in a state."""
+        return self._constrain_presence('noone', value)
+
+    def constrain_sun(self, position: str) -> bool:
+        """Constrain execution to the location of the sun."""
+        if ((position == 'up' and self.sun_up())
+                or (position == 'down' and self.sun_down())):
+            return True
+        return False
 
 
 class Automation(Base):
@@ -16,103 +94,34 @@ class Automation(Base):
         """Initialize."""
         super().initialize()
 
-        self.friendly_name = self.args.get('friendly_name')
-        enabled_toggle = self.args.get('enabled_toggle')
-
+        # Define a reference to the "manager app" – for example, a trash-
+        # related automation might carry a reference to TrashManager:
         if self.args.get('manager_app'):
             self.manager_app = getattr(self, self.args['manager_app'])
 
-        for feature in self.args.get('features', []):
-            name = feature['name']
-
-            feature_class = getattr(
-                sys.modules[self.args['module']], underscore_to_camel(name),
-                None)
-            if not feature_class:
-                self.log('Missing class for feature: {0}'.format(name))
-                continue
-
-            features = []  # type: ignore
-            feature_obj = feature_class(
-                self,
-                name,
-                entities={
-                    **self.entities,
-                    **feature.get('entities', {})
-                },
-                properties={
-                    **self.properties,
-                    **feature.get('properties', {})
-                },
-                enabled_toggle_config=feature.get(
-                    'enabled_toggle', enabled_toggle),
-                mode_alterations=feature.get('mode_alterations', {}))
-
-            if not feature_obj.repeatable and feature_obj in features:
-                self.error(
-                    'Refusing to reinitialize single feature: {0}'.format(
-                        name))
-                continue
-
-            self.log(
-                'Initializing feature {0} (enabled_toggle: {1})'.format(
-                    name, feature_obj.enabled_toggle))
-
-            features.append(feature_obj)
-            feature_obj.initialize()
-
-
-class Feature:  # pylint: disable=too-many-instance-attributes
-    """Define an automation feature."""
-
-    def __init__(  # pylint: disable=too-many-arguments
-            self,
-            hass: Automation,
-            name: str,
-            *,
-            entities: dict = None,
-            properties: dict = None,
-            enabled_toggle_config: dict = None,
-            mode_alterations: dict = None) -> None:
-        """Initiliaze."""
-        self.entities = entities
-        self.handles = {}  # type: ignore
-        self.hass = hass
-        self.name = name
-        self.properties = properties
-
-        if enabled_toggle_config:
-            if enabled_toggle_config.get('key'):
-                self.enabled_toggle = 'input_boolean.{0}_{1}'.format(
-                    hass.name, enabled_toggle_config['key'])
+        # Set the entity ID of the input boolean that will control whether
+        # this automation is enabled or not:
+        self.enabled_entity_id = None  # type: ignore
+        enabled_config = self.args.get('enabled_config', {})
+        if enabled_config:
+            if enabled_config.get('entity_name'):
+                self.enabled_entity_id = 'input_boolean.{0}'.format(
+                    enabled_config['entity_name'])
             else:
-                self.enabled_toggle = 'input_boolean.{0}_{1}'.format(
-                    hass.name, name)
-        else:
-            self.enabled_toggle = None  # type: ignore
+                self.enabled_entity_id = 'input_boolean.{0}'.format(self.name)
 
+        # Register any "mode alterations" for this automation – for example,
+        # perhaps it should be disabled when Vacation Mode is enabled:
+        mode_alterations = self.args.get('mode_alterations', {})
         if mode_alterations:
             for mode, value in mode_alterations.items():
-                mode_app = getattr(self.hass, mode)
-                mode_app.register_enabled_toggle(self.enabled_toggle, value)
-
-    def __eq__(self, other):
-        """Define equality based on name."""
-        return self.name == other.name
-
-    @property
-    def repeatable(self) -> bool:
-        """Define whether a feature can be implemented multiple times."""
-        return False
-
-    def initialize(self) -> None:
-        """Define an initializer method."""
-        raise NotImplementedError
+                mode_app = getattr(self, mode)
+                mode_app.register_enabled_entity(self.enabled_entity_id, value)
 
     def listen_ios_event(self, callback: Callable, action: str) -> None:
         """Register a callback for an iOS event."""
-        self.hass.listen_event(
+        self.listen_event(
             callback,
             'ios.notification_action_fired',
             actionName=action,
-            constrain_input_boolean=self.enabled_toggle)
+            constrain_input_boolean=self.enabled_entity_id)

@@ -4,10 +4,10 @@
 
 from typing import Union
 
-import appdaemon.plugins.hass.hassapi as hass  # type: ignore
+from automation import Base  # type: ignore
 
 
-class Mode(hass.Hass):
+class Mode(Base):
     """Define a mode."""
 
     @property
@@ -31,24 +31,26 @@ class Mode(hass.Hass):
 
     def initialize(self) -> None:
         """Initialize."""
+        super().initialize()
+
         self._enabled_toggles_to_disable = []  # type: ignore
         self._enabled_toggles_to_enable = []  # type: ignore
         self.switch = 'input_boolean.mode_{0}'.format(self.name)
 
         self.listen_state(self.switch_toggled_cb, entity=self.switch)
 
-    def register_enabled_toggle(
-            self, enabled_toggle_name: str, value: str) -> None:
+    def register_enabled_entity(
+            self, enabled_entity_id: str, value: str) -> None:
         """Record how a enable toggle should respond when in this mode."""
         location = getattr(self, '_enabled_toggles_to_{0}'.format(value))
-        if enabled_toggle_name in location:
+        if enabled_entity_id in location:
             self.log(
-                'Switch behavior already exists: {0}'.format(
-                    enabled_toggle_name),
+                'Enabled entity already registered: {0}'.format(
+                    enabled_entity_id),
                 level='WARNING')
             return
 
-        location.append(enabled_toggle_name)
+        location.append(enabled_entity_id)
 
     def switch_toggled_cb(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,

@@ -4,26 +4,27 @@
 
 from typing import Union
 
-from automation import Automation, Feature  # type: ignore
+from automation import Automation  # type: ignore
+
+HANDLE_BATTERY_LOW = 'battery_low'
 
 
-class SystemsAutomation(Automation):
-    """Define a class to represent automations for systems."""
-
-
-class LowBatteries(Feature):
+class LowBatteries(Automation):
     """Define a feature to notify us of low batteries."""
 
     def initialize(self) -> None:
         """Initialize."""
-        self._registered = []  # type: ignore
+        super().initialize()
 
-        for entity in self.properties['batteries_to_monitor']:
-            self.hass.listen_state(
+        self._registered = []  # type: ignore
+        self.handles[HANDLE_BATTERY_LOW] = {}
+
+        for entity in self.entities['batteries_to_monitor']:
+            self.listen_state(
                 self.low_battery_detected,
                 entity,
                 attribute='all',
-                constrain_input_boolean=self.enabled_toggle)
+                constrain_input_boolean=self.enabled_entity_id)
 
     def low_battery_detected(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str,
@@ -40,85 +41,72 @@ class LowBatteries(Feature):
             if name in self._registered:
                 return
 
-            self.hass.log('Low battery detected: {0}'.format(name))
+            self.log('Low battery detected: {0}'.format(name))
 
             self._registered.append(name)
 
-            self.handles[name] = self.hass.notification_manager.repeat(
-                'Low Batteries 🔋',
-                '{0} is at {1}%. Replace the batteries ASAP!'.format(
-                    name, value),
-                self.properties['notification_interval'],
-                target='home')
+            self.handles[HANDLE_BATTERY_LOW][
+                name] = self.notification_manager.repeat(
+                    'Low Batteries 🔋',
+                    '{0} is at {1}%. Replace the batteries ASAP!'.format(
+                        name, value),
+                    self.properties['notification_interval'],
+                    target='home')
         else:
             try:
                 self._registered.remove(name)
-                if name in self.handles:
-                    self.handles.pop(name)()
+                if name in self.handles[HANDLE_BATTERY_LOW]:
+                    self.handles[HANDLE_BATTERY_LOW].pop(name)()
             except ValueError:
                 return
 
 
-class LeftInState(Feature):
+class LeftInState(Automation):
     """Define a feature to monitor whether an entity is left in a state."""
 
     def initialize(self) -> None:
         """Initialize."""
-        self.hass.listen_state(
+        super().initialize()
+
+        self.listen_state(
             self.limit_reached,
             self.entities['entity'],
             new=self.properties['state'],
             duration=self.properties['seconds'],
-            constrain_input_boolean=self.enabled_toggle)
+            constrain_input_boolean=self.enabled_entity_id)
 
     def limit_reached(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Notify when the threshold is reached."""
-        self.hass.notification_manager.send(
+        self.notification_manager.send(
             'Entity Checkup',
             '{0} has been left {1} for {2} minutes.'.format(
-                self.hass.get_state(
+                self.get_state(
                     self.entities['entity'], attribute='friendly_name'),
                 self.properties['state'],
                 int(self.properties['seconds']) / 60),
             target='Aaron')
 
 
-class NightlyTasks(Feature):
-    """Define a feature to run various nightly tasks."""
-
-    def initialize(self) -> None:
-        """Initialize."""
-        self.hass.run_daily(
-            self.night_has_arrived,
-            self.hass.parse_time(self.properties['tasks_schedule_time']),
-            constrain_input_boolean=self.enabled_toggle)
-
-    def night_has_arrived(self, kwargs: dict) -> None:
-        """Perform nightly tasks."""
-        self.hass.log('Performing nightly tasks')
-
-        self.hass.turn_on(self.entities['auto_arm'])
-
-
-class SslExpiration(Feature):
+class SslExpiration(Automation):
     """Define a feature to notify me when the SSL cert is expiring."""
 
     def initialize(self) -> None:
         """Initialize."""
-        self.hass.listen_state(
+        super().initialize()
+
+        self.listen_state(
             self.ssl_expiration_approaching,
             self.entities['ssl_expiry'],
-            constrain_input_boolean=self.enabled_toggle)
+            constrain_input_boolean=self.enabled_entity_id)
 
     def ssl_expiration_approaching(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """When SSL is about to expire, make an OmniFocus todo."""
         if int(new) < self.properties['expiry_threshold']:
-            self.hass.log(
-                'SSL certificate about to expire: {0} days'.format(new))
+            self.log('SSL certificate about to expire: {0} days'.format(new))
 
-            self.hass.notification_manager.create_omnifocus_task(
+            self.notification_manager.create_omnifocus_task(
                 'SSL expires in less than {0} days'.format(new))

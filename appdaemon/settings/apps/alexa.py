@@ -5,13 +5,13 @@
 import random
 from typing import Tuple
 
-from app import App  # type: ignore
+from automation import Base  # type: ignore
 from const import PEOPLE  # type: ignore
 from util import (  # type: ignore
     camel_to_underscore, grammatical_list_join, relative_search_dict)
 
 
-class Alexa(App):
+class Alexa(Base):
     """Define a class to represent the app."""
 
     AFFIRMATIVE_RESPONSES = [

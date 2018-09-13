@@ -1,69 +1,78 @@
 ---
-fireplace_automation:
+fireplace_failsafe_automation:
   module: switches
-  class: SwitchAutomation
+  class: PresenceFailsafe
   dependencies:
-    - do_not_disturb
+    - guest_mode
+    - presence_manager
+  entities:
+    switch: switch.fireplace
+  mode_alterations:
+    guest_mode: disable
+  enabled_config:
+    name: Disable fireplace when away
+    icon: mdi:fire
+    initial: true
+
+living_room_lights_on_at_sunset_automation:
+  module: switches
+  class: ToggleAtTime
+  dependencies:
     - guest_mode
     - presence_manager
     - vacation_mode
   entities:
-    switch: switch.fireplace
-  features:
-    - name: presence_failsafe
-      mode_alterations:
-        guest_mode: disable
-      enabled_toggle:
-        name: Disable fireplace when away
-        icon: mdi:fire
-        initial: true
-living_room_lights_automation:
+    switch: switch.reading_lamp
+  properties:
+    presence_required: true
+    schedule_time: sunset
+    seasonal_offset: true
+    state: "on"
+  mode_alterations:
+    guest_mode: disable
+    vacation_mode: disable
+  enabled_config:
+    name: Turn on at sunset
+    icon: mdi:weather-sunset
+    initial: true
+
+living_room_lights_on_upon_arrival_automation:
   module: switches
-  class: SwitchAutomation
+  class: TurnOnUponArrival
   dependencies:
-    - do_not_disturb
+    - guest_mode
+    - presence_manager
+  entities:
+    switch: group.living_room_lights
+  properties:
+    possible_conditions:
+      constrain_cloudy: true
+      constrain_sun: "down"
+    trigger_on_first_only: true
+  mode_alterations:
+    guest_mode: disable
+  enabled_config:
+    name: Turn on upon arrival
+    icon: mdi:car
+    initial: true
+
+living_room_lights_vacation_mode_automation:
+  module: switches
+  class: VacationMode
+  dependencies:
     - guest_mode
     - presence_manager
     - vacation_mode
   entities:
     switch: group.living_room_lights
-  features:
-    - name: toggle_at_time
-      entities:
-        switch: switch.reading_lamp
-      properties:
-        presence_required: true
-        schedule_time: sunset
-        seasonal_offset: true
-        state: "on"
-      mode_alterations:
-        guest_mode: disable
-        vacation_mode: disable
-      enabled_toggle:
-        key: on_at_sunset
-        name: Turn on at sunset
-        icon: mdi:weather-sunset
-        initial: true
-    - name: turn_on_upon_arrival
-      properties:
-        possible_conditions:
-          constrain_cloudy: true
-          constrain_sun: "down"
-        trigger_on_first_only: true
-      mode_alterations:
-        guest_mode: disable
-      enabled_toggle:
-        name: Turn on upon arrival
-        icon: mdi:car
-        initial: true
-    - name: vacation_mode
-      mode_alterations:
-        guest_mode: disable
-        vacation_mode: enable
-      enabled_toggle:
-        name: Simulate vacation mode
-        icon: mdi:beach
-        initial: true
+  mode_alterations:
+    guest_mode: disable
+    vacation_mode: enable
+  enabled_config:
+    name: Simulate vacation mode
+    icon: mdi:beach
+    initial: true
+
 living_room_tv:
   module: harmony
   class: HarmonyRemote
@@ -72,20 +81,20 @@ living_room_tv:
     play_ps4: 27901089
     watch_roku: 39586383
     watch_tv: 27901129
-living_room_powder_room_fan_automation:
+
+powder_room_fan_auto_turn_on_automation:
   module: switches
-  class: SwitchAutomation
+  class: ToggleOnState
+  dependencies:
+    - presence_manager
   entities:
     switch: switch.powder_room_fan
-  features:
-    - name: toggle_on_state
-      entities:
-        target: switch.powder_room_fan
-      properties:
-        delay: 60
-        switch_state: "on"
-        target_state: "off"
-      enabled_toggle:
-        name: Turn on if turned off
-        icon: "mdi:fan"
-        initial: true
+    target: switch.powder_room_fan
+  properties:
+    delay: 60
+    switch_state: "on"
+    trigger_state: "off"
+  enabled_config:
+    name: Turn on if turned off
+    icon: "mdi:fan"
+    initial: true

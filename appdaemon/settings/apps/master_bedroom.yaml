@@ -1,92 +1,100 @@
 ---
-master_bedroom_lights_automation:
+master_bedroom_lights_sleep_timer_automation:
   module: switches
-  class: SwitchAutomation
+  class: SleepTimer
   dependencies:
-    - do_not_disturb
+    - presence_manager
+  entities:
+    switch: light.salt_lamp_master_bedroom
+    timer_slider: input_number.master_bedroom_salt_lamp_timer
+  enabled_config:
+    name: Enable sleep timer
+    icon: mdi:sleep
+    initial: true
+
+master_bedroom_lights_on_at_sunset_automation:
+  module: switches
+  class: ToggleAtTime
+  dependencies:
     - guest_mode
     - presence_manager
     - vacation_mode
   entities:
     switch: light.salt_lamp_master_bedroom
-  features:
-    - name: sleep_timer
-      entities:
-        timer_slider: input_number.master_bedroom_salt_lamp_timer
-      enabled_toggle:
-        name: Enable sleep timer
-        icon: mdi:sleep
-        initial: true
-    - name: toggle_at_time
-      properties:
-        schedule_time: sunset
-        seasonal_offset: true
-        state: "on"
-      mode_alterations:
-        guest_mode: disable
-        vacation_mode: disable
-      enabled_toggle:
-        key: on_at_sunset
-        name: Turn on at sunset
-        icon: mdi:weather-sunset
-        initial: true
-master_bathroom_fan_automation:
+  properties:
+    schedule_time: sunset
+    seasonal_offset: true
+    state: "on"
+  mode_alterations:
+    guest_mode: disable
+    vacation_mode: disable
+  enabled_config:
+    name: Turn on at sunset
+    icon: mdi:weather-sunset
+    initial: true
+
+master_bathroom_fan_sleep_timer_automation:
   module: switches
-  class: SwitchAutomation
+  class: SleepTimer
   dependencies:
-    - do_not_disturb
-    - guest_mode
     - presence_manager
-    - vacation_mode
   entities:
     switch: switch.master_bathroom_fan
-  features:
-    - name: sleep_timer
-      entities:
-        timer_slider: input_number.master_bathroom_fan_timer
-      enabled_toggle:
-        name: "Bathroom: enable sleep timer"
-        icon: mdi:sleep
-        initial: true
-master_bathroom_toilet_fan_automation:
+    timer_slider: input_number.master_bathroom_fan_timer
+  enabled_config:
+    name: "Bathroom: enable sleep timer"
+    icon: mdi:sleep
+    initial: true
+
+master_toilet_fan_sleep_timer_automation:
   module: switches
-  class: SwitchAutomation
+  class: SleepTimer
   dependencies:
-    - do_not_disturb
+    - presence_manager
+  entities:
+    switch: switch.master_toilet_fan
+    timer_slider: input_number.master_bathroom_toilet_fan_timer
+  enabled_config:
+    name: "Toilet: enable sleep timer"
+    icon: mdi:sleep
+    initial: true
+
+master_toilet_fan_off_at_5pm_automation:
+  module: switches
+  class: ToggleAtTime
+  dependencies:
     - guest_mode
     - presence_manager
     - vacation_mode
   entities:
     switch: switch.master_toilet_fan
-  features:
-    - name: sleep_timer
-      entities:
-        timer_slider: input_number.master_bathroom_toilet_fan_timer
-      enabled_toggle:
-        name: "Toilet: enable sleep timer"
-        icon: mdi:sleep
-        initial: true
-    - name: toggle_at_time
-      properties:
-        schedule_time: "17:00:00"
-        state: "off"
-      mode_alterations:
-        guest_mode: disable
-        vacation_mode: disable
-      enabled_toggle:
-        key: off_at_5pm
-        name: "Toilet: off at 5pm"
-        icon: mdi:fan
-        initial: true
-    - name: toggle_at_time
-      properties:
-        schedule_time: "10:00:00"
-        state: "on"
-      mode_alterations:
-        guest_mode: disable
-        vacation_mode: disable
-      enabled_toggle:
-        key: on_at_10am
-        name: "Toilet: on at 10am"
-        icon: mdi:fan
-        initial: true
+  properties:
+    schedule_time: "17:00:00"
+    state: "off"
+  mode_alterations:
+    guest_mode: disable
+    vacation_mode: disable
+  enabled_config:
+    name: "Toilet: off at 5pm"
+    icon: mdi:fan
+    initial: true
+
+master_toilet_fan_on_at_10am_automation:
+  module: switches
+  class: ToggleAtTime
+  dependencies:
+    - guest_mode
+    - presence_manager
+    - vacation_mode
+  entities:
+    switch: switch.master_toilet_fan
+  properties:
+    schedule_time: "10:00:00"
+    state: "on"
+  mode_alterations:
+    guest_mode: disable
+    vacation_mode: disable
+  enabled_config:
+    name: "Toilet: on at 10am"
+    icon: mdi:fan
+    initial: true

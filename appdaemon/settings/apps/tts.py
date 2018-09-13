@@ -4,13 +4,13 @@
 
 from typing import Tuple
 
-from app import App  # type: ignore
+from automation import Base  # type: ignore
 from util.dt import relative_time_of_day  # type: ignore
 
 OPENER_FILE_URL = 'https://hass.myserver.com/local/tts_opener.mp3'
 
 
-class TTS(App):
+class TTS(Base):
     """Define a class to represent the app."""
 
     def initialize(self) -> None:

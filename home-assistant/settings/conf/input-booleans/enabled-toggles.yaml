@@ -1,213 +1,197 @@
 ---
-aarons_keys_automation_left_somewhere:
-  icon: mdi:key
-  initial: true
-  name: Notify AMB keys missing
-aarons_wallet_automation_left_somewhere:
-  icon: mdi:wallet
-  initial: true
-  name: Notify AMB wallet missing
-backyard_lights_automation_off_at_11pm:
-  icon: mdi:lightbulb
-  initial: true
-  name: Turn off at 11pm (weekends)
-backyard_lights_automation_off_at_930pm:
-  icon: mdi:lightbulb
-  initial: true
-  name: Turn off at 9:30pm (weekdays)
-backyard_lights_automation_on_at_sunset:
-  icon: mdi:weather-sunset
-  initial: true
-  name: Turn on at sunset
-climate_automation_adjust_on_proximity:
+adjust_climate_on_proximity_automation:
   icon: mdi:car-side
   initial: true
   name: Adjust on proximity
-climate_automation_notify_bad_aqi:
-  icon: mdi:weather-windy
+auto_departure_lockup_automation:
+  icon: mdi:car-side
   initial: true
-  name: Bad AQI notifications
-dishwasher_automation_notify_done:
-  icon: mdi:washing-machine
+  name: Automatic departure lock up
+auto_nighttime_lockup_automation:
+  icon: mdi:clock
   initial: true
-  name: Notifications when clean
-fiddle_leaf_fig_automation_low_moisture:
-  icon: mdi:flower
-  initial: true
-  name: Notify of low moisture
-fireplace_automation_presence_failsafe:
-  icon: mdi:fire
-  initial: true
-  name: Disable fireplace when away
-front_patio_light_automation_off_at_11pm:
-  icon: mdi:lightbulb
-  initial: true
-  name: Turn off at 11pm
-front_patio_light_automation_on_at_sunset:
-  icon: mdi:weather-sunset
-  initial: true
-  name: Turn on at sunset
-front_patio_light_automation_vacation_mode:
-  icon: mdi:beach
-  initial: true
-  name: Simulate vacation mode
-garage_camera_automation_auto_night_mode:
-  icon: mdi:weather-sunset
-  initial: true
-  name: 'Garage Cam: Auto Night Mode'
-garage_lights_automation_turn_off_when_garage_closed:
-  icon: mdi:garage
-  initial: true
-  name: Turn off 5 minutes after door closes
-garage_lights_automation_turn_on_upon_arrival:
-  icon: mdi:car
-  initial: true
-  name: Turn on upon arrival
-hass_automation_auto_themes:
+  name: Automatically lock up at night
+auto_themes_automation:
   icon: mdi:theme-light-dark
   initial: true
   name: Auto light/dark themes
-hass_automation_auto_vacation_mode:
+auto_vacation_mode_alterations_automation:
   icon: mdi:beach
   initial: true
   name: Auto enable/disable vacation mode
-hass_automation_bad_login_notification:
+backyard_lights_off_at_11pm_automation:
+  icon: mdi:lightbulb
+  initial: true
+  name: Turn off at 11pm (weekends)
+backyard_lights_off_at_930pm_automation:
+  icon: mdi:lightbulb
+  initial: true
+  name: Turn off at 9:30pm (weekdays)
+backyard_lights_on_at_sunset_automation:
+  icon: mdi:weather-sunset
+  initial: true
+  name: Turn on at sunset
+bad_login_notifications_automation:
   icon: mdi:alert-circle
   initial: true
   name: Bad login notifications
-hass_automation_detect_blackout:
+detect_blackout_automation:
   icon: mdi:theme-light-dark
   initial: true
   name: Detect in-blackout
-hass_automation_new_tasmota_version_notification:
-  icon: mdi:home-assistant
+dishwasher_cycle_automation:
+  icon: mdi:washing-machine
   initial: true
-  name: Notify of new versions
-hass_automation_new_version_notification:
-  icon: mdi:home-assistant
+  name: Notifications when clean
+fiddle_leaf_fig_low_moisture_automation:
+  icon: mdi:flower
   initial: true
-  name: Notify of new versions
-kitchen_patio_light_automation_off_at_11pm:
-  icon: mdi:lightbulb
+  name: Notify of low moisture
+fireplace_failsafe_automation:
+  icon: mdi:fire
   initial: true
-  name: Turn off at 11pm
-kitchen_patio_light_automation_on_at_sunset:
+  name: Disable fireplace when away
+garage_camera_auto_night_mode:
   icon: mdi:weather-sunset
   initial: true
-  name: Turn on at sunset
-kitchen_patio_light_automation_vacation_mode:
-  icon: mdi:beach
+  name: 'Garage Cam: Auto Night Mode'
+garage_lights_off_after_garage_close_automation:
+  icon: mdi:garage
   initial: true
-  name: Simulate vacation mode
-living_room_lights_automation_on_at_sunset:
-  icon: mdi:weather-sunset
-  initial: true
-  name: Turn on at sunset
-living_room_lights_automation_turn_on_upon_arrival:
+  name: Turn off 5 minutes after door closes
+garage_lights_on_upon_arrival_automation:
   icon: mdi:car
   initial: true
   name: Turn on upon arrival
-living_room_lights_automation_vacation_mode:
-  icon: mdi:beach
+kitchen_patio_light_double_tap_backyard_lights_automation:
+  icon: mdi:lightbulb
   initial: true
-  name: Simulate vacation mode
-living_room_powder_room_fan_automation_toggle_if_toggled:
-  icon: mdi:fan
-  initial: true
-  name: Turn on if turned off
-master_bathroom_fan_automation_sleep_timer:
-  icon: mdi:sleep
-  initial: true
-  name: 'Bathroom: enable sleep timer'
-master_bathroom_toilet_fan_automation_off_at_5pm:
-  icon: mdi:fan
-  initial: true
-  name: 'Toilet: off at 5pm'
-master_bathroom_toilet_fan_automation_on_at_10am:
-  icon: mdi:fan
-  initial: true
-  name: 'Toilet: on at 10am'
-master_bathroom_toilet_fan_automation_sleep_timer:
-  icon: mdi:sleep
-  initial: true
-  name: 'Toilet: enable sleep timer'
-master_bedroom_lights_automation_on_at_sunset:
+  name: Kitchen patio controls backyard lights
+living_room_lights_on_at_sunset_automation:
   icon: mdi:weather-sunset
   initial: true
   name: Turn on at sunset
-master_bedroom_lights_automation_sleep_timer:
+living_room_lights_on_upon_arrival_automation:
+  icon: mdi:car
+  initial: true
+  name: Turn on upon arrival
+living_room_lights_vacation_mode_automation:
+  icon: mdi:beach
+  initial: true
+  name: Simulate vacation mode
+master_bathroom_fan_sleep_timer_automation:
+  icon: mdi:sleep
+  initial: true
+  name: 'Bathroom: enable sleep timer'
+master_bedroom_lights_on_at_sunset_automation:
+  icon: mdi:weather-sunset
+  initial: true
+  name: Turn on at sunset
+master_bedroom_lights_sleep_timer_automation:
   icon: mdi:sleep
   initial: true
   name: Enable sleep timer
+master_toilet_fan_off_at_5pm_automation:
+  icon: mdi:fan
+  initial: true
+  name: 'Toilet: off at 5pm'
+master_toilet_fan_on_at_10am_automation:
+  icon: mdi:fan
+  initial: true
+  name: 'Toilet: on at 10am'
+master_toilet_fan_sleep_timer_automation:
+  icon: mdi:sleep
+  initial: true
+  name: 'Toilet: enable sleep timer'
+media_center_left_on:
+  icon: mdi:server
+  initial: true
+  name: Media Center left on
 notification_automation_manage_home_notifications:
   icon: mdi:car
   initial: true
   name: Manage home notifications
-office_lights_automation_off_at_10pm:
-  icon: mdi:lightbulb
+notify_bad_aqi_automation:
+  icon: mdi:weather-windy
   initial: true
-  name: Turn off at 10pm
-office_lights_automation_on_at_sunset:
-  icon: mdi:weather-sunset
-  initial: true
-  name: Turn on at sunset
-office_lights_automation_sleep_timer:
-  icon: mdi:sleep
-  initial: true
-  name: Enable sleep timer
-security_automation_absent_insecure:
-  icon: mdi:lock-open
-  initial: true
-  name: Absent & insecure alerts
-security_automation_auto_departure_lockup:
-  icon: mdi:car-side
-  initial: true
-  name: Automatic departure lock up
-security_automation_auto_nighttime_lockup:
-  icon: mdi:clock
-  initial: true
-  name: Automatically lock up at night
-security_automation_garage_left_open:
+  name: Bad AQI notifications
+notify_of_garage_open_automation:
   icon: mdi:garage
   initial: true
   name: Notify if garage left open
-security_automation_notify_on_change:
-  icon: mdi:shield-half-full
-  initial: false
-  name: Notify when state changes
-subaru_legacy_automation_notify_eta:
-  icon: mdi:car
-  initial: true
-  name: Notify of ETA
-subaru_legacy_automation_notify_low_fuel:
-  icon: mdi:gas-station
-  initial: true
-  name: Notify of low fuel
-systems_automation_low_batteries:
+notify_of_low_batteries_automation:
   icon: mdi:battery
   initial: true
   name: Notify of low batteries
-systems_automation_media_center_left_on:
-  icon: mdi:server
+notify_of_new_versions:
+  icon: mdi:home-assistant
   initial: true
-  name: Media Center left on
-systems_automation_nightly_tasks:
-  icon: mdi:clock
-  initial: true
-  name: Nightly tasks
-systems_automation_ssl_expiration:
+  name: Notify of new versions
+notify_of_ssl_expiration_automation:
   icon: mdi:certificate
   initial: true
   name: Notify of SSL expiration
-trash_automation_notify_of_pickup:
+notify_of_trash_pickup_automation:
   icon: mdi:delete
   initial: true
   name: Notify of pickups
-wolfie_automation_monitor_consumables:
+notify_when_aarons_keys_missing_automation:
+  icon: mdi:key
+  initial: true
+  name: Notify AMB keys missing
+notify_when_aarons_wallet_missing_automation:
+  icon: mdi:key
+  initial: true
+  name: Notify AMB wallet missing
+notify_when_absent_insecure_automation:
+  icon: mdi:lock-open
+  initial: true
+  name: Absent & insecure alerts
+notify_when_status_changes_automation:
+  icon: mdi:shield-half-full
+  initial: false
+  name: Notify when state changes
+notify_when_wolfie_consumable_low_automation:
   icon: mdi:google-circles-group
   initial: true
   name: Low supply notifications
-wolfie_automation_scheduled_cycle:
+office_lights_off_at_10pm_automation:
+  icon: mdi:lightbulb
+  initial: true
+  name: Turn off at 10pm
+office_lights_on_at_sunset_automation:
+  icon: mdi:weather-sunset
+  initial: true
+  name: Turn on at sunset
+office_lights_sleep_timer_automation:
+  icon: mdi:sleep
+  initial: true
+  name: Enable sleep timer
+patio_lights_off_at_11pm_automation:
+  icon: mdi:lightbulb
+  initial: true
+  name: Turn off at 11pm
+patio_lights_on_at_sunset_automation:
+  icon: mdi:weather-sunset
+  initial: true
+  name: Turn on at sunset
+patio_lights_vacation_mode_automation:
+  icon: mdi:beach
+  initial: true
+  name: Simulate vacation mode
+powder_room_fan_auto_turn_on_automation:
+  icon: mdi:fan
+  initial: true
+  name: Turn on if turned off
+subaru_legacy_notify_eta_automation:
+  icon: mdi:car
+  initial: true
+  name: Notify of ETA
+subaru_legacy_notify_low_fuel_automation:
+  icon: mdi:gas-station
+  initial: true
+  name: Notify of low fuel
+wolfie_scheduled_cycle_automation:
   icon: mdi:google-circles-group
   initial: true
   name: Automatic schedule

@@ -26,7 +26,7 @@ class DashAutomation(Automation):
         self.listen_event(
             self.button_pressed,
             'AMAZON_DASH_PRESS',
-            button_label=self.friendly_name)
+            button_label=self.properties['friendly_name'])
 
     def activate_good_night(self) -> None:
         """Turn on the "Good Night" scene."""

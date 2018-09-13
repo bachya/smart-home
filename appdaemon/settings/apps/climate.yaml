@@ -1,36 +1,18 @@
 ---
-climate_automation:
+adjust_climate_on_proximity_automation:
   module: climate
-  class: ClimateAutomation
+  class: AdjustOnProximity
   dependencies:
     - climate_manager
-    - do_not_disturb
-    - guest_mode
-    - notification_manager
     - presence_manager
-    - vacation_mode
-  features:
-    - name: adjust_on_proximity
-      properties:
-        outside_threshold_high: 85
-        outside_threshold_low: 35
-      enabled_toggle:
-        name: Adjust on proximity
-        icon: mdi:car-side
-        initial: true
-    - name: notify_bad_aqi
-      entities:
-        aqi: sensor.us_air_quality_index
-        hvac_state: sensor.thermostat_thermostat_hvac_state
-      properties:
-        aqi_threshold: 100
-      mode_alterations:
-        do_not_disturb: disable
-        vacation_mode: disable
-      enabled_toggle:
-        name: Bad AQI notifications
-        icon: mdi:weather-windy
-        initial: true
+  properties:
+    outside_threshold_high: 85
+    outside_threshold_low: 35
+  enabled_config:
+    name: Adjust on proximity
+    icon: mdi:car-side
+    initial: true
+
 climate_manager:
   module: climate
   class: ClimateManager
@@ -39,3 +21,23 @@ climate_manager:
     average_temperature_sensor: sensor.average_indoor_temperature
     outside_temp: sensor.dark_sky_temperature
     thermostat: climate.thermostat
+
+notify_bad_aqi_automation:
+  module: climate
+  class: NotifyBadAqi
+  dependencies:
+    - do_not_disturb
+    - presence_manager
+    - vacation_mode
+  entities:
+    aqi: sensor.us_air_quality_index
+    hvac_state: sensor.thermostat_thermostat_hvac_state
+  properties:
+    aqi_threshold: 100
+  mode_alterations:
+    do_not_disturb: disable
+    vacation_mode: disable
+  enabled_config:
+    name: Bad AQI notifications
+    icon: mdi:weather-windy
+    initial: true

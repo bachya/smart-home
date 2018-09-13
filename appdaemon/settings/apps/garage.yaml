@@ -1,32 +1,34 @@
 ---
-garage_lights_automation:
+garage_lights_off_after_garage_close_automation:
   module: switches
-  class: SwitchAutomation
+  class: ToggleOnState
   dependencies:
-    - do_not_disturb
     - presence_manager
   entities:
     switch: switch.garage_lights
-  features:
-    - name: toggle_on_state
-      entities:
-        target: cover.garage_door
-      properties:
-        delay: 300
-        switch_state: "off"
-        target_state: "closed"
-      enabled_toggle:
-        key: turn_off_when_garage_closed
-        name: Turn off 5 minutes after door closes
-        icon: "mdi:garage"
-        initial: true
-    - name: turn_on_upon_arrival
-      properties:
-        possible_conditions:
-          constrain_cloudy: true
-          constrain_sun: "down"
-        trigger_on_first_only: false
-      enabled_toggle:
-        name: Turn on upon arrival
-        icon: mdi:car
-        initial: true
+    target: cover.garage_door
+  properties:
+    delay: 300
+    switch_state: "off"
+    trigger_state: "closed"
+  enabled_config:
+    name: Turn off 5 minutes after door closes
+    icon: "mdi:garage"
+    initial: true
+
+garage_lights_on_upon_arrival_automation:
+  module: switches
+  class: TurnOnUponArrival
+  dependencies:
+    - presence_manager
+  entities:
+    switch: switch.garage_lights
+  properties:
+    possible_conditions:
+      constrain_cloudy: true
+      constrain_sun: "down"
+    trigger_on_first_only: false
+  enabled_config:
+    name: Turn on upon arrival
+    icon: mdi:car
+    initial: true

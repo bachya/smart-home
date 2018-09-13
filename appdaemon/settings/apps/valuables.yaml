@@ -1,37 +1,32 @@
 ---
-aarons_keys_automation:
+notify_when_aarons_keys_missing_automation:
   module: valuables
-  class: TileAutomation
+  class: LeftSomewhere
   dependencies:
-    - do_not_disturb
     - notification_manager
     - presence_manager
   entities:
     tile: device_tracker.tile_aarons_keys
-  features:
-    - name: left_somewhere
-      properties:
-        duration: 600
-        target: Aaron
-      enabled_toggle:
-        name: Notify AMB keys missing
-        icon: mdi:key
-        initial: true
-aarons_wallet_automation:
+  properties:
+    duration: 600
+    target: Aaron
+  enabled_config:
+    name: Notify AMB keys missing
+    icon: mdi:key
+    initial: true
+
+notify_when_aarons_wallet_missing_automation:
   module: valuables
-  class: TileAutomation
+  class: LeftSomewhere
   dependencies:
-    - do_not_disturb
     - notification_manager
     - presence_manager
   entities:
     tile: device_tracker.tile_aarons_wallet
-  features:
-    - name: left_somewhere
-      properties:
-        duration: 600
-        target: Aaron
-      enabled_toggle:
-        name: Notify AMB wallet missing
-        icon: mdi:wallet
-        initial: true
+  properties:
+    duration: 600
+    target: Aaron
+  enabled_config:
+    name: Notify AMB wallet missing
+    icon: mdi:key
+    initial: true

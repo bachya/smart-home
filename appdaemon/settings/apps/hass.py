@@ -8,15 +8,11 @@ from typing import Union
 
 from packaging import version  # type: ignore
 
-from automation import Automation, Feature  # type: ignore
+from automation import Automation  # type: ignore
 from const import BLACKOUT_END, BLACKOUT_START  # type: ignore
 
 
-class HomeAssistantAutomation(Automation):
-    """Define an automation to manage Home Assitant-specific functions."""
-
-
-class AutoThemes(Feature):
+class AutoThemes(Automation):
     """Define a feature to automatically change themes on time of day."""
 
     class Themes(Enum):
@@ -33,149 +29,154 @@ class AutoThemes(Feature):
     @current_theme.setter
     def current_theme(self, value: Enum) -> None:
         """Define a setter for the current theme."""
-        self.hass.call_service('frontend/set_theme', name=value.value)
+        self.call_service('frontend/set_theme', name=value.value)
         self._current_theme = value
 
     def initialize(self) -> None:
         """Initialize."""
-        if not self.hass.now_is_between(BLACKOUT_END, BLACKOUT_START):
+        super().initialize()
+
+        if not self.now_is_between(BLACKOUT_END, BLACKOUT_START):
             self.current_theme = self.Themes.dark
         else:
             self.current_theme = self.Themes.default
 
-        self.hass.run_daily(
+        self.run_daily(
             self.theme_changed,
-            self.hass.parse_time(self.properties['light_schedule_time']),
+            self.parse_time(self.properties['light_schedule_time']),
             theme=self.Themes.default,
-            constrain_input_boolean=self.enabled_toggle)
-        self.hass.run_daily(
+            constrain_input_boolean=self.enabled_entity_id)
+        self.run_daily(
             self.theme_changed,
-            self.hass.parse_time(self.properties['dark_schedule_time']),
+            self.parse_time(self.properties['dark_schedule_time']),
             theme=self.Themes.dark,
-            constrain_input_boolean=self.enabled_toggle)
+            constrain_input_boolean=self.enabled_entity_id)
 
     def theme_changed(self, kwargs: dict) -> None:
         """Change the theme to a "day" variant in the morning."""
         self.current_theme = kwargs['theme']
 
 
-class AutoVacationMode(Feature):
+class AutoVacationMode(Automation):
     """Define automated alterations to vacation mode."""
 
     def initialize(self) -> None:
         """Initialize."""
-        self.hass.listen_event(
+        super().initialize()
+
+        self.listen_event(
             self.presence_changed,
             'PRESENCE_CHANGE',
-            new=self.hass.presence_manager.HomeStates.extended_away.value,
+            new=self.presence_manager.HomeStates.extended_away.value,
             first=False,
             action='on',
-            constrain_input_boolean=self.enabled_toggle)
-        self.hass.listen_event(
+            constrain_input_boolean=self.enabled_entity_id)
+        self.listen_event(
             self.presence_changed,
             'PRESENCE_CHANGE',
-            new=self.hass.presence_manager.HomeStates.just_arrived.value,
+            new=self.presence_manager.HomeStates.just_arrived.value,
             first=True,
             action='off',
-            constrain_input_boolean=self.enabled_toggle)
+            constrain_input_boolean=self.enabled_entity_id)
 
     def presence_changed(
             self, event_name: str, data: dict, kwargs: dict) -> None:
         """Alter Vacation Mode based on presence."""
         if (kwargs['action'] == 'on'
-                and self.hass.vacation_mode.state == 'off'):
-            self.hass.log('Setting vacation mode to "on"')
+                and self.vacation_mode.state == 'off'):
+            self.log('Setting vacation mode to "on"')
 
-            self.hass.vacation_mode.state = 'on'
+            self.vacation_mode.state = 'on'
         elif (kwargs['action'] == 'off'
-              and self.hass.vacation_mode.state == 'on'):
-            self.hass.log('Setting vacation mode to "off"')
+              and self.vacation_mode.state == 'on'):
+            self.log('Setting vacation mode to "off"')
 
-            self.hass.vacation_mode.state = 'off'
+            self.vacation_mode.state = 'off'
 
 
-class BadLoginNotification(Feature):
+class BadLoginNotification(Automation):
     """Define a feature to notify me of unauthorized login attempts."""
 
     def initialize(self) -> None:
         """Initialize."""
-        self.hass.listen_state(
+        super().initialize()
+
+        self.listen_state(
             self.bad_login_detected,
             self.entities['notification'],
-            constrain_input_boolean=self.enabled_toggle)
+            constrain_input_boolean=self.enabled_entity_id)
 
     def bad_login_detected(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Send a notification when there's a bad login attempt."""
-        self.hass.log('Registering a hack attempt: {0}'.format(new))
+        self.log('Registering a hack attempt: {0}'.format(new))
 
         if new != 'unknown':
-            self.hass.notification_manager.send(
+            self.notification_manager.send(
                 'Hack Attempt', new, target='Aaron')
 
 
-class DetectBlackout(Feature):
+class DetectBlackout(Automation):
     """Define a feature to manage blackout awareness."""
 
     def initialize(self) -> None:
         """Initialize."""
-        if self.hass.now_is_between(BLACKOUT_START, BLACKOUT_END):
-            self.hass.turn_on(self.entities['blackout_switch'])
-        else:
-            self.hass.turn_off(self.entities['blackout_switch'])
+        super().initialize()
 
-        self.hass.run_daily(
+        if self.now_is_between(BLACKOUT_START, BLACKOUT_END):
+            self.turn_on(self.entities['blackout_switch'])
+        else:
+            self.turn_off(self.entities['blackout_switch'])
+
+        self.run_daily(
             self.boundary_reached,
-            self.hass.parse_time(BLACKOUT_START),
+            self.parse_time(BLACKOUT_START),
             state='on',
-            constrain_input_boolean=self.enabled_toggle)
-        self.hass.run_daily(
+            constrain_input_boolean=self.enabled_entity_id)
+        self.run_daily(
             self.boundary_reached,
-            self.hass.parse_time(BLACKOUT_END),
+            self.parse_time(BLACKOUT_END),
             state='off',
-            constrain_input_boolean=self.enabled_toggle)
+            constrain_input_boolean=self.enabled_entity_id)
 
     def boundary_reached(self, kwargs: dict) -> None:
         """Set the blackout sensor appropriately based on time."""
-        self.hass.log('Setting blackout sensor: {0}'.format(kwargs['state']))
+        self.log('Setting blackout sensor: {0}'.format(kwargs['state']))
 
         if kwargs['state'] == 'on':
-            self.hass.turn_on(self.entities['blackout_switch'])
+            self.turn_on(self.entities['blackout_switch'])
         else:
-            self.hass.turn_off(self.entities['blackout_switch'])
+            self.turn_off(self.entities['blackout_switch'])
 
 
-class NewVersionNotification(Feature):
+class NewVersionNotification(Automation):
     """Define a feature to detect new versions of key apps."""
-
-    @property
-    def repeatable(self) -> bool:
-        """Define whether a feature can be implemented multiple times."""
-        return True
 
     def initialize(self) -> None:
         """Initialize."""
-        self.hass.listen_state(
+        super().initialize()
+
+        self.listen_state(
             self.version_change_detected,
             self.entities['available'],
-            constrain_input_boolean=self.enabled_toggle)
+            constrain_input_boolean=self.enabled_entity_id)
 
     def version_change_detected(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Notify me when there's a new app version."""
         new_version = version.parse(
-            self.hass.get_state(self.entities['available']))
+            self.get_state(self.entities['available']))
         installed_version = version.parse(
-            self.hass.get_state(self.entities['installed']))
+            self.get_state(self.entities['installed']))
 
         if new_version > installed_version:
-            self.hass.log(
+            self.log(
                 'New {0} version detected: {1}'.format(
                     self.properties['app_name'], new))
 
-            self.hass.notification_manager.send(
+            self.notification_manager.send(
                 'New {0}'.format(self.properties['app_name']),
                 'Version detected: {0}'.format(new),
                 target='Aaron')
@@ -199,10 +200,10 @@ class NewTasmotaVersionNotification(NewVersionNotification):
                     host, status_uri)).json()
                 tasmota_version = json['StatusFWR']['Version']
             except KeyError:
-                self.hass.error('Malformed JSON from host {0}'.format(host))
+                self.error('Malformed JSON from host {0}'.format(host))
                 continue
             except requests.exceptions.ConnectionError:
-                self.hass.error('Unable to connect to host: {0}'.format(host))
+                self.error('Unable to connect to host: {0}'.format(host))
                 continue
 
             try:
@@ -217,14 +218,14 @@ class NewTasmotaVersionNotification(NewVersionNotification):
         """Initialize."""
         super().initialize()
 
-        self.hass.run_every(
+        self.run_every(
             self.update_tasmota_sensor,
-            self.hass.datetime(),
+            self.datetime(),
             timedelta(minutes=5).total_seconds())
 
     def update_tasmota_sensor(self, kwargs: dict) -> None:
         """Update installed Tasmota version every so often."""
-        self.hass.set_state(
+        self.set_state(
             'sensor.lowest_tasmota_installed',
             state=str(self.lowest_tasmota_installed),
             attributes={

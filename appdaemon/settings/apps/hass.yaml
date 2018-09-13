@@ -1,0 +1,133 @@
+---
+auto_themes_automation:
+  module: hass
+  class: AutoThemes
+  dependencies:
+    - presence_manager
+  properties:
+    dark_schedule_time: "20:00:00"
+    light_schedule_time: "08:00:00"
+  enabled_config:
+    name: Auto light/dark themes
+    icon: mdi:theme-light-dark
+    initial: true
+
+auto_vacation_mode_alterations_automation:
+  module: hass
+  class: AutoVacationMode
+  dependencies:
+    - presence_manager
+  enabled_config:
+    name: Auto enable/disable vacation mode
+    icon: mdi:beach
+    initial: true
+
+bad_login_notifications_automation:
+  module: hass
+  class: BadLoginNotification
+  dependencies:
+    - notification_manager
+    - presence_manager
+  entities:
+    notification: persistent_notification.httplogin
+  enabled_config:
+    name: Bad login notifications
+    icon: mdi:alert-circle
+    initial: true
+
+detect_blackout_automation:
+  module: hass
+  class: DetectBlackout
+  dependencies:
+    - presence_manager
+  entities:
+    blackout_switch: input_boolean.in_blackout
+  enabled_config:
+    name: Detect in-blackout
+    icon: mdi:theme-light-dark
+    initial: true
+
+new_appdaemon_version_automation:
+  module: hass
+  class: NewVersionNotification
+  dependencies:
+    - presence_manager
+  entities:
+    available: sensor.appdaemon_available
+    installed: sensor.appdaemon_installed
+  properties:
+    app_name: AppDaemon
+  enabled_config:
+    entity_name: notify_of_new_versions
+    name: Notify of new versions
+    icon: mdi:home-assistant
+    initial: true
+
+new_ha_dockermon_version_automation:
+  module: hass
+  class: NewVersionNotification
+  dependencies:
+    - presence_manager
+  entities:
+    available: sensor.hadockermon_available
+    installed: sensor.hadockermon_installed
+  properties:
+    app_name: ha-dockermon
+  enabled_config:
+    entity_name: notify_of_new_versions
+    name: Notify of new versions
+    icon: mdi:home-assistant
+    initial: true
+
+new_hass_version_automation:
+  module: hass
+  class: NewVersionNotification
+  dependencies:
+    - presence_manager
+  entities:
+    available: sensor.hass_available
+    installed: sensor.hass_installed
+  properties:
+    app_name: Home Assistant
+  enabled_config:
+    entity_name: notify_of_new_versions
+    name: Notify of new versions
+    icon: mdi:home-assistant
+    initial: true
+
+new_tasmota_version_automation:
+  module: hass
+  class: NewTasmotaVersionNotification
+  dependencies:
+    - presence_manager
+  entities:
+    available: sensor.tasmota_available
+    installed: sensor.lowest_tasmota_installed
+  properties:
+    app_name: Tasmota
+    tasmota_hosts:
+      - climate-sensor-2.phil.iot
+      - rf-bridge.phil.iot
+      - salt-lamp-1.phil.iot
+      - salt-lamp-2.phil.iot
+  enabled_config:
+    entity_name: notify_of_new_versions
+    name: Notify of new versions
+    icon: mdi:home-assistant
+    initial: true
+
+new_yi_hack_version_automation:
+  module: hass
+  class: NewVersionNotification
+  dependencies:
+    - presence_manager
+  entities:
+    available: sensor.yi_hack_available
+    installed: sensor.yi_hack_installed
+  properties:
+    app_name: Yi Hack
+  enabled_config:
+    entity_name: notify_of_new_versions
+    name: Notify of new versions
+    icon: mdi:home-assistant
+    initial: true

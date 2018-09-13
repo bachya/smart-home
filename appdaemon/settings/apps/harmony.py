@@ -4,10 +4,10 @@
 
 from typing import Union
 
-from app import App  # type: ignore
+from automation import Base  # type: ignore
 
 
-class HarmonyRemote(App):
+class HarmonyRemote(Base):
     """Define a class to represent the Living Room TV."""
 
     @property

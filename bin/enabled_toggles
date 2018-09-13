@@ -14,25 +14,19 @@ ARGS = PARSER.parse_args()
 OUTPUT = {}  # type: ignore
 with open(ARGS.path, 'r') as file:
     DATA = yaml.load(file)
-    for entity_name, automation_attrs in DATA.items():
-        global_enabled_toggle = automation_attrs.get('enabled_toggle')
-        for feature in automation_attrs.get('features', {}):
-            if feature.get('enabled_toggle'):
-                enabled_toggle = feature['enabled_toggle']
-            else:
-                enabled_toggle = global_enabled_toggle
+    for name, attrs in DATA.items():
+        enabled_config = attrs.get('enabled_config')
+        if not enabled_config:
+            continue
 
-            if enabled_toggle.get('key'):
-                key = '{0}_{1}'.format(entity_name, enabled_toggle['key'])
-            else:
-                key = '{0}_{1}'.format(entity_name, feature['name'])
+        if enabled_config.get('entity_name'):
+            name = enabled_config['entity_name']
 
-            if key not in OUTPUT:
-                OUTPUT[key] = {
-                    'name': enabled_toggle['name'],
-                    'icon': enabled_toggle['icon'],
-                    'initial': enabled_toggle['initial']
-                }
+        OUTPUT[name] = {
+            'name': enabled_config['name'],
+            'icon': enabled_config['icon'],
+            'initial': enabled_config['initial']
+        }
 
 if ARGS.details:
     print(yaml.dump(OUTPUT, default_flow_style=False))

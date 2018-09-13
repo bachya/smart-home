@@ -5,11 +5,11 @@
 from enum import Enum
 from typing import Tuple, Union
 
-from app import App  # type: ignore
+from automation import Base  # type: ignore
 from const import PEOPLE  # type: ignore
 
 
-class PresenceManager(App):
+class PresenceManager(Base):
     """Define a class to represent a presence manager."""
 
     class HomeStates(Enum):

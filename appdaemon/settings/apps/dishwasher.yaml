@@ -5,29 +5,27 @@ dishwasher:
   entities:
     power: sensor.dishwasher_power
     status: input_select.dishwasher_status
-dishwasher_automation:
+
+dishwasher_cycle_automation:
   module: washer_dryer
-  class: WasherDryerAutomation
+  class: NotifyDone
   dependencies:
     - dishwasher
     - do_not_disturb
-    - guest_mode
     - notification_manager
     - presence_manager
     - vacation_mode
   manager_app: dishwasher
-  features:
-    - name: notify_done
-      properties:
-        clean_threshold: 0.0
-        drying_threshold: 3.0
-        ios_emptied_key: DISHWASHER_EMPTIED
-        notification_interval: 3600
-        running_threshold: 10.0
-      mode_alterations:
-        do_not_disturb: disable
-        vacation_mode: disable
-      enabled_toggle:
-        name: Notifications when clean
-        icon: mdi:washing-machine
-        initial: true
+  properties:
+    clean_threshold: 0.0
+    drying_threshold: 3.0
+    ios_emptied_key: DISHWASHER_EMPTIED
+    notification_interval: 3600
+    running_threshold: 10.0
+  mode_alterations:
+    do_not_disturb: disable
+    vacation_mode: disable
+  enabled_config:
+    name: Notifications when clean
+    icon: mdi:washing-machine
+    initial: true

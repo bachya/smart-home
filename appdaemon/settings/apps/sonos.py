@@ -4,56 +4,57 @@
 
 from typing import Union
 
-from app import App  # type: ignore
+from automation import Base  # type: ignore
 
 
-class SonosSpeaker(App):
+class SonosSpeaker(Base):
     """Define a class to represent a Sonos speaker."""
 
     @property
     def default_volume(self) -> float:
         """Return the audio player's default volume."""
-        return self._default_volume
+        return self.properties['default_volume']
 
     @property
     def volume(self) -> float:
         """Retrieve the audio player's volume."""
-        return float(self.get_state(self.entity, attribute='volume_level'))
+        return float(
+            self.get_state(self.entities['speaker'], attribute='volume_level'))
 
     @volume.setter
     def volume(self, value: float) -> None:
         """Set the audio player's volume."""
         self.call_service(
             'media_player/volume_set',
-            entity_id=self.entity,
+            entity_id=self.entities['speaker'],
             volume_level=value)
 
     def initialize(self) -> None:
         """Initialize."""
         super().initialize()
 
-        self._default_volume = self.args['volume']
         self._last_snapshot_included_group = False
-        self.entity = self.args['entity']
         self.sonos_manager.register_entity(self)
 
     def __str__(self) -> str:
         """Define a string representation of the speaker."""
-        return self.entity
+        return self.entities['speaker']
 
     def pause(self) -> None:
         """Pause."""
-        self.call_service('media_player/media_pause', entity_id=self.entity)
+        self.call_service(
+            'media_player/media_pause', entity_id=self.entities['speaker'])
 
     def play(self) -> None:
         """Play."""
-        self.call_service('media_player/media_play', entity_id=self.entity)
+        self.call_service(
+            'media_player/media_play', entity_id=self.entities['speaker'])
 
     def play_file(self, url: str) -> None:
         """Play an audio file at a defined URL."""
         self.call_service(
             'media_player/play_media',
-            entity_id=self.entity,
+            entity_id=self.entities['speaker'],
             media_content_id=url,
             media_content_type='MUSIC')
 
@@ -61,7 +62,7 @@ class SonosSpeaker(App):
         """Restore the previous snapshot of this entity."""
         self.call_service(
             'media_player/sonos_restore',
-            entity_id=self.entity,
+            entity_id=self.entities['speaker'],
             with_group=self._last_snapshot_included_group)
 
     def snapshot(self, include_grouping: bool = True) -> None:
@@ -69,11 +70,11 @@ class SonosSpeaker(App):
         self._last_snapshot_included_group = include_grouping
         self.call_service(
             'media_player/sonos_snapshot',
-            entity_id=self.entity,
+            entity_id=self.entities['speaker'],
             with_group=include_grouping)
 
 
-class SonosManager(App):
+class SonosManager(Base):
     """Define a class to represent the Sono manager."""
 
     def initialize(self) -> None:

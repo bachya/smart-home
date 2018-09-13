@@ -4,14 +4,17 @@ amazon_basics_batteries:
   class: DashAutomation
   dependencies:
     - security_system
-  friendly_name: Amazon Basics Batteries
   entities:
     action_list: input_select.dash_amazon_basics_batteries
+  properties:
+    friendly_name: Amazon Basics Batteries
+
 neat:
   module: dash
   class: DashAutomation
   dependencies:
     - security_system
-  friendly_name: Neat
   entities:
     action_list: input_select.dash_neat
+  properties:
+    friendly_name: Neat

@@ -1,27 +1,9 @@
 ---
-automation:
-  - alias: Turn on backyard lights at top double tap of kitchen patio light
-    trigger:
-      platform: event
-      event_type: zwave.node_event
-      event_data:
-        entity_id: zwave.kitchen_patio_light
-        basic_level: 255
-    action:
-      service: switch.turn_on
-      data:
-        entity_id: switch.backyard_lights
-  - alias: Turn off backyard lights at bottom double tap of kitchen patio light
-    trigger:
-      platform: event
-      event_type: zwave.node_event
-      event_data:
-        entity_id: zwave.kitchen_patio_light
-        basic_level: 0
-    action:
-      service: switch.turn_off
-      data:
-        entity_id: switch.backyard_lights
+group:
+  patio_lights:
+    entities:
+      - switch.front_patio_light
+      - switch.kitchen_patio_light
 
 openuv:
   api_key: !secret openuv_api_key

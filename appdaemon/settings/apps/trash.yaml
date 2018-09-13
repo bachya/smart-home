@@ -1,22 +1,21 @@
 ---
-trash_automation:
+notify_of_trash_pickup_automation:
   module: trash
-  class: TrashAutomation
+  class: NotifyOfPickup
   dependencies:
     - do_not_disturb
     - notification_manager
     - presence_manager
     - trash_manager
     - vacation_mode
-  features:
-    - name: notify_of_pickup
-      enabled_toggle:
-        name: Notify of pickups
-        icon: mdi:delete
-        initial: true
-      mode_alterations:
-        do_not_disturb: disable
-        vacation_mode: disable
+  mode_alterations:
+    do_not_disturb: disable
+    vacation_mode: disable
+  enabled_config:
+    name: Notify of pickups
+    icon: mdi:delete
+    initial: true
+
 trash_manager:
   module: trash
   class: TrashManager

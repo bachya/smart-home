@@ -4,7 +4,7 @@ from enum import Enum
 from typing import Callable, Union
 from uuid import UUID
 
-from app import App  # type: ignore
+from automation import Base  # type: ignore
 from const import BLACKOUT_END, BLACKOUT_START, PEOPLE  # type: ignore
 from util.dt import time_is_between  # type: ignore
 
@@ -38,7 +38,7 @@ class Notification:
         return self.__dict__ == other.__dict__
 
 
-class NotificationManager(App):
+class NotificationManager(Base):
     """Define an app to act as a system-wide notifier."""
 
     # pylint: disable=attribute-defined-outside-init
@@ -60,9 +60,7 @@ class NotificationManager(App):
                 target_date = self.date()
                 active_time = self.time()
 
-            if not (self.parse_time(notification.blackout_start_time) <=
-                    active_time <= self.parse_time(
-                        notification.blackout_end_time)):
+            if active_time > self.parse_time(notification.blackout_end_time):
                 target_date = target_date + timedelta(days=1)
 
             notification.when = datetime.combine(
