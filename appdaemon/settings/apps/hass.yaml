@@ -17,6 +17,7 @@ auto_vacation_mode_alterations_automation:
   class: AutoVacationMode
   dependencies:
     - presence_manager
+    - vacation_mode
   enabled_config:
     name: Auto enable/disable vacation mode
     icon: mdi:beach
