@@ -157,7 +157,7 @@ services:
     build:
       context: ./nginx/docker
       args:
-        geoip_version: 1.6.11
+        geoip_version: 1.6.12
         naxsi_version: 0.56
         nginx_version: 1.15.3
     cap_add:
