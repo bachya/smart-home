@@ -2,6 +2,8 @@
 
 # pylint: disable=unused-argument
 
+from typing import Union
+
 from automation import Automation  # type: ignore
 
 OPTION_METHOD_MAP = {
@@ -9,6 +11,11 @@ OPTION_METHOD_MAP = {
     'Arm security system': ('arm_security_system', {
         'state': 'home'
     }),
+    'Bump climate down 2°': (
+        'bump_climate', {
+            'direction': 'down',
+            'amount': 2
+        }),
     'Toggle Master Bedroom Salt Lamp': (
         'toggle_salt_lamp', {
             'entity_id': 'light.salt_lamp_master_bedroom'
@@ -16,7 +23,34 @@ OPTION_METHOD_MAP = {
 }
 
 
-class DashAutomation(Automation):
+class ChangeActionUponState(Automation):
+    """Define an automation for changing the button action based upon state."""
+
+    def initialize(self) -> None:
+        """Initialize."""
+        super().initialize()
+
+        self.listen_state(
+            self.entity_state_occurred,
+            self.entities['entity'],
+            new=self.properties['target_state'],
+            constrain_input_boolean=self.enabled_entity_id)
+
+    def entity_state_occurred(  # pylint: disable=too-many-arguments
+            self, entity: Union[str, dict], attribute: str, old: str, new: str,
+            kwargs: dict) -> None:
+        """Change the Dash action when the "watched" entity state occurs."""
+        self.log(
+            'Setting input select: {0} -> {1}'.format(
+                self.entities['action_list'], self.properties['dash_action']))
+
+        self.call_service(
+            'input_select/select_option',
+            entity_id=self.entities['action_list'],
+            option=self.properties['dash_action'])
+
+
+class DashButton(Automation):
     """Define an automation for Amazon Dash Buttons."""
 
     def initialize(self) -> None:
@@ -40,6 +74,17 @@ class DashAutomation(Automation):
             self.error('Unknown security state: {0}'.format(state))
 
         self.security_system.state = state_enum
+
+    def bump_climate(self, direction: str, amount: int) -> None:
+        """Bump the climate up or down by a certain amount."""
+        if direction not in ('down', 'up'):
+            self.error('Unknown climate direction: {0}'.format(direction))
+            return
+
+        if direction == 'down':
+            amount *= -1
+
+        self.climate_manager.indoor_temp += amount
 
     def toggle_salt_lamp(self, entity_id: str) -> None:
         """Toggle the specified salt lamp."""

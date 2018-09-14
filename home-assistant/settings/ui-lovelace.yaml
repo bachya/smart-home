@@ -62,6 +62,12 @@ views:
           - input_boolean.subaru_legacy_notify_low_fuel_automation
 
       - type: entities
+        title: Amazon Dash Buttons
+        entities:
+          - input_boolean.amazon_basics_batteries_transition_to_climate_bump
+          - input_boolean.amazon_basics_batteries_transition_to_salt_lamp
+
+      - type: entities
         title: Backyard Lights
         entities:
           - input_boolean.backyard_lights_off_at_11pm_automation

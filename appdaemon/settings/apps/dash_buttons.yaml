@@ -1,8 +1,9 @@
 ---
 amazon_basics_batteries:
   module: dash
-  class: DashAutomation
+  class: DashButton
   dependencies:
+    - climate_manager
     - security_system
   entities:
     action_list: input_select.dash_amazon_basics_batteries
@@ -11,8 +12,9 @@ amazon_basics_batteries:
 
 neat:
   module: dash
-  class: DashAutomation
+  class: DashButton
   dependencies:
+    - climate_manager
     - security_system
   entities:
     action_list: input_select.dash_neat

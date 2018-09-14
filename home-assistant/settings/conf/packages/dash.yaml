@@ -3,16 +3,18 @@ input_select:
   dash_amazon_basics_batteries:
     name: Amazon Basics Batteries
     options:
-      - Arm security system
-      - Toggle Master Bedroom Salt Lamp
       - Activate "Good Night"
+      - Arm security system
+      - Bump climate down 2°
+      - Toggle Master Bedroom Salt Lamp
     initial: Toggle Master Bedroom Salt Lamp
     icon: mdi:amazon
   dash_neat:
     name: Neat
     options:
-      - Arm security system
-      - Toggle Master Bedroom Salt Lamp
       - Activate "Good Night"
+      - Arm security system
+      - Bump climate down 2°
+      - Toggle Master Bedroom Salt Lamp
     initial: Toggle Master Bedroom Salt Lamp
     icon: mdi:amazon

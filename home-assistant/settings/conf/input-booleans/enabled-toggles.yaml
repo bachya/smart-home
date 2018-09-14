@@ -3,6 +3,14 @@ adjust_climate_on_proximity_automation:
   icon: mdi:car-side
   initial: true
   name: Adjust on proximity
+amazon_basics_batteries_transition_to_climate_bump:
+  icon: mdi:thermostat
+  initial: true
+  name: 'Amazon Basics Batteries: Climate control at night'
+amazon_basics_batteries_transition_to_salt_lamp:
+  icon: mdi:lava-lamp
+  initial: true
+  name: 'Amazon Basics Batteries: Salt lamp in morning'
 auto_departure_lockup_automation:
   icon: mdi:car-side
   initial: true
