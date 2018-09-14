@@ -60,7 +60,7 @@ kitchen_patio_light_double_tap_backyard_lights_automation:
   dependencies:
     - presence_manager
   entities:
-    switch: switch.kitchen_patio_light
+    zwave_device: zwave.kitchen_patio_light
     target: switch.backyard_lights
   enabled_config:
     name: Kitchen patio controls backyard lights

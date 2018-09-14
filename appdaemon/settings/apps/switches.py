@@ -47,14 +47,14 @@ class BaseZwaveSwitch(BaseSwitch):
         self.listen_event(
             self.double_up,
             'zwave.node_event',
-            entity_id=self.entities['switch'],
+            entity_id=self.entities['zwave_device'],
             basic_level=255,
             constrain_input_boolean=self.enabled_entity_id)
 
         self.listen_event(
             self.double_down,
             'zwave.node_event',
-            entity_id=self.entities['switch'],
+            entity_id=self.entities['zwave_device'],
             basic_level=0,
             constrain_input_boolean=self.enabled_entity_id)
 

@@ -40,6 +40,7 @@ master_bathroom_fan_double_tap_timer_automation:
     - presence_manager
   entities:
     switch: switch.master_bathroom_fan
+    zwave_device: zwave.master_bathroom_fan
   properties:
     duration: 600
   enabled_config:
@@ -80,6 +81,7 @@ master_toilet_fan_double_tap_timer_automation:
     - presence_manager
   entities:
     switch: switch.master_toilet_fan
+    zwave_device: zwave.master_toilet_fan
   properties:
     duration: 600
   enabled_config:
