@@ -16,6 +16,24 @@ garage_lights_off_after_garage_close_automation:
     icon: "mdi:garage"
     initial: true
 
+garage_lights_on_garage_open_sundown_automation:
+  module: switches
+  class: ToggleOnState
+  dependencies:
+    - presence_manager
+  entities:
+    switch: switch.garage_lights
+    target: cover.garage_door
+  properties:
+    possible_constraints:
+      constrain_sun: "down"
+    switch_state: "on"
+    trigger_state: "open"
+  enabled_config:
+    name: Turn off 5 minutes after door closes
+    icon: "mdi:garage"
+    initial: true
+
 garage_lights_on_upon_arrival_automation:
   module: switches
   class: TurnOnUponArrival
@@ -24,7 +42,7 @@ garage_lights_on_upon_arrival_automation:
   entities:
     switch: switch.garage_lights
   properties:
-    possible_conditions:
+    possible_constraints:
       constrain_cloudy: true
       constrain_sun: "down"
     trigger_on_first_only: false

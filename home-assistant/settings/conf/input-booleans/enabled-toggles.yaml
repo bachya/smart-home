@@ -67,6 +67,10 @@ garage_lights_off_after_garage_close_automation:
   icon: mdi:garage
   initial: true
   name: Turn off 5 minutes after door closes
+garage_lights_on_garage_open_sundown_automation:
+  icon: mdi:weather-sunset
+  initial: true
+  name: Turn off 5 minutes after door closes
 garage_lights_on_upon_arrival_automation:
   icon: mdi:car
   initial: true

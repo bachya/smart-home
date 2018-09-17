@@ -2,7 +2,7 @@
 
 # pylint: disable=attribute-defined-outside-init,unused-argument
 
-from typing import Union
+from typing import Callable, Union
 
 from automation import Automation  # type: ignore
 from const import (  # type: ignore
@@ -22,6 +22,14 @@ class BaseSwitch(Automation):
     def state(self) -> bool:
         """Return the current state of the switch."""
         return self.get_state(self.entities['switch'])
+
+    def attach_constraints(self, func: Callable) -> None:
+        """Attach values from possible_constraints to a function."""
+        if self.properties.get('possible_constraints'):
+            for name, value in self.properties['possible_constraints'].items():
+                func({name: value})
+        else:
+            func()
 
     def toggle(self, state: str) -> None:
         """Toggle the switch state."""
@@ -237,10 +245,18 @@ class ToggleOnState(BaseSwitch):
         """Initialize."""
         super().initialize()
 
+        self.attach_constraints(self.listen_for_state_change)
+
+    def listen_for_state_change(self, constraints: dict = None) -> None:
+        """Create a state listener for the target."""
+        if not constraints:
+            constraints = {}
+
         self.listen_state(
             self.state_changed,
             self.entities['target'],
-            constrain_input_boolean=self.enabled_entity_id)
+            constrain_input_boolean=self.enabled_entity_id,
+            **constraints)
 
     def state_changed(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -267,25 +283,21 @@ class TurnOnUponArrival(BaseSwitch):
         """Initialize."""
         super().initialize()
 
-        if self.properties.get('possible_conditions'):
-            for name, value in self.properties['possible_conditions'].items():
-                self.listen_for_arrival({name: value})
-        else:
-            self.listen_for_arrival()
+        self.attach_constraints(self.listen_for_arrival)
 
-    def listen_for_arrival(self, constraint_kwargs: dict = None) -> None:
-        """Create an event listen for someone arriving."""
-        if not constraint_kwargs:
-            constraint_kwargs = {}
+    def listen_for_arrival(self, constraints: dict = None) -> None:
+        """Create an event listener for someone arriving."""
+        if not constraints:
+            constraints = {}
         if self.properties.get('trigger_on_first_only'):
-            constraint_kwargs['first'] = True
+            constraints['first'] = True
 
         self.listen_event(
             self.someone_arrived,
             'PRESENCE_CHANGE',
             new=self.presence_manager.HomeStates.just_arrived.value,
             constrain_input_boolean=self.enabled_entity_id,
-            **constraint_kwargs)
+            **constraints)
 
     def someone_arrived(
             self, event_name: str, data: dict, kwargs: dict) -> None:
