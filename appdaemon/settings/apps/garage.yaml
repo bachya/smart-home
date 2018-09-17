@@ -28,10 +28,10 @@ garage_lights_on_garage_open_sundown_automation:
     possible_constraints:
       constrain_sun: "down"
     switch_state: "on"
-    trigger_state: "open"
+    trigger_state: "opening"
   enabled_config:
-    name: Turn off 5 minutes after door closes
-    icon: "mdi:garage"
+    name: Turn on when door opens after sundown
+    icon: "mdi:lightbulb"
     initial: true
 
 garage_lights_on_upon_arrival_automation:
