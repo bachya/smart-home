@@ -505,19 +505,6 @@ views:
         show_header_toggle: false
 
       - type: entities
-        title: Media Center
-        entities:
-          - switch.media_center
-          - sensor.media_center_cpu_temperature
-          - sensor.media_center_uptime
-          - sensor.media_center_disk_used
-          - sensor.media_center_ram_used
-          - sensor.media_center_cpu_load
-          - switch.media_center_glances
-          - switch.media_center_plex
-        show_header_toggle: false
-
-      - type: entities
         title: Ravenclaw
         entities:
           - sensor.ravenclaw_cpu_temperature
