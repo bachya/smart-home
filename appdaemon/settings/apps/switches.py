@@ -170,10 +170,7 @@ class SleepTimer(BaseSwitch):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Reset the sleep timer when the switch turns off."""
-        self.call_service(
-            'input_number/set_value',
-            entity_id=self.entities['timer_slider'],
-            value=0)
+        self.set_value(self.entities['timer_slider'], 0)
 
     def timer_changed(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -198,10 +195,7 @@ class SleepTimer(BaseSwitch):
         """Turn off a switch at the end of sleep timer."""
         self.log('Sleep timer over; turning switch off')
 
-        self.call_service(
-            'input_number/set_value',
-            entity_id=self.entities['timer_slider'],
-            value=0)
+        self.set_value(self.entities['timer_slider'], 0)
 
 
 class ToggleAtTime(BaseSwitch):

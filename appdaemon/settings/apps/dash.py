@@ -44,10 +44,8 @@ class ChangeActionUponState(Automation):
             'Setting input select: {0} -> {1}'.format(
                 self.entities['action_list'], self.properties['dash_action']))
 
-        self.call_service(
-            'input_select/select_option',
-            entity_id=self.entities['action_list'],
-            option=self.properties['dash_action'])
+        self.select_option(
+            self.entities['action_list'], self.properties['dash_action'])
 
 
 class DashButton(Automation):

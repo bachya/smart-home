@@ -103,7 +103,4 @@ class WasherDryer(Base):
     @state.setter
     def state(self, value: Enum) -> None:
         """Set the state."""
-        self.call_service(
-            'input_select/select_option',
-            entity_id=self.entities['status'],
-            option=value.value)
+        self.select_option(self.entities['status'], value.value)

@@ -206,10 +206,8 @@ class PresenceManager(Base):
         self.log(
             'Setting input select: {0} -> {1}'.format(input_select, new_value),
             level='DEBUG')
-        self.call_service(
-            'input_select/select_option',
-            entity_id=input_select,
-            option=new_value.value)
+
+        self.select_option(input_select, new_value.value)
 
     def _whos_relative_to_home(self, *states: Enum) -> list:
         """Return a list people who are in a certain set of states."""

@@ -239,10 +239,7 @@ class Vacuum(Base):
     @bin_state.setter
     def bin_state(self, value: Enum) -> None:
         """Set the bin state."""
-        self.call_service(
-            'input_select/select_option',
-            entity_id=self.entities['bin_state'],
-            option=value.value)
+        self.select_option(self.entities['bin_state'], value.value)
 
     class BinStates(Enum):
         """Define an enum for vacuum bin states."""
