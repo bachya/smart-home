@@ -10,7 +10,7 @@ garage_lights_off_after_garage_close_automation:
   properties:
     delay: 300
     switch_state: "off"
-    trigger_state: "closed"
+    target_state: "closed"
   enabled_config:
     name: Turn off 5 minutes after door closes
     icon: "mdi:garage"
@@ -28,7 +28,7 @@ garage_lights_on_garage_open_sundown_automation:
     possible_constraints:
       constrain_sun: "down"
     switch_state: "on"
-    trigger_state: "opening"
+    target_state: "opening"
   enabled_config:
     name: Turn on when door opens after sundown
     icon: "mdi:lightbulb"

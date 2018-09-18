@@ -93,7 +93,7 @@ powder_room_fan_auto_turn_on_automation:
   properties:
     delay: 60
     switch_state: "on"
-    trigger_state: "off"
+    target_state: "off"
   enabled_config:
     name: Turn on if turned off
     icon: "mdi:fan"

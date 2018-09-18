@@ -4,7 +4,6 @@ dash_button_amazon_basics_batteries:
   class: DashButton
   dependencies:
     - climate_manager
-    - neat
     - security_system
   entities:
     action_list: input_select.dash_amazon_basics_batteries
