@@ -96,8 +96,8 @@ class Automation(Base):
 
         # Define a reference to the "manager app" – for example, a trash-
         # related automation might carry a reference to TrashManager:
-        if self.args.get('manager_app'):
-            self.manager_app = getattr(self, self.args['manager_app'])
+        if self.args.get('app'):
+            self.app = getattr(self, self.args['app'])
 
         # Set the entity ID of the input boolean that will control whether
         # this automation is enabled or not:

@@ -17,7 +17,7 @@ notify_when_wolfie_consumable_low_automation:
     - notification_manager
     - presence_manager
     - wolfie
-  manager_app: wolfie
+  app: wolfie
   properties:
     consumable_threshold: 15
     consumables:
@@ -41,7 +41,7 @@ wolfie_scheduled_cycle_automation:
     - security_system
     - vacation_mode
     - wolfie
-  manager_app: wolfie
+  app: wolfie
   properties:
     ios_emptied_key: WOLFIE_EMPTIED
     notification_interval_full: 3600

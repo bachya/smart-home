@@ -23,7 +23,7 @@ class MonitorConsumables(Automation):
         for consumable in self.properties['consumables']:
             self.listen_state(
                 self.consumable_changed,
-                self.manager_app.entities['vacuum'],
+                self.app.entities['vacuum'],
                 attribute=consumable,
                 constrain_input_boolean=self.enabled_entity_id)
 
@@ -72,23 +72,23 @@ class ScheduledCycle(Automation):
             self.properties['ios_emptied_key'])
         self.listen_state(
             self.all_done,
-            self.manager_app.entities['status'],
-            old=self.manager_app.States.returning.value,
-            new=self.manager_app.States.docked.value,
+            self.app.entities['status'],
+            old=self.app.States.returning.value,
+            new=self.app.States.docked.value,
             constrain_input_boolean=self.enabled_entity_id)
         self.listen_state(
             self.bin_state_changed,
-            self.manager_app.entities['bin_state'],
+            self.app.entities['bin_state'],
             constrain_input_boolean=self.enabled_entity_id)
         self.listen_state(
             self.errored,
-            self.manager_app.entities['status'],
-            new=self.manager_app.States.error.value,
+            self.app.entities['status'],
+            new=self.app.States.error.value,
             constrain_input_boolean=self.enabled_entity_id)
         self.listen_state(
             self.error_cleared,
-            self.manager_app.entities['status'],
-            old=self.manager_app.States.error.value,
+            self.app.entities['status'],
+            old=self.app.States.error.value,
             constrain_input_boolean=self.enabled_entity_id)
         for toggle in self.properties['schedule_switches']:
             self.listen_state(
@@ -98,36 +98,36 @@ class ScheduledCycle(Automation):
 
     def alarm_changed(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to 'ALARM_CHANGE' events."""
-        state = self.manager_app.States(
-            self.get_state(self.manager_app.entities['status']))
+        state = self.app.States(
+            self.get_state(self.app.entities['status']))
 
         # Scenario 1: Vacuum is charging and is told to start:
-        if ((self.initiated_by_app and state == self.manager_app.States.docked)
+        if ((self.initiated_by_app and state == self.app.States.docked)
                 and
                 data['state'] == self.security_system.AlarmStates.home.value):
             self.log('Activating vacuum (post-security)')
 
-            self.turn_on(self.manager_app.entities['vacuum'])
+            self.turn_on(self.app.entities['vacuum'])
 
         # Scenario 2: Vacuum is running when alarm is set to "Away":
-        elif (state == self.manager_app.States.cleaning and
+        elif (state == self.app.States.cleaning and
               data['state'] == self.security_system.AlarmStates.away.value):
             self.log('Security mode is "Away"; pausing until "Home"')
 
             self.call_service(
                 'vacuum/start_pause',
-                entity_id=self.manager_app.entities['vacuum'])
+                entity_id=self.app.entities['vacuum'])
             self.security_system.state = (
                 self.security_system.AlarmStates.home)
 
         # Scenario 3: Vacuum is paused when alarm is set to "Home":
-        elif (state == self.manager_app.States.paused and
+        elif (state == self.app.States.paused and
               data['state'] == self.security_system.AlarmStates.home.value):
             self.log('Alarm in "Home"; resuming')
 
             self.call_service(
                 'vacuum/start_pause',
-                entity_id=self.manager_app.entities['vacuum'])
+                entity_id=self.app.entities['vacuum'])
 
     def all_done(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -143,14 +143,14 @@ class ScheduledCycle(Automation):
             self.security_system.state = (
                 self.security_system.AlarmStates.away)
 
-        self.manager_app.bin_state = (self.manager_app.BinStates.full)
+        self.app.bin_state = (self.app.BinStates.full)
         self.initiated_by_app = False
 
     def bin_state_changed(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Listen for changes in bin status."""
-        if new == self.manager_app.BinStates.full.value:
+        if new == self.app.BinStates.full.value:
             self.handles[HANDLE_BIN] = self.notification_manager.repeat(
                 'Wolfie Full 🤖',
                 "Empty him now and you won't have to do it later!",
@@ -159,7 +159,7 @@ class ScheduledCycle(Automation):
                 data={'push': {
                     'category': 'wolfie'
                 }})
-        elif new == self.manager_app.BinStates.empty.value:
+        elif new == self.app.BinStates.empty.value:
             if HANDLE_BIN in self.handles:
                 self.handles.pop(HANDLE_BIN)()
 
@@ -199,7 +199,7 @@ class ScheduledCycle(Automation):
         """Respond to iOS notification to empty vacuum."""
         self.log('Responding to iOS request that vacuum is empty')
 
-        self.manager_app.bin_state = (self.manager_app.BinStates.empty)
+        self.app.bin_state = (self.app.BinStates.empty)
 
         target = self.notification_manager.get_target_from_push_id(
             data['sourceDevicePermanentID'])
@@ -217,14 +217,14 @@ class ScheduledCycle(Automation):
     def start_by_schedule(self, kwargs: dict) -> None:
         """Start cleaning via the schedule."""
         if not self.initiated_by_app:
-            self.manager_app.start()
+            self.app.start()
             self.initiated_by_app = True
 
     def start_by_switch(
             self, event_name: str, data: dict, kwargs: dict) -> None:
         """Start cleaning via the switch."""
         if not self.initiated_by_app:
-            self.manager_app.start()
+            self.app.start()
             self.initiated_by_app = True
 
 

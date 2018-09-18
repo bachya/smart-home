@@ -15,7 +15,7 @@ dishwasher_cycle_automation:
     - notification_manager
     - presence_manager
     - vacation_mode
-  manager_app: dishwasher
+  app: dishwasher
   properties:
     clean_threshold: 0.0
     drying_threshold: 3.0

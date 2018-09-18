@@ -23,11 +23,11 @@ class NotifyDone(Automation):
             self.properties['ios_emptied_key'])
         self.listen_state(
             self.power_changed,
-            self.manager_app.entities['power'],
+            self.app.entities['power'],
             constrain_input_boolean=self.enabled_entity_id)
         self.listen_state(
             self.status_changed,
-            self.manager_app.entities['status'],
+            self.app.entities['status'],
             constrain_input_boolean=self.enabled_entity_id)
 
     def power_changed(  # pylint: disable=too-many-arguments
@@ -35,27 +35,27 @@ class NotifyDone(Automation):
             kwargs: dict) -> None:
         """Deal with changes to the power draw."""
         power = float(new)
-        if (self.manager_app.state != self.manager_app.States.running
+        if (self.app.state != self.app.States.running
                 and power >= self.properties['running_threshold']):
             self.log('Setting dishwasher to "Running"')
 
-            self.manager_app.state = (self.manager_app.States.running)
-        elif (self.manager_app.state == self.manager_app.States.running
+            self.app.state = (self.app.States.running)
+        elif (self.app.state == self.app.States.running
               and power <= self.properties['drying_threshold']):
             self.log('Setting dishwasher to "Drying"')
 
-            self.manager_app.state = (self.manager_app.States.drying)
-        elif (self.manager_app.state == self.manager_app.States.drying
+            self.app.state = (self.app.States.drying)
+        elif (self.app.state == self.app.States.drying
               and power == self.properties['clean_threshold']):
             self.log('Setting dishwasher to "Clean"')
 
-            self.manager_app.state = (self.manager_app.States.clean)
+            self.app.state = (self.app.States.clean)
 
     def status_changed(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Deal with changes to the status."""
-        if new == self.manager_app.States.clean.value:
+        if new == self.app.States.clean.value:
             self.handles[HANDLE_CLEAN] = self.notification_manager.repeat(
                 'Dishwasher Clean 🍽',
                 "Empty it now and you won't have to do it later!",
@@ -65,7 +65,7 @@ class NotifyDone(Automation):
                 data={'push': {
                     'category': 'dishwasher'
                 }})
-        elif old == self.manager_app.States.clean.value:
+        elif old == self.app.States.clean.value:
             if HANDLE_CLEAN in self.handles:
                 self.handles.pop(HANDLE_CLEAN)()
 
@@ -74,7 +74,7 @@ class NotifyDone(Automation):
         """Respond to iOS notification to empty the appliance."""
         self.log('Responding to iOS request that dishwasher is empty')
 
-        self.manager_app.state = self.manager_app.States.dirty
+        self.app.state = self.app.States.dirty
 
         target = self.notification_manager.get_target_from_push_id(
             data['sourceDevicePermanentID'])
