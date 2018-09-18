@@ -32,7 +32,7 @@ class ChangeActionUponState(Automation):
 
         self.listen_state(
             self.entity_state_occurred,
-            self.entities['entity'],
+            self.entities['target'],
             new=self.properties['target_state'],
             constrain_input_boolean=self.enabled_entity_id)
 
@@ -42,14 +42,24 @@ class ChangeActionUponState(Automation):
         """Change the Dash action when the "watched" entity state occurs."""
         self.log(
             'Setting input select: {0} -> {1}'.format(
-                self.entities['action_list'], self.properties['dash_action']))
+                self.app.action_list, self.properties['dash_action']))
 
         self.select_option(
-            self.entities['action_list'], self.properties['dash_action'])
+            self.app.action_list, self.properties['dash_action'])
 
 
 class DashButton(Automation):
     """Define an automation for Amazon Dash Buttons."""
+
+    @property
+    def action_list(self) -> str:
+        """Return the action input select for this button."""
+        return self.entities['action_list']
+
+    @action_list.setter
+    def action_list(self, value: str) -> None:
+        """Set the action input select for this button."""
+        self.select_option(self.entities['action_list'], value)
 
     def initialize(self) -> None:
         """Initialize."""

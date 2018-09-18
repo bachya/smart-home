@@ -1,16 +1,17 @@
 ---
-amazon_basics_batteries:
+dash_button_amazon_basics_batteries:
   module: dash
   class: DashButton
   dependencies:
     - climate_manager
+    - neat
     - security_system
   entities:
     action_list: input_select.dash_amazon_basics_batteries
   properties:
     friendly_name: Amazon Basics Batteries
 
-neat:
+dash_button_neat:
   module: dash
   class: DashButton
   dependencies:

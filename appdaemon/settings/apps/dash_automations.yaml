@@ -4,10 +4,11 @@ amazon_basics_batteries_transition_to_climate_bump:
   class: ChangeActionUponState
   dependencies:
     - climate_manager
+    - dash_button_neat
     - security_system
+  app: dash_button_neat
   entities:
-    action_list: input_select.dash_amazon_basics_batteries
-    entity: light.salt_lamp_master_bedroom
+    target: light.salt_lamp_master_bedroom
   properties:
     dash_action: Bump climate down 2°
     target_state: "off"
@@ -21,10 +22,11 @@ amazon_basics_batteries_transition_to_salt_lamp:
   class: ChangeActionUponState
   dependencies:
     - climate_manager
+    - dash_button_neat
     - security_system
+  app: dash_button_neat
   entities:
-    action_list: input_select.dash_amazon_basics_batteries
-    entity: input_boolean.in_blackout
+    target: input_boolean.in_blackout
   properties:
     dash_action: Toggle Master Bedroom Salt Lamp
     target_state: "off"
