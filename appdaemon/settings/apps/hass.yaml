@@ -52,6 +52,7 @@ new_appdaemon_version_automation:
   module: hass
   class: NewVersionNotification
   dependencies:
+    - notification_manager
     - presence_manager
   entities:
     available: sensor.appdaemon_available
@@ -68,6 +69,7 @@ new_ha_dockermon_version_automation:
   module: hass
   class: NewVersionNotification
   dependencies:
+    - notification_manager
     - presence_manager
   entities:
     available: sensor.hadockermon_available
@@ -84,6 +86,7 @@ new_hass_version_automation:
   module: hass
   class: NewVersionNotification
   dependencies:
+    - notification_manager
     - presence_manager
   entities:
     available: sensor.hass_available
@@ -100,6 +103,7 @@ new_tasmota_version_automation:
   module: hass
   class: NewTasmotaVersionNotification
   dependencies:
+    - notification_manager
     - presence_manager
   entities:
     available: sensor.tasmota_available
@@ -121,6 +125,7 @@ new_yi_hack_version_automation:
   module: hass
   class: NewVersionNotification
   dependencies:
+    - notification_manager
     - presence_manager
   entities:
     available: sensor.yi_hack_available
