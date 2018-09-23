@@ -7,8 +7,8 @@ from typing import Tuple
 
 from automation import Base  # type: ignore
 from const import PEOPLE  # type: ignore
-from util import (  # type: ignore
-    camel_to_underscore, grammatical_list_join, relative_search_dict)
+from util import grammatical_list_join, relative_search_dict  # type: ignore
+from util.string import camel_to_underscore   # type: ignore
 
 
 class Alexa(Base):

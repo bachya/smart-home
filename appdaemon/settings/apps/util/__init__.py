@@ -1,18 +1,8 @@
 """Define generic utils."""
 import datetime
-import re
 from typing import Tuple
-from unicodedata import normalize
 
 import Levenshtein
-
-RE_SLUGIFY = re.compile(r'[^a-z0-9_]+')
-TBL_SLUGIFY = {ord('ß'): 'ss'}
-
-
-def camel_to_underscore(string: str) -> str:
-    """Convert ThisString to this_string."""
-    return re.sub('(?!^)([A-Z]+)', r'_\1', string).lower()
 
 
 def grammatical_list_join(the_list: list) -> str:
@@ -65,17 +55,6 @@ def relative_search_list(the_list: list, search: str,
     return match
 
 
-def slugify(text: str) -> str:
-    """Slugify a given text."""
-    text = normalize('NFKD', text)
-    text = text.lower()
-    text = text.replace(" ", "_")
-    text = text.translate(TBL_SLUGIFY)
-    text = RE_SLUGIFY.sub("", text)
-
-    return text
-
-
 def suffix_strftime(frmt: str, input_dt: datetime.datetime) -> str:
     """Define a version of strftime() that puts a suffix on dates."""
     day_endings = {
@@ -90,8 +69,3 @@ def suffix_strftime(frmt: str, input_dt: datetime.datetime) -> str:
     return input_dt.strftime(frmt).replace(
         '{TH}',
         str(input_dt.day) + day_endings.get(input_dt.day, 'th'))
-
-
-def underscore_to_camel(string: str) -> str:
-    """Convert this_string to ThisString."""
-    return ''.join(x.capitalize() or '_' for x in string.split('_'))
