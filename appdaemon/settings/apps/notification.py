@@ -7,6 +7,7 @@ from uuid import UUID
 from automation import Base  # type: ignore
 from const import BLACKOUT_END, BLACKOUT_START, PEOPLE  # type: ignore
 from util.dt import time_is_between  # type: ignore
+from util.string import slugify  # type: ignore
 
 
 class NotificationTypes(Enum):
@@ -25,13 +26,16 @@ class Notification:
         self.blackout_end_time = kwargs.get('blackout_end_time')
         self.blackout_start_time = kwargs.get('blackout_start_time')
         self.cancel = None
-        self.data = kwargs.get('data')
         self.interval = kwargs.get('interval')
         self.kind = kind
         self.message = message
         self.target = kwargs.get('target')
         self.title = title
         self.when = kwargs.get('when')
+
+        self.data = kwargs.get('data', {})
+        self.data.setdefault('push', {})
+        self.data['push'].setdefault('thread-id', slugify(title))
 
     def __eq__(self, other):
         """Define method to compare notification objects."""
@@ -183,19 +187,15 @@ class NotificationManager(Base):
                 return
 
         for target in self._get_targets(notification.target):
-            payload = {
-                'message': notification.message,
-                'title': notification.title
-            }
-
-            if notification.data:
-                payload['data'] = notification.data
-
             self.log(
                 'Single notification: {0} (recipient: {1})'.format(
                     notification.title, target))
 
-            self.call_service('notify/{0}'.format(target), **payload)
+            self.call_service(
+                'notify/{0}'.format(target),
+                message=notification.message,
+                title=notification.title,
+                data=notification.data)
 
         if notification.kind == NotificationTypes.single:
             self.registry.remove(notification)
