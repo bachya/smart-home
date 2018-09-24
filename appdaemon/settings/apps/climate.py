@@ -2,6 +2,7 @@
 
 # pylint: disable=attribute-defined-outside-init,unused-argument
 
+from enum import Enum
 from typing import Tuple, Union
 
 from automation import Automation, Base  # type: ignore
@@ -73,6 +74,15 @@ class AdjustOnProximity(Automation):
 class ClimateManager(Base):
     """Define an app to represent climate control."""
 
+    class Modes(Enum):
+        """Define an enum for alarm states."""
+
+        auto = 1
+        cool = 2
+        eco = 3
+        heat = 4
+        off = 5
+
     @property
     def average_indoor_humidity(self) -> float:
         """Return the average indoor humidity based on a list of sensors."""
@@ -111,6 +121,20 @@ class ClimateManager(Base):
             'climate/set_temperature',
             entity_id=self.entities['thermostat'],
             temperature=str(value))
+
+    @property
+    def mode(self) -> Enum:
+        """Return the current operating mode."""
+        return self.Modes[self.get_state(
+            self.entities['thermostat'], attribute='operation_mode')]
+
+    @mode.setter
+    def mode(self, value: Enum) -> None:
+        """Set the themostat's operating mode."""
+        self.call_service(
+            'climate/set_operation_mode',
+            entity_id=self.entities['thermostat'],
+            operation_mode=value.name)
 
     @property
     def outside_temp(self) -> float:
