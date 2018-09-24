@@ -4,13 +4,13 @@ amazon_basics_batteries_transition_to_climate_bump:
   class: ChangeActionUponState
   dependencies:
     - climate_manager
-    - dash_button_neat
+    - dash_button_amazon_basics_batteries
     - security_system
-  app: dash_button_neat
+  app: dash_button_amazon_basics_batteries
   entities:
     target: light.salt_lamp_master_bedroom
   properties:
-    dash_action: Bump climate down 2°
+    dash_action: Bump climate 2°
     target_state: "off"
   enabled_config:
     name: "Amazon Basics Batteries: Climate control at night"
@@ -18,6 +18,42 @@ amazon_basics_batteries_transition_to_climate_bump:
     initial: true
 
 amazon_basics_batteries_transition_to_salt_lamp:
+  module: dash
+  class: ChangeActionUponState
+  dependencies:
+    - climate_manager
+    - dash_button_amazon_basics_batteries
+    - security_system
+  app: dash_button_amazon_basics_batteries
+  entities:
+    target: input_boolean.in_blackout
+  properties:
+    dash_action: Toggle Master Bedroom Salt Lamp
+    target_state: "off"
+  enabled_config:
+    name: "Amazon Basics Batteries: Salt lamp in morning"
+    icon: mdi:lava-lamp
+    initial: true
+
+neat_transition_to_climate_bump:
+  module: dash
+  class: ChangeActionUponState
+  dependencies:
+    - climate_manager
+    - dash_button_neat
+    - security_system
+  app: dash_button_neat
+  entities:
+    target: light.salt_lamp_master_bedroom
+  properties:
+    dash_action: Bump climate 2°
+    target_state: "off"
+  enabled_config:
+    name: "Amazon Basics Batteries: Climate control at night"
+    icon: mdi:thermostat
+    initial: true
+
+neat_transition_to_salt_lamp:
   module: dash
   class: ChangeActionUponState
   dependencies:

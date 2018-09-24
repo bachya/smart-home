@@ -11,9 +11,8 @@ OPTION_METHOD_MAP = {
     'Arm security system': ('arm_security_system', {
         'state': 'home'
     }),
-    'Bump climate down 2°': (
+    'Bump climate 2°': (
         'bump_climate', {
-            'direction': 'down',
             'amount': 2
         }),
     'Toggle Master Bedroom Salt Lamp': (
@@ -85,11 +84,7 @@ class DashButton(Automation):
 
     def bump_climate(self, direction: str, amount: int) -> None:
         """Bump the climate up or down by a certain amount."""
-        if direction not in ('down', 'up'):
-            self.error('Unknown climate direction: {0}'.format(direction))
-            return
-
-        if direction == 'down':
+        if self.climate_manager.mode == self.climate_manager.Modes.cool:
             amount *= -1
 
         self.climate_manager.indoor_temp += amount

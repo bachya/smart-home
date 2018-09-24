@@ -5,7 +5,7 @@ input_select:
     options:
       - Activate "Good Night"
       - Arm security system
-      - Bump climate down 2°
+      - Bump climate 2°
       - Toggle Master Bedroom Salt Lamp
     initial: Toggle Master Bedroom Salt Lamp
     icon: mdi:amazon
@@ -14,7 +14,7 @@ input_select:
     options:
       - Activate "Good Night"
       - Arm security system
-      - Bump climate down 2°
+      - Bump climate 2°
       - Toggle Master Bedroom Salt Lamp
     initial: Toggle Master Bedroom Salt Lamp
     icon: mdi:amazon
