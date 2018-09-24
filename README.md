@@ -9,8 +9,8 @@ enthusiasts might find value.
 I use an Intel NUC i5 with the following apps running as Docker containers:
 
 * [Home Assistant](http://home-assistant.io): the primary home automation software
+* [Amazon Dash](https://github.com/Nekmo/amazon-dash): a service allowing Amazon Dash buttons to interact with the system
 * [AppDaemon](https://appdaemon.readthedocs.io/en/latest/): Home Assistant-friendly automation in pure Python
-* [Dasher](https://github.com/maddox/dasher): a service allowing Amazon Dash buttons to interact with the system
 * [Glances](https://nicolargo.github.io/glances/): system monitoring and stats
 * [Grafana](https://grafana.com/): data visualization and analytics
 * [ha-dockermon](https://github.com/philhawthorne/ha-dockermon): RESTful services to interact with Docker containers
