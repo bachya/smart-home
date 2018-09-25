@@ -268,4 +268,6 @@ class Vacuum(Base):
         else:
             self.log('Activating vacuum')
 
-            self.turn_on(self.entities['vacuum'])
+            self.call_service(
+                'vacuum/start',
+                entity_id=self.entities['vacuum'])
