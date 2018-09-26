@@ -159,6 +159,8 @@ class Alexa(Base):
             title = title.format(name)
             home_state, geo_data = self.presence_manager.locate(name)
 
+            self.log(geo_data)
+
             if home_state == self.presence_manager.HomeStates.home:
                 speech = '{0} is at home.'.format(name)
             else:
