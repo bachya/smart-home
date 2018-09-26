@@ -82,7 +82,7 @@ class DashButton(Automation):
 
         self.security_system.state = state_enum
 
-    def bump_climate(self, direction: str, amount: int) -> None:
+    def bump_climate(self, amount: int) -> None:
         """Bump the climate up or down by a certain amount."""
         if self.climate_manager.mode == self.climate_manager.Modes.cool:
             amount *= -1
