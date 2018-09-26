@@ -2,7 +2,7 @@
 
 # pylint: disable=attribute-defined-outside-init,import-error
 
-from typing import Callable, Dict, Union  # pylint: disable=unused-import
+from typing import Callable, Dict, Union  # noqa, pylint: disable=unused-import
 
 from appdaemon.plugins.hass.hassapi import Hass  # type: ignore
 

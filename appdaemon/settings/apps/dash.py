@@ -95,7 +95,7 @@ class DashButton(Automation):
 
     def button_pressed(
             self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Respond when button is pressed"""
+        """Respond when button is pressed."""
         action_name = self.get_state(self.entities['action_list'])
         try:
             method, params = OPTION_METHOD_MAP[action_name]
