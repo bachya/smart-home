@@ -162,7 +162,7 @@ class Alexa(Base):
             if home_state == self.presence_manager.HomeStates.home:
                 speech = '{0} is at home.'.format(name)
             else:
-                miles = float(geo_data['attributes']['distance'].split(' ')[0])
+                miles = round(float(geo_data['attributes']['distance']), 1)
                 time = int(geo_data['state'])
 
                 if miles > 0:
