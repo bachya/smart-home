@@ -255,6 +255,7 @@ class Vacuum(Base):
         error = 'Error'
         idle = 'Idle'
         paused = 'Paused'
+        remote_control = 'Remote Control'
         returning = 'Returning'
 
     def start(self) -> None:
