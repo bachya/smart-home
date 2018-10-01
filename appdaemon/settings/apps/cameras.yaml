@@ -1,103 +1,103 @@
 ---
-garage_camera_infrared_led_off_at_sunrise_automation:
-  module: switches
-  class: ToggleAtTime
-  dependencies:
-    - presence_manager
-  entities:
-    switch: switch.garage_camera_infrared_led
-  properties:
-    schedule_time: sunrise
-    seasonal_offset: true
-    state: "off"
-  enabled_config:
-    entity_name: garage_camera_auto_night_mode
-    name: "Garage Cam: Auto Night Mode"
-    icon: mdi:weather-sunset
-    initial: true
+# garage_camera_infrared_led_off_at_sunrise_automation:
+#   module: switches
+#   class: ToggleAtTime
+#   dependencies:
+#     - presence_manager
+#   entities:
+#     switch: switch.garage_camera_infrared_led
+#   properties:
+#     schedule_time: sunrise
+#     seasonal_offset: true
+#     state: "off"
+#   enabled_config:
+#     entity_name: garage_camera_auto_night_mode
+#     name: "Garage Cam: Auto Night Mode"
+#     icon: mdi:weather-sunset
+#     initial: true
 
 
-garage_camera_infrared_led_on_at_sunset_automation:
-  module: switches
-  class: ToggleAtTime
-  dependencies:
-    - presence_manager
-  entities:
-    switch: switch.garage_camera_infrared_led
-  properties:
-    schedule_time: sunset
-    seasonal_offset: true
-    state: "on"
-  enabled_config:
-    entity_name: garage_camera_auto_night_mode
-    name: "Garage Cam: Auto Night Mode"
-    icon: mdi:weather-sunset
-    initial: true
+# garage_camera_infrared_led_on_at_sunset_automation:
+#   module: switches
+#   class: ToggleAtTime
+#   dependencies:
+#     - presence_manager
+#   entities:
+#     switch: switch.garage_camera_infrared_led
+#   properties:
+#     schedule_time: sunset
+#     seasonal_offset: true
+#     state: "on"
+#   enabled_config:
+#     entity_name: garage_camera_auto_night_mode
+#     name: "Garage Cam: Auto Night Mode"
+#     icon: mdi:weather-sunset
+#     initial: true
 
-garage_camera_infrared_led_filter_off_at_sunset_automation:
-  module: switches
-  class: ToggleAtTime
-  dependencies:
-    - presence_manager
-  entities:
-    switch: switch.garage_camera_infrared_led_filter
-  properties:
-    schedule_time: sunset
-    seasonal_offset: true
-    state: "off"
-  enabled_config:
-    entity_name: garage_camera_auto_night_mode
-    name: "Garage Cam: Auto Night Mode"
-    icon: mdi:weather-sunset
-    initial: true
+# garage_camera_infrared_led_filter_off_at_sunset_automation:
+#   module: switches
+#   class: ToggleAtTime
+#   dependencies:
+#     - presence_manager
+#   entities:
+#     switch: switch.garage_camera_infrared_led_filter
+#   properties:
+#     schedule_time: sunset
+#     seasonal_offset: true
+#     state: "off"
+#   enabled_config:
+#     entity_name: garage_camera_auto_night_mode
+#     name: "Garage Cam: Auto Night Mode"
+#     icon: mdi:weather-sunset
+#     initial: true
 
-garage_camera_infrared_led_filter_on_at_sunrise_automation:
-  module: switches
-  class: ToggleAtTime
-  dependencies:
-    - presence_manager
-  entities:
-    switch: switch.garage_camera_infrared_led_filter
-  properties:
-    schedule_time: sunrise
-    seasonal_offset: true
-    state: "on"
-  enabled_config:
-    entity_name: garage_camera_auto_night_mode
-    name: "Garage Cam: Auto Night Mode"
-    icon: mdi:weather-sunset
-    initial: true
+# garage_camera_infrared_led_filter_on_at_sunrise_automation:
+#   module: switches
+#   class: ToggleAtTime
+#   dependencies:
+#     - presence_manager
+#   entities:
+#     switch: switch.garage_camera_infrared_led_filter
+#   properties:
+#     schedule_time: sunrise
+#     seasonal_offset: true
+#     state: "on"
+#   enabled_config:
+#     entity_name: garage_camera_auto_night_mode
+#     name: "Garage Cam: Auto Night Mode"
+#     icon: mdi:weather-sunset
+#     initial: true
 
-garage_camera_night_mode_off_at_sunrise_automation:
-  module: switches
-  class: ToggleAtTime
-  dependencies:
-    - presence_manager
-  entities:
-    switch: switch.garage_camera_night_mode
-  properties:
-    schedule_time: sunrise
-    seasonal_offset: true
-    state: "off"
-  enabled_config:
-    entity_name: garage_camera_auto_night_mode
-    name: "Garage Cam: Auto Night Mode"
-    icon: mdi:weather-sunset
-    initial: true
+# garage_camera_night_mode_off_at_sunrise_automation:
+#   module: switches
+#   class: ToggleAtTime
+#   dependencies:
+#     - presence_manager
+#   entities:
+#     switch: switch.garage_camera_night_mode
+#   properties:
+#     schedule_time: sunrise
+#     seasonal_offset: true
+#     state: "off"
+#   enabled_config:
+#     entity_name: garage_camera_auto_night_mode
+#     name: "Garage Cam: Auto Night Mode"
+#     icon: mdi:weather-sunset
+#     initial: true
 
-garage_camera_night_mode_on_at_sunset_automation:
-  module: switches
-  class: ToggleAtTime
-  dependencies:
-    - presence_manager
-  entities:
-    switch: switch.garage_camera_night_mode
-  properties:
-    schedule_time: sunset
-    seasonal_offset: true
-    state: "on"
-  enabled_config:
-    entity_name: garage_camera_auto_night_mode
-    name: "Garage Cam: Auto Night Mode"
-    icon: mdi:weather-sunset
-    initial: true
+# garage_camera_night_mode_on_at_sunset_automation:
+#   module: switches
+#   class: ToggleAtTime
+#   dependencies:
+#     - presence_manager
+#   entities:
+#     switch: switch.garage_camera_night_mode
+#   properties:
+#     schedule_time: sunset
+#     seasonal_offset: true
+#     state: "on"
+#   enabled_config:
+#     entity_name: garage_camera_auto_night_mode
+#     name: "Garage Cam: Auto Night Mode"
+#     icon: mdi:weather-sunset
+#     initial: true
