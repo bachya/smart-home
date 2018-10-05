@@ -27,6 +27,7 @@ views:
         entities:
           - sensor.secure_status
           - input_boolean.auto_departure_lockup_automation
+          - alarm_control_panel.simplisafe
           - scene.depart_home
           - scene.drive_home
           - scene.walk_home
