@@ -7,17 +7,17 @@ binary_sensor:
 
 camera:
   - platform: ffmpeg
-    name: Garage Camera
+    name: Garage
     input: -rtsp_transport tcp -i rtsp://garage-camera.myserver.com:8554/unicast
   - platform: nest
   - platform: yi
-    name: Kitchen Camera
+    name: Kitchen
     host: kitchen-camera.myserver.com
     username: !secret yi_username
     password: !secret yi_password
     ffmpeg_arguments: -s 800x450
   - platform: yi
-    name: Guest Bedroom Camera
+    name: Guest Bedroom
     host: guest-bedroom-camera.myserver.com
     username: !secret yi_username
     password: !secret yi_password

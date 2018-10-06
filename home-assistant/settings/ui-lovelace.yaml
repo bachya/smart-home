@@ -201,11 +201,11 @@ views:
       - type: picture-entity
         entity: camera.front_door
       - type: picture-entity
-        entity: camera.garage_camera
+        entity: camera.garage
       - type: picture-entity
-        entity: camera.guest_bedroom_camera
+        entity: camera.guest_bedroom
       - type: picture-entity
-        entity: camera.kitchen_camera
+        entity: camera.kitchen
 
   - title: Front Door
     icon: mdi:door
@@ -228,7 +228,7 @@ views:
     cards:
 
       - type: picture-glance
-        camera_image: camera.garage_camera
+        camera_image: camera.garage
         entities:
           - cover.garage_door
           - switch.garage_lights
@@ -277,7 +277,7 @@ views:
     cards:
 
       - type: picture-entity
-        entity: camera.guest_bedroom_camera
+        entity: camera.guest_bedroom
 
   - title: Kitchen
     icon: mdi:stove
@@ -285,7 +285,7 @@ views:
     cards:
 
       - type: picture-entity
-        entity: camera.kitchen_camera
+        entity: camera.kitchen
 
       - type: entities
         title: Climate
