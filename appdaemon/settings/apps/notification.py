@@ -33,6 +33,9 @@ class Notification:
         self.title = title
         self.when = kwargs.get('when')
 
+        self.data = kwargs.get('data')
+        if not self.data:
+            self.data = {}
         self.data = kwargs.get('data', {})
         self.data.setdefault('push', {})
         self.data['push'].setdefault('thread-id', slugify(title))
