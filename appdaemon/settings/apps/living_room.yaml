@@ -43,7 +43,7 @@ living_room_lights_on_upon_arrival_automation:
     - guest_mode
     - presence_manager
   entities:
-    switch: group.living_room_lights
+    switch: switch.reading_lamp
   properties:
     possible_constraints:
       constrain_cloudy: true
