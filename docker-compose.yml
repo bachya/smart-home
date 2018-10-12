@@ -88,10 +88,6 @@ services:
       - shared:/shared
 
   hass:
-    build:
-      context: ./home-assistant/docker
-      args:
-        version: 0.79.3
     container_name: hass
     depends_on:
       - glances
@@ -101,7 +97,7 @@ services:
       - mysql
     devices:
       - "/dev/zwave:/dev/zwave"
-    image: bachya/home-assistant
+    image: homeassistant/home-assistant:0.80.0
     network_mode: "host"
     restart: unless-stopped
     volumes:
