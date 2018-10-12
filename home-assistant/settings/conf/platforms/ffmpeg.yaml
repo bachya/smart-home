@@ -1,2 +1,2 @@
 ---
-ffmpeg_bin: /usr/local/bin/ffmpeg
+ffmpeg_bin: /usr/bin/ffmpeg
