@@ -1,9 +1,4 @@
 ---
-alarm_control_panel:
-  - platform: simplisafe
-    username: !secret simplisafe_username
-    password: !secret simplisafe_password
-
 scene:
   - name: Depart Home
     entities:
@@ -91,3 +86,8 @@ sensor:
           {% else %}
             mdi:lock-open-outline
           {% endif %}
+
+simplisafe:
+  accounts:
+    - username: !secret simplisafe_username
+      password: !secret simplisafe_password
