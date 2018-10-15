@@ -34,9 +34,8 @@ class Notification:
         self.when = kwargs.get('when')
 
         self.data = kwargs.get('data')
-        if not self.data:
+        if self.data is None:
             self.data = {}
-        self.data = kwargs.get('data', {})
         self.data.setdefault('push', {})
         self.data['push'].setdefault('thread-id', slugify(title))
 
