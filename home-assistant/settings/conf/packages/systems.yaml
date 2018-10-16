@@ -38,6 +38,15 @@ sensor:
     value_template: '{{ value_json.tag_name[1:] }}'
     scan_interval: 300
   - platform: command_line
+    name: Xiaomi Hack Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/EliasKotlyar/Xiaomi-Dafang-Hacks/commits
+    value_template: '{{ value_json[0].commit.author.date }}'
+    scan_interval: 300
+  - platform: command_line
     name: Yi Hack Available
     command: >-
       curl -L
@@ -47,6 +56,12 @@ sensor:
     value_template: '{{ value_json.tag_name }}'
     scan_interval: 300
   # Installed Versions
+  - platform: command_line
+    name: Xiaomi Hack Installed
+    command: >
+      ssh -i /config/id_rsa -o StrictHostKeyChecking=no
+      root@garage-camera.phil.iot
+      cat /system/sdcard/.lastCommitDate
   - platform: command_line
     name: Yi Hack Installed
     command: >
