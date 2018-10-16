@@ -255,14 +255,19 @@ views:
         entities:
           - device_tracker.2010_subaru_legacy
 
-      - type: entities
-        title: Sprinkler System
+      - type: entity-filter
+        card:
+          type: entities
+          title: Sprinkler System
+          show_header_toggle: false
         entities:
           - switch.program_morning
           - switch.program_evening
           - switch.zone_landscaping
           - switch.zone_flower_box
-        show_header_toggle: false
+        state_filter:
+          - 'off'
+          - 'on'
 
       - type: entities
         title: Trash
