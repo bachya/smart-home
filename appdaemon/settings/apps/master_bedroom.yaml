@@ -39,7 +39,7 @@ master_bathroom_fan_double_tap_timer_automation:
   dependencies:
     - presence_manager
   entities:
-    switch: switch.master_bathroom_fan
+    timer_slider: input_number.master_bathroom_fan_timer
     zwave_device: zwave.master_bathroom_fan
   properties:
     duration: 600
@@ -61,26 +61,13 @@ master_bathroom_fan_sleep_timer_automation:
     icon: mdi:sleep
     initial: true
 
-master_toilet_fan_sleep_timer_automation:
-  module: switches
-  class: SleepTimer
-  dependencies:
-    - presence_manager
-  entities:
-    switch: switch.master_toilet_fan
-    timer_slider: input_number.master_bathroom_toilet_fan_timer
-  enabled_config:
-    name: "Toilet: enable sleep timer"
-    icon: mdi:sleep
-    initial: true
-
 master_toilet_fan_double_tap_timer_automation:
   module: switches
   class: DoubleTapTimerSwitch
   dependencies:
     - presence_manager
   entities:
-    switch: switch.master_toilet_fan
+    timer_slider: input_number.master_bathroom_toilet_fan_timer
     zwave_device: zwave.master_toilet_fan
   properties:
     duration: 600
@@ -127,4 +114,17 @@ master_toilet_fan_on_at_10am_automation:
   enabled_config:
     name: "Toilet: on at 10am"
     icon: mdi:fan
+    initial: true
+
+master_toilet_fan_sleep_timer_automation:
+  module: switches
+  class: SleepTimer
+  dependencies:
+    - presence_manager
+  entities:
+    switch: switch.master_toilet_fan
+    timer_slider: input_number.master_bathroom_toilet_fan_timer
+  enabled_config:
+    name: "Toilet: enable sleep timer"
+    icon: mdi:sleep
     initial: true

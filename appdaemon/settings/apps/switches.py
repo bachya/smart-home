@@ -78,40 +78,12 @@ class BaseZwaveSwitch(BaseSwitch):
 class DoubleTapTimerSwitch(BaseZwaveSwitch):
     """Define a feature to double tap a switch on for a time."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
-        self.listen_state(
-            self.switch_turned_off,
-            self.entities['switch'],
-            new='off',
-            constrain_input_boolean=self.enabled_entity_id)
-
     def double_up(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Turn on the target switch with a double up tap."""
-        self.log(
-            'Starting {0}-second time for switch'.format(
-                self.properties['duration']))
-
-        self.toggle('on')
-        self.handles[HANDLE_TIMER] = self.run_in(
-            self.timer_completed, self.properties['duration'])
-
-    def switch_turned_off(  # pylint: disable=too-many-arguments
-            self, entity: Union[str, dict], attribute: str, old: str, new: str,
-            kwargs: dict) -> None:
-        """Cancel any timer if the switch is turned off."""
-        if HANDLE_TIMER in self.handles:
-            handle = self.handles.pop(HANDLE_TIMER)
-            self.cancel_timer(handle)
-
-    def timer_completed(self, kwargs: dict) -> None:
-        """Turn off a switch at the end of the timer."""
-        self.log('Double-tapped timer over; turning switch off')
-
-        self.toggle('off')
-        self.handles.pop(HANDLE_TIMER, None)
+        """Turn on the target timer slider with a double up tap."""
+        self.call_service(
+            'input_number/set_value',
+            entity_id=self.entities['timer_slider'],
+            value=round(self.properties['duration'] / 60))
 
 
 class DoubleTapToggleSwitch(BaseZwaveSwitch):
