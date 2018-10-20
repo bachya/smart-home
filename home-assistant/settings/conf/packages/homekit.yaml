@@ -19,8 +19,7 @@ homekit:
     include_entities:
       - climate.thermostat
       - cover.garage_door
-      - sensor.average_indoor_temperature
-      - sensor.average_indoor_humidity
+      - sensor.fiddle_leaf_fig_moisture
       - switch.backyard_lights
       - switch.fireplace
       - switch.front_patio_light
