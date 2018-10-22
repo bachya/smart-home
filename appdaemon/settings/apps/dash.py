@@ -22,31 +22,6 @@ OPTION_METHOD_MAP = {
 }
 
 
-class ChangeActionUponState(Automation):
-    """Define an automation for changing the button action based upon state."""
-
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
-        self.listen_state(
-            self.entity_state_occurred,
-            self.entities['target'],
-            new=self.properties['target_state'],
-            constrain_input_boolean=self.enabled_entity_id)
-
-    def entity_state_occurred(  # pylint: disable=too-many-arguments
-            self, entity: Union[str, dict], attribute: str, old: str, new: str,
-            kwargs: dict) -> None:
-        """Change the Dash action when the "watched" entity state occurs."""
-        self.log(
-            'Setting input select: {0} -> {1}'.format(
-                self.app.action_list, self.properties['dash_action']))
-
-        self.select_option(
-            self.app.action_list, self.properties['dash_action'])
-
-
 class DashButton(Automation):
     """Define an automation for Amazon Dash Buttons."""
 
