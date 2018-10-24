@@ -3,6 +3,10 @@ binary_sensor.garage_camera_motion_detected:
   friendly_name: "Motion Detected"
 cover.garage_door:
   icon: "mdi:garage"
+device_tracker.tile_9fbcfa5784c670a4:
+  friendly_name: Aaron's Keys
+device_tracker.tile_8558dbefa35168d2:
+  friendly_name: Aaron's Wallet
 group.appliance_automations:
   friendly_name: "Appliances"
 group.climate_automations:

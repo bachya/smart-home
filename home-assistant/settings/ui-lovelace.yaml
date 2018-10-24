@@ -18,8 +18,8 @@ views:
           - type: glance
             title: Valuables
             entities:
-              - device_tracker.tile_aarons_keys
-              - device_tracker.tile_aarons_wallet
+              - device_tracker.tile_9fbcfa5784c670a4
+              - device_tracker.tile_8558dbefa35168d2
             column_width: calc(100% / 2)
 
       - type: entities

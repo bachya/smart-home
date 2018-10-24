@@ -6,7 +6,7 @@ notify_when_aarons_keys_missing_automation:
     - notification_manager
     - presence_manager
   entities:
-    tile: device_tracker.tile_aarons_keys
+    tile: device_tracker.tile_9fbcfa5784c670a4
   properties:
     duration: 600
     target: Aaron
@@ -22,7 +22,7 @@ notify_when_aarons_wallet_missing_automation:
     - notification_manager
     - presence_manager
   entities:
-    tile: device_tracker.tile_aarons_wallet
+    tile: device_tracker.tile_8558dbefa35168d2
   properties:
     duration: 600
     target: Aaron
