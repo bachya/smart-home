@@ -1,4 +1,10 @@
 ---
+resources:
+  - url: /local/custom-lovelace/monster-card/monster-card.js?v=1
+    type: js
+  - url: /local/mini-media-player/mini-media-player.js?v=0.8.8
+    type: module
+
 title: Bach Home
 views:
 
@@ -7,35 +13,36 @@ views:
     id: overview
     cards:
 
-      - type: vertical-stack
-        cards:
-          - type: glance
-            title: People
-            entities:
-              - sensor.aaron_presence_status
-              - sensor.britt_presence_status
-            column_width: calc(100% / 2)
-          - type: glance
-            title: Valuables
-            entities:
-              - device_tracker.tile_9fbcfa5784c670a4
-              - device_tracker.tile_8558dbefa35168d2
-            column_width: calc(100% / 2)
-
-      - type: entities
-        title: Security Status
+      - id: 3c08be832ceb4781ab8a803aea115514  # Automatically created id
+        type: glance
+        title: Location
         entities:
-          - sensor.secure_status
-          - input_boolean.auto_departure_lockup_automation
-          - alarm_control_panel.simplisafe
+          - sensor.aaron_presence_status
+          - sensor.britt_presence_status
+          - device_tracker.tile_9fbcfa5784c670a4
+          - device_tracker.tile_8558dbefa35168d2
+
+      - id: 5414ccb9c8f04e8da496011a8f5b5cf5  # Automatically created id
+        type: glance
+        title: Scenes
+        entities:
           - scene.depart_home
           - scene.drive_home
           - scene.walk_home
           - scene.good_night
-        column_width: calc(100% / 2)
+        show_state: false
+
+      - id: 9fc3529e44624549b976a36a4270b81b  # Automatically created id
+        type: entities
+        title: Security Status
+        entities:
+          - sensor.secure_status
+          - alarm_control_panel.simplisafe
+          - input_boolean.auto_departure_lockup_automation
         show_header_toggle: false
 
-      - type: entities
+      - id: 4ae8dec3fae24c3b96a5800939a6ad41  # Automatically created id
+        type: entities
         title: Modes
         entities:
           - input_boolean.mode_do_not_disturb
@@ -43,32 +50,40 @@ views:
           - input_boolean.mode_vacation_mode
         show_header_toggle: false
 
-      - type: entities
-        title: Climate
-        entities:
-          - sensor.average_indoor_temperature
-          - sensor.average_indoor_humidity
-          - switch.climate_away_mode
-        show_header_toggle: false
+      - id: ed4c33ece2d94976b465d9876e2d19a0  # Automatically created id
+        type: vertical-stack
+        cards:
+          - type: entities
+            title: Climate
+            entities:
+              - sensor.average_indoor_temperature
+              - sensor.average_indoor_humidity
+              - switch.climate_away_mode
+            show_header_toggle: false
+          - type: thermostat
+            entity: climate.thermostat
 
   - title: Automation Controls
     icon: mdi:home-automation
     id: automation-controls
     cards:
 
-      - type: entities
+      - id: 7541dec55e784829b07105dcec2a3266  # Automatically created id
+        type: entities
         title: Aaron's Car
         entities:
           - input_boolean.subaru_legacy_notify_eta_automation
           - input_boolean.subaru_legacy_notify_low_fuel_automation
 
-      - type: entities
+      - id: 10a44c2b906344a8881c736d272728d9  # Automatically created id
+        type: entities
         title: Amazon Dash Buttons
         entities:
           - input_boolean.amazon_basics_batteries_transition_to_climate_bump
           - input_boolean.amazon_basics_batteries_transition_to_salt_lamp
 
-      - type: entities
+      - id: 056a432afe8d41b2aa529a7680cec840  # Automatically created id
+        type: entities
         title: Backyard Lights
         entities:
           - input_boolean.backyard_lights_off_at_11pm_automation
@@ -76,40 +91,47 @@ views:
           - input_boolean.backyard_lights_on_at_sunset_automation
           - input_boolean.kitchen_patio_light_double_tap_backyard_lights_automation
 
-      - type: entities
+      - id: ca0d09be754f4dd8b21f06b1f3c313d1  # Automatically created id
+        type: entities
         title: Cameras
         entities:
           - input_boolean.garage_camera_auto_night_mode
 
-      - type: entities
+      - id: b270947cbf634a4696dad469000e693d  # Automatically created id
+        type: entities
         title: Climate
         entities:
           - input_boolean.adjust_climate_on_proximity_automation
           - input_boolean.notify_bad_aqi_automation
 
-      - type: entities
+      - id: 78ddcab26d5e4e84a63594af2ab04fd5  # Automatically created id
+        type: entities
         title: Dishwasher
         entities:
           - input_boolean.dishwasher_cycle_automation
 
-      - type: entities
+      - id: 71114b1ba38c43bd980bcb31fdc0aaf4  # Automatically created id
+        type: entities
         title: Fiddle Leaf Fig
         entities:
           - input_boolean.fiddle_leaf_fig_low_moisture_automation
 
-      - type: entities
+      - id: e2f0938b57614d03ba131bac486dc676  # Automatically created id
+        type: entities
         title: Fireplace
         entities:
           - input_boolean.fireplace_failsafe_automation
 
-      - type: entities
+      - id: 0303ff407693434385806c25b4aff095  # Automatically created id
+        type: entities
         title: Garage Lights
         entities:
           - input_boolean.garage_lights_off_after_garage_close_automation
           - input_boolean.garage_lights_on_garage_open_sundown_automation
           - input_boolean.garage_lights_on_upon_arrival_automation
 
-      - type: entities
+      - id: d492c30ed9634155ab73c045afdc700d  # Automatically created id
+        type: entities
         title: Home Assistant
         entities:
           - input_boolean.auto_themes_automation
@@ -118,14 +140,16 @@ views:
           - input_boolean.detect_blackout_automation
           - input_boolean.notify_of_new_versions
 
-      - type: entities
+      - id: 6471271886ec46fcaf74546865aa98b5  # Automatically created id
+        type: entities
         title: Living Room Lights
         entities:
           - input_boolean.living_room_lights_on_at_sunset_automation
           - input_boolean.living_room_lights_on_upon_arrival_automation
           - input_boolean.living_room_lights_vacation_mode_automation
 
-      - type: entities
+      - id: 0e59210e95d04e468530e9aef8509013  # Automatically created id
+        type: entities
         title: Master Bathroom Fans
         entities:
           - input_boolean.master_bathroom_fan_double_tap_timer_automation
@@ -135,32 +159,37 @@ views:
           - input_boolean.master_toilet_fan_on_at_10am_automation
           - input_boolean.master_toilet_fan_sleep_timer_automation
 
-      - type: entities
+      - id: cf263ed5f5b9426b9621b1e88125d48a  # Automatically created id
+        type: entities
         title: Master Bedroom Lights
         entities:
           - input_boolean.master_bedroom_lights_on_at_sunset_automation
           - input_boolean.master_bedroom_lights_sleep_timer_automation
 
-      - type: entities
+      - id: dc4b4fb2330747a8a4471383972558a0  # Automatically created id
+        type: entities
         title: Office Lights
         entities:
           - input_boolean.office_lights_off_at_10pm_automation
           - input_boolean.office_lights_on_at_sunset_automation
           - input_boolean.office_lights_sleep_timer_automation
 
-      - type: entities
+      - id: a56e667f2c2d44ee841236a0d94743b8  # Automatically created id
+        type: entities
         title: Patio Lights
         entities:
           - input_boolean.patio_lights_off_at_11pm_automation
           - input_boolean.patio_lights_on_at_sunset_automation
           - input_boolean.patio_lights_vacation_mode_automation
 
-      - type: entities
+      - id: b07359613375451e9ea50be970a0ca70  # Automatically created id
+        type: entities
         title: Powder Room Fan
         entities:
           - input_boolean.powder_room_fan_auto_turn_on_automation
 
-      - type: entities
+      - id: dc8712405a534402b03aea6049e4f8e5  # Automatically created id
+        type: entities
         title: Security
         entities:
           - input_boolean.auto_departure_lockup_automation
@@ -169,42 +198,72 @@ views:
           - input_boolean.notify_when_absent_insecure_automation
           - input_boolean.notify_when_status_changes_automation
 
-      - type: entities
+      - id: 254fda431fdb48cdb8a261a91b0d9f08  # Automatically created id
+        type: entities
         title: Systems
         entities:
           - input_boolean.media_center_left_on
           - input_boolean.notify_of_low_batteries_automation
           - input_boolean.notify_of_ssl_expiration_automation
 
-      - type: entities
+      - id: 185c86ab96af4c82a04298927120b64a  # Automatically created id
+        type: entities
         title: Trash
         entities:
           - input_boolean.notify_of_trash_pickup_automation
 
-      - type: entities
+      - id: b2ad1fb453284a02a4bd96030ac26246  # Automatically created id
+        type: entities
         title: Valuables
         entities:
           - input_boolean.notify_when_aarons_keys_missing_automation
           - input_boolean.notify_when_aarons_wallet_missing_automation
 
-      - type: entities
+      - id: b8b0de20a55e422e90f8531c6a32cfea  # Automatically created id
+        type: entities
         title: Wolfie
         entities:
           - input_boolean.notify_when_wolfie_consumable_low_automation
           - input_boolean.wolfie_scheduled_cycle_automation
+
+  - title: Basement
+    icon: mdi:gamepad-variant
+    id: basement
+    cards:
+      - id: da8cec22a3214cfc84f8c3764c85532c  # Automatically created id
+        type: entities
+        title: Media
+        entities:
+          - switch.media_center
+          - switch.ps4
+        show_header_toggle: false
 
   - title: Cameras
     icon: mdi:cctv
     id: cameras
     cards:
 
-      - type: picture-entity
-        entity: camera.front_door
-      - type: picture-entity
-        entity: camera.garage
-      - type: picture-entity
+      - id: 03b0d2f6e91242b88ba451aad7625d6e  # Automatically created id
+        type: picture-glance
+        title: Front Door
+        camera_image: camera.front_door
+        entities:
+          - lock.front_door
+          - sensor.front_door_lock_battery
+          - binary_sensor.front_door_camera_motion_detected
+          - binary_sensor.front_door_camera_person_detected
+          - binary_sensor.front_door_camera_sound_detected
+      - id: 123b8cf88bed44b783b8fb9ced9758a2  # Automatically created id
+        type: picture-glance
+        camera_image: camera.garage
+        entities:
+          - cover.garage_door
+          - switch.garage_lights
+      - id: 4eef98113c244681bcc565d32d04ad33  # Automatically created id
+        type: picture-entity
         entity: camera.guest_bedroom
-      - type: picture-entity
+      - id: a04b78da88aa46d381a79ef80573f9c8  # Automatically created id
+        type: picture-entity
         entity: camera.kitchen
 
   - title: Front Door
@@ -212,7 +271,8 @@ views:
     id: front-door
     cards:
 
-      - type: picture-glance
+      - id: 6bf1c6715410426ab35ba4fee3674156  # Automatically created id
+        type: picture-glance
         title: Front Door
         camera_image: camera.front_door
         entities:
@@ -227,7 +287,8 @@ views:
     id: garage
     cards:
 
-      - type: picture-glance
+      - id: b2ccdec201c6460f82babd1c7a6b1544  # Automatically created id
+        type: picture-glance
         camera_image: camera.garage
         entities:
           - cover.garage_door
@@ -250,12 +311,14 @@ views:
       #     - switch.garage_camera_rtsp_mjpeg
       #   show_header_toggle: false
 
-      - type: entities
+      - id: d6d6e7ad6739437787c6b9ebe847d4e2  # Automatically created id
+        type: entities
         title: Cars
         entities:
           - device_tracker.2010_subaru_legacy
 
-      - type: entity-filter
+      - id: 6ef5446c5147412d88c91a149fc308ab  # Automatically created id
+        type: entity-filter
         card:
           type: entities
           title: Sprinkler System
@@ -266,10 +329,11 @@ views:
           - switch.zone_landscaping
           - switch.zone_flower_box
         state_filter:
-          - 'off'
-          - 'on'
+          - off
+          - on
 
-      - type: entities
+      - id: 009ec2727d4447ee852c26600908b058  # Automatically created id
+        type: entities
         title: Trash
         entities:
           - sensor.extra_trash_pickup
@@ -281,7 +345,8 @@ views:
     id: guest-bedroom
     cards:
 
-      - type: picture-entity
+      - id: 8353ba7128de4de887054f9e761e9d7c  # Automatically created id
+        type: picture-entity
         entity: camera.guest_bedroom
 
   - title: Kitchen
@@ -289,39 +354,39 @@ views:
     id: kitchen
     cards:
 
-      - type: picture-entity
+      - id: 020698c11bf641278c7e62ad96a6afec  # Automatically created id
+        type: picture-entity
         entity: camera.kitchen
 
-      - type: entities
+      - id: 9f1e83011d1b47a386f7310e3ea1f610  # Automatically created id
+        type: entities
         title: Climate
         entities:
           - climate.thermostat
           - sensor.thermostat_thermostat_humidity
           - sensor.thermostat_thermostat_hvac_state
 
-      - type: entities
+      - id: c2b4dbd108274c21be9963bf06693e80  # Automatically created id
+        type: entities
         title: Dishwasher
         entities:
           - input_select.dishwasher_status
           - sensor.dishwasher_power
 
-      - type: entities
+      - id: 76478dbdc72f45cfa3dc0ead64e3edaf  # Automatically created id
+        type: entities
         title: Fire Door
         entities:
           - lock.garage_fire_door
           - sensor.garage_fire_door_lock_battery
-
-      - type: entities
-        title: Security Systems
-        entities:
-          - alarm_control_panel.simplisafe
 
   - title: Living Room
     icon: mdi:sofa
     id: living-room
     cards:
 
-      - type: entities
+      - id: fea059285e7048efaf73bced558e19d6  # Automatically created id
+        type: glance
         title: Fiddle Leaf Fig
         entities:
           - sensor.fiddle_leaf_fig_moisture
@@ -330,45 +395,60 @@ views:
           - sensor.fiddle_leaf_fig_light_intensity
           - sensor.fiddle_leaf_fig_battery
 
-      - type: entities
+      - id: c27b3ba5f51a472aa081154d69c8183e  # Automatically created id
+        type: entities
         title: Fireplace
         entities:
           - switch.fireplace
         show_header_toggle: false
 
-      - type: entities
+      - id: 70ccbfec2fd04cdd85b54dad5f635185  # Automatically created id
+        type: entities
         title: Lights
         entities:
           - switch.reading_lamp
           - switch.sofa_lamp
 
-      - type: entities
+      - id: 4f5241b5ea3548e9831f4407a9ec24a4  # Automatically created id
+        type: entities
         title: Powder Room
         entities:
           - switch.powder_room_fan
         show_header_toggle: false
 
-      - type: entities
-        title: TV
+      - id: 3eb074583c654b808d0c44b49d2047e9  # Automatically created id
+        type: entities
+        title: Living Room TV
         entities:
-          - remote.samsung_tv
-          - switch.media_center
-          - switch.ps4
-          - scene.watch_plex
-        show_header_toggle: false
+          - type: custom:mini-media-player
+            entity: media_player.living_room_roku
+            name: Roku
+            artwork_border: true
+            hide_controls: true
+            hide_power: true
+            hide_volume: true
+            show_source: true
+          - type: custom:mini-media-player
+            entity: media_player.sonos_playbar
+            name: Sonos Playbar
+            icon: mdi:speaker
+            hide_controls: true
+            hide_power: true
 
   - title: Master Bedroom
     icon: mdi:hotel
     id: master-bedroom
     cards:
 
-      - type: entities
+      - id: f96d2df7f6134393b4c91ddc319e6385  # Automatically created id
+        type: entities
         title: Amazon Dash Buttons
         entities:
           - input_select.dash_amazon_basics_batteries
           - input_select.dash_neat
 
-      - type: entities
+      - id: 42adcc9a535341e3b3827f3b45cfb227  # Automatically created id
+        type: entities
         title: Bathroom Fans
         entities:
           - switch.master_bathroom_fan
@@ -376,14 +456,16 @@ views:
           - switch.master_toilet_fan
           - input_number.master_bathroom_toilet_fan_timer
 
-      - type: entities
+      - id: c68f2f9702ac4ba5a5e5b83ff7b67950  # Automatically created id
+        type: entities
         title: Climate
         entities:
           - sensor.climate_2_temperature
           - sensor.climate_2_humidity
           - sensor.climate_2_pressure
 
-      - type: entities
+      - id: 3eee9b24f1604064a011e9ee9c98ded9  # Automatically created id
+        type: entities
         title: Salt Lamp
         entities:
           - light.salt_lamp_master_bedroom
@@ -395,7 +477,8 @@ views:
     id: office
     cards:
 
-      - type: entities
+      - id: 7cd761fcd5124d75935172bfec0f7e37  # Automatically created id
+        type: entities
         title: Salt Lamp
         entities:
           - light.salt_lamp_office
@@ -407,7 +490,8 @@ views:
     id: outdoors
     cards:
 
-      - type: entities
+      - id: 99133cbabff141e8a8dba8d36f61335f  # Automatically created id
+        type: entities
         title: Air Quality
         entities:
           - sensor.us_air_pollution_level
@@ -415,7 +499,8 @@ views:
           - sensor.us_main_pollutant
           - sensor.current_ozone_level
 
-      - type: entities
+      - id: 49f530c577f44752ad74f9c0a461ac1f  # Automatically created id
+        type: entities
         title: Allergies & Disease
         entities:
           - sensor.allergy_index_today
@@ -425,7 +510,8 @@ views:
           - sensor.allergy_index_historical_average
           - sensor.cold__flu_forecasted_average
 
-      - type: entities
+      - id: 0196408769414126af05c1eb9d1d9977  # Automatically created id
+        type: entities
         title: Climate
         entities:
           - sensor.dark_sky_temperature
@@ -436,14 +522,16 @@ views:
           - sensor.dark_sky_pressure
           - sensor.dark_sky_wind_speed
 
-      - type: entities
+      - id: b548d149f6cb47178951ff6122776a9d  # Automatically created id
+        type: entities
         title: Lights
         entities:
           - switch.backyard_lights
           - switch.front_patio_light
           - switch.kitchen_patio_light
 
-      - type: entities
+      - id: 5676e21a936a4e47b3567d5563bff405  # Automatically created id
+        type: entities
         title: UV
         entities:
           - binary_sensor.protection_window
@@ -458,7 +546,8 @@ views:
     id: systems
     cards:
 
-      - type: entities
+      - id: 6f4b4f58d3e0446aa008559cc9543333  # Automatically created id
+        type: entities
         title: Durmstrang
         entities:
           - sensor.durmstrang_cpu_temperature
@@ -469,7 +558,8 @@ views:
           - switch.durmstrang_glances
         show_header_toggle: false
 
-      - type: entities
+      - id: df417609a6dd4404aac034e34471e1ca  # Automatically created id
+        type: entities
         title: Gryffindor
         entities:
           - sensor.gryffindor_cpu_temperature
@@ -480,7 +570,8 @@ views:
           - switch.gryffindor_glances
         show_header_toggle: false
 
-      - type: entities
+      - id: 5b75da280a874e8c9ea37af58bb87ba3  # Automatically created id
+        type: entities
         title: Hub
         entities:
           - sensor.hub_cpu_temperature
@@ -499,7 +590,8 @@ views:
           - switch.nginx
         show_header_toggle: false
 
-      - type: entities
+      - id: ff1450dd54764ac3966fcb38e5119eb2  # Automatically created id
+        type: entities
         title: Hufflepuff
         entities:
           - sensor.hufflepuff_cpu_temperature
@@ -510,7 +602,8 @@ views:
           - switch.hufflepuff_glances
         show_header_toggle: false
 
-      - type: entities
+      - id: b0e2014678ac4418b5f95aec8e652e9f  # Automatically created id
+        type: entities
         title: Ravenclaw
         entities:
           - sensor.ravenclaw_cpu_temperature
@@ -522,7 +615,8 @@ views:
           - switch.ravenclaw_hass_elder_bachs
         show_header_toggle: false
 
-      - type: entities
+      - id: a020603ea51740ac9de86dd3d5cffc1a  # Automatically created id
+        type: entities
         title: Slytherin
         entities:
           - sensor.slytherin_cpu_temperature
@@ -533,7 +627,8 @@ views:
           - switch.slytherin_glances
         show_header_toggle: false
 
-      - type: entities
+      - id: efeeafd4894948af9eda32d4c3bed4b4  # Automatically created id
+        type: entities
         title: Links
         entities:
           - type: weblink
@@ -593,7 +688,8 @@ views:
             url: http://kitchen-camera.myserver.com
             icon: mdi:cctv
 
-      - type: entities
+      - id: eadadac6ac39461899bd44f3980230a5  # Automatically created id
+        type: entities
         title: Network
         entities:
           - sensor.speedtest_download
@@ -601,7 +697,8 @@ views:
           - sensor.speedtest_ping
           - sensor.ssl_expiry
 
-      - type: entities
+      - id: b49c37567da74b8aa4d91c2ac401334b  # Automatically created id
+        type: entities
         title: Versions
         entities:
           - sensor.appdaemon_available
@@ -622,20 +719,23 @@ views:
     id: wolfie
     cards:
 
-      - type: entities
+      - id: fc01b51156d74fa7b845083015f7209a  # Automatically created id
+        type: entities
         title: Run Cycle
         entities:
           - switch.wolfie_cycle
           - input_select.wolfie_bin_status
         show_header_toggle: false
 
-      - type: entities
+      - id: a48777ff6e204b08a93a40bf24fd69e3  # Automatically created id
+        type: entities
         title: Clean Room
         entities:
           - input_select.wolfie_room_select
           - script.clean_room
 
-      - type: entities
+      - id: a93f99548fdc4fdcbe8cb01932998c51  # Automatically created id
+        type: entities
         title: Schedule
         entities:
           - input_boolean.vacuum_schedule_monday
@@ -646,7 +746,8 @@ views:
           - input_boolean.vacuum_schedule_saturday
           - input_boolean.vacuum_schedule_sunday
 
-      - type: entities
+      - id: c063a8c30ce0448f854f61b600c4ab19  # Automatically created id
+        type: entities
         title: Stats
         entities:
           - sensor.vacuum_status

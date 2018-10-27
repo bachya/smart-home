@@ -1,0 +1,6 @@
+[submodule "home-assistant/settings/www/custom-lovelace"]
+	path = home-assistant/settings/www/custom-lovelace
+	url = https://github.com/ciotlosm/custom-lovelace
+[submodule "home-assistant/settings/www/mini-media-player"]
+	path = home-assistant/settings/www/mini-media-player
+	url = https://github.com/kalkih/mini-media-player
