@@ -73,3 +73,7 @@ docker container prune -f
 docker-compose up -d
 docker network prune -f
 docker volume prune -f
+
+# Restart AppDaemon (just in case it hasn't gotten its data yet - bug):
+sleep 10
+docker-compose restart appdaemon
