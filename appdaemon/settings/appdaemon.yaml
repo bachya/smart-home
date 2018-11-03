@@ -16,4 +16,4 @@ appdaemon:
       namespace: mqtt
       client_host: mosquitto
       client_user: appdaemon
-      client_password: zWMD7xqqQfhVgi6
+      client_password: !secret mqtt_password
