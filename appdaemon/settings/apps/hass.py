@@ -3,58 +3,12 @@
 # pylint: disable=attribute-defined-outside-init,import-error,unused-argument
 
 from datetime import timedelta
-from enum import Enum
 from typing import Union
 
 from packaging import version  # type: ignore
 
 from automation import Automation  # type: ignore
 from const import BLACKOUT_END, BLACKOUT_START  # type: ignore
-
-
-class AutoThemes(Automation):
-    """Define a feature to automatically change themes on time of day."""
-
-    class Themes(Enum):
-        """Define an enum for themes."""
-
-        default = 'default'
-        dark = 'dark_theme'
-
-    @property
-    def current_theme(self) -> Union[Enum, None]:
-        """Define a property to store the current theme."""
-        return self._current_theme
-
-    @current_theme.setter
-    def current_theme(self, value: Enum) -> None:
-        """Define a setter for the current theme."""
-        self.call_service('frontend/set_theme', name=value.value)
-        self._current_theme = value
-
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
-        if not self.now_is_between(BLACKOUT_END, BLACKOUT_START):
-            self.current_theme = self.Themes.dark
-        else:
-            self.current_theme = self.Themes.default
-
-        self.run_daily(
-            self.theme_changed,
-            self.parse_time(self.properties['light_schedule_time']),
-            theme=self.Themes.default,
-            constrain_input_boolean=self.enabled_entity_id)
-        self.run_daily(
-            self.theme_changed,
-            self.parse_time(self.properties['dark_schedule_time']),
-            theme=self.Themes.dark,
-            constrain_input_boolean=self.enabled_entity_id)
-
-    def theme_changed(self, kwargs: dict) -> None:
-        """Change the theme to a "day" variant in the morning."""
-        self.current_theme = kwargs['theme']
 
 
 class AutoVacationMode(Automation):

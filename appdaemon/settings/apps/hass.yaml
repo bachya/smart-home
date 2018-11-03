@@ -1,17 +1,4 @@
 ---
-auto_themes_automation:
-  module: hass
-  class: AutoThemes
-  dependencies:
-    - presence_manager
-  properties:
-    dark_schedule_time: "20:00:00"
-    light_schedule_time: "08:00:00"
-  enabled_config:
-    name: Auto light/dark themes
-    icon: mdi:theme-light-dark
-    initial: true
-
 auto_vacation_mode_alterations_automation:
   module: hass
   class: AutoVacationMode

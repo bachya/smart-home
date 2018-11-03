@@ -134,7 +134,6 @@ views:
         type: entities
         title: Home Assistant
         entities:
-          - input_boolean.auto_themes_automation
           - input_boolean.auto_vacation_mode_alterations_automation
           - input_boolean.bad_login_notifications_automation
           - input_boolean.detect_blackout_automation

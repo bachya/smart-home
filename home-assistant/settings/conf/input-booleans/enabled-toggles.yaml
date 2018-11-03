@@ -19,10 +19,6 @@ auto_nighttime_lockup_automation:
   icon: mdi:clock
   initial: true
   name: Automatically lock up at night
-auto_themes_automation:
-  icon: mdi:theme-light-dark
-  initial: true
-  name: Auto light/dark themes
 auto_vacation_mode_alterations_automation:
   icon: mdi:beach
   initial: true
