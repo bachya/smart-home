@@ -13,7 +13,7 @@ services:
     build:
       context: ./appdaemon/docker
       args:
-        version: 3.0.1
+        version: 3.0.2
     command: /usr/src/app/start.sh
     container_name: appdaemon
     depends_on:
