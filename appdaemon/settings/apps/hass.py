@@ -3,12 +3,15 @@
 # pylint: disable=attribute-defined-outside-init,import-error,unused-argument
 
 from datetime import timedelta
+from time import sleep
 from typing import Union
 
 from packaging import version  # type: ignore
 
 from automation import Automation  # type: ignore
 from const import BLACKOUT_END, BLACKOUT_START  # type: ignore
+
+DEFAULT_TASMOTA_RETRIES = 3
 
 
 class AutoVacationMode(Automation):
@@ -149,16 +152,17 @@ class NewTasmotaVersionNotification(NewVersionNotification):
         tasmota_version = None
 
         for host in self.properties['tasmota_hosts']:
-            try:
-                json = requests.get('http://{0}/{1}'.format(
-                    host, status_uri)).json()
-                tasmota_version = json['StatusFWR']['Version']
-            except KeyError:
-                self.error('Malformed JSON from host {0}'.format(host))
-                continue
-            except requests.exceptions.ConnectionError:
+            for i in range(DEFAULT_TASMOTA_RETRIES - 1):
+                try:
+                    json = requests.get('http://{0}/{1}'.format(
+                        host, status_uri)).json()
+                    tasmota_version = json['StatusFWR']['Version']
+                except requests.exceptions.ConnectionError:
+                    sleep(10)
+                else:
+                    break
+            else:
                 self.error('Unable to connect to host: {0}'.format(host))
-                continue
 
             try:
                 if lowest_version > tasmota_version:
