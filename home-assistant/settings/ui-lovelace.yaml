@@ -764,6 +764,7 @@ views:
           - input_boolean.vacuum_schedule_friday
           - input_boolean.vacuum_schedule_saturday
           - input_boolean.vacuum_schedule_sunday
+        show_header_toggle: false
 
       - id: c063a8c30ce0448f854f61b600c4ab19  # Automatically created id
         type: entities
