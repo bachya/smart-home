@@ -363,6 +363,178 @@ views:
         type: picture-entity
         entity: camera.guest_bedroom
 
+  - title: Health
+    icon: mdi:medical-bag
+    id: health
+    panel: true
+    cards:
+
+      - type: vertical-stack
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: vertical-stack
+                cards:
+                  - type: gauge
+                    entity: sensor.us_air_quality_index
+                    title: AQI
+                    unit_of_measurement: " "
+                    min: 0
+                    max: 301
+                    severity:
+                      green: 0
+                      yellow: 51
+                      red: 101
+                  - type: glance
+                    entities:
+                      - entity: sensor.us_air_pollution_level
+                        name: Level
+                      - entity: sensor.us_main_pollutant
+                        name: Main
+                      - entity: sensor.current_ozone_level
+                        name: Ozone
+              - type: vertical-stack
+                cards:
+                  - type: gauge
+                    entity: sensor.current_uv_index
+                    title: Current UV
+                    unit_of_measurement: " "
+                    min: 0
+                    max: 5
+                    severity:
+                      green: 0
+                      yellow: 1.75
+                      red: 3.5
+                  - type: glance
+                    entities:
+                      - entity: binary_sensor.protection_window
+                        name: Sunscreen
+                      - entity: sensor.max_uv_index
+                        name: Max UV
+                      - entity: sensor.aaron_safe_exposure_time
+                        name: Aaron Exposure
+                      - entity: sensor.britt_safe_exposure_time
+                        name: Britt Exposure
+          - type: horizontal-stack
+            cards:
+              - type: vertical-stack
+                cards:
+                  - type: gauge
+                    entity: sensor.allergy_index_yesterday
+                    title: Yesterday
+                    unit_of_measurement: " "
+                    min: 0
+                    max: 12
+                    severity:
+                      green: 0
+                      yellow: 4.8
+                      red: 9.7
+                  - type: custom:entity-attributes-card
+                    title: Allergies Yesterday
+                    filter:
+                      include:
+                        - key: sensor.allergy_index_yesterday.rating
+                          name: Rating
+                        - key: sensor.allergy_index_yesterday.allergen_genus_1
+                          name: Allergen Genus
+                        - key: sensor.allergy_index_yesterday.allergen_name_1
+                          name: Allergen Name
+                        - key: sensor.allergy_index_yesterday.allergen_type_1
+                          name: Allergen Type
+              - type: vertical-stack
+                cards:
+                  - type: gauge
+                    entity: sensor.allergy_index_today
+                    title: Today
+                    unit_of_measurement: " "
+                    min: 0
+                    max: 12
+                    severity:
+                      green: 0
+                      yellow: 4.8
+                      red: 9.7
+                  - type: custom:entity-attributes-card
+                    title: Allergies Today
+                    filter:
+                      include:
+                        - key: sensor.allergy_index_today.rating
+                          name: Rating
+                        - key: sensor.allergy_index_today.allergen_genus_1
+                          name: Allergen Genus
+                        - key: sensor.allergy_index_today.allergen_name_1
+                          name: Allergen Name
+                        - key: sensor.allergy_index_today.allergen_type_1
+                          name: Allergen Type
+              - type: vertical-stack
+                cards:
+                  - type: gauge
+                    entity: sensor.allergy_index_tomorrow
+                    title: Tomorrow
+                    unit_of_measurement: " "
+                    min: 0
+                    max: 12
+                    severity:
+                      green: 0
+                      yellow: 4.8
+                      red: 9.7
+                  - type: custom:entity-attributes-card
+                    title: Allergies Tomorrow
+                    filter:
+                      include:
+                        - key: sensor.allergy_index_tomorrow.rating
+                          name: Rating
+                        - key: sensor.allergy_index_tomorrow.allergen_genus_1
+                          name: Allergen Genus
+                        - key: sensor.allergy_index_tomorrow.allergen_name_1
+                          name: Allergen Name
+                        - key: sensor.allergy_index_tomorrow.allergen_type_1
+                          name: Allergen Type
+          - type: horizontal-stack
+            cards:
+              - type: vertical-stack
+                cards:
+                  - type: gauge
+                    entity: sensor.cold__flu_forecasted_average
+                    title: Forecast
+                    unit_of_measurement: " "
+                    min: 0
+                    max: 12
+                    severity:
+                      green: 0
+                      yellow: 4.8
+                      red: 9.7
+                  - type: custom:entity-attributes-card
+                    title: Disease Forecast
+                    filter:
+                      include:
+                        - key: sensor.cold__flu_forecasted_average.trend
+                          name: Trend
+              - type: vertical-stack
+                cards:
+                  - type: gauge
+                    entity: sensor.total_symptoms
+                    title: Reports
+                    unit_of_measurement: " "
+                    min: 0
+                    max: 100
+                    severity:
+                      green: 0
+                      yellow: 25
+                      red: 75
+                  - type: glance
+                    title: Flu Reports
+                    entities:
+                      - entity: sensor.avian_flu_symptoms
+                        name: Avian
+                      - entity: sensor.dengue_fever_symptoms
+                        name: Dengue
+                      - entity: sensor.flu_symptoms
+                        name: Flu
+                      - entity: sensor.flulike_symptoms
+                        name: Flu-like
+                      - entity: sensor.leptospirosis_symptoms
+                        name: Lepto
+
   - title: Kitchen
     icon: mdi:stove
     id: kitchen
