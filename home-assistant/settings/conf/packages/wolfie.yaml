@@ -106,6 +106,7 @@ sensor:
         value_template: >
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.cleaning_time }}
         icon_template: mdi:timer
+        unit_of_measurement: minutes
       vacuum_cleaned_area:
         friendly_name: Area of Last Cycle
         unit_of_measurement: m ²
