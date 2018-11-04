@@ -1,7 +1,4 @@
 ---
-- platform: pushbullet
-  name: amb_macbook
-  api_key: !secret pushbullet_api_key
 - platform: smtp
   name: omnifocus
   server: smtp.gmail.com
