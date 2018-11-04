@@ -19,7 +19,7 @@ notify_when_wolfie_consumable_low_automation:
     - wolfie
   app: wolfie
   properties:
-    consumable_threshold: 15
+    consumable_threshold: 5
     consumables:
       - filter_left
       - main_brush_left
