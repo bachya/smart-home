@@ -229,12 +229,27 @@ views:
     icon: mdi:gamepad-variant
     id: basement
     cards:
+      - type: entities
+        title: Basement TV
+        entities:
+          - type: custom:mini-media-player
+            artwork: none
+            artwork_border: true
+            entity: media_player.basement_apple_tv
+            group: true
+            hide_controls: true
+            hide_power: true
+            hide_volume: true
+            icon: mdi:youtube-tv
+            name: Apple TV
+            show_source: true
+          - switch.ps4
+        show_header_toggle: false
       - id: da8cec22a3214cfc84f8c3764c85532c  # Automatically created id
         type: entities
-        title: Media
+        title: Media Center
         entities:
           - switch.media_center
-          - switch.ps4
         show_header_toggle: false
 
   - title: Cameras

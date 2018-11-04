@@ -1,4 +1,9 @@
 ---
+apple_tv:
+  - host: apple-tv-1.phil.lan
+    login_id: 00000000-1012-d722-4d49-70717fb642c1
+    name: Basement Apple TV
+
 shell_command:
   turn_off_media_center: 'ssh bachya@media-center.phil.lan sudo /sbin/poweroff'
 
