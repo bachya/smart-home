@@ -1,0 +1,87 @@
+---
+google_actions:
+  filter:
+    include_entities:
+      - group.all_salt_lamps
+      - group.living_room_lights
+      - group.master_bedroom_lights
+      - group.office_lights
+      - group.outdoor_lights
+      - input_boolean.living_room_lights_automation_turn_on_at_sunset
+      - input_boolean.living_room_lights_automation_turn_on_when_cloudy
+      - input_boolean.living_room_lights_automation_vacation_mode
+      - input_boolean.mode_guest_mode
+      - input_boolean.mode_vacation_mode
+      - lock.front_door
+      - lock.garage_fire_door
+      - script.clean_kitchen
+      - script.clean_table
+      - script.empty_dishwasher
+      - script.empty_wolfie
+      - switch.backyard_lights
+      - switch.fireplace
+      - switch.front_patio_light
+      - switch.garage_lights
+      - switch.kitchen_patio_light
+      - switch.master_bathroom_fan
+      - switch.master_toilet_fan
+      - switch.media_center
+      - switch.powder_room_fan
+      - switch.program_evening
+      - switch.program_morning
+      - switch.reading_lamp
+      - switch.sofa_lamp
+      - switch.wolfie_cycle
+      - switch.zone_flower_box
+      - switch.zone_landscaping
+    exclude_entities:
+      - media_player.house_audio
+      - media_player.sonos_playbar
+      - media_player.sonos_office_desk
+    exclude_domains:
+      - automation
+      - climate
+      - input_boolean
+      - group
+      - script
+      - sensor
+      - switch
+  entity_config:
+    group.living_room_lights:
+      name: Living Room Lights
+    group.office_lights:
+      name: Office Lights
+    group.outdoor_lights:
+      name: Outdoor Lights
+    input_boolean.living_room_lights_turn_on_at_sunset:
+      name: "Living Room Light Automation: Sunset"
+    input_boolean.living_room_lights_turn_on_when_cloudy:
+      name: "Living Room Light Automation: Cloudy"
+    input_boolean.living_room_lights_vacation_mode:
+      name: "Living Room Light Automation: Vacation Mode"
+    light.salt_lamp_master_bedroom:
+      name: Master Bedroom Salt Lamp
+    light.salt_lamp_office:
+      name: Office Salt Lamp
+    script.clean_kitchen:
+      name: Clean Kitchen
+    script.clean_table:
+      name: Clean Table
+    script.empty_dishwasher:
+      name: Empty the Dishwasher
+    script.empty_wolfie:
+      name: Empty Wolfie
+    switch.front_patio_light:
+      name: Front Patio Light
+    switch.kitchen_patio_light:
+      name: Kitchen Patio Light
+    switch.program_evening:
+      name: Evening Program
+    switch.program_morning:
+      name: Morning Program
+    switch.wolfie_cycle:
+      name: Wolfie
+    switch.zone_flower_box:
+      name: Flower Box
+    switch.zone_landscaping:
+      name: Landscaping
