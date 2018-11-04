@@ -47,6 +47,30 @@ script:
 sensor:
   - platform: template
     sensors:
+      vacuum_filter_remaining:
+        friendly_name: Filter
+        value_template: >
+          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.filter_left }}
+        unit_of_measurement: hours
+        icon_template: mdi:timer-sand
+      vacuum_main_brush_remaining:
+        friendly_name: Main Brush
+        value_template: >
+          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.main_brush_left }}
+        unit_of_measurement: hours
+        icon_template: mdi:timer-sand
+      vacuum_sensor_dirtiness_remaining:
+        friendly_name: Sensor Dirtiness
+        value_template: >
+          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.sensor_dirty_left }}
+        unit_of_measurement: hours
+        icon_template: mdi:timer-sand
+      vacuum_side_brush_remaining:
+        friendly_name: Side Brush
+        value_template: >
+          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.side_brush_left }}
+        unit_of_measurement: hours
+        icon_template: mdi:timer-sand
       vacuum_status:
         friendly_name: Status
         value_template: >

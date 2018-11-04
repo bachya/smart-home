@@ -745,6 +745,14 @@ views:
           - input_select.wolfie_bin_status
         show_header_toggle: false
 
+      - type: entities
+        title: Consumables
+        entities:
+          - sensor.vacuum_filter_remaining
+          - sensor.vacuum_main_brush_remaining
+          - sensor.vacuum_side_brush_remaining
+          - sensor.vacuum_sensor_dirtiness_remaining
+
       - id: a93f99548fdc4fdcbe8cb01932998c51  # Automatically created id
         type: entities
         title: Schedule
