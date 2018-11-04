@@ -745,13 +745,6 @@ views:
           - input_select.wolfie_bin_status
         show_header_toggle: false
 
-      - id: a48777ff6e204b08a93a40bf24fd69e3  # Automatically created id
-        type: entities
-        title: Clean Room
-        entities:
-          - input_select.wolfie_room_select
-          - script.clean_room
-
       - id: a93f99548fdc4fdcbe8cb01932998c51  # Automatically created id
         type: entities
         title: Schedule

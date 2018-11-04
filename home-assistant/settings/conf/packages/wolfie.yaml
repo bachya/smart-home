@@ -30,11 +30,6 @@ input_boolean:
     initial: false
 
 input_select:
-  wolfie_room_select:
-    name: Room
-    options:
-      - Kitchen
-      - Table
   wolfie_bin_status:
     name: Bin Status
     options:
@@ -42,33 +37,6 @@ input_select:
       - Full
 
 script:
-  clean_kitchen:
-    sequence:
-      - service: vacuum.send_command
-        data:
-          entity_id: vacuum.xiaomi_vacuum_cleaner
-          command: app_zoned_clean
-          params: [
-            [25594, 23349, 28034, 24584, 1], [28034, 24584, 28693, 22922]
-          ]
-  clean_room:
-    alias: "Start"
-    sequence:
-      - service: script.turn_on
-        data_template:
-          entity_id: >
-            {% if is_state("input_select.wolfie_room_select", "Kitchen") %}
-              script.clean_kitchen
-            {% elif is_state("input_select.wolfie_room_select", "Table") %}
-              script.clean_table
-            {% endif %}
-  clean_table:
-    sequence:
-      - service: vacuum.send_command
-        data:
-          entity_id: vacuum.xiaomi_vacuum_cleaner
-          command: app_zoned_clean
-          params: [[27904, 26182, 29002, 24543, 1]]
   empty_wolfie:
     sequence:
       - service: input_select.select_option
