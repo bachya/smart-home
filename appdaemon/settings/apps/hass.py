@@ -152,7 +152,7 @@ class NewTasmotaVersionNotification(NewVersionNotification):
         tasmota_version = None
 
         for host in self.properties['tasmota_hosts']:
-            for i in range(DEFAULT_TASMOTA_RETRIES - 1):
+            for _ in range(DEFAULT_TASMOTA_RETRIES - 1):
                 try:
                     json = requests.get('http://{0}/{1}'.format(
                         host, status_uri)).json()

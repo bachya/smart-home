@@ -1,12 +1,10 @@
 """Definetoo-few-public-methods an app for working with Alexa."""
-
 # pylint: disable=attribute-defined-outside-init,unused-argument
 
 import random
 from typing import Tuple
 
 from automation import Base  # type: ignore
-from const import PEOPLE  # type: ignore
 from util import grammatical_list_join, relative_search_dict  # type: ignore
 from util.string import camel_to_underscore   # type: ignore
 

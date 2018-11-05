@@ -1,8 +1,5 @@
 """Define automations for Amazon Dash Buttons."""
-
 # pylint: disable=unused-argument
-
-from typing import Union
 
 from automation import Automation  # type: ignore
 

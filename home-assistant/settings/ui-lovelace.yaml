@@ -1,7 +1,9 @@
 ---
 resources:
-  - url: /local/custom-lovelace/monster-card/monster-card.js?v=1
+  - url: "/local/custom-lovelace/entity-attributes-card\
+          /entity-attributes-card.js?v=0.1.1"
     type: js
+
   - url: /local/mini-media-player/mini-media-player.js?v=0.8.8
     type: module
 
@@ -343,8 +345,8 @@ views:
           - switch.zone_landscaping
           - switch.zone_flower_box
         state_filter:
-          - off
-          - on
+          - "off"
+          - "on"
 
       - id: 009ec2727d4447ee852c26600908b058  # Automatically created id
         type: entities
