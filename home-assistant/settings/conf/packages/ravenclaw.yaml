@@ -7,6 +7,7 @@ sensor:
       - disk_use_percent
       - memory_use_percent
       - processor_load
+
   - platform: command_line
     name: Ravenclaw CPU Temperature
     command: >
@@ -15,6 +16,7 @@ sensor:
       cat /sys/class/thermal/thermal_zone*/temp 2>/dev/null |
       awk \'{ sum += $1; n++ } END { if (n > 0) print (sum / n) / 1000; }\'
     unit_of_measurement: "°C"
+
   - platform: command_line
     name: Ravenclaw Uptime
     command: >
@@ -27,6 +29,7 @@ shell_command:
   restart_glances_ravenclaw: >-
     curl -u "hassuser:glances_password"
     http://ravenclaw.myserver.com:8126/container/glances/restart
+
   restart_hass_ravenclaw: >-
     curl -u "hassuser:glances_password"
     http://ravenclaw.myserver.com:8126/container/hass/restart
@@ -41,6 +44,7 @@ switch:
       {{ value_json is not none and value_json.state == "running" }}
     username: !secret ha_dockermon_username
     password: !secret ha_dockermon_password
+
   - platform: rest
     resource: http://ravenclaw.myserver.com:8126/container/hass
     name: Ravenclaw HASS (Elder Bachs)

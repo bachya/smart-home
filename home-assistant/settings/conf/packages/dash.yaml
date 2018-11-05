@@ -9,6 +9,7 @@ input_select:
       - Toggle Master Bedroom Salt Lamp
     initial: Toggle Master Bedroom Salt Lamp
     icon: mdi:amazon
+
   dash_neat:
     name: Neat
     options:

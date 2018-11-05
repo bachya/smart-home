@@ -16,7 +16,9 @@ sensor:
     monitored_conditions:
       - us
     show_on_map: false
+
   - platform: flunearyou
+
   - platform: pollen
     zip_code: !secret pollen_zip_code
     monitored_conditions:

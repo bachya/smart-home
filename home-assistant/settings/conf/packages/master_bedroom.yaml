@@ -8,6 +8,7 @@ input_number:
     step: 5
     unit_of_measurement: minutes
     icon: mdi:timer
+
   master_bathroom_toilet_fan_timer:
     name: Sleep Timer
     initial: 0
@@ -16,6 +17,7 @@ input_number:
     step: 5
     unit_of_measurement: minutes
     icon: mdi:timer
+
   master_bedroom_salt_lamp_timer:
     name: Sleep Timer
     initial: 0
@@ -44,12 +46,14 @@ sensor:
     value_template: "{{ value_json['BME280'].Temperature }}"
     unit_of_measurement: "°F"
     device_class: temperature
+
   - platform: mqtt
     name: "Climate 2 Humidity"
     state_topic: "tele/climate-sensor-2/SENSOR"
     value_template: "{{ value_json['BME280'].Humidity }}"
     unit_of_measurement: "%"
     device_class: humidity
+
   - platform: mqtt
     name: "Climate 2 Pressure"
     icon: "mdi:cloud"

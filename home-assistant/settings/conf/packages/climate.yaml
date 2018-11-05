@@ -8,6 +8,7 @@ sensor:
       - sensor.climate_2_temperature
       - sensor.fiddle_leaf_fig_temperature
       - sensor.thermostat_thermostat_temperature
+
   - platform: min_max
     name: "Average Indoor Humidity"
     type: "mean"

@@ -10,6 +10,7 @@ sensor:
       https://pypi.python.org/pypi/appdaemon/json
     value_template: '{{ value_json.info.version }}'
     scan_interval: 300
+
   - platform: command_line
     name: ha-dockermon Available
     command: >-
@@ -19,6 +20,7 @@ sensor:
       https://api.github.com/repos/philhawthorne/ha-dockermon/tags
     value_template: '{{ value_json[0].name[1:] }}'
     scan_interval: 300
+
   - platform: command_line
     name: HASS Available
     command: >-
@@ -28,6 +30,7 @@ sensor:
       https://pypi.python.org/pypi/homeassistant/json
     value_template: '{{ value_json.info.version }}'
     scan_interval: 300
+
   - platform: command_line
     name: Tasmota Available
     command: >-
@@ -37,6 +40,7 @@ sensor:
       https://api.github.com/repos/arendst/Sonoff-Tasmota/releases/latest
     value_template: '{{ value_json.tag_name[1:] }}'
     scan_interval: 300
+
   - platform: command_line
     name: Xiaomi Hack Available
     command: >-
@@ -48,6 +52,7 @@ sensor:
         "print(json.load(sys.stdin)[0]['commit']['author']['date'])" |
         /usr/bin/md5sum | /usr/bin/cut -f1 -d" " | fold -w 8 | head -n 1
     scan_interval: 300
+
   - platform: command_line
     name: Yi Hack Available
     command: >-
@@ -57,6 +62,7 @@ sensor:
       https://api.github.com/repos/shadow-1/yi-hack-v3/releases/latest
     value_template: '{{ value_json.tag_name }}'
     scan_interval: 300
+
   # Installed Versions
   - platform: command_line
     name: Xiaomi Hack Installed
@@ -65,18 +71,22 @@ sensor:
       root@garage-camera.phil.iot
       cat /system/sdcard/.lastCommitDate |
         /usr/bin/md5sum | /usr/bin/cut -f1 -d" " | fold -w 8 | head -n 1
+
   - platform: command_line
     name: Yi Hack Installed
     command: >
       ssh -i /config/id_rsa -o StrictHostKeyChecking=no
       root@kitchen-camera.phil.lan
       cat /home/yi-hack-v3/.hackinfo | grep VERSION | awk -F= \'{ print $2 }\'
+
   - platform: file
     name: AppDaemon Installed
     file_path: /shared/.AD_VERSION
+
   - platform: file
     name: ha-dockermon Installed
     file_path: /shared/.HADM_VERSION
+
   - platform: version
     name: HASS Installed
 
@@ -84,6 +94,7 @@ sensor:
   - platform: cert_expiry
     name: SSL Expiry
     host: !secret ssl_cert_host
+
   - platform: speedtest
     minute:
       - 0

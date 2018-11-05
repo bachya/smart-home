@@ -7,6 +7,7 @@ sensor:
       - disk_use_percent
       - memory_use_percent
       - processor_load
+
   - platform: command_line
     name: Slytherin CPU Temperature
     command: >
@@ -15,6 +16,7 @@ sensor:
       cat /sys/class/thermal/thermal_zone*/temp 2>/dev/null |
       awk \'{ sum += $1; n++ } END { if (n > 0) print (sum / n) / 1000; }\'
     unit_of_measurement: "°C"
+
   - platform: command_line
     name: Slytherin Uptime
     command: >

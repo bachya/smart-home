@@ -4,26 +4,32 @@ input_boolean:
     name: "Monday"
     icon: mdi:calendar
     initial: true
+
   vacuum_schedule_tuesday:
     name: "Tuesday"
     icon: mdi:calendar
     initial: false
+
   vacuum_schedule_wednesday:
     name: "Wednesday"
     icon: mdi:calendar
     initial: false
+
   vacuum_schedule_thursday:
     name: "Thursday"
     icon: mdi:calendar
     initial: true
+
   vacuum_schedule_friday:
     name: "Friday"
     icon: mdi:calendar
     initial: false
+
   vacuum_schedule_saturday:
     name: "Saturday"
     icon: mdi:calendar
     initial: false
+
   vacuum_schedule_sunday:
     name: "Sunday"
     icon: mdi:calendar
@@ -54,6 +60,7 @@ sensor:
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.filter_left }}
         unit_of_measurement: hours
         icon_template: mdi:timer-sand
+
       vacuum_main_brush_remaining:
         friendly_name: Main Brush
         entity_id: vacuum.xiaomi_vacuum_cleaner
@@ -61,6 +68,7 @@ sensor:
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.main_brush_left }}
         unit_of_measurement: hours
         icon_template: mdi:timer-sand
+
       vacuum_sensor_dirtiness_remaining:
         friendly_name: Sensor Dirtiness
         entity_id: vacuum.xiaomi_vacuum_cleaner
@@ -68,6 +76,7 @@ sensor:
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.sensor_dirty_left }}
         unit_of_measurement: hours
         icon_template: mdi:timer-sand
+
       vacuum_side_brush_remaining:
         friendly_name: Side Brush
         entity_id: vacuum.xiaomi_vacuum_cleaner
@@ -75,6 +84,7 @@ sensor:
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.side_brush_left }}
         unit_of_measurement: hours
         icon_template: mdi:timer-sand
+
       vacuum_status:
         friendly_name: Status
         value_template: >
@@ -94,18 +104,21 @@ sensor:
           {% else %}
             mdi:help-circle
           {% endif %}
+
       vacuum_fan_speed:
         friendly_name: Fan Speed
         entity_id: vacuum.xiaomi_vacuum_cleaner
         value_template: >
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.fan_speed }}
         icon_template: mdi:speedometer
+
       vacuum_battery:
         friendly_name: Vacuum Battery
         value_template: >
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.battery_level }}
         unit_of_measurement: "%"
         device_class: battery
+
       vacuum_cleaning_time:
         friendly_name: Time of Last Cycle
         entity_id: vacuum.xiaomi_vacuum_cleaner
@@ -113,6 +126,7 @@ sensor:
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.cleaning_time }}
         icon_template: mdi:timer
         unit_of_measurement: minutes
+
       vacuum_cleaned_area:
         friendly_name: Area of Last Cycle
         entity_id: vacuum.xiaomi_vacuum_cleaner
@@ -120,6 +134,7 @@ sensor:
         value_template: >
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.cleaned_area }}
         icon_template: mdi:ruler
+
       vacuum_do_not_disturb:
         friendly_name: Do Not Disturb
         value_template: >

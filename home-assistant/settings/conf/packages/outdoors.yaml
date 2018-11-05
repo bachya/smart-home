@@ -16,6 +16,7 @@ sensor:
       - pressure
       - temperature
       - wind_speed
+
   - platform: season
 
 sun:

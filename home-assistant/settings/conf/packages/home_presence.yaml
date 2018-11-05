@@ -8,6 +8,7 @@ input_select:
       - 'Home'
       - 'Just Arrived'
       - 'Just Left'
+
   britt_presence_status:
     name: Britt
     options:
@@ -41,6 +42,7 @@ sensor:
           {% else %}
             '/local/aaron-away.jpg'
           {% endif %}
+
       britt_presence_status:
         friendly_name: 'Britt'
         value_template: >

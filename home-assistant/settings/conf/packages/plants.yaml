@@ -7,6 +7,7 @@ sensor:
     unit_of_measurement: "%"
     icon: "mdi:water-percent"
     force_update: true
+
   - platform: mqtt
     name: Fiddle Leaf Fig Light Intensity
     state_topic: "miflora/Fred"
@@ -14,6 +15,7 @@ sensor:
     device_class: illuminance
     unit_of_measurement: "lx"
     force_update: true
+
   - platform: mqtt
     name: Fiddle Leaf Fig Temperature
     state_topic: "miflora/Fred"
@@ -21,6 +23,7 @@ sensor:
     device_class: temperature
     unit_of_measurement: "°C"
     force_update: true
+
   - platform: mqtt
     name: Fiddle Leaf Fig Conductivity
     state_topic: "miflora/Fred"
@@ -28,6 +31,7 @@ sensor:
     unit_of_measurement: "µS/cm"
     icon: "mdi:test-tube"
     force_update: true
+
   - platform: mqtt
     name: Fiddle Leaf Fig Battery
     state_topic: "miflora/Fred"
