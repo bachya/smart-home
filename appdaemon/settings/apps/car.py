@@ -1,59 +1,11 @@
 """Define automations for our cars."""
-
 # pylint: disable=attribute-defined-outside-init,unused-argument
 
-from datetime import timedelta
-from typing import Tuple, Union
+from typing import Union
 
 from automation import Automation  # type: ignore
 
 HANDLE_LOW_FUEL = 'low_fuel'
-
-
-class NotifyEta(Automation):
-    """Define a feature to notify of the vehicle's ETA to home."""
-
-    def initialize(self):
-        """Initialize."""
-        super().initialize()
-
-        self.register_endpoint(self.get_eta, 'eta')
-
-    def calculate_eta(self, travel_time: str) -> str:
-        """Get an arrival time based upon travel time in minutes."""
-        eta = self.datetime() + timedelta(minutes=int(travel_time))
-        return eta.time().strftime('%I:%M %p')
-
-    def get_eta(self, data: dict) -> Tuple[dict, int]:
-        """Define an endpoint to send Aaron's ETA."""
-        if self.presence_manager.noone(self.presence_manager.HomeStates.home):
-            return {"status": "ok", "message": 'No one home; ignoring'}, 200
-
-        try:
-            key = data['person']
-            name = key.title()
-        except KeyError:
-            return {
-                'status': 'error',
-                'message': 'Missing "person" parameter'
-            }, 502
-
-        try:
-            eta = self.calculate_eta(
-                self.get_state('sensor.{0}_travel_time'.format(key)))
-
-            self.log("Sending {0}'s ETA: {1}".format(name, eta))
-
-            statement = '{0} is arriving around {1}.'.format(name, eta)
-            self.notification_manager.send(
-                "Aaron's ETA", statement, target='Britt')
-
-            return {"status": "ok", "message": statement}, 200
-        except ValueError:
-            return {
-                'status': 'error',
-                'message': 'Could not determine ETA'
-            }, 502
 
 
 class NotifyLowFuel(Automation):

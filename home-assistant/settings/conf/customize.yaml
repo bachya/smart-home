@@ -49,18 +49,12 @@ scene.walk_home:
   icon: "mdi:home"
 scene.watch_plex:
   icon: "mdi:plex"
-sensor.aaron_geocode:
-  entity_picture: "/local/aaron-home.jpg"
-  friendly_name: "Aaron"
 sensor.average_indoor_humidity:
   friendly_name: "Avg. Humidity"
   icon: "mdi:water-percent"
 sensor.average_indoor_temperature:
   friendly_name: "Avg. Temperature"
   icon: "mdi:thermometer"
-sensor.britt_geocode:
-  entity_picture: "/local/britt-home.png"
-  friendly_name: "Britt"
 sensor.dishwasher_power:
   icon: "mdi:power-plug"
 sensor.fiddle_leaf_fig_battery:

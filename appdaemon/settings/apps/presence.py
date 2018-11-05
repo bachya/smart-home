@@ -3,7 +3,7 @@
 # pylint: disable=attribute-defined-outside-init
 
 from enum import Enum
-from typing import Tuple, Union
+from typing import Union
 
 from automation import Base  # type: ignore
 from const import PEOPLE  # type: ignore
@@ -230,17 +230,6 @@ class PresenceManager(Base):
             return True
 
         return False
-
-    def locate(self, name: str) -> Tuple[Enum, dict]:
-        """Find a person's location based on a device tracker."""
-        if name not in PEOPLE:
-            raise KeyError('Unknown person: {0}'.format(name))
-
-        person = PEOPLE[name]
-        return ([
-            s for s in self.HomeStates if s.value == self.get_state(
-                person['presence_manager_input_select'])
-        ][0], self.get_state(person['geocode_sensor'], attribute='all'))
 
     def noone(self, *states: Enum) -> bool:
         """Determine whether *no* person is in one or more states."""

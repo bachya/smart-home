@@ -145,39 +145,3 @@ class Alexa(Base):
     def repeat_tts_intent(self, data: dict) -> None:
         """Define a handler for the RepeatTTSIntent intent."""
         self.tts.repeat()
-
-    def where_is_intent(self, data: dict) -> Tuple[str, str, str]:
-        """Define a handler for the WhereIsIntent intent."""
-        person = self.get_alexa_slot_value(data, 'Person')
-        name, _ = relative_search_dict(PEOPLE, person)
-
-        self.log('Person: {0}'.format(person), level='DEBUG')
-        self.log('Name: {0}'.format(name), level='DEBUG')
-
-        title = 'Where is {0}?'
-        if name:
-            title = title.format(name)
-            home_state, geo_data = self.presence_manager.locate(name)
-
-            self.log(geo_data)
-
-            if home_state == self.presence_manager.HomeStates.home:
-                speech = '{0} is at home.'.format(name)
-            else:
-                miles = round(float(geo_data['attributes']['distance']), 1)
-                time = int(geo_data['state'])
-
-                if miles > 0:
-                    speech = (
-                        '{0} is {1} mile{2} and {3} minute{4} away from home.'
-                    ).format(
-                        name, miles, '' if miles == 1 else 's', time, ''
-                        if time == 1 else 's')
-                else:
-                    speech = '{0} is less than a mile from home.'.format(name)
-        else:
-            _person = person.title()
-            speech = "I'm sorry, I don't know who {0} is.".format(_person)
-            title = title.format(_person)
-
-        return speech, speech, title
