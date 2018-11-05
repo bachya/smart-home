@@ -1,0 +1,84 @@
+---
+scene:
+  - name: Depart Home
+    entities:
+      alarm_control_panel.simplisafe:
+        state: armed_away
+      cover.garage_door:
+        state: closed
+      lock.front_door:
+        state: locked
+      lock.garage_fire_door:
+        state: locked
+      group.living_room_lights:
+        state: false
+      group.living_room_tv:
+        state: false
+      media_player.house_audio:
+        state: paused
+      media_player.sonos_playbar:
+        state: paused
+      switch.garage_lights:
+        state: false
+      switch.fireplace:
+        state: false
+
+  - name: Drive Home
+    entities:
+      alarm_control_panel.simplisafe:
+        state: disarmed
+      cover.garage_door:
+        state: open
+      lock.garage_fire_door:
+        state: unlocked
+
+  - name: Good Night
+    entities:
+      alarm_control_panel.simplisafe:
+        state: armed_home
+      cover.garage_door:
+        state: closed
+      lock.front_door:
+        state: locked
+      lock.garage_fire_door:
+        state: locked
+      group.living_room_lights:
+        state: false
+      group.living_room_tv:
+        state: false
+      group.office_lights:
+        state: false
+      group.master_bathroom:
+        state: false
+      media_player.house_audio:
+        state: paused
+      media_player.sonos_playbar:
+        state: paused
+      switch.garage_lights:
+        state: false
+      switch.fireplace:
+        state: false
+
+  - name: Walk Home
+    entities:
+      alarm_control_panel.simplisafe:
+        state: disarmed
+      lock.front_door:
+        state: unlocked
+
+  - name: Watch Plex
+    entities:
+      switch.media_center:
+        state: true
+      remote.samsung_tv:
+        state: true
+      script.switch_roku_to_plex:
+        state: true
+
+script:
+  switch_roku_to_plex:
+    sequence:
+      - service: media_player.select_source
+        data:
+          entity_id: media_player.living_room_roku
+          source: Plex

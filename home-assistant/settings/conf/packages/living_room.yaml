@@ -15,24 +15,6 @@ remote:
     host: harmony-hub-1.myserver.com
     activity: 22580039
 
-script:
-  switch_roku_to_plex:
-    sequence:
-      - service: media_player.select_source
-        data:
-          entity_id: media_player.living_room_roku
-          source: Plex
-
-scene:
-  name: Watch Plex
-  entities:
-    switch.media_center:
-      state: true
-    remote.samsung_tv:
-      state: true
-    script.switch_roku_to_plex:
-      state: true
-
 sensor:
   - platform: template
     sensors:
