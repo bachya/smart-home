@@ -76,7 +76,7 @@ living_room_lights_vacation_mode_automation:
 living_room_tv:
   module: harmony
   class: HarmonyRemote
-  entity: remote.samsung_tv
+  entity: remote.living_room_tv
   activities:
     play_ps4: 27901089
     watch_roku: 39586383

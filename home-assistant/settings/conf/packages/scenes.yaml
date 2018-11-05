@@ -12,12 +12,12 @@ scene:
         state: locked
       group.living_room_lights:
         state: false
-      group.living_room_tv:
-        state: false
       media_player.house_audio:
         state: paused
       media_player.sonos_playbar:
         state: paused
+      remote.living_room_tv:
+        state: false
       switch.garage_lights:
         state: false
       switch.fireplace:
@@ -44,8 +44,6 @@ scene:
         state: locked
       group.living_room_lights:
         state: false
-      group.living_room_tv:
-        state: false
       group.office_lights:
         state: false
       group.master_bathroom:
@@ -54,6 +52,8 @@ scene:
         state: paused
       media_player.sonos_playbar:
         state: paused
+      remote.living_room_tv:
+        state: false
       script.good_night_climate_adjust:
         state: true
       switch.garage_lights:
@@ -72,7 +72,7 @@ scene:
     entities:
       switch.media_center:
         state: true
-      remote.samsung_tv:
+      remote.living_room_tv:
         state: true
       script.switch_roku_to_plex:
         state: true

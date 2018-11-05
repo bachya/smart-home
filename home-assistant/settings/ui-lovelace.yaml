@@ -606,6 +606,7 @@ views:
         type: entities
         title: Living Room TV
         entities:
+          - remote.living_room_tv
           - type: custom:mini-media-player
             entity: media_player.living_room_roku
             name: Roku
