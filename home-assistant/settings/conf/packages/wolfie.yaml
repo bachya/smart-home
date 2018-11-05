@@ -49,24 +49,28 @@ sensor:
     sensors:
       vacuum_filter_remaining:
         friendly_name: Filter
+        entity_id: vacuum.xiaomi_vacuum_cleaner
         value_template: >
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.filter_left }}
         unit_of_measurement: hours
         icon_template: mdi:timer-sand
       vacuum_main_brush_remaining:
         friendly_name: Main Brush
+        entity_id: vacuum.xiaomi_vacuum_cleaner
         value_template: >
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.main_brush_left }}
         unit_of_measurement: hours
         icon_template: mdi:timer-sand
       vacuum_sensor_dirtiness_remaining:
         friendly_name: Sensor Dirtiness
+        entity_id: vacuum.xiaomi_vacuum_cleaner
         value_template: >
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.sensor_dirty_left }}
         unit_of_measurement: hours
         icon_template: mdi:timer-sand
       vacuum_side_brush_remaining:
         friendly_name: Side Brush
+        entity_id: vacuum.xiaomi_vacuum_cleaner
         value_template: >
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.side_brush_left }}
         unit_of_measurement: hours
@@ -92,6 +96,7 @@ sensor:
           {% endif %}
       vacuum_fan_speed:
         friendly_name: Fan Speed
+        entity_id: vacuum.xiaomi_vacuum_cleaner
         value_template: >
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.fan_speed }}
         icon_template: mdi:speedometer
@@ -103,12 +108,14 @@ sensor:
         device_class: battery
       vacuum_cleaning_time:
         friendly_name: Time of Last Cycle
+        entity_id: vacuum.xiaomi_vacuum_cleaner
         value_template: >
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.cleaning_time }}
         icon_template: mdi:timer
         unit_of_measurement: minutes
       vacuum_cleaned_area:
         friendly_name: Area of Last Cycle
+        entity_id: vacuum.xiaomi_vacuum_cleaner
         unit_of_measurement: m ²
         value_template: >
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.cleaned_area }}

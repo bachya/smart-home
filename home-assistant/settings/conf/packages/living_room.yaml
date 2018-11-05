@@ -38,7 +38,10 @@ sensor:
     sensors:
       front_door_lock_battery:
         friendly_name: Front Door Lock
-        value_template: "{{ states.zwave.front_door.attributes.battery_level }}"
+        value_template: >
+          {% if states('zwave.front_door') == 'ready' %}
+            {{ states.zwave.front_door.attributes.battery_level }}
+          {% endif %}
         unit_of_measurement: "%"
         device_class: battery
       roku_source:
