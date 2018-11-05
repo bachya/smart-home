@@ -54,6 +54,8 @@ scene:
         state: paused
       media_player.sonos_playbar:
         state: paused
+      script.good_night_climate_adjust:
+        state: true
       switch.garage_lights:
         state: false
       switch.fireplace:
@@ -76,6 +78,13 @@ scene:
         state: true
 
 script:
+  good_night_climate_adjust:
+    sequence:
+      - service: climate.set_temperature
+        data:
+          entity_id: climate.thermostat
+          temperature: 68
+
   switch_roku_to_plex:
     sequence:
       - service: media_player.select_source
