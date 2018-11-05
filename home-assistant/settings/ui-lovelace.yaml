@@ -398,7 +398,7 @@ views:
               - type: vertical-stack
                 cards:
                   - type: gauge
-                    entity: sensor.current_uv_index
+                    entity: sensor.current_uv_index_rounded
                     title: Current UV
                     unit_of_measurement: " "
                     min: 0

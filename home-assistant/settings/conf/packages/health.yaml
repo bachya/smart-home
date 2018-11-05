@@ -28,3 +28,8 @@ sensor:
       - allergy_index_tomorrow
       - allergy_index_yesterday
       - disease_average_forecasted
+
+  - platform: template
+    sensors:
+      current_uv_index_rounded:
+        value_template: "{{ states.sensor.current_uv_index.state|round(2) }}"
