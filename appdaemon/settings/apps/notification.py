@@ -1,7 +1,9 @@
 """Define a notification mechanism for all AppDaemon apps."""
+# pylint: disable=unused-import
+
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Callable, Union
+from typing import Callable, List, Union  # noqa
 from uuid import UUID
 
 from automation import Base  # type: ignore
@@ -80,45 +82,53 @@ class NotificationManager(Base):
 
         return notification
 
-    def _get_targets(self, target: str) -> list:
+    def _get_targets(self, target: Union[str, list]) -> list:
         """Get a list of targets based on input string."""
-        # 1. target='not Person'
-        split = target.split(' ')
-        if split[0] == 'not' and split[1] in PEOPLE:
-            return [
-                notifier for name, attrs in PEOPLE.items() if name != split[1]
-                for notifier in attrs['notifiers']
-            ]
+        if isinstance(target, str):
+            _targets = [target]
+        else:
+            _targets = target
 
-        # 2. target='Person'
-        if split[0] in PEOPLE:
-            return PEOPLE[target]['notifiers']
+        targets = []  # type: List[str]
+        for item in _targets:
+            split = item.split(' ')  # type: ignore
 
-        try:
-            # 3. target='home'
-            return [
-                notifier for name in getattr(
-                    self.presence_manager, 'whos_{0}'.format(target))()
-                for notifier in PEOPLE[name]['notifiers']
-            ]
+            # 1. target='not Person'
+            if split[0] == 'not' and split[1] in PEOPLE:
+                targets += [
+                    notifier for name, attrs in PEOPLE.items()
+                    if name != split[1] for notifier in attrs['notifiers']
+                ]
 
-        except AttributeError:
-            all_targets = [
-                notifier for attrs in PEOPLE.values()
-                for notifier in attrs['notifiers']
-            ]
+            # 2. target='Person'
+            elif split[0] in PEOPLE:
+                targets += PEOPLE[item]['notifiers']
 
-            # 4. target='everyone'
-            if target == 'everyone':
-                return all_targets
+            else:
+                try:
+                    # 3. target='home'
+                    targets += [
+                        notifier for name in getattr(
+                            self.presence_manager, 'whos_{0}'.format(item))()
+                        for notifier in PEOPLE[name]['notifiers']
+                    ]
+                except AttributeError:
+                    # 4. target='everyone'
+                    if item == 'everyone':
+                        targets += [
+                            notifier for attrs in PEOPLE.values()
+                            for notifier in attrs['notifiers']
+                        ]
 
-            # 5. target='person_iphone'
-            if target in all_targets:
-                return [target]
+                    # 5. target='person_iphone'
+                    else:
+                        targets.append(item)
 
+        if not targets:
             self.error('Unknown notifier target: {0}'.format(target))
+            return []
 
-        return []
+        return targets
 
     def _in_blackout(self, notification: Notification) -> bool:
         """Determine whether a notification is set to send in blackout."""
@@ -260,7 +270,7 @@ class NotificationManager(Base):
             message: str,
             interval: int,
             when: Union[datetime, None] = None,
-            target: Union[str, None] = None,
+            target: Union[str, list, None] = None,
             data: Union[dict, None] = None,
             blackout_start_time: str = BLACKOUT_START,
             blackout_end_time: str = BLACKOUT_END) -> Callable:
@@ -282,7 +292,7 @@ class NotificationManager(Base):
             title: str,
             message: str,
             when: Union[datetime, None] = None,
-            target: Union[str, None] = None,
+            target: Union[str, list, None] = None,
             data: Union[dict, None] = None,
             blackout_start_time: str = BLACKOUT_START,
             blackout_end_time: str = BLACKOUT_END) -> Callable:
