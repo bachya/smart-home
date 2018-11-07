@@ -27,8 +27,8 @@ sensor:
       curl -L
       -H "User-Agent: Home Assistant"
       -H "Content-Type: application/json"
-      https://pypi.python.org/pypi/homeassistant/json
-    value_template: '{{ value_json.info.version }}'
+      https://hub.docker.com/v2/repositories/homeassistant/home-assistant/tags/
+    value_template: '{{ value_json.results[2].name }}'
     scan_interval: 300
 
   - platform: command_line
