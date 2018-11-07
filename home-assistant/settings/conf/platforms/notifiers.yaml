@@ -1,4 +1,9 @@
 ---
+- platform: slack
+  name: slack
+  api_key: !secret slack_api_key
+  default_channel: '#home-assistant'
+
 - platform: smtp
   name: omnifocus
   server: smtp.gmail.com
