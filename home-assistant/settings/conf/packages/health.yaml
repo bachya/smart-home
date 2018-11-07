@@ -33,3 +33,4 @@ sensor:
     sensors:
       current_uv_index_rounded:
         value_template: "{{ states.sensor.current_uv_index.state|round(2) }}"
+        unit_of_measurement: index
