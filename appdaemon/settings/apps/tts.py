@@ -1,5 +1,4 @@
 """Define an app for working with TTS (over Sonos)."""
-
 # pylint: disable=attribute-defined-outside-init
 
 from typing import Tuple

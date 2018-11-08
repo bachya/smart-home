@@ -1,5 +1,4 @@
 """Define generic automation objects and logic."""
-
 # pylint: disable=attribute-defined-outside-init,import-error
 
 from typing import Callable, Dict, Union  # noqa, pylint: disable=unused-import

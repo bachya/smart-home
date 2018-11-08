@@ -1,5 +1,4 @@
 """Define automations for our valuables."""
-
 # pylint: disable=unused-argument
 
 from automation import Automation  # type: ignore

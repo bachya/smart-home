@@ -1,5 +1,4 @@
 """Define a mode."""
-
 # pylint: disable=attribute-defined-outside-init,import-error
 
 from typing import Union

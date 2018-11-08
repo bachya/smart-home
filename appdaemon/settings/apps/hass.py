@@ -1,5 +1,4 @@
 """Define automations for Home Assistant itself."""
-
 # pylint: disable=attribute-defined-outside-init,import-error,unused-argument
 
 from datetime import timedelta

@@ -1,5 +1,4 @@
 """Define an app for working the Living Room TV."""
-
 # pylint: disable=attribute-defined-outside-init
 
 from typing import Union

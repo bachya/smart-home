@@ -1,5 +1,4 @@
 """Define an app to manage our Sonos players."""
-
 # pylint: disable=attribute-defined-outside-init
 
 from typing import Union

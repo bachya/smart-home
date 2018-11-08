@@ -1,5 +1,4 @@
 """Define apps related to presence."""
-
 # pylint: disable=attribute-defined-outside-init
 
 from enum import Enum

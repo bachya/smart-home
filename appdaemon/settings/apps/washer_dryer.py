@@ -1,5 +1,4 @@
 """Define automations for washer/dryer appliances."""
-
 # pylint: disable=unused-argument
 
 from datetime import timedelta

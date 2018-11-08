@@ -1,5 +1,4 @@
 """Define automations for switches."""
-
 # pylint: disable=attribute-defined-outside-init,unused-argument
 
 from typing import Callable, Union

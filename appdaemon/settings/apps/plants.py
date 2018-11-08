@@ -1,5 +1,4 @@
 """Define automations for plants."""
-
 # pylint: disable=attribute-defined-outside-init,unused-argument
 
 from typing import Union

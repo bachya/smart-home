@@ -1,5 +1,4 @@
 """Define automations for security."""
-
 # pylint: disable=unused-argument
 
 from datetime import time

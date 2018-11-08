@@ -1,5 +1,4 @@
 """Define automations for climate control."""
-
 # pylint: disable=attribute-defined-outside-init,unused-argument
 
 from enum import Enum

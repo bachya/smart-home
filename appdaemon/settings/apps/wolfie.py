@@ -1,5 +1,4 @@
 """Define automations for robot vacuums."""
-
 # pylint: disable=attribute-defined-outside-init,unused-argument
 
 from enum import Enum

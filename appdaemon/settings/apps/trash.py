@@ -1,5 +1,4 @@
 """Define automations for trash."""
-
 # pylint: disable=attribute-defined-outside-init,unused-argument
 
 import datetime
