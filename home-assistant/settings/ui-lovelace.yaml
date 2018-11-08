@@ -546,6 +546,15 @@ views:
         type: picture-entity
         entity: camera.kitchen
 
+      - type: entities
+        title: Audio
+        entities:
+          - type: custom:mini-media-player
+            entity: media_player.house_audio
+            group: true
+            hide_power: true
+            icon: mdi:speaker
+
       - id: 9f1e83011d1b47a386f7310e3ea1f610  # Automatically created id
         type: entities
         title: Climate
@@ -636,6 +645,15 @@ views:
           - input_select.dash_amazon_basics_batteries
           - input_select.dash_neat
 
+      - type: entities
+        title: Audio
+        entities:
+          - type: custom:mini-media-player
+            entity: media_player.house_audio
+            group: true
+            hide_power: true
+            icon: mdi:speaker
+
       - id: 42adcc9a535341e3b3827f3b45cfb227  # Automatically created id
         type: entities
         title: Bathroom Fans
@@ -665,6 +683,15 @@ views:
     icon: mdi:desktop-mac
     id: office
     cards:
+
+      - type: entities
+        title: Audio
+        entities:
+          - type: custom:mini-media-player
+            entity: media_player.sonos_office_desk
+            group: true
+            hide_power: true
+            icon: mdi:speaker
 
       - id: 7cd761fcd5124d75935172bfec0f7e37  # Automatically created id
         type: entities
