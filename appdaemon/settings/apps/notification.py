@@ -124,10 +124,6 @@ class NotificationManager(Base):
                     else:
                         targets.append(item)
 
-        if not targets:
-            self.error('Unknown notifier target: {0}'.format(target))
-            return []
-
         return targets
 
     def _in_blackout(self, notification: Notification) -> bool:
