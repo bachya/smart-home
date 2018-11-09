@@ -3,7 +3,7 @@ wolfie:
   module: wolfie
   class: Vacuum
   dependencies:
-    - security_system
+    - security_manager
   entities:
     bin_state: input_select.wolfie_bin_status
     status: sensor.vacuum_status
@@ -39,7 +39,7 @@ wolfie_scheduled_cycle_automation:
     - guest_mode
     - notification_manager
     - presence_manager
-    - security_system
+    - security_manager
     - vacation_mode
     - wolfie
   app: wolfie

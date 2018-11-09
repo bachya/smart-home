@@ -48,11 +48,11 @@ class DashButton(Automation):
     def arm_security_system(self, state: str) -> None:
         """Set the security system to the specified state."""
         try:
-            state_enum = self.security_system.AlarmStates[state]
+            state_enum = self.security_manager.States[state]
         except KeyError:
             self.error('Unknown security state: {0}'.format(state))
 
-        self.security_system.state = state_enum
+        self.security_manager.state = state_enum
 
     def bump_climate(self, amount: int) -> None:
         """Bump the climate up or down by a certain amount."""

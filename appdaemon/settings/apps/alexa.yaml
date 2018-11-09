@@ -5,7 +5,7 @@ alexa:
   dependencies:
     - dishwasher
     - presence_manager
-    - security_system
+    - security_manager
     - trash_manager
     - tts
     - wolfie

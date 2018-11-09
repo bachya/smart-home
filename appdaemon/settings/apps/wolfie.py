@@ -103,25 +103,25 @@ class ScheduledCycle(Automation):
         # Scenario 1: Vacuum is charging and is told to start:
         if ((self.initiated_by_app and state == self.app.States.docked)
                 and
-                data['state'] == self.security_system.AlarmStates.home.value):
+                data['state'] == self.security_manager.States.home.value):
             self.log('Activating vacuum (post-security)')
 
             self.turn_on(self.app.entities['vacuum'])
 
         # Scenario 2: Vacuum is running when alarm is set to "Away":
         elif (state == self.app.States.cleaning and
-              data['state'] == self.security_system.AlarmStates.away.value):
+              data['state'] == self.security_manager.States.away.value):
             self.log('Security mode is "Away"; pausing until "Home"')
 
             self.call_service(
                 'vacuum/start_pause',
                 entity_id=self.app.entities['vacuum'])
-            self.security_system.state = (
-                self.security_system.AlarmStates.home)
+            self.security_manager.state = (
+                self.security_manager.States.home)
 
         # Scenario 3: Vacuum is paused when alarm is set to "Home":
         elif (state == self.app.States.paused and
-              data['state'] == self.security_system.AlarmStates.home.value):
+              data['state'] == self.security_manager.States.home.value):
             self.log('Alarm in "Home"; resuming')
 
             self.call_service(
@@ -139,8 +139,8 @@ class ScheduledCycle(Automation):
                 self.presence_manager.HomeStates.home)):
             self.log('Changing alarm state to "away"')
 
-            self.security_system.state = (
-                self.security_system.AlarmStates.away)
+            self.security_manager.state = (
+                self.security_manager.States.away)
 
         self.app.bin_state = (self.app.BinStates.full)
         self.initiated_by_app = False
@@ -261,10 +261,10 @@ class Vacuum(Base):
         """Start a cleaning cycle."""
         self.log('Starting vacuuming cycle')
 
-        if self.security_system.state == self.security_system.AlarmStates.away:
+        if self.security_manager.state == self.security_manager.States.away:
             self.log('Changing alarm state to "Home"')
 
-            self.security_system.state = self.security_system.AlarmStates.home
+            self.security_manager.state = self.security_manager.States.home
         else:
             self.log('Activating vacuum')
 

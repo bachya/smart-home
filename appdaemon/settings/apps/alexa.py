@@ -93,7 +93,7 @@ class Alexa(Base):
 
     def is_house_secure_intent(self, data: dict) -> Tuple[str, str, str]:
         """Define a handler for the IsHouseSecureIntent intent."""
-        open_entities = self.security_system.get_insecure_entities()
+        open_entities = self.security_manager.get_insecure_entities()
         if open_entities:
             speech = 'These entry points are insecure: {0}.'.format(
                 grammatical_list_join(open_entities))

@@ -47,7 +47,7 @@ class Slack(Base):
         command = data['text']
 
         if not command:
-            insecure_entities = self.security_system.get_insecure_entities()
+            insecure_entities = self.security_manager.get_insecure_entities()
             if insecure_entities:
                 self._respond(
                     'These entry points are insecure: {0}.'.format(
@@ -63,7 +63,7 @@ class Slack(Base):
             self.call_service('scene/turn_on', entity_id='scene.good_night')
             self._respond('The house has been secured for the evening.')
         elif command == SECURITY_COMMAND_HOME:
-            self.security_system.state = self.security_system.AlarmStates.home
+            self.security_manager.state = self.security_manager.States.home
             self._respond('The security system has been set to "Home".')
 
     def thermostat(self, data: dict) -> None:

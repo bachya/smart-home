@@ -6,7 +6,7 @@ auto_departure_lockup_automation:
     - guest_mode
     - notification_manager
     - presence_manager
-    - security_system
+    - security_manager
   mode_alterations:
     guest_mode: disable
   enabled_config:
@@ -21,7 +21,7 @@ auto_nighttime_lockup_automation:
     - guest_mode
     - notification_manager
     - presence_manager
-    - security_system
+    - security_manager
   mode_alterations:
     guest_mode: disable
   enabled_config:
@@ -53,7 +53,7 @@ notify_when_absent_insecure_automation:
     - guest_mode
     - notification_manager
     - presence_manager
-    - security_system
+    - security_manager
   entities:
     state: sensor.secure_status
   mode_alterations:
@@ -80,6 +80,6 @@ notify_when_status_changes_automation:
     icon: mdi:shield-half-full
     initial: false
 
-security_system:
+security_manager:
   module: security
-  class: SecuritySystem
+  class: SecurityManager

@@ -89,7 +89,7 @@ class AutoDepartureLockup(Automation):
 
     def everyone_gone(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to 'PROXIMITY_CHANGE' events."""
-        if (not self.security_system.secure and
+        if (not self.security_manager.secure and
                 data['old'] == self.presence_manager.ProximityStates.home.value
                 and data['new'] !=
                 self.presence_manager.ProximityStates.home.value):
@@ -207,10 +207,10 @@ class NotifyOnChange(Automation):
             target=['everyone', 'slack'])
 
 
-class SecuritySystem(Base):
+class SecurityManager(Base):
     """Define a class to represent the app."""
 
-    class AlarmStates(Enum):
+    class States(Enum):
         """Define an enum for alarm states."""
 
         away = 'armed_away'
@@ -247,17 +247,17 @@ class SecuritySystem(Base):
     @property
     def state(self) -> Enum:
         """Return the current state of the security system."""
-        return self.AlarmStates(self.get_state(self.ALARM_CONTROL_PANEL))
+        return self.States(self.get_state(self.ALARM_CONTROL_PANEL))
 
     @state.setter
     def state(self, new: Enum) -> None:
         """Return the security state."""
-        if new == self.AlarmStates.disarmed:
+        if new == self.States.disarmed:
             self.log('Disarming the security system')
             self.call_service(
                 'alarm_control_panel/alarm_disarm',
                 entity_id=self.ALARM_CONTROL_PANEL)
-        elif new in (self.AlarmStates.away, self.AlarmStates.home):
+        elif new in (self.States.away, self.States.home):
             self.log('Arming the security system: "{0}"'.format(new.name))
             self.call_service(
                 'alarm_control_panel/alarm_arm_{0}'.format(
