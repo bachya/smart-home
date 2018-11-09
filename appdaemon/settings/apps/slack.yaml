@@ -4,3 +4,4 @@ slack:
   class: Slack
   dependencies:
     - climate_manager
+    - security_system
