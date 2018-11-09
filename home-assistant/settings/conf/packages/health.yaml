@@ -32,5 +32,6 @@ sensor:
   - platform: template
     sensors:
       current_uv_index_rounded:
+        friendly_name: Current UV Index
         value_template: "{{ states.sensor.current_uv_index.state|round(2) }}"
         unit_of_measurement: index
