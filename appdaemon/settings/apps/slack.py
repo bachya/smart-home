@@ -30,12 +30,12 @@ class Slack(Base):
         self._last_response_url = data['response_url']
 
         try:
-            method = getattr(self, data['name'])
+            method = getattr(self, data['command'][1:])
             method(data)
         except AttributeError:
             self.error(
                 'No implementation of slash command handler: {0}'.format(
-                    data['name']))
+                    data['command']))
 
     def thermostat(self, data: dict) -> None:
         """Alter the thermostat."""
