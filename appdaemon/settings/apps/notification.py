@@ -5,11 +5,11 @@ from datetime import datetime, timedelta
 from enum import Enum
 from typing import Callable, List, Union  # noqa
 from uuid import UUID
+from zlib import adler32
 
 from automation import Base  # type: ignore
 from const import BLACKOUT_END, BLACKOUT_START, PEOPLE  # type: ignore
 from util.dt import time_is_between  # type: ignore
-from util.string import slugify  # type: ignore
 
 
 class NotificationTypes(Enum):
@@ -23,7 +23,7 @@ class NotificationTypes(Enum):
 class Notification:
     """Define a notification object."""
 
-    def __init__(self, kind, title, message, **kwargs):
+    def __init__(self, kind, message, *, title=None, **kwargs):
         """Initialize."""
         self.blackout_end_time = kwargs.get('blackout_end_time')
         self.blackout_start_time = kwargs.get('blackout_start_time')
@@ -39,7 +39,8 @@ class Notification:
         if self.data is None:
             self.data = {}
         self.data.setdefault('push', {})
-        self.data['push'].setdefault('thread-id', slugify(title))
+        self.data['push'].setdefault(
+            'thread-id', adler32(message.encode('utf-8')))
 
     def __eq__(self, other):
         """Define method to compare notification objects."""
@@ -73,10 +74,6 @@ class NotificationManager(Base):
 
             notification.when = datetime.combine(
                 target_date, self.parse_time(notification.blackout_end_time))
-
-            self.log(
-                'Rescheduling notification: {0}'.format(notification.title))
-            self.log('New datetime: {0}'.format(notification.when))
         else:
             notification.when = self.datetime() + timedelta(seconds=1)
 
@@ -160,8 +157,8 @@ class NotificationManager(Base):
 
         if kind == NotificationTypes.single.name:
             self.send(
-                title,
                 message,
+                title=title,
                 when=when,
                 target=target,
                 data=_data,
@@ -169,9 +166,9 @@ class NotificationManager(Base):
                 blackout_end_time=blackout_end_time)
         elif kind == NotificationTypes.repeating.name:
             self.repeat(
-                title,
                 message,
                 interval,
+                title=title,
                 when=when,
                 target=target,
                 data=_data,
@@ -195,10 +192,6 @@ class NotificationManager(Base):
                 return
 
         for target in self._get_targets(notification.target):
-            self.log(
-                'Single notification: {0} (recipient: {1})'.format(
-                    notification.title, target))
-
             self.call_service(
                 'notify/{0}'.format(target),
                 message=notification.message,
@@ -262,9 +255,10 @@ class NotificationManager(Base):
 
     def repeat(  # pylint: disable=too-many-arguments
             self,
-            title: str,
             message: str,
             interval: int,
+            *,
+            title: str = None,
             when: Union[datetime, None] = None,
             target: Union[str, list, None] = None,
             data: Union[dict, None] = None,
@@ -274,8 +268,8 @@ class NotificationManager(Base):
         return self.dispatch(
             Notification(
                 NotificationTypes.repeating,
-                title,
                 message,
+                title=title,
                 blackout_end_time=blackout_end_time,
                 blackout_start_time=blackout_start_time,
                 data=data,
@@ -285,8 +279,9 @@ class NotificationManager(Base):
 
     def send(  # pylint: disable=too-many-arguments
             self,
-            title: str,
             message: str,
+            *,
+            title: str = None,
             when: Union[datetime, None] = None,
             target: Union[str, list, None] = None,
             data: Union[dict, None] = None,
@@ -296,8 +291,8 @@ class NotificationManager(Base):
         return self.dispatch(
             Notification(
                 NotificationTypes.single,
-                title,
                 message,
+                title=title,
                 blackout_end_time=blackout_end_time,
                 blackout_start_time=blackout_start_time,
                 data=data,

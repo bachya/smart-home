@@ -29,8 +29,8 @@ class NotifyOfPickup(Automation):
         """Schedule the next pickup notification."""
         date, friendly_str = self.trash_manager.in_next_pickup_str()
         self.notification_manager.send(
-            'Trash Reminder 🗑',
             friendly_str,
+            title='Trash Reminder 🗑',
             when=datetime.datetime.combine(
                 date - datetime.timedelta(days=1), datetime.time(20, 0, 0)),
             target='home')

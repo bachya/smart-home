@@ -45,8 +45,8 @@ class AbsentInsecure(Automation):
         self.log('No one home and house is insecure; notifying')
 
         self.notification_manager.send(
-            'Security Issue',
             "No one is home and the house isn't locked up.",
+            title='Security Issue 🔐',
             blackout_start_time=None,
             blackout_end_time=None,
             target=['everyone', 'slack'],
@@ -70,8 +70,8 @@ class AbsentInsecure(Automation):
             self.turn_on('scene.depart_home')
 
         self.notification_manager.send(
-            'Issue Resolved',
             '{0} locked up the house.'.format(target),
+            title='Issue Resolved 🔐',
             target=['not {0}'.format(target), 'slack'])
 
 
@@ -154,9 +154,9 @@ class GarageLeftOpen(Automation):
             kwargs: dict) -> None:
         """Send notifications when the garage has been left open."""
         self.handles[HANDLE_GARAGE_OPEN] = self.notification_manager.repeat(
-            'Garage Open 🚗',
             "The garage has been left open for a while.",
             self.properties['notification_interval'],
+            title='Garage Open 🚗',
             blackout_start_time=None,
             blackout_end_time=None,
             target=['everyone', 'slack'],
@@ -176,8 +176,8 @@ class GarageLeftOpen(Automation):
             'cover/close_cover', entity_id=self.entities['garage_door'])
 
         self.notification_manager.send(
-            'Issue Resolved',
             '{0} closed the garage.'.format(target),
+            title='Issue Resolved 🚗',
             target=['not {0}'.format(target), 'slack'])
 
 
@@ -200,8 +200,8 @@ class NotifyOnChange(Automation):
         self.log('Notifying of security status change: {0}'.format(new))
 
         self.notification_manager.send(
-            'Security Change',
             'The security status has changed to "{0}"'.format(new),
+            title='Security Change 🔐',
             blackout_start_time=None,
             blackout_end_time=None,
             target=['everyone', 'slack'])

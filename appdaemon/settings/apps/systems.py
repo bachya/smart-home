@@ -46,7 +46,6 @@ class LowBatteries(Automation):
 
             self.handles[HANDLE_BATTERY_LOW][
                 name] = self.notification_manager.repeat(
-                    '',
                     '{0} has low batteries ({1})%. Replace them ASAP!'.format(
                         name, value),
                     self.properties['notification_interval'],
@@ -79,7 +78,6 @@ class LeftInState(Automation):
             kwargs: dict) -> None:
         """Notify when the threshold is reached."""
         self.notification_manager.send(
-            '',
             '{0} has been left {1} for {2} minutes.'.format(
                 self.get_state(
                     self.entities['entity'], attribute='friendly_name'),

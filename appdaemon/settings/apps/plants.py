@@ -38,11 +38,12 @@ class LowMoisture(Automation):
             self._low_moisture = True
             self.handles[
                 HANDLE_LOW_MOISTURE] = self.notification_manager.repeat(
-                    '{0} is Dry 💧'.format(self.properties['friendly_name']),
                     '{0} is at {1}% moisture and needs water.'.format(
                         self.properties['friendly_name'],
                         self.current_moisture),
                     self.properties['notification_interval'],
+                    title='{0} is Dry 💧'.format(
+                        self.properties['friendly_name']),
                     target='home')
         else:
             self._low_moisture = False

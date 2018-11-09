@@ -29,8 +29,8 @@ class LeftSomewhere(Automation):
             return
 
         self.notification_manager.send(
-            "Missing Valuable",
             'Is {0} at home?'.format(tile['attributes']['friendly_name']),
+            title='Missing Valuable 🔑',
             target=self.properties['target'],
             data={
                 'push': {

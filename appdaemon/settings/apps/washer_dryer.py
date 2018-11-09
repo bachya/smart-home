@@ -56,9 +56,9 @@ class NotifyDone(Automation):
         """Deal with changes to the status."""
         if new == self.app.States.clean.value:
             self.handles[HANDLE_CLEAN] = self.notification_manager.repeat(
-                'Dishwasher Clean 🍽',
                 "Empty it now and you won't have to do it later!",
                 self.properties['notification_interval'],
+                title='Dishwasher Clean 🍽',
                 when=self.datetime() + timedelta(minutes=15),
                 target='home',
                 data={'push': {
@@ -78,8 +78,8 @@ class NotifyDone(Automation):
         target = self.notification_manager.get_target_from_push_id(
             data['sourceDevicePermanentID'])
         self.notification_manager.send(
-            'Dishwasher Emptied',
             '{0} emptied the dishwasher.'.format(target),
+            title='Dishwasher Emptied 🍽',
             target='not {0}'.format(target))
 
 

@@ -129,9 +129,9 @@ class NewVersionNotification(Automation):
                     self.properties['app_name'], new))
 
             self.notification_manager.send(
-                'New Software',
                 'New {0} Version: {1}'.format(
                     self.properties['app_name'], new),
+                title='New Software 💿',
                 target=['Aaron', 'slack'])
 
 

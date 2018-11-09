@@ -151,9 +151,9 @@ class ScheduledCycle(Automation):
         """Listen for changes in bin status."""
         if new == self.app.BinStates.full.value:
             self.handles[HANDLE_BIN] = self.notification_manager.repeat(
-                'Wolfie Full 🤖',
                 "Empty him now and you won't have to do it later!",
                 self.properties['notification_interval_full'],
+                title='Wolfie Full 🤖',
                 target='home',
                 data={'push': {
                     'category': 'wolfie'
@@ -187,9 +187,9 @@ class ScheduledCycle(Automation):
             kwargs: dict) -> None:
         """Brief when Wolfie's had an error."""
         self.handles[HANDLE_STUCK] = self.notification_manager.repeat(
-            'Wolfie Stuck 😢',
             "Help him get back on track or home.",
             self.properties['notification_interval_stuck'],
+            title='Wolfie Stuck 😢',
             target='home',
         )
 
@@ -203,8 +203,8 @@ class ScheduledCycle(Automation):
         target = self.notification_manager.get_target_from_push_id(
             data['sourceDevicePermanentID'])
         self.notification_manager.send(
-            'Vacuum Emptied',
             '{0} emptied the vacuum.'.format(target),
+            title='Vacuum Emptied 🤖',
             target='not {0}'.format(target))
 
     def schedule_changed(  # pylint: disable=too-many-arguments

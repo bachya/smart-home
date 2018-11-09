@@ -196,16 +196,16 @@ class NotifyBadAqi(Automation):
             self.log('Poor AQI; notifying anyone at home')
 
             self.notification_manager.send(
-                'Poor AQI',
                 'AQI is at {0}; consider closing the humidifier vent.'.format(
                     self.current_aqi),
+                title='Poor AQI 😤',
                 target='home')
             self.notification_sent = True
         elif (self.notification_sent
               and self.current_aqi <= self.properties['aqi_threshold']):
             self.notification_manager.send(
-                'Better AQI',
                 'AQI is at {0}; open the humidifer vent again.'.format(
                     self.current_aqi),
+                title='Better AQI 😅',
                 target='home')
             self.notification_sent = True

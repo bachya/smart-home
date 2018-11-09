@@ -39,11 +39,11 @@ class NotifyLowFuel(Automation):
                 self.registered = True
                 self.handles[
                     HANDLE_LOW_FUEL] = self.notification_manager.repeat(
-                        '{0} is Low ⛽'.format(
-                            self.properties['friendly_name']),
                         "{0} needs gas; fill 'er up!.".format(
                             self.properties['friendly_name']),
                         self.properties['notification_interval'],
+                        title='{0} is Low ⛽'.format(
+                            self.properties['friendly_name']),
                         target=self.properties['notification_target'])
             else:
                 self.registered = False
