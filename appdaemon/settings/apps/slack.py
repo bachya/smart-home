@@ -39,7 +39,7 @@ class Slack(Base):
 
     def thermostat(self, data: dict) -> None:
         """Alter the thermostat."""
-        target_temp = data['target_temp']
+        target_temp = data['text']
 
         if target_temp:
             self.climate_manager.indoor_temp = int(target_temp)

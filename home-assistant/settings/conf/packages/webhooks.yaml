@@ -8,5 +8,5 @@ automation:
       - event: SLACK_SLASH_COMMAND
         event_data_template:
           name: thermostat
-          target_temp: "{{ trigger.data.text }}"
+          text: "{{ trigger.data.text }}"
           response_url: "{{ trigger.data.response_url }}"
