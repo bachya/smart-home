@@ -71,11 +71,16 @@ class Slack(Base):
         command = data['text']
 
         if not command:
+            if self.climate_manager.mode == self.climate_manager.Modes.eco:
+                message = 'The thermostat is set to eco mode.'
+            else:
+                message = 'The thermostat is set to {0} to {1}°.'.format(
+                    self.climate_manager.mode,
+                    self.climate_manager.indoor_temp)
+
             self._respond(
-                'The thermostat is currently set to {0}° '
-                '(current indoor temperature: {1}°).'.format(
-                    self.climate_manager.indoor_temp,
-                    self.climate_manager.average_indoor_temperature))
+                '{0} (current indoor temperature: {1}°)'.format(
+                    message, self.climate_manager.average_indoor_temperature))
             return
 
         self.climate_manager.indoor_temp = int(command)

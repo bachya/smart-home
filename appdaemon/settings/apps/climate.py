@@ -109,9 +109,12 @@ class ClimateManager(Base):
     @property
     def indoor_temp(self) -> int:
         """Return the temperature the thermostat is currently set to."""
-        return int(
-            self.get_state(
-                self.entities['thermostat'], attribute='temperature'))
+        try:
+            return int(
+                self.get_state(
+                    self.entities['thermostat'], attribute='temperature'))
+        except TypeError:
+            return 0
 
     @indoor_temp.setter
     def indoor_temp(self, value: int) -> None:
