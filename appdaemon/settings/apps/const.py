@@ -6,7 +6,7 @@ PEOPLE = {
     'Aaron': {
         'car': 'device_tracker.2010_subaru_legacy',
         'device_tracker': 'device_tracker.aaron_iphone',
-        'notifiers': ['ios_aaron_bachs_iphone', 'slack'],
+        'notifiers': ['ios_aaron_bachs_iphone'],
         'presence_manager_input_select': 'input_select.aaron_presence_status',
         'push_device_id': '885F47F4-56F2-435C-A84C-84654D0A906F'
     },

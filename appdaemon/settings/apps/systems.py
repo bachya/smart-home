@@ -46,11 +46,11 @@ class LowBatteries(Automation):
 
             self.handles[HANDLE_BATTERY_LOW][
                 name] = self.notification_manager.repeat(
-                    'Low Batteries 🔋',
-                    '{0} is at {1}%. Replace the batteries ASAP!'.format(
+                    '',
+                    '{0} has low batteries ({1})%. Replace them ASAP!'.format(
                         name, value),
                     self.properties['notification_interval'],
-                    target='home')
+                    target='slack')
         else:
             try:
                 self._registered.remove(name)
@@ -79,13 +79,13 @@ class LeftInState(Automation):
             kwargs: dict) -> None:
         """Notify when the threshold is reached."""
         self.notification_manager.send(
-            'Entity Checkup',
+            '',
             '{0} has been left {1} for {2} minutes.'.format(
                 self.get_state(
                     self.entities['entity'], attribute='friendly_name'),
                 self.properties['state'],
                 int(self.properties['seconds']) / 60),
-            target='Aaron')
+            target='slack')
 
 
 class SslExpiration(Automation):

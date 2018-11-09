@@ -38,13 +38,11 @@ class AutoVacationMode(Automation):
     def presence_changed(
             self, event_name: str, data: dict, kwargs: dict) -> None:
         """Alter Vacation Mode based on presence."""
-        if (kwargs['action'] == 'on'
-                and self.vacation_mode.state == 'off'):
+        if (kwargs['action'] == 'on' and self.vacation_mode.state == 'off'):
             self.log('Setting vacation mode to "on"')
 
             self.vacation_mode.state = 'on'
-        elif (kwargs['action'] == 'off'
-              and self.vacation_mode.state == 'on'):
+        elif (kwargs['action'] == 'off' and self.vacation_mode.state == 'on'):
             self.log('Setting vacation mode to "off"')
 
             self.vacation_mode.state = 'off'
@@ -69,8 +67,7 @@ class BadLoginNotification(Automation):
         self.log('Registering a hack attempt: {0}'.format(new))
 
         if new != 'unknown':
-            self.notification_manager.send(
-                'Hack Attempt', new, target='Aaron')
+            self.notification_manager.send('Hack Attempt', new, target='Aaron')
 
 
 class DetectBlackout(Automation):
@@ -122,8 +119,7 @@ class NewVersionNotification(Automation):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Notify me when there's a new app version."""
-        new_version = version.parse(
-            self.get_state(self.entities['available']))
+        new_version = version.parse(self.get_state(self.entities['available']))
         installed_version = version.parse(
             self.get_state(self.entities['installed']))
 
@@ -133,9 +129,10 @@ class NewVersionNotification(Automation):
                     self.properties['app_name'], new))
 
             self.notification_manager.send(
-                'New {0}'.format(self.properties['app_name']),
-                'Version detected: {0}'.format(new),
-                target='Aaron')
+                'New Software',
+                'New {0} Version: {1}'.format(
+                    self.properties['app_name'], new),
+                target=['Aaron', 'slack'])
 
 
 class NewTasmotaVersionNotification(NewVersionNotification):
@@ -153,8 +150,8 @@ class NewTasmotaVersionNotification(NewVersionNotification):
         for host in self.properties['tasmota_hosts']:
             for _ in range(DEFAULT_TASMOTA_RETRIES - 1):
                 try:
-                    json = requests.get('http://{0}/{1}'.format(
-                        host, status_uri)).json()
+                    json = requests.get(
+                        'http://{0}/{1}'.format(host, status_uri)).json()
                     tasmota_version = json['StatusFWR']['Version']
                 except requests.exceptions.ConnectionError:
                     sleep(10)

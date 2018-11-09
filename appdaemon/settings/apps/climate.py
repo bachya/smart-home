@@ -85,13 +85,13 @@ class ClimateManager(Base):
     @property
     def average_indoor_humidity(self) -> float:
         """Return the average indoor humidity based on a list of sensors."""
-        return float(self.get_state(self.entities['average_indoor_humidity']))
+        return float(self.get_state(self.entities['average_humidity_sensor']))
 
     @property
     def average_indoor_temperature(self) -> float:
         """Return the average indoor temperature based on a list of sensors."""
         return float(
-            self.get_state(self.entities['average_indoor_temperature']))
+            self.get_state(self.entities['average_temperature_sensor']))
 
     @property
     def away_mode(self) -> bool:
@@ -111,7 +111,7 @@ class ClimateManager(Base):
         """Return the temperature the thermostat is currently set to."""
         return int(
             self.get_state(
-                self.entities['thermostat'], attribute='current_temperature'))
+                self.entities['thermostat'], attribute='temperature'))
 
     @indoor_temp.setter
     def indoor_temp(self, value: int) -> None:

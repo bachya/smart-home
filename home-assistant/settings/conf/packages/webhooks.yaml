@@ -1,0 +1,12 @@
+---
+automation:
+  - alias: "Slack slash command: /thermostat"
+    trigger:
+      platform: webhook
+      webhook_id: e63ccff6-37a6-418a-902c-c8027762410b
+    action:
+      - event: SLACK_SLASH_COMMAND
+        event_data_template:
+          name: thermostat
+          target_temp: "{{ trigger.data.text }}"
+          response_url: "{{ trigger.data.response_url }}"

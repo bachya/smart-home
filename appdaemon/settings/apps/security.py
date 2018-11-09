@@ -49,6 +49,7 @@ class AbsentInsecure(Automation):
             "No one is home and the house isn't locked up.",
             blackout_start_time=None,
             blackout_end_time=None,
+            target=['everyone', 'slack'],
             data={'push': {
                 'category': 'security'
             }})
@@ -71,7 +72,7 @@ class AbsentInsecure(Automation):
         self.notification_manager.send(
             'Issue Resolved',
             '{0} locked up the house.'.format(target),
-            target='not {0}'.format(target))
+            target=['not {0}'.format(target), 'slack'])
 
 
 class AutoDepartureLockup(Automation):
@@ -88,8 +89,8 @@ class AutoDepartureLockup(Automation):
 
     def everyone_gone(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to 'PROXIMITY_CHANGE' events."""
-        if (not self.security_system.secure and data['old'] ==
-                self.presence_manager.ProximityStates.home.value
+        if (not self.security_system.secure and
+                data['old'] == self.presence_manager.ProximityStates.home.value
                 and data['new'] !=
                 self.presence_manager.ProximityStates.home.value):
             self.log('Everyone has left; locking up')
@@ -152,16 +153,16 @@ class GarageLeftOpen(Automation):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Send notifications when the garage has been left open."""
-        self.handles[
-            HANDLE_GARAGE_OPEN] = self.notification_manager.repeat(
-                'Garage Open 🚗',
-                "The garage has been left open for a while.",
-                self.properties['notification_interval'],
-                blackout_start_time=None,
-                blackout_end_time=None,
-                data={'push': {
-                    'category': 'garage'
-                }})
+        self.handles[HANDLE_GARAGE_OPEN] = self.notification_manager.repeat(
+            'Garage Open 🚗',
+            "The garage has been left open for a while.",
+            self.properties['notification_interval'],
+            blackout_start_time=None,
+            blackout_end_time=None,
+            target=['everyone', 'slack'],
+            data={'push': {
+                'category': 'garage'
+            }})
 
     def response_from_push_notification(
             self, event_name: str, data: dict, kwargs: dict) -> None:
@@ -177,7 +178,7 @@ class GarageLeftOpen(Automation):
         self.notification_manager.send(
             'Issue Resolved',
             '{0} closed the garage.'.format(target),
-            target='not {0}'.format(target))
+            target=['not {0}'.format(target), 'slack'])
 
 
 class NotifyOnChange(Automation):
@@ -202,7 +203,8 @@ class NotifyOnChange(Automation):
             'Security Change',
             'The security status has changed to "{0}"'.format(new),
             blackout_start_time=None,
-            blackout_end_time=None)
+            blackout_end_time=None,
+            target=['everyone', 'slack'])
 
 
 class SecuritySystem(Base):

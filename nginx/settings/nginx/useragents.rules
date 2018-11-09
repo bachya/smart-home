@@ -1,5 +1,6 @@
 map $http_user_agent $blockedagent {
   default 0;
+  ~*Slackbot 0;
   ~*HTTrack 1;
   ~*archiver 1;
   ~*backdoor 1;

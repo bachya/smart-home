@@ -13,10 +13,9 @@ BasicRule wl:1315 "mz:$HEADERS_VAR:cookie";
 
 # HASS
 # -----
-# Allow HASS auth (0.77 and beyond) to work:
+# Allow HASS auth (0.77 and beyond) and webhooks to work:
 BasicRule wl:0 "mz:BODY|$URL_X:^/auth";
-BasicRule wl:1101 "mz:ARGS|$URL_X:^/auth";
-BasicRule wl:1101 "mz:ARGS|$URL_X:^/frontend_latest";
+BasicRule wl:1101 "mz:ARGS|BODY";
 
 # Deal with double quoting in Jinja templates:
 BasicRule wl:0 "mz:$BODY_VAR:template|$URL_X:^/api/template";

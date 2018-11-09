@@ -1,0 +1,6 @@
+---
+slack:
+  module: slack
+  class: Slack
+  dependencies:
+    - climate_manager
