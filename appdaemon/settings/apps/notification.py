@@ -143,9 +143,8 @@ class NotificationManager(Base):
         try:
             kind = data['kind']
             message = data['message']
-            title = data['title']
         except KeyError:
-            self.error('Missing title, message, and/or kind in notifier test')
+            self.error('Missing message and/or kind in notifier test')
             return
 
         _data = data.get('data', None)
@@ -153,6 +152,7 @@ class NotificationManager(Base):
         blackout_start_time = data.get('blackout_start_time', BLACKOUT_START)
         interval = data.get('interval', None)
         target = data.get('target', None)
+        title = data.get('title', None)
         when = data.get('when', None)
 
         if kind == NotificationTypes.single.name:
@@ -219,6 +219,8 @@ class NotificationManager(Base):
 
         if not notification.target:
             notification.target = 'everyone'
+
+        self.log(notification)
 
         if notification.kind == NotificationTypes.single:
             handle = self.run_at(
