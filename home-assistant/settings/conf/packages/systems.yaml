@@ -22,16 +22,6 @@ sensor:
     scan_interval: 300
 
   - platform: command_line
-    name: HASS Available
-    command: >-
-      curl -L
-      -H "User-Agent: Home Assistant"
-      -H "Content-Type: application/json"
-      https://hub.docker.com/v2/repositories/homeassistant/home-assistant/tags/
-    value_template: '{{ value_json.results[2].name }}'
-    scan_interval: 300
-
-  - platform: command_line
     name: Tasmota Available
     command: >-
       curl -L
@@ -62,6 +52,11 @@ sensor:
       https://api.github.com/repos/shadow-1/yi-hack-v3/releases/latest
     value_template: '{{ value_json.tag_name }}'
     scan_interval: 300
+
+  - platform: version
+    name: HASS Available
+    source: docker
+    beta: true
 
   # Installed Versions
   - platform: command_line
