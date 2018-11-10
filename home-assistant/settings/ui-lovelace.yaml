@@ -852,10 +852,6 @@ views:
             url: http://climate-sensor-2.myserver.com
             icon: mdi:thermometer
           - type: weblink
-            name: CenturyLink Gateway
-            url: http://192.168.0.1
-            icon: mdi:router-wireless
-          - type: weblink
             name: Durmstrang Glances
             url: http://durmstrang.myserver.com:61208
             icon: mdi:settings
