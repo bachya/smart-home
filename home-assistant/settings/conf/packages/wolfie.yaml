@@ -160,7 +160,7 @@ switch:
         turn_on:
           event: VACUUM_START
         turn_off:
-          service: vacuum.turn_off
+          service: vacuum.return_to_base
           data:
             entity_id: vacuum.xiaomi_vacuum_cleaner
 
