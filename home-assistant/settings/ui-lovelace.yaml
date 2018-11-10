@@ -244,7 +244,7 @@ views:
             hide_volume: true
             icon: mdi:youtube-tv
             name: Apple TV
-            show_source: true
+            show_source: full
           - switch.ps4
         show_header_toggle: false
       - id: da8cec22a3214cfc84f8c3764c85532c  # Automatically created id
@@ -625,7 +625,7 @@ views:
             hide_controls: true
             hide_power: true
             hide_volume: true
-            show_source: true
+            show_source: full
           - type: custom:mini-media-player
             entity: media_player.sonos_playbar
             name: Sonos Playbar
