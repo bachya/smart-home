@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 from enum import Enum
 from typing import Callable, List, Union  # noqa
 from uuid import UUID
-from zlib import adler32
 
 from automation import Base  # type: ignore
 from const import BLACKOUT_END, BLACKOUT_START, PEOPLE  # type: ignore
@@ -40,7 +39,7 @@ class Notification:
             self.data = {}
         self.data.setdefault('push', {})
         self.data['push'].setdefault(
-            'thread-id', adler32(message.encode('utf-8')))
+            'thread-id', '{0}_{1}'.format(title, message))
 
     def __eq__(self, other):
         """Define method to compare notification objects."""
