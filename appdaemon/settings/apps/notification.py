@@ -219,8 +219,6 @@ class NotificationManager(Base):
         if not notification.target:
             notification.target = 'everyone'
 
-        self.log(notification)
-
         if notification.kind == NotificationTypes.single:
             handle = self.run_at(
                 self._send_cb, notification.when, notification=notification)
