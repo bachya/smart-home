@@ -97,7 +97,11 @@ services:
       - mysql
     devices:
       - "/dev/zwave:/dev/zwave"
-    image: homeassistant/home-assistant:0.82.0
+    build:
+      context: ./home-assistant/docker
+      args:
+        version: 0.82.0
+    image: bachya/home-assistant
     network_mode: "host"
     restart: unless-stopped
     volumes:

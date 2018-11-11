@@ -245,7 +245,17 @@ views:
             icon: mdi:youtube-tv
             name: Apple TV
             show_source: full
-          - switch.ps4
+          - type: custom:mini-media-player
+            artwork: none
+            artwork_border: true
+            entity: media_player.ps4
+            group: true
+            hide_controls: true
+            hide_power: true
+            hide_volume: true
+            icon: mdi:playstation
+            name: PS4
+            show_source: full
         show_header_toggle: false
       - id: da8cec22a3214cfc84f8c3764c85532c  # Automatically created id
         type: entities

@@ -4,18 +4,15 @@ apple_tv:
     login_id: 00000000-1012-d722-4d49-70717fb642c1
     name: Basement Apple TV
 
+media_player:
+  - platform: ps4
+    name: PS4
+    host: 172.16.10.35
+
 shell_command:
   turn_off_media_center: 'ssh bachya@media-center.phil.lan sudo /sbin/poweroff'
 
 switch:
-  - platform: command_line
-    switches:
-      ps4:
-        friendly_name: Playstation 4
-        command_on: 'ps4-waker -c /config/.ps4-waker.json'
-        command_off: 'ps4-waker -c /config/.ps4-waker.json standby'
-        command_state: 'nc -z -w 5 ps4.phil.lan 9295'
-
   - platform: wake_on_lan
     mac_address: 4C:CC:6A:69:90:D4
     name: Media Center
