@@ -7,7 +7,8 @@ from typing import Callable, List, Union  # noqa
 from uuid import UUID
 
 from automation import Base  # type: ignore
-from const import BLACKOUT_END, BLACKOUT_START, PEOPLE  # type: ignore
+from const import BLACKOUT_END, BLACKOUT_START  # type: ignore
+from people import PEOPLE_KEY, Person
 from util.dt import time_is_between  # type: ignore
 
 
@@ -90,30 +91,39 @@ class NotificationManager(Base):
             split = item.split(' ')  # type: ignore
 
             # 1. target='not Person'
-            if split[0] == 'not' and split[1] in PEOPLE:
+            if split[0] == 'not' and split[1] in [
+                    person.first_name
+                    for person in self.global_vars[PEOPLE_KEY]
+            ]:
                 targets += [
-                    notifier for name, attrs in PEOPLE.items()
-                    if name != split[1] for notifier in attrs['notifiers']
+                    notifier for person in self.global_vars[PEOPLE_KEY]
+                    if person.first_name != split[1]
+                    for notifier in person.notifiers
                 ]
 
             # 2. target='Person'
-            elif split[0] in PEOPLE:
-                targets += PEOPLE[item]['notifiers']
+            elif split[0] in [person.first_name
+                              for person in self.global_vars[PEOPLE_KEY]]:
+                targets += [
+                    notifier for person in self.global_vars[PEOPLE_KEY]
+                    if person.first_name == split[0]
+                    for notifier in person.notifiers
+                ]
 
             else:
                 try:
                     # 3. target='home'
                     targets += [
-                        notifier for name in getattr(
-                            self.presence_manager, 'whos_{0}'.format(item))()
-                        for notifier in PEOPLE[name]['notifiers']
+                        notifier for person in getattr(
+                            self.presence_manager, 'whos_{0}'.format(item))
+                        for notifier in person.notifiers
                     ]
                 except AttributeError:
                     # 4. target='everyone'
                     if item == 'everyone':
                         targets += [
-                            notifier for attrs in PEOPLE.values()
-                            for notifier in attrs['notifiers']
+                            notifier for person in self.global_vars[PEOPLE_KEY]
+                            for notifier in person.notifiers
                         ]
 
                     # 5. target='person_iphone'
@@ -240,17 +250,14 @@ class NotificationManager(Base):
 
         return cancel
 
-    @staticmethod
-    def get_target_from_push_id(push_id: UUID) -> Union[str, None]:
+    def get_target_from_push_id(self, push_id: UUID) -> Person:
         """Return a person from a provided permanent device ID."""
         try:
-            [target] = [
-                k for k, v in PEOPLE.items() if v['push_device_id'] == push_id
-            ]
-        except ValueError:
-            target = None
-
-        return target
+            return next((
+                person for person in self.global_vars[PEOPLE_KEY]
+                if person.push_device_id == push_id))
+        except StopIteration:
+            return None
 
     def repeat(  # pylint: disable=too-many-arguments
             self,

@@ -78,9 +78,9 @@ class NotifyDone(Automation):
         target = self.notification_manager.get_target_from_push_id(
             data['sourceDevicePermanentID'])
         self.notification_manager.send(
-            '{0} emptied the dishwasher.'.format(target),
+            '{0} emptied the dishwasher.'.format(target.first_name),
             title='Dishwasher Emptied 🍽',
-            target='not {0}'.format(target))
+            target='not {0}'.format(target.first_name))
 
 
 class WasherDryer(Base):

@@ -70,9 +70,9 @@ class AbsentInsecure(Automation):
             self.turn_on('scene.depart_home')
 
         self.notification_manager.send(
-            '{0} locked up the house.'.format(target),
+            '{0} locked up the house.'.format(target.first_name),
             title='Issue Resolved 🔐',
-            target=['not {0}'.format(target), 'slack'])
+            target=['not {0}'.format(target.first_name), 'slack'])
 
 
 class AutoDepartureLockup(Automation):
@@ -176,9 +176,9 @@ class GarageLeftOpen(Automation):
             'cover/close_cover', entity_id=self.entities['garage_door'])
 
         self.notification_manager.send(
-            '{0} closed the garage.'.format(target),
+            '{0} closed the garage.'.format(target.first_name),
             title='Issue Resolved 🚗',
-            target=['not {0}'.format(target), 'slack'])
+            target=['not {0}'.format(target.first_name), 'slack'])
 
 
 class NotifyOnChange(Automation):

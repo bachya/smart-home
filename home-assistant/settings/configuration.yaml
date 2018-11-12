@@ -18,7 +18,6 @@ zeroconf:
 
 # Components:
 cloud: !include_dir_merge_named conf/cloud/
-device_tracker: !include conf/platforms/device-trackers.yaml
 emulated_hue: !include conf/platforms/emulated-hue.yaml
 ffmpeg: !include conf/platforms/ffmpeg.yaml
 group: !include_dir_named conf/groups/

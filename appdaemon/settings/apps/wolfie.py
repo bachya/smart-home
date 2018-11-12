@@ -203,9 +203,9 @@ class ScheduledCycle(Automation):
         target = self.notification_manager.get_target_from_push_id(
             data['sourceDevicePermanentID'])
         self.notification_manager.send(
-            '{0} emptied the vacuum.'.format(target),
+            '{0} emptied the vacuum.'.format(target.first_name),
             title='Vacuum Emptied 🤖',
-            target='not {0}'.format(target))
+            target='not {0}'.format(target.first_name))
 
     def schedule_changed(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
