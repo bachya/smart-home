@@ -76,8 +76,8 @@ class PresenceManager(Base):
             self.listen_state(
                 self._change_input_select_cb,
                 person.at_home_sensor,
-                old='not_home',
-                new='home',
+                old='off',
+                new='on',
                 person=person,
                 target_state=self.HomeStates.just_arrived)
 
@@ -103,8 +103,8 @@ class PresenceManager(Base):
             self.listen_state(
                 self._change_input_select_cb,
                 person.at_home_sensor,
-                old='home',
-                new='not_home',
+                old='on',
+                new='off',
                 person=person,
                 target_state=self.HomeStates.just_left)
 
