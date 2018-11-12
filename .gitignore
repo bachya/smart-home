@@ -3,7 +3,7 @@
 .config_entries.json
 .ios.conf
 .mypy_cache
-.ps4-waker.json
+.ps4-wake.credentials.json
 .tile.conf
 Pipfile.lock
 emulated_hue_ids.json
