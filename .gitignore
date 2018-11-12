@@ -8,7 +8,7 @@
 Pipfile.lock
 emulated_hue_ids.json
 entity_registry.yaml
-harmony_samsung_tv.conf
+harmony_living_room_tv.conf
 home-assistant/settings/.storage
 home-assistant/settings/conf/hass/.HA_VERSION
 home-assistant/settings/conf/hass/.uuid
