@@ -807,9 +807,7 @@ views:
           - switch.amazon_dash
           - switch.appdaemon
           - switch.hub_glances
-          - switch.grafana
           - switch.home_assistant
-          - switch.influxdb
           - switch.mosquitto
           - switch.mysql
           - switch.nginx

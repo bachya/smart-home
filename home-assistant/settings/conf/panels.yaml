@@ -1,5 +1,1 @@
 ---
-grafana:
-  title: Grafana
-  url: !secret panel_url_grafana
-  icon: mdi:chart-bar
