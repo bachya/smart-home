@@ -1,7 +1,5 @@
 """Define generic utils."""
 import datetime
-import itertools
-import operator
 from typing import Any, Tuple
 
 import Levenshtein
@@ -14,26 +12,7 @@ def grammatical_list_join(the_list: list) -> str:
 
 def most_common(the_list: list) -> Any:
     """Return the most common element in a list."""
-    # get an iterable of (item, iterable) pairs
-    sorted_list = sorted((x, i) for i, x in enumerate(the_list))
-
-    # print 'SL:', SL
-    groups = itertools.groupby(sorted_list, key=operator.itemgetter(0))
-
-    # auxiliary function to get "quality" for an item
-    def _auxfun(item):
-        _, iterable = item
-        count = 0
-        min_index = len(the_list)
-        for _, where in iterable:
-            count += 1
-            min_index = min(min_index, where)
-
-        # print 'item %r, count %r, minind %r' % (item, count, min_index)
-        return count, -min_index
-
-    # pick the highest-count/earliest item
-    return max(groups, key=_auxfun)[0]
+    return max(set(the_list), key=the_list.count)
 
 
 def relative_search_dict(the_dict: dict, search: str,
