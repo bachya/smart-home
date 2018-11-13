@@ -155,8 +155,6 @@ services:
   portainer:
     container_name: portainer
     image: portainer/portainer:latest
-    ports:
-      - "9000:9000/tcp"
     restart: unless-stopped
     volumes:
       - /etc/localtime:/etc/localtime:ro
