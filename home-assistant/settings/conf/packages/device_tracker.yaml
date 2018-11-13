@@ -22,16 +22,6 @@ binary_sensor:
         prob_given_false: 0.50
         platform: state
         to_state: home
-      - entity_id: device_tracker.tile_19af7a5915dc41f6
-        prob_given_true: 0.60
-        prob_given_false: 0.20
-        platform: state
-        to_state: home
-      - entity_id: device_tracker.tile_ff97d7de8dbb06c9
-        prob_given_true: 0.60
-        prob_given_false: 0.20
-        platform: state
-        to_state: home
 
   - platform: bayesian
     name: Britt Home
