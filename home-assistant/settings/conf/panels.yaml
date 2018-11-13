@@ -3,3 +3,7 @@ portainer:
   title: Portainer
   url: !secret panel_url_portainer
   icon: mdi:database
+tasmoadmin:
+  title: TasmoAdmin
+  url: !secret panel_url_tasmoadmin
+  icon: mdi:lightbulb-on

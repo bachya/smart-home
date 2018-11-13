@@ -14,8 +14,16 @@ BasicRule wl:0 "mz:$BODY_VAR:template|$URL_X:^/api/template";
 
 # Portainer
 # -----
-# Ignore Portainer issues that prevent it from loading through NAXSI:
 BasicRule wl:1001 "mz:ARGS|$URL_X:^/api";
 BasicRule wl:1310 "mz:ARGS|$URL_X:^/api";
 BasicRule wl:1315 "mz:HEADERS";
 BasicRule wl:2 "mz:BODY|$URL_X:^/api";
+
+# TasmoAdmin
+# -----
+BasicRule wl:1000 "mz:URL|$URL_X:^/resources";
+BasicRule wl:1010 "mz:BODY|$URL_X:^/device_action";
+BasicRule wl:1011 "mz:BODY|$URL_X:^/device_action";
+BasicRule wl:1016 "mz:BODY|$URL_X:^/login";
+BasicRule wl:1310 "mz:BODY|NAME|$URL_X:^/device_action";
+BasicRule wl:1315 "mz:BODY|$URL_X:^/";
