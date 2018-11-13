@@ -15,6 +15,7 @@ BasicRule wl:0 "mz:$BODY_VAR:template|$URL_X:^/api/template";
 # Portainer
 # -----
 BasicRule wl:1001 "mz:ARGS|$URL_X:^/api";
+BasicRule wl:1016 "mz:BODY|$URL_X:^/api";
 BasicRule wl:1310 "mz:ARGS|$URL_X:^/api";
 BasicRule wl:1315 "mz:HEADERS";
 BasicRule wl:2 "mz:BODY|$URL_X:^/api";
