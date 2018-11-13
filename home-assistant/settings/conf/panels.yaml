@@ -1,1 +1,5 @@
 ---
+portainer:
+  title: Portainer
+  url: !secret panel_url_portainer
+  icon: mdi:database

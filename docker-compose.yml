@@ -99,7 +99,7 @@ services:
     container_name: mosquitto
     image: bachya/mosquitto
     ports:
-      - "1883:1883"
+      - "1883:1883/tcp"
     restart: unless-stopped
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
@@ -152,6 +152,17 @@ services:
       - fail2ban-config:/etc/fail2ban
       - nginx-config:/etc/nginx
 
+  portainer:
+    container_name: portainer
+    image: portainer/portainer:latest
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-config:/data
+
 volumes:
 
   amazon-dash-config:
@@ -162,4 +173,5 @@ volumes:
   hass-config:
   mosquitto-config:
   nginx-config:
+  portainer-config:
   shared:
