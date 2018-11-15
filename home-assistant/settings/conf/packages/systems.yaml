@@ -22,6 +22,16 @@ sensor:
     scan_interval: 300
 
   - platform: command_line
+    name: Portainer Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/portainer/portainer/releases/latest
+    value_template: '{{ value_json.tag_name }}'
+    scan_interval: 300
+
+  - platform: command_line
     name: Tasmota Available
     command: >-
       curl -L

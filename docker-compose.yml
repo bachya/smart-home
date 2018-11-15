@@ -131,7 +131,7 @@ services:
 
   portainer:
     container_name: portainer
-    image: portainer/portainer:latest
+    image: portainer/portainer:1.19.2
     ports:
       - "9000:9000/tcp"
     restart: unless-stopped

@@ -62,6 +62,29 @@ new_mosquitto_version_automation:
     icon: mdi:home-assistant
     initial: true
 
+new_portainer_version_automation:
+  module: version
+  class: NewPortainerVersionNotification
+  dependencies:
+    - notification_manager
+    - presence_manager
+  entities:
+    available: sensor.portainer_available
+    installed: sensor.portainer_installed
+  properties:
+    app_name: Portainer
+    created_entity_id: sensor.portainer_installed
+    endpoint_id: 1
+    friendly_name: Portainer Installed
+    icon: mdi:database
+    image_name: portainer/portainer
+    update_interval: 300
+  enabled_config:
+    entity_name: notify_of_new_versions
+    name: Notify of new versions
+    icon: mdi:home-assistant
+    initial: true
+
 new_tasmota_version_automation:
   module: version
   class: NewTasmotaVersionNotification
