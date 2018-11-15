@@ -27,12 +27,11 @@
   friendly_name: Temperature
 "sensor.hass_*":
   icon: "mdi:home-assistant"
+"sensor.mosquitto_*":
+  icon: "mdi:wifi"
 "sensor.tasmota_*":
   icon: "mdi:wifi"
 "sensor.xiaomi_hack_*":
   icon: "mdi:cctv"
 "sensor.yi_hack_*":
   icon: "mdi:cctv"
-"switch.*_glances":
-  friendly_name: "Glances"
-  icon: "mdi:server-security"

@@ -12,6 +12,16 @@ sensor:
     scan_interval: 300
 
   - platform: command_line
+    name: Mosquitto Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/eclipse/mosquitto/tags
+    value_template: '{{ value_json[0].name[1:] }}'
+    scan_interval: 300
+
+  - platform: command_line
     name: Tasmota Available
     command: >-
       curl -L

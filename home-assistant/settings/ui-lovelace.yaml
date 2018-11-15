@@ -915,6 +915,8 @@ views:
           - sensor.appdaemon_installed
           - sensor.hass_available
           - sensor.hass_installed
+          - sensor.mosquitto_available
+          - sensor.mosquitto_installed
           - sensor.tasmota_available
           - sensor.lowest_tasmota_installed
           - sensor.xiaomi_hack_available

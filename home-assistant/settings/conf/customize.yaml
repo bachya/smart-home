@@ -89,10 +89,6 @@ sensor.thermostat_thermostat_humidity:
 sensor.thermostat_thermostat_hvac_state:
   friendly_name: "Indoor HVAC State"
   icon: "mdi:fan"
-switch.amazon_dash:
-  icon: "mdi:amazon"
-switch.appdaemon:
-  icon: "mdi:language-python"
 switch.backyard_lights:
   icon: "mdi:lightbulb"
 switch.christmas_tree:
@@ -127,12 +123,6 @@ switch.master_bathroom_fan:
   icon: "mdi:fan"
 switch.master_toilet_fan:
   icon: "mdi:fan"
-switch.mosquitto:
-  icon: "mdi:access-point-network"
-switch.mysql:
-  icon: "mdi:database"
-switch.nginx:
-  icon: "mdi:server"
 switch.media_center_plex:
   icon: "mdi:plex"
 switch.powder_room_fan:

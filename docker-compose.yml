@@ -73,10 +73,8 @@ services:
       - shared:/shared
 
   mosquitto:
-    build: ./mosquitto/docker
-    command: /usr/bin/supervisord -c /etc/supervisor.conf
     container_name: mosquitto
-    image: bachya/mosquitto
+    image: eclipse-mosquitto:1.5.4
     ports:
       - "1883:1883/tcp"
     restart: unless-stopped
@@ -86,7 +84,7 @@ services:
       - /etc/ssl:/etc/ssl:ro
       - /usr/share/ca-certificates:/usr/share/ca-certificates:ro
       - /var/lib/letsencrypt:/var/lib/letsencrypt
-      - mosquitto-config:/config
+      - mosquitto-config:/mosquitto/config
 
   mysql:
     container_name: mysql
