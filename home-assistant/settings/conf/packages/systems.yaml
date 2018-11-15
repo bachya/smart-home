@@ -64,10 +64,6 @@ sensor:
       root@kitchen-camera.phil.lan
       cat /home/yi-hack-v3/.hackinfo | grep VERSION | awk -F= \'{ print $2 }\'
 
-  - platform: file
-    name: AppDaemon Installed
-    file_path: /shared/.AD_VERSION
-
   - platform: version
     name: HASS Installed
 

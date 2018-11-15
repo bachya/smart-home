@@ -2,9 +2,7 @@
 appdaemon:
   api_key: !secret api_key
   api_port: 5051
-  threads: 10
   missing_app_warnings: false
-  production_mode: true
   plugins:
     HASS:
       type: hass
@@ -17,3 +15,7 @@ appdaemon:
       client_host: mosquitto
       client_user: appdaemon
       client_password: !secret mqtt_password
+  portainer_password: !secret portainer_password
+  portainer_username: !secret portainer_username
+  production_mode: true
+  threads: 10

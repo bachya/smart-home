@@ -13,8 +13,7 @@ services:
     build:
       context: ./appdaemon/docker
       args:
-        version: 3.0.2
-    command: /usr/src/app/start.sh
+        VERSION: 3.0.2
     container_name: appdaemon
     depends_on:
       - hass
@@ -22,7 +21,7 @@ services:
     restart: unless-stopped
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - appdaemon-config:/config:ro
+      - appdaemon-config:/conf
       - shared:/shared
 
   amazon-dash:
@@ -135,6 +134,8 @@ services:
   portainer:
     container_name: portainer
     image: portainer/portainer:latest
+    ports:
+      - "9000:9000/tcp"
     restart: unless-stopped
     volumes:
       - /etc/localtime:/etc/localtime:ro

@@ -1,11 +1,7 @@
 """Define automations for Home Assistant itself."""
 # pylint: disable=attribute-defined-outside-init,import-error,unused-argument
 
-from datetime import timedelta
-from time import sleep
 from typing import Union
-
-from packaging import version  # type: ignore
 
 from automation import Automation  # type: ignore
 from const import BLACKOUT_END, BLACKOUT_START  # type: ignore
@@ -101,88 +97,3 @@ class DetectBlackout(Automation):
             self.turn_on(self.entities['blackout_switch'])
         else:
             self.turn_off(self.entities['blackout_switch'])
-
-
-class NewVersionNotification(Automation):
-    """Define a feature to detect new versions of key apps."""
-
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
-        self.listen_state(
-            self.version_change_detected,
-            self.entities['available'],
-            constrain_input_boolean=self.enabled_entity_id)
-
-    def version_change_detected(  # pylint: disable=too-many-arguments
-            self, entity: Union[str, dict], attribute: str, old: str, new: str,
-            kwargs: dict) -> None:
-        """Notify me when there's a new app version."""
-        new_version = version.parse(self.get_state(self.entities['available']))
-        installed_version = version.parse(
-            self.get_state(self.entities['installed']))
-
-        if new_version > installed_version:
-            self.log(
-                'New {0} version detected: {1}'.format(
-                    self.properties['app_name'], new))
-
-            self.notification_manager.send(
-                'New {0} Version: {1}'.format(
-                    self.properties['app_name'], new),
-                title='New Software 💿',
-                target=['Aaron', 'slack'])
-
-
-class NewTasmotaVersionNotification(NewVersionNotification):
-    """Define a feature to detect new versions of Tasmota."""
-
-    @property
-    def lowest_tasmota_installed(self) -> version.Version:
-        """Get the lowest Tasmota version from all Sonoffs."""
-        import requests
-
-        lowest_version = None
-        status_uri = 'cm?cmnd=Status%202'
-        tasmota_version = None
-
-        for host in self.properties['tasmota_hosts']:
-            for _ in range(DEFAULT_TASMOTA_RETRIES - 1):
-                try:
-                    json = requests.get(
-                        'http://{0}/{1}'.format(host, status_uri)).json()
-                    tasmota_version = json['StatusFWR']['Version']
-                except requests.exceptions.ConnectionError:
-                    sleep(10)
-                else:
-                    break
-            else:
-                self.error('Unable to connect to host: {0}'.format(host))
-
-            try:
-                if lowest_version > tasmota_version:
-                    lowest_version = tasmota_version
-            except TypeError:
-                lowest_version = tasmota_version
-
-        return lowest_version
-
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
-        self.run_every(
-            self.update_tasmota_sensor,
-            self.datetime(),
-            timedelta(minutes=5).total_seconds())
-
-    def update_tasmota_sensor(self, kwargs: dict) -> None:
-        """Update installed Tasmota version every so often."""
-        self.set_state(
-            'sensor.lowest_tasmota_installed',
-            state=str(self.lowest_tasmota_installed),
-            attributes={
-                'friendly_name': 'Lowest Tasmota Installed',
-                'icon': 'mdi:wifi'
-            })
