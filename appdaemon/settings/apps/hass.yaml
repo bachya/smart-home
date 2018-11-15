@@ -52,23 +52,6 @@ new_appdaemon_version_automation:
     icon: mdi:home-assistant
     initial: true
 
-new_ha_dockermon_version_automation:
-  module: hass
-  class: NewVersionNotification
-  dependencies:
-    - notification_manager
-    - presence_manager
-  entities:
-    available: sensor.hadockermon_available
-    installed: sensor.hadockermon_installed
-  properties:
-    app_name: ha-dockermon
-  enabled_config:
-    entity_name: notify_of_new_versions
-    name: Notify of new versions
-    icon: mdi:home-assistant
-    initial: true
-
 new_hass_version_automation:
   module: hass
   class: NewVersionNotification

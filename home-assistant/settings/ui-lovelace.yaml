@@ -926,8 +926,6 @@ views:
         entities:
           - sensor.appdaemon_available
           - sensor.appdaemon_installed
-          - sensor.hadockermon_available
-          - sensor.hadockermon_installed
           - sensor.hass_available
           - sensor.hass_installed
           - sensor.tasmota_available

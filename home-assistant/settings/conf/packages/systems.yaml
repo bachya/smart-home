@@ -12,16 +12,6 @@ sensor:
     scan_interval: 300
 
   - platform: command_line
-    name: ha-dockermon Available
-    command: >-
-      curl -L
-      -H "User-Agent: Home Assistant"
-      -H "Content-Type: application/json"
-      https://api.github.com/repos/philhawthorne/ha-dockermon/tags
-    value_template: '{{ value_json[0].name[1:] }}'
-    scan_interval: 300
-
-  - platform: command_line
     name: Tasmota Available
     command: >-
       curl -L
@@ -77,10 +67,6 @@ sensor:
   - platform: file
     name: AppDaemon Installed
     file_path: /shared/.AD_VERSION
-
-  - platform: file
-    name: ha-dockermon Installed
-    file_path: /shared/.HADM_VERSION
 
   - platform: version
     name: HASS Installed

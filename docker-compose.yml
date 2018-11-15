@@ -52,30 +52,10 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - glances-config:/etc/glances:ro
 
-  ha-dockermon:
-    build:
-      context: ./ha-dockermon/docker
-      args:
-        version: 0.0.10
-    command: /usr/src/app/start.sh
-    container_name: ha-dockermon
-    environment:
-      - config_dir=/config
-    image: bachya/ha-dockermon
-    ports:
-      - "8126:8126/tcp"
-    restart: unless-stopped
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ha-dockermon-config:/config:ro
-      - shared:/shared
-
   hass:
     container_name: hass
     depends_on:
       - glances
-      - ha-dockermon
       - mosquitto
       - mysql
     devices:
@@ -175,7 +155,6 @@ volumes:
   appdaemon-config:
   fail2ban-config:
   glances-config:
-  ha-dockermon-config:
   hass-config:
   mosquitto-config:
   nginx-config:

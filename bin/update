@@ -50,9 +50,6 @@ sudo chown -R root:root /var/lib/docker/volumes/hub_amazon-dash-config/_data/
 # Update Glances configs:
 copy_config_data "hub_glances-config" "/glances/settings"
 
-# Update ha-dockermon configs:
-copy_config_data "hub_ha-dockermon-config" "/ha-dockermon/settings"
-
 # Update Home Assistant configs:
 copy_config_data "hub_hass-config" "/home-assistant/settings"
 
@@ -69,6 +66,7 @@ docker-compose build
 # Restart the containers:
 docker-compose down --remove-orphans
 docker image prune -f
+docker images -q | xargs docker rmi
 docker container prune -f
 docker-compose up -d
 docker network prune -f

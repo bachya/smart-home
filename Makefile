@@ -8,4 +8,4 @@ lint:
 	pipenv run flake8 appdaemon/settings bin/enabled_toggles
 	pipenv run pydocstyle appdaemon/settings bin/enabled_toggles
 	pipenv run pylint --disable=import-error,no-name-in-module,too-few-public-methods appdaemon/settings bin/enabled_toggles
-	pipenv run yamllint amazon-dash/settings appdaemon/settings ha-dockermon/settings home-assistant/settings
+	pipenv run yamllint amazon-dash/settings appdaemon/settings home-assistant/settings
