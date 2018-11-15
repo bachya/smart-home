@@ -201,6 +201,11 @@ class NotificationManager(Base):
                 return
 
         for target in self._get_targets(notification.target):
+            self.log(
+                'Sending notification to "{0}": {1}'.format(
+                    target, notification.title
+                    if notification.title else notification.message))
+
             self.call_service(
                 'notify/{0}'.format(target),
                 message=notification.message,
