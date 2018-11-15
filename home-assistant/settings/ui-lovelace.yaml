@@ -780,7 +780,6 @@ views:
           - sensor.durmstrang_disk_used
           - sensor.durmstrang_ram_used
           - sensor.durmstrang_cpu_load
-          - switch.durmstrang_glances
         show_header_toggle: false
 
       - id: df417609a6dd4404aac034e34471e1ca  # Automatically created id
@@ -792,7 +791,6 @@ views:
           - sensor.gryffindor_disk_used
           - sensor.gryffindor_ram_used
           - sensor.gryffindor_cpu_load
-          - switch.gryffindor_glances
         show_header_toggle: false
 
       - id: 5b75da280a874e8c9ea37af58bb87ba3  # Automatically created id
@@ -804,13 +802,6 @@ views:
           - sensor.hub_disk_used
           - sensor.hub_ram_used
           - sensor.hub_cpu_load
-          - switch.amazon_dash
-          - switch.appdaemon
-          - switch.hub_glances
-          - switch.home_assistant
-          - switch.mosquitto
-          - switch.mysql
-          - switch.nginx
         show_header_toggle: false
 
       - id: ff1450dd54764ac3966fcb38e5119eb2  # Automatically created id
@@ -822,7 +813,6 @@ views:
           - sensor.hufflepuff_disk_used
           - sensor.hufflepuff_ram_used
           - sensor.hufflepuff_cpu_load
-          - switch.hufflepuff_glances
         show_header_toggle: false
 
       - id: b0e2014678ac4418b5f95aec8e652e9f  # Automatically created id
@@ -834,8 +824,6 @@ views:
           - sensor.ravenclaw_disk_used
           - sensor.ravenclaw_ram_used
           - sensor.ravenclaw_cpu_load
-          - switch.ravenclaw_glances
-          - switch.ravenclaw_hass_elder_bachs
         show_header_toggle: false
 
       - id: a020603ea51740ac9de86dd3d5cffc1a  # Automatically created id
@@ -847,7 +835,6 @@ views:
           - sensor.slytherin_disk_used
           - sensor.slytherin_ram_used
           - sensor.slytherin_cpu_load
-          - switch.slytherin_glances
         show_header_toggle: false
 
       - id: efeeafd4894948af9eda32d4c3bed4b4  # Automatically created id
