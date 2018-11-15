@@ -115,7 +115,7 @@ class NotificationManager(Base):
                     # 3. target='home'
                     targets += [
                         notifier for person in getattr(
-                            self.presence_manager, 'whos_{0}'.format(item))
+                            self.presence_manager, 'whos_{0}'.format(item))()
                         for notifier in person.notifiers
                     ]
                 except AttributeError:
