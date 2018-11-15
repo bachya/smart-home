@@ -32,6 +32,16 @@ sensor:
     scan_interval: 300
 
   - platform: command_line
+    name: TasmoAdmin Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/reloxx13/TasmoAdmin/releases/latest
+    value_template: '{{ value_json.tag_name[1:] }}'
+    scan_interval: 300
+
+  - platform: command_line
     name: Tasmota Available
     command: >-
       curl -L

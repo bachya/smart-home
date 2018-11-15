@@ -53,6 +53,11 @@ class DynamicSensor(NewVersionNotification):
         self.run_every(self.update_sensor, self.datetime(),
                        self.properties['update_interval'])
 
+    @property
+    def sensor_value(self) -> Union[None, str]:
+        """Raise if not implemented."""
+        raise NotImplementedError()
+
     def update_sensor(self, kwargs: dict) -> None:
         """Update sensor value."""
         self.set_state(
@@ -95,7 +100,7 @@ class NewPortainerVersionNotification(DynamicSensor):
             self.error('No match for image: {0}'.format(
                 self.properties['image_name']))
 
-        return tagged_image.split(':')[1]
+        return tagged_image.split(':')[1].replace('v', '')
 
 
 class NewTasmotaVersionNotification(DynamicSensor):

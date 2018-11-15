@@ -85,6 +85,29 @@ new_portainer_version_automation:
     icon: mdi:home-assistant
     initial: true
 
+new_tasmoadmin_version_automation:
+  module: version
+  class: NewPortainerVersionNotification
+  dependencies:
+    - notification_manager
+    - presence_manager
+  entities:
+    available: sensor.tasmoadmin_available
+    installed: sensor.tasmoadmin_installed
+  properties:
+    app_name: TasmoAdmin
+    created_entity_id: sensor.tasmoadmin_installed
+    endpoint_id: 1
+    friendly_name: TasmoAdmin Installed
+    icon: mdi:lightbulb-on
+    image_name: raymondmm/tasmoadmin
+    update_interval: 300
+  enabled_config:
+    entity_name: notify_of_new_versions
+    name: Notify of new versions
+    icon: mdi:home-assistant
+    initial: true
+
 new_tasmota_version_automation:
   module: version
   class: NewTasmotaVersionNotification

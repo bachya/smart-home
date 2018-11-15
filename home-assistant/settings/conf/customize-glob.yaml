@@ -31,6 +31,8 @@
   icon: mdi:wifi
 "sensor.portainer_*":
   icon: mdi:database
+"sensor.tasmoadmin_*":
+  icon: mdi:lightbulb-on
 "sensor.tasmota_*":
   icon: mdi:wifi
 "sensor.xiaomi_hack_*":

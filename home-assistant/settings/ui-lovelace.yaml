@@ -919,6 +919,8 @@ views:
           - sensor.mosquitto_installed
           - sensor.portainer_available
           - sensor.portainer_installed
+          - sensor.tasmoadmin_available
+          - sensor.tasmoadmin_installed
           - sensor.tasmota_available
           - sensor.lowest_tasmota_installed
           - sensor.xiaomi_hack_available
