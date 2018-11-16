@@ -14,7 +14,12 @@ binary_sensor:
         platform: state
         to_state: home
       - entity_id: device_tracker.aaron_iphone
-        prob_given_true: 0.85
+        prob_given_true: 0.90
+        platform: state
+        to_state: home
+      - entity_id: device_tracker.aarons_iphone
+        prob_given_true: 0.90
+        prob_given_false: 0.50
         platform: state
         to_state: home
 
@@ -25,6 +30,11 @@ binary_sensor:
     observations:
       - entity_id: device_tracker.britt_iphone
         prob_given_true: 0.90
+        platform: state
+        to_state: home
+      - entity_id: device_tracker.britts_iphone
+        prob_given_true: 0.90
+        prob_given_false: 0.50
         platform: state
         to_state: home
 
@@ -43,3 +53,9 @@ device_tracker:
     password: !secret tile_password
     monitored_variables:
       - TILE
+
+  - platform: unifi
+    host: cloud-key.phil.lan
+    username: !secret unifi_username
+    password: !secret unifi_password
+    verify_ssl: false
