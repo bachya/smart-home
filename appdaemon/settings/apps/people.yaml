@@ -6,7 +6,6 @@ aaron:
     at_home_sensor: binary_sensor.aaron_home
     device_trackers:
       - device_tracker.2010_subaru_legacy
-      - device_tracker.aaron_bachs_iphone
       - device_tracker.aaron_iphone
     notifiers:
       - ios_aaron_bachs_iphone
