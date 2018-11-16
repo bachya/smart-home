@@ -9,7 +9,7 @@ sensor:
       -H "Content-Type: application/json"
       https://pypi.python.org/pypi/appdaemon/json
     value_template: '{{ value_json.info.version }}'
-    scan_interval: 300
+    scan_interval: 600
 
   - platform: command_line
     name: Mosquitto Available
@@ -18,8 +18,9 @@ sensor:
       -H "User-Agent: Home Assistant"
       -H "Content-Type: application/json"
       https://api.github.com/repos/eclipse/mosquitto/tags
+      ?access_token=3e0c0266cd5519e03eacb0c34820d1e6a531acf4
     value_template: '{{ value_json[0].name[1:] }}'
-    scan_interval: 300
+    scan_interval: 600
 
   - platform: command_line
     name: Portainer Available
@@ -29,7 +30,7 @@ sensor:
       -H "Content-Type: application/json"
       https://api.github.com/repos/portainer/portainer/releases/latest
     value_template: '{{ value_json.tag_name }}'
-    scan_interval: 300
+    scan_interval: 600
 
   - platform: command_line
     name: TasmoAdmin Available
@@ -39,7 +40,7 @@ sensor:
       -H "Content-Type: application/json"
       https://api.github.com/repos/reloxx13/TasmoAdmin/releases/latest
     value_template: '{{ value_json.tag_name[1:] }}'
-    scan_interval: 300
+    scan_interval: 600
 
   - platform: command_line
     name: Tasmota Available
@@ -49,7 +50,7 @@ sensor:
       -H "Content-Type: application/json"
       https://api.github.com/repos/arendst/Sonoff-Tasmota/releases/latest
     value_template: '{{ value_json.tag_name[1:] }}'
-    scan_interval: 300
+    scan_interval: 600
 
   - platform: command_line
     name: Xiaomi Hack Available
@@ -61,7 +62,7 @@ sensor:
       python3 -c "import sys, json; "
         "print(json.load(sys.stdin)[0]['commit']['author']['date'])" |
         /usr/bin/md5sum | /usr/bin/cut -f1 -d" " | fold -w 8 | head -n 1
-    scan_interval: 300
+    scan_interval: 600
 
   - platform: command_line
     name: Yi Hack Available
@@ -71,7 +72,7 @@ sensor:
       -H "Content-Type: application/json"
       https://api.github.com/repos/shadow-1/yi-hack-v3/releases/latest
     value_template: '{{ value_json.tag_name }}'
-    scan_interval: 300
+    scan_interval: 600
 
   - platform: version
     name: HASS Available
