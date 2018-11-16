@@ -9,17 +9,12 @@ binary_sensor:
         prob_given_true: 0.75
         platform: state
         to_state: home
-      - entity_id: device_tracker.aaron_bachs_iphone
-        prob_given_true: 0.90
-        platform: state
-        to_state: home
       - entity_id: device_tracker.aaron_iphone
         prob_given_true: 0.90
         platform: state
         to_state: home
       - entity_id: device_tracker.aarons_iphone
-        prob_given_true: 0.90
-        prob_given_false: 0.50
+        prob_given_true: 0.80
         platform: state
         to_state: home
 
@@ -33,8 +28,7 @@ binary_sensor:
         platform: state
         to_state: home
       - entity_id: device_tracker.britts_iphone
-        prob_given_true: 0.90
-        prob_given_false: 0.50
+        prob_given_true: 0.80
         platform: state
         to_state: home
 
