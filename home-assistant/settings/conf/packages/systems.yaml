@@ -18,7 +18,6 @@ sensor:
       -H "User-Agent: Home Assistant"
       -H "Content-Type: application/json"
       https://api.github.com/repos/eclipse/mosquitto/tags
-      ?access_token=3e0c0266cd5519e03eacb0c34820d1e6a531acf4
     value_template: '{{ value_json[0].name[1:] }}'
     scan_interval: 600
 
