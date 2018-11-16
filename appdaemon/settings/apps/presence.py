@@ -61,7 +61,7 @@ class PresenceManager(Base):
 
         for person in self.global_vars[PEOPLE_KEY]:
             # Set initial presence (so a restart can unstick it):
-            if person.location == 'home':
+            if person.raw_location == 'home':
                 person.presence_input_select = self.HomeStates.home
             else:
                 person.presence_input_select = self.HomeStates.away
