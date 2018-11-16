@@ -62,7 +62,7 @@ services:
     build:
       context: ./home-assistant/docker
       args:
-        version: 0.82.0
+        version: 0.82.1
     image: bachya/home-assistant
     network_mode: "host"
     restart: unless-stopped
