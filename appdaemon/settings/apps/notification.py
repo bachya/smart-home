@@ -32,8 +32,12 @@ class Notification:
         self.kind = kind
         self.message = message
         self.target = kwargs.get('target')
-        self.title = title
         self.when = kwargs.get('when')
+        
+        if title:
+            self.title = title
+        else:
+            self.title = ''
 
         self.data = kwargs.get('data')
         if self.data is None:
