@@ -53,8 +53,8 @@ class AbsentInsecure(Automation):
                 'category': 'security'
             }})
 
-    def response_from_push_notification(
-            self, event_name: str, data: dict, kwargs: dict) -> None:
+    def response_from_push_notification(self, event_name: str, data: dict,
+                                        kwargs: dict) -> None:
         """Respond to 'ios.notification_action_fired' events."""
         target = self.notification_manager.get_target_from_push_id(
             data['sourceDevicePermanentID'])
@@ -91,7 +91,7 @@ class AutoDepartureLockup(Automation):
         if (not self.security_manager.secure and
                 data['old'] == self.presence_manager.ProximityStates.home.value
                 and data['new'] !=
-                    self.presence_manager.ProximityStates.home.value):
+                self.presence_manager.ProximityStates.home.value):
             self.log('Everyone has left; locking up')
 
             self.turn_on('scene.depart_home')
@@ -163,8 +163,8 @@ class GarageLeftOpen(Automation):
                 'category': 'garage'
             }})
 
-    def response_from_push_notification(
-            self, event_name: str, data: dict, kwargs: dict) -> None:
+    def response_from_push_notification(self, event_name: str, data: dict,
+                                        kwargs: dict) -> None:
         """Respond to 'ios.notification_action_fired' events."""
         target = self.notification_manager.get_target_from_push_id(
             data['sourceDevicePermanentID'])
@@ -269,8 +269,8 @@ class SecurityManager(Base):
         """Initialize."""
         super().initialize()
 
-        self.listen_state(
-            self._security_system_change_cb, self.ALARM_CONTROL_PANEL)
+        self.listen_state(self._security_system_change_cb,
+                          self.ALARM_CONTROL_PANEL)
 
     def _security_system_change_cb(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,

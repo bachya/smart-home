@@ -31,8 +31,8 @@ class AutoVacationMode(Automation):
             action='off',
             constrain_input_boolean=self.enabled_entity_id)
 
-    def presence_changed(
-            self, event_name: str, data: dict, kwargs: dict) -> None:
+    def presence_changed(self, event_name: str, data: dict,
+                         kwargs: dict) -> None:
         """Alter Vacation Mode based on presence."""
         if (kwargs['action'] == 'on' and self.vacation_mode.state == 'off'):
             self.log('Setting vacation mode to "on"')

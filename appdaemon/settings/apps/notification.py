@@ -33,7 +33,7 @@ class Notification:
         self.message = message
         self.target = kwargs.get('target')
         self.when = kwargs.get('when')
-        
+
         if title:
             self.title = title
         else:
@@ -43,8 +43,8 @@ class Notification:
         if self.data is None:
             self.data = {}
         self.data.setdefault('push', {})
-        self.data['push'].setdefault(
-            'thread-id', '{0}_{1}'.format(title, message))
+        self.data['push'].setdefault('thread-id', '{0}_{1}'.format(
+            title, message))
 
     def __eq__(self, other):
         """Define method to compare notification objects."""
@@ -106,8 +106,10 @@ class NotificationManager(Base):
                 ]
 
             # 2. target='Person'
-            elif split[0] in [person.first_name
-                              for person in self.global_vars[CONF_PEOPLE]]:
+            elif split[0] in [
+                    person.first_name
+                    for person in self.global_vars[CONF_PEOPLE]
+            ]:
                 targets += [
                     notifier for person in self.global_vars[CONF_PEOPLE]
                     if person.first_name == split[0]
@@ -126,7 +128,8 @@ class NotificationManager(Base):
                     # 4. target='everyone'
                     if item == 'everyone':
                         targets += [
-                            notifier for person in self.global_vars[CONF_PEOPLE]
+                            notifier
+                            for person in self.global_vars[CONF_PEOPLE]
                             for notifier in person.notifiers
                         ]
 
@@ -143,15 +146,15 @@ class NotificationManager(Base):
             return False
 
         if notification.when:
-            return time_is_between(
-                self, notification.when, notification.blackout_start_time,
-                notification.blackout_end_time)
+            return time_is_between(self, notification.when,
+                                   notification.blackout_start_time,
+                                   notification.blackout_end_time)
 
-        return self.now_is_between(
-            notification.blackout_start_time, notification.blackout_end_time)
+        return self.now_is_between(notification.blackout_start_time,
+                                   notification.blackout_end_time)
 
-    def _notifier_test_cb(
-            self, event_name: str, data: dict, kwargs: dict) -> None:
+    def _notifier_test_cb(self, event_name: str, data: dict,
+                          kwargs: dict) -> None:
         """Run a test."""
         try:
             kind = data['kind']
@@ -205,10 +208,9 @@ class NotificationManager(Base):
                 return
 
         for target in self._get_targets(notification.target):
-            self.log(
-                'Sending notification to "{0}": {1}'.format(
-                    target, notification.title
-                    if notification.title else notification.message))
+            self.log('Sending notification to "{0}": {1}'.format(
+                target, notification.title
+                if notification.title else notification.message))
 
             self.call_service(
                 'notify/{0}'.format(target),
@@ -262,9 +264,8 @@ class NotificationManager(Base):
     def get_target_from_push_id(self, push_id: UUID) -> Person:
         """Return a person from a provided permanent device ID."""
         try:
-            return next((
-                person for person in self.global_vars[CONF_PEOPLE]
-                if person.push_device_id == push_id))
+            return next((person for person in self.global_vars[CONF_PEOPLE]
+                         if person.push_device_id == push_id))
         except StopIteration:
             return None
 

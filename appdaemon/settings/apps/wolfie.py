@@ -66,9 +66,8 @@ class ScheduledCycle(Automation):
             self.start_by_switch,
             'VACUUM_START',
             constrain_input_boolean=self.enabled_entity_id)
-        self.listen_ios_event(
-            self.response_from_push_notification,
-            self.properties['ios_emptied_key'])
+        self.listen_ios_event(self.response_from_push_notification,
+                              self.properties['ios_emptied_key'])
         self.listen_state(
             self.all_done,
             self.app.entities['status'],
@@ -97,36 +96,31 @@ class ScheduledCycle(Automation):
 
     def alarm_changed(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to 'ALARM_CHANGE' events."""
-        state = self.app.States(
-            self.get_state(self.app.entities['status']))
+        state = self.app.States(self.get_state(self.app.entities['status']))
 
         # Scenario 1: Vacuum is charging and is told to start:
         if ((self.initiated_by_app and state == self.app.States.docked)
-                and
-                data['state'] == self.security_manager.States.home.value):
+                and data['state'] == self.security_manager.States.home.value):
             self.log('Activating vacuum (post-security)')
 
             self.turn_on(self.app.entities['vacuum'])
 
         # Scenario 2: Vacuum is running when alarm is set to "Away":
-        elif (state == self.app.States.cleaning and
-              data['state'] == self.security_manager.States.away.value):
+        elif (state == self.app.States.cleaning
+              and data['state'] == self.security_manager.States.away.value):
             self.log('Security mode is "Away"; pausing until "Home"')
 
             self.call_service(
-                'vacuum/start_pause',
-                entity_id=self.app.entities['vacuum'])
-            self.security_manager.state = (
-                self.security_manager.States.home)
+                'vacuum/start_pause', entity_id=self.app.entities['vacuum'])
+            self.security_manager.state = (self.security_manager.States.home)
 
         # Scenario 3: Vacuum is paused when alarm is set to "Home":
-        elif (state == self.app.States.paused and
-              data['state'] == self.security_manager.States.home.value):
+        elif (state == self.app.States.paused
+              and data['state'] == self.security_manager.States.home.value):
             self.log('Alarm in "Home"; resuming')
 
             self.call_service(
-                'vacuum/start_pause',
-                entity_id=self.app.entities['vacuum'])
+                'vacuum/start_pause', entity_id=self.app.entities['vacuum'])
 
     def all_done(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -139,8 +133,7 @@ class ScheduledCycle(Automation):
                 self.presence_manager.HomeStates.home):
             self.log('Changing alarm state to "away"')
 
-            self.security_manager.state = (
-                self.security_manager.States.away)
+            self.security_manager.state = (self.security_manager.States.away)
 
         self.app.bin_state = (self.app.BinStates.full)
         self.initiated_by_app = False
@@ -193,8 +186,8 @@ class ScheduledCycle(Automation):
             target='home',
         )
 
-    def response_from_push_notification(
-            self, event_name: str, data: dict, kwargs: dict) -> None:
+    def response_from_push_notification(self, event_name: str, data: dict,
+                                        kwargs: dict) -> None:
         """Respond to iOS notification to empty vacuum."""
         self.log('Responding to iOS request that vacuum is empty')
 
@@ -219,8 +212,8 @@ class ScheduledCycle(Automation):
             self.app.start()
             self.initiated_by_app = True
 
-    def start_by_switch(
-            self, event_name: str, data: dict, kwargs: dict) -> None:
+    def start_by_switch(self, event_name: str, data: dict,
+                        kwargs: dict) -> None:
         """Start cleaning via the switch."""
         if not self.initiated_by_app:
             self.app.start()
@@ -269,5 +262,4 @@ class Vacuum(Base):
             self.log('Activating vacuum')
 
             self.call_service(
-                'vacuum/start',
-                entity_id=self.entities['vacuum'])
+                'vacuum/start', entity_id=self.entities['vacuum'])

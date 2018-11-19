@@ -79,9 +79,8 @@ class DoubleTapTimerSwitch(BaseZwaveSwitch):
 
     def double_up(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Turn on the target timer slider with a double up tap."""
-        self.set_value(
-            self.entities['timer_slider'],
-            round(self.properties['duration'] / 60))
+        self.set_value(self.entities['timer_slider'],
+                       round(self.properties['duration'] / 60))
 
 
 class DoubleTapToggleSwitch(BaseZwaveSwitch):
@@ -158,8 +157,8 @@ class SleepTimer(BaseSwitch):
             self.log('Activating sleep timer: {0} minutes'.format(minutes))
 
             self.toggle('on')
-            self.handles[HANDLE_TIMER] = self.run_in(
-                self.timer_completed, minutes * 60)
+            self.handles[HANDLE_TIMER] = self.run_in(self.timer_completed,
+                                                     minutes * 60)
 
     def timer_completed(self, kwargs: dict) -> None:
         """Turn off a switch at the end of sleep timer."""
@@ -263,8 +262,8 @@ class TurnOnUponArrival(BaseSwitch):
             constrain_input_boolean=self.enabled_entity_id,
             **constraints)
 
-    def someone_arrived(
-            self, event_name: str, data: dict, kwargs: dict) -> None:
+    def someone_arrived(self, event_name: str, data: dict,
+                        kwargs: dict) -> None:
         """Turn on after dark when someone comes homes."""
         self.log('Someone came home; turning on the switch')
 
@@ -318,8 +317,8 @@ class VacationMode(BaseSwitch):
         self.listen_event(
             self.vacation_mode_toggled, 'MODE_CHANGE', mode='vacation_mode')
 
-    def vacation_mode_toggled(
-            self, event_name: str, data: dict, kwargs: dict) -> None:
+    def vacation_mode_toggled(self, event_name: str, data: dict,
+                              kwargs: dict) -> None:
         """Respond to changes when vacation mode gets toggled."""
         if data['state'] == 'on':
             self.handles[HANDLE_VACATION_MODE_ON] = self.run_at_sunset(

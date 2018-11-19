@@ -15,7 +15,7 @@ class Person(Base):
     def initialize(self) -> None:
         """Initialize."""
         super().initialize()
-        
+
         # Store a global reference to this person:
         self.global_vars.setdefault(CONF_PEOPLE, [])
         self.global_vars[CONF_PEOPLE].append(self)
@@ -43,7 +43,7 @@ class Person(Base):
             old='on',
             new='off',
             target_state=self.presence_manager.HomeStates.just_left)
-          
+
         # Just Left -> Away
         self.listen_state(
             self._change_input_select_cb,
@@ -59,10 +59,11 @@ class Person(Base):
             new=self.presence_manager.HomeStates.away.value,
             duration=60 * 60 * 24,
             target_state=self.presence_manager.HomeStates.extended_away)
-        
+
         # Listen for all changes to the presence input select:
-        self.listen_state(self._input_select_changed_cb, self.presence_input_select)
-        
+        self.listen_state(self._input_select_changed_cb,
+                          self.presence_input_select)
+
         self._render_presence_status_sensor()
 
     @property
@@ -87,7 +88,7 @@ class Person(Base):
             self.get_tracker_state(tracker_entity)
             for tracker_entity in self.properties['device_trackers']
         ])
-        
+
         if raw_location not in ('home', 'not_home'):
             return raw_location
 
@@ -105,14 +106,14 @@ class Person(Base):
 
     @presence_input_select.setter
     def presence_input_select(self, value: Enum) -> None:
-        self.select_option(
-            self.properties['presence_input_select'], value.value)
+        self.select_option(self.properties['presence_input_select'],
+                           value.value)
 
     @property
     def push_device_id(self) -> str:
         """Get the iOS device ID for push notifications."""
         return self.properties.get('push_device_id')
-        
+
     def _change_input_select_cb(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
@@ -129,7 +130,7 @@ class Person(Base):
             level='DEBUG')
 
         self.presence_input_select = target_state
-        
+
     def _input_select_changed_cb(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
@@ -142,7 +143,8 @@ class Person(Base):
                          self.presence_manager.HomeStates.home):
             states = [
                 self.presence_manager.HomeStates.just_arrived,
-                self.presence_manager.HomeStates.home]
+                self.presence_manager.HomeStates.home
+            ]
         else:
             states = [new_state]
 
@@ -159,7 +161,7 @@ class Person(Base):
             old=old,
             new=new,
             first=first)
-            
+
         self._render_presence_status_sensor()
 
     def _render_presence_status_sensor(self):
@@ -173,7 +175,8 @@ class Person(Base):
             'sensor.{0}_presence_status'.format(self.name),
             state=self.location,
             attributes={
-                'friendly_name': self.first_name,
+                'friendly_name':
+                self.first_name,
                 'entity_picture':
-                    '/local/{0}-{1}.png'.format(self.name, picture_state),
+                '/local/{0}-{1}.png'.format(self.name, picture_state),
             })

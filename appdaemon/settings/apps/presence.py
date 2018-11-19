@@ -10,25 +10,23 @@ from const import CONF_PEOPLE
 
 class PresenceManager(Base):
     """Define a class to represent a presence manager."""
-    
+
     class HomeStates(Enum):
-      """Define an enum for presence states."""
+        """Define an enum for presence states."""
 
-      away = 'Away'
-      extended_away = 'Extended Away'
-      home = 'Home'
-      just_arrived = 'Just Arrived'
-      just_left = 'Just Left'
-      
-      
+        away = 'Away'
+        extended_away = 'Extended Away'
+        home = 'Home'
+        just_arrived = 'Just Arrived'
+        just_left = 'Just Left'
+
     class ProximityStates(Enum):
-      """Define an enum for proximity states."""
+        """Define an enum for proximity states."""
 
-      away = 'away'
-      edge = 'edge'
-      home = 'home'
-      nearby = 'nearby'
-      
+        away = 'away'
+        edge = 'edge'
+        home = 'home'
+        nearby = 'nearby'
 
     PROXIMITY_SENSOR = 'proximity.home'
 
@@ -60,7 +58,7 @@ class PresenceManager(Base):
             self.PROXIMITY_SENSOR,
             attribute='all',
             duration=60)
-    
+
     def _proximity_change_cb(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: dict,
             new: dict, kwargs: dict) -> None:
@@ -72,7 +70,7 @@ class PresenceManager(Base):
         old_state = self.state
 
         if (self.state != self.ProximityStates.home
-              and new_proximity == self.HOME_THRESHOLD):
+                and new_proximity == self.HOME_THRESHOLD):
             self.state = self.ProximityStates.home
         elif (self.state != self.ProximityStates.nearby and
               self.HOME_THRESHOLD < new_proximity <= self.NEARBY_THRESHOLD):
@@ -93,9 +91,8 @@ class PresenceManager(Base):
         """Return a list people who are in a certain set of states."""
         return [
             person for person in self.global_vars[CONF_PEOPLE]
-            if self.get_state(person.presence_input_select) in [
-                state.value for state in states
-            ]
+            if self.get_state(person.presence_input_select) in
+            [state.value for state in states]
         ]
 
     def anyone(self, *states: Enum) -> bool:
@@ -126,10 +123,9 @@ class PresenceManager(Base):
     def whos_away(self, include_others: bool = True) -> list:
         """Return a list of notifiers who are away."""
         if include_others:
-            return self._whos_in_state(
-                self.HomeStates.away,
-                self.HomeStates.extended_away,
-                self.HomeStates.just_left)
+            return self._whos_in_state(self.HomeStates.away,
+                                       self.HomeStates.extended_away,
+                                       self.HomeStates.just_left)
 
         return self._whos_in_state(self.HomeStates.away)
 
@@ -140,8 +136,8 @@ class PresenceManager(Base):
     def whos_home(self, include_others: bool = True) -> list:
         """Return a list of notifiers who are at home."""
         if include_others:
-            return self._whos_in_state(
-                self.HomeStates.home, self.HomeStates.just_arrived)
+            return self._whos_in_state(self.HomeStates.home,
+                                       self.HomeStates.just_arrived)
 
         return self._whos_in_state(HomeStates.home)
 
