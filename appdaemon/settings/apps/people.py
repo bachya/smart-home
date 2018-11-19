@@ -61,9 +61,15 @@ class Person(Base):
             target_state=self.presence_manager.HomeStates.extended_away)
 
         # Listen for all changes to the presence input select:
-        self.listen_state(self._input_select_changed_cb,
-                          self.presence_input_select)
+        self.listen_state(
+            self._input_select_changed_cb, self.presence_input_select)
 
+        # Listen for changes to the device trackers (to initiate re-rendering
+        # if needed):
+        for tracker in self.device_trackers:
+            self.listen_state(self._device_tracker_changed_cb, tracker)
+
+        # Render the presence sensor immediately upon init:
         self._render_presence_status_sensor()
 
     @property
@@ -106,8 +112,13 @@ class Person(Base):
 
     @presence_input_select.setter
     def presence_input_select(self, value: Enum) -> None:
-        self.select_option(self.properties['presence_input_select'],
-                           value.value)
+        self.select_option(
+            self.properties['presence_input_select'], value.value)
+
+    @property
+    def presence_sensor(self) -> str:
+        """Return the entity ID of the generated presence status sensor."""
+        return 'sensor.{0}_presence_status'.format(self.name)
 
     @property
     def push_device_id(self) -> str:
@@ -119,22 +130,18 @@ class Person(Base):
             kwargs: dict) -> None:
         """Change state of a home presence input select."""
         target_state = kwargs['target_state']
-
-        self.log(
-            'Presence entity change for "{0}": {1} -> {2}'.format(
-                entity, old, new),
-            level='DEBUG')
-        self.log(
-            'Changing presence input select: {0} -> {1}'.format(
-                self.presence_input_select, target_state.value),
-            level='DEBUG')
-
         self.presence_input_select = target_state
+
+    def _device_tracker_changed_cb(  # pylint: disable=too-many-arguments
+            self, entity: Union[str, dict], attribute: str, old: str, new: str,
+            kwargs: dict) -> None:
+        """Respond when a device tracker changes state."""
+        self._render_presence_status_sensor()
 
     def _input_select_changed_cb(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
-        """Respond when the presence input select changes."""
+        """Respond when the home presence input select changes."""
         if old == new:
             return
 
@@ -149,11 +156,6 @@ class Person(Base):
             states = [new_state]
 
         first = self.presence_manager.only_one(*states)
-
-        self.log(
-            'Presence change for {0}: {1} -> {2} (first: {3})'.format(
-                self.first_name, old, new, first),
-            level='DEBUG')
 
         self.fire_event(
             'PRESENCE_CHANGE',
@@ -172,11 +174,10 @@ class Person(Base):
             picture_state = 'away'
 
         self.set_state(
-            'sensor.{0}_presence_status'.format(self.name),
+            self.presence_sensor,
             state=self.location,
             attributes={
-                'friendly_name':
-                self.first_name,
+                'friendly_name': self.first_name,
                 'entity_picture':
-                '/local/{0}-{1}.png'.format(self.name, picture_state),
+                    '/local/{0}-{1}.png'.format(self.name, picture_state),
             })
