@@ -7,8 +7,8 @@ from typing import Callable, List, Union  # noqa
 from uuid import UUID
 
 from automation import Base  # type: ignore
-from const import BLACKOUT_END, BLACKOUT_START  # type: ignore
-from people import PEOPLE_KEY, Person
+from const import BLACKOUT_END, BLACKOUT_START, CONF_PEOPLE  # type: ignore
+from people import Person
 from util.dt import time_is_between  # type: ignore
 
 
@@ -97,19 +97,19 @@ class NotificationManager(Base):
             # 1. target='not Person'
             if split[0] == 'not' and split[1] in [
                     person.first_name
-                    for person in self.global_vars[PEOPLE_KEY]
+                    for person in self.global_vars[CONF_PEOPLE]
             ]:
                 targets += [
-                    notifier for person in self.global_vars[PEOPLE_KEY]
+                    notifier for person in self.global_vars[CONF_PEOPLE]
                     if person.first_name != split[1]
                     for notifier in person.notifiers
                 ]
 
             # 2. target='Person'
             elif split[0] in [person.first_name
-                              for person in self.global_vars[PEOPLE_KEY]]:
+                              for person in self.global_vars[CONF_PEOPLE]]:
                 targets += [
-                    notifier for person in self.global_vars[PEOPLE_KEY]
+                    notifier for person in self.global_vars[CONF_PEOPLE]
                     if person.first_name == split[0]
                     for notifier in person.notifiers
                 ]
@@ -126,7 +126,7 @@ class NotificationManager(Base):
                     # 4. target='everyone'
                     if item == 'everyone':
                         targets += [
-                            notifier for person in self.global_vars[PEOPLE_KEY]
+                            notifier for person in self.global_vars[CONF_PEOPLE]
                             for notifier in person.notifiers
                         ]
 
@@ -263,7 +263,7 @@ class NotificationManager(Base):
         """Return a person from a provided permanent device ID."""
         try:
             return next((
-                person for person in self.global_vars[PEOPLE_KEY]
+                person for person in self.global_vars[CONF_PEOPLE]
                 if person.push_device_id == push_id))
         except StopIteration:
             return None

@@ -2,6 +2,9 @@
 aaron:
   module: people
   class: Person
+  dependencies:
+    - presence_manager
+  priority: 10
   properties:
     at_home_sensor: binary_sensor.aaron_home
     device_trackers:
@@ -15,6 +18,9 @@ aaron:
 britt:
   module: people
   class: Person
+  dependencies:
+    - presence_manager
+  priority: 10
   properties:
     at_home_sensor: binary_sensor.britt_home
     device_trackers:

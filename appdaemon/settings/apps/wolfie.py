@@ -134,9 +134,9 @@ class ScheduledCycle(Automation):
         """Re-arm security (if needed) when done."""
         self.log('Vacuuming cycle all done')
 
-        if (self.presence_manager.noone(
+        if self.presence_manager.noone(
                 self.presence_manager.HomeStates.just_arrived,
-                self.presence_manager.HomeStates.home)):
+                self.presence_manager.HomeStates.home):
             self.log('Changing alarm state to "away"')
 
             self.security_manager.state = (

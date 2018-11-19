@@ -6,7 +6,6 @@ from typing import Tuple, Union
 
 from automation import Automation, Base  # type: ignore
 
-
 class AdjustOnProximity(Automation):
     """Define a feature to adjust climate based on proximity to home."""
 
@@ -38,14 +37,15 @@ class AdjustOnProximity(Automation):
                     and data['new'] ==
                     self.presence_manager.ProximityStates.away.value):
                 self.log('Setting thermostat to "Away" (extreme temp)')
+                
                 self.climate_manager.away_mode = True
 
             # Scenario 2: Away -> Anything (Extreme Temps)
-            elif (data['old'] ==
-                  self.presence_manager.ProximityStates.away.value
-                  and data['new'] !=
-                  self.presence_manager.ProximityStates.away.value):
+            elif (data['old'] == self.presence_manager.ProximityStates.away.value
+                    and data['new'] !=
+                    self.presence_manager.ProximityStates.away.value):
                 self.log('Setting thermostat to "Home" (extreme temp)')
+                
                 self.climate_manager.away_mode = False
         else:
             # Scenario 3: Home -> Anything
@@ -53,20 +53,22 @@ class AdjustOnProximity(Automation):
                     and data['new'] !=
                     self.presence_manager.ProximityStates.home.value):
                 self.log('Setting thermostat to "Away"')
+                
                 self.climate_manager.away_mode = True
 
             # Scenario 4: Anything -> Nearby
-            elif (data['old'] !=
-                  self.presence_manager.ProximityStates.nearby.value
-                  and data['new'] ==
-                  self.presence_manager.ProximityStates.nearby.value):
+            elif (data['old'] != self.presence_manager.ProximityStates.nearby.value
+                    and data['new'] ==
+                    self.presence_manager.ProximityStates.nearby.value):
                 self.log('Setting thermostat to "Home"')
+                
                 self.climate_manager.away_mode = False
 
     def arrived_home(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Last ditch: turn the thermostat to home when someone arrives."""
         if self.climate_manager.away_mode:
             self.log('Last ditch: setting thermostat to "Home" (arrived)')
+            
             self.climate_manager.away_mode = False
 
 

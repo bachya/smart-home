@@ -5,8 +5,7 @@ from datetime import time
 from enum import Enum
 from typing import Union
 
-from automation import Base  # type: ignore
-from automation import Automation  # type: ignore
+from automation import Automation, Base  # type: ignore
 
 HANDLE_GARAGE_OPEN = 'garage_open'
 
@@ -92,7 +91,7 @@ class AutoDepartureLockup(Automation):
         if (not self.security_manager.secure and
                 data['old'] == self.presence_manager.ProximityStates.home.value
                 and data['new'] !=
-                self.presence_manager.ProximityStates.home.value):
+                    self.presence_manager.ProximityStates.home.value):
             self.log('Everyone has left; locking up')
 
             self.turn_on('scene.depart_home')
