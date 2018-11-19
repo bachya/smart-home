@@ -31,8 +31,8 @@ class PresenceManager(Base):
     PROXIMITY_SENSOR = 'proximity.home'
 
     HOME_THRESHOLD = 0
-    NEARBY_THRESHOLD = 5280
-    EDGE_THRESHOLD = 15840
+    NEARBY_THRESHOLD = 15840
+    EDGE_THRESHOLD = 31680
 
     @property
     def proximity(self) -> int:
@@ -123,9 +123,9 @@ class PresenceManager(Base):
     def whos_away(self, include_others: bool = True) -> list:
         """Return a list of notifiers who are away."""
         if include_others:
-            return self._whos_in_state(self.HomeStates.away,
-                                       self.HomeStates.extended_away,
-                                       self.HomeStates.just_left)
+            return self._whos_in_state(
+                self.HomeStates.away, self.HomeStates.extended_away,
+                self.HomeStates.just_left)
 
         return self._whos_in_state(self.HomeStates.away)
 
@@ -136,10 +136,10 @@ class PresenceManager(Base):
     def whos_home(self, include_others: bool = True) -> list:
         """Return a list of notifiers who are at home."""
         if include_others:
-            return self._whos_in_state(self.HomeStates.home,
-                                       self.HomeStates.just_arrived)
+            return self._whos_in_state(
+                self.HomeStates.home, self.HomeStates.just_arrived)
 
-        return self._whos_in_state(HomeStates.home)
+        return self._whos_in_state(self.HomeStates.home)
 
     def whos_just_arrived(self) -> list:
         """Return a list of notifiers who are at home."""
