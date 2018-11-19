@@ -8,7 +8,6 @@ appdaemon:
       type: hass
       ha_url: http://hub.myserver.com:8123
       token: !secret ha_token
-      app_init_delay: 15
     MQTT:
       type: mqtt
       namespace: mqtt
