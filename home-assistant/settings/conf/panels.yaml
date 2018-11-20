@@ -1,4 +1,8 @@
 ---
+grafana:
+  title: Grafana
+  url: !secret panel_url_grafana
+  icon: mdi:chart-bar
 portainer:
   title: Portainer
   url: !secret panel_url_portainer

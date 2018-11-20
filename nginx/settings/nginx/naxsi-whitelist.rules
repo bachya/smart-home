@@ -3,6 +3,10 @@
 # Ignore the fact that Alexa response bodies are "too big":
 BasicRule wl:2 "mz:BODY|$URL:/api/appdaemon/alexa";
 
+# Grafana
+# -------
+BasicRule wl:1100 "mz:BODY|$URL_X:^/api";
+
 # HASS
 # -----
 # Allow HASS auth (0.77 and beyond) and webhooks to work:

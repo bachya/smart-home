@@ -51,10 +51,27 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - glances-config:/etc/glances:ro
 
+  grafana:
+    container_name: grafana
+    depends_on:
+      - influxdb
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: password
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SERVER_DOMAIN: 129i98121212.myserver.com
+    image: grafana/grafana:5.2.2
+    ports:
+      - "3000:3000/tcp"
+    restart: unless-stopped
+    user: "104"
+    volumes:
+      - grafana-config:/var/lib/grafana
+
   hass:
     container_name: hass
     depends_on:
       - glances
+      - influxdb
       - mosquitto
       - mysql
     devices:
@@ -71,6 +88,19 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - hass-config:/config
       - shared:/shared
+
+  influxdb:
+    container_name: influxdb
+    image: influxdb:1.6.0-alpine
+    environment:
+      INFLUXDB_DB: hassdb
+      INFLUXDB_USER: user
+      INFLUXDB_USER_PASSWORD: password
+    ports:
+      - "8086:8086/tcp"
+    restart: unless-stopped
+    volumes:
+      - influxdb-config:/var/lib/influxdb
 
   mosquitto:
     container_name: mosquitto
@@ -113,6 +143,7 @@ services:
     container_name: nginx
     depends_on:
       - appdaemon
+      - grafana
       - hass
     image: bachya/nginx
     networks:
@@ -154,7 +185,9 @@ volumes:
   appdaemon-config:
   fail2ban-config:
   glances-config:
+  grafana-config:
   hass-config:
+  influxdb-config:
   mosquitto-config:
   nginx-config:
   portainer-config:
