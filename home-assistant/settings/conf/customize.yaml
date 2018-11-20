@@ -113,8 +113,6 @@ switch.garage_camera_rtsp_mjpeg:
   friendly_name: "RTSP (MJPEG)"
 switch.garage_lights:
   icon: "mdi:lightbulb"
-switch.grafana:
-  icon: "mdi:chart-bar"
 switch.home_assistant:
   icon: "mdi:home-assistant"
 switch.influxdb:

@@ -12,6 +12,26 @@ sensor:
     scan_interval: 600
 
   - platform: command_line
+    name: Grafana Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/grafana/grafana/releases/latest
+    value_template: '{{ value_json.tag_name[1:] }}'
+    scan_interval: 600
+
+  - platform: command_line
+    name: InfluxDB Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/influxdata/influxdb/tags
+    value_template: '{{ value_json[0].name[1:] }}'
+    scan_interval: 600
+
+  - platform: command_line
     name: Mosquitto Available
     command: >-
       curl -L

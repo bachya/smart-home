@@ -100,7 +100,7 @@ class NewPortainerVersionNotification(DynamicSensor):
             self.error('No match for image: {0}'.format(
                 self.properties['image_name']))
 
-        return tagged_image.split(':')[1].replace('v', '')
+        return tagged_image.split(':')[1].replace('v', '').split('-')[0]
 
 
 class NewTasmotaVersionNotification(DynamicSensor):

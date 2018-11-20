@@ -913,16 +913,20 @@ views:
         entities:
           - sensor.appdaemon_available
           - sensor.appdaemon_installed
+          - sensor.grafana_available
+          - sensor.grafana_installed
           - sensor.hass_available
           - sensor.hass_installed
+          - sensor.influxdb_available
+          - sensor.influxdb_installed
           - sensor.mosquitto_available
           - sensor.mosquitto_installed
           - sensor.portainer_available
           - sensor.portainer_installed
           - sensor.tasmoadmin_available
           - sensor.tasmoadmin_installed
-          - sensor.tasmota_available
           - sensor.lowest_tasmota_installed
+          - sensor.tasmota_available
           - sensor.xiaomi_hack_available
           - sensor.xiaomi_hack_installed
           - sensor.yi_hack_available
