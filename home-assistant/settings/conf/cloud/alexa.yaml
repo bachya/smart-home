@@ -4,18 +4,11 @@ alexa:
     include_entities:
       - group.all_salt_lamps
       - group.living_room_lights
-      - group.master_bedroom_lights
-      - group.office_lights
       - group.outdoor_lights
-      - input_boolean.living_room_lights_automation_turn_on_at_sunset
-      - input_boolean.living_room_lights_automation_turn_on_when_cloudy
-      - input_boolean.living_room_lights_automation_vacation_mode
       - input_boolean.mode_guest_mode
       - input_boolean.mode_vacation_mode
       - lock.front_door
       - lock.garage_fire_door
-      - script.clean_kitchen
-      - script.clean_table
       - script.empty_dishwasher
       - script.empty_wolfie
       - switch.backyard_lights
@@ -30,20 +23,16 @@ alexa:
       - switch.powder_room_fan
       - switch.program_evening
       - switch.program_morning
-      - switch.reading_lamp
-      - switch.sofa_lamp
       - switch.wolfie_cycle
       - switch.zone_flower_box
       - switch.zone_landscaping
-    exclude_entities:
-      - media_player.house_audio
-      - media_player.sonos_playbar
-      - media_player.sonos_office_desk
     exclude_domains:
       - automation
+      - binary_sensor
       - climate
-      - input_boolean
       - group
+      - input_boolean
+      - media_player
       - script
       - sensor
       - switch
@@ -53,28 +42,15 @@ alexa:
     group.living_room_lights:
       name: Living Room Lights
       display_categories: LIGHT
-    group.office_lights:
-      name: Office Lights
-      display_categories: LIGHT
     group.outdoor_lights:
       name: Outdoor Lights
       display_categories: LIGHT
-    input_boolean.living_room_lights_turn_on_at_sunset:
-      name: "Living Room Light Automation: Sunset"
-    input_boolean.living_room_lights_turn_on_when_cloudy:
-      name: "Living Room Light Automation: Cloudy"
-    input_boolean.living_room_lights_vacation_mode:
-      name: "Living Room Light Automation: Vacation Mode"
     light.salt_lamp_master_bedroom:
       name: Master Bedroom Salt Lamp
+      display_categories: LIGHT
     light.salt_lamp_office:
       name: Office Salt Lamp
-    script.clean_kitchen:
-      name: Clean Kitchen
-      display_categories: SWITCH
-    script.clean_table:
-      name: Clean Table
-      display_categories: SWITCH
+      display_categories: LIGHT
     script.empty_dishwasher:
       name: Empty the Dishwasher
       display_categories: SWITCH
@@ -84,25 +60,13 @@ alexa:
     switch.backyard_lights:
       display_categories: LIGHT
     switch.front_patio_light:
-      name: Front Patio Light
       display_categories: LIGHT
     switch.garage_lights:
       display_categories: LIGHT
     switch.kitchen_patio_light:
-      name: Kitchen Patio Light
       display_categories: LIGHT
-    switch.master_bathroom_fan:
-      display_categories: FAN
-    switch.master_toilet_fan:
-      display_categories: FAN
-    switch.powder_room_fan:
-      display_categories: FAN
     switch.program_evening:
       name: Evening Program
-    switch.reading_lamp:
-      display_categories: LIGHT
-    switch.sofa_lamp:
-      display_categories: LIGHT
     switch.program_morning:
       name: Morning Program
     switch.wolfie_cycle:
