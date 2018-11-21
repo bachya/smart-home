@@ -1,7 +1,6 @@
 FROM alpine:3.6
 
 ARG geoip_version
-ARG naxsi_version
 ARG nginx_version
 
 VOLUME /etc/nginx
@@ -39,13 +38,9 @@ RUN apk update \
     && mkdir -p /usr/local/share/GeoIP/ \
     && mv GeoIP.dat /usr/local/share/GeoIP/ \
     && wget http://nginx.org/download/nginx-${nginx_version}.tar.gz \
-    && wget https://github.com/nbs-system/naxsi/archive/${naxsi_version}.tar.gz \
     && tar -zxvf nginx-${nginx_version}.tar.gz \
-    && tar -zxvf ${naxsi_version}.tar.gz \
-    && cp /tmp/src/naxsi-${naxsi_version}/naxsi_config/naxsi_core.rules /etc/nginx/ \
     && cd /tmp/src/nginx-${nginx_version} \
     && ./configure \
-      --add-module=../naxsi-${naxsi_version}/naxsi_src/ \
       --prefix=/etc/nginx \
       --sbin-path=/usr/local/sbin/nginx \
       --conf-path=/etc/nginx/nginx.conf \

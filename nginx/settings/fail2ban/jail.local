@@ -10,13 +10,6 @@ filter = nginx-4xx
 logpath = /var/log/nginx/*access*.log
 backend = auto
 
-[nginx-naxsi]
-enabled = true
-action = iptables-multiport[name=NAXSI, port="http,https"]
-filter = nginx-naxsi
-logpath = /var/log/nginx/*error*.log
-backend = auto
-
 [nginx-noscript]
 enabled = true
 action = iptables-multiport[name=NoScript, port="http,https"]
