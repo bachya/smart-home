@@ -109,12 +109,11 @@ services:
       - "1883:1883/tcp"
     restart: unless-stopped
     volumes:
-      - /etc/letsencrypt:/etc/letsencrypt:ro
       - /etc/localtime:/etc/localtime:ro
       - /etc/ssl:/etc/ssl:ro
       - /usr/share/ca-certificates:/usr/share/ca-certificates:ro
-      - /var/lib/letsencrypt:/var/lib/letsencrypt
       - mosquitto-config:/mosquitto/config
+      - mosquitto-data:/mosquitto/data
 
   mysql:
     container_name: mysql
@@ -151,7 +150,6 @@ services:
         ipv4_address: 192.168.7.7
     ports:
       - "443:443/tcp"
-      - "18883:18883/tcp"
     restart: unless-stopped
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
@@ -189,6 +187,7 @@ volumes:
   hass-config:
   influxdb-config:
   mosquitto-config:
+  mosquitto-data:
   nginx-config:
   portainer-config:
   shared:
