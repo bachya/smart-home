@@ -934,8 +934,6 @@ views:
           - sensor.tasmoadmin_installed
           - sensor.lowest_tasmota_installed
           - sensor.tasmota_available
-          - sensor.xiaomi_hack_available
-          - sensor.xiaomi_hack_installed
           - sensor.yi_hack_available
           - sensor.yi_hack_installed
 

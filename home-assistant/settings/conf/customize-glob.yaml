@@ -39,7 +39,5 @@
   icon: mdi:lightbulb-on
 "sensor.tasmota_*":
   icon: mdi:wifi
-"sensor.xiaomi_hack_*":
-  icon: mdi:cctv
 "sensor.yi_hack_*":
   icon: mdi:cctv
