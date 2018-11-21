@@ -1,5 +1,11 @@
 ---
 group:
+  outdoor_lights:
+    entities:
+      - switch.backyard_lights
+      - switch.front_patio_light
+      - switch.kitchen_patio_light
+
   patio_lights:
     entities:
       - switch.front_patio_light
