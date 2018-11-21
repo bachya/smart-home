@@ -47,11 +47,10 @@ backyard_lights_on_at_sunset_automation:
     switch: switch.backyard_lights
   properties:
     schedule_time: sunset
-    seasonal_offset: true
     state: "on"
   enabled_config:
     name: Turn on at sunset
-    icon: mdi:weather-sunset
+    icon: mdi:weather-sunset-down
     initial: true
 
 kitchen_patio_light_double_tap_backyard_lights_automation:
@@ -95,13 +94,12 @@ patio_lights_on_at_sunset_automation:
     switch: group.patio_lights
   properties:
     schedule_time: sunset
-    seasonal_offset: true
     state: "on"
   mode_alterations:
     vacation_mode: disable
   enabled_config:
     name: Turn on at sunset
-    icon: mdi:weather-sunset
+    icon: mdi:weather-sunset-down
     initial: true
 
 patio_lights_vacation_mode_automation:

@@ -43,12 +43,11 @@ office_lights_on_at_sunset_automation:
     switch: light.salt_lamp_office
   properties:
     schedule_time: sunset
-    seasonal_offset: true
     state: "on"
   mode_alterations:
     guest_mode: disable
     vacation_mode: disable
   enabled_config:
     name: Turn on at sunset
-    icon: mdi:weather-sunset
+    icon: mdi:weather-sunset-down
     initial: true

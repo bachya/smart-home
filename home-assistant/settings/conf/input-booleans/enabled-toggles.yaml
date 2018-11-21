@@ -32,13 +32,17 @@ backyard_lights_off_at_930pm_automation:
   initial: true
   name: Turn off at 9:30pm (weekdays)
 backyard_lights_on_at_sunset_automation:
-  icon: mdi:weather-sunset
+  icon: mdi:weather-sunset-down
   initial: true
   name: Turn on at sunset
 bad_login_notifications_automation:
   icon: mdi:alert-circle
   initial: true
   name: Bad login notifications
+christmas_tree_on_in_morning_automation:
+  icon: mdi:weather-sunset-up
+  initial: true
+  name: Turn on Christmas tree at sunrise
 detect_blackout_automation:
   icon: mdi:theme-light-dark
   initial: true
@@ -56,7 +60,7 @@ fireplace_failsafe_automation:
   initial: true
   name: Disable fireplace when away
 garage_camera_auto_night_mode:
-  icon: mdi:weather-sunset
+  icon: mdi:weather-sunset-down
   initial: true
   name: 'Garage Cam: Auto Night Mode'
 garage_lights_off_after_garage_close_automation:
@@ -64,7 +68,7 @@ garage_lights_off_after_garage_close_automation:
   initial: true
   name: Turn off 5 minutes after door closes
 garage_lights_on_garage_open_sundown_automation:
-  icon: mdi:weather-sunset
+  icon: mdi:weather-sunset-down
   initial: true
   name: Turn off 5 minutes after door closes
 garage_lights_on_upon_arrival_automation:
@@ -76,7 +80,7 @@ kitchen_patio_light_double_tap_backyard_lights_automation:
   initial: true
   name: Kitchen patio controls backyard lights
 living_room_lights_on_at_sunset_automation:
-  icon: mdi:weather-sunset
+  icon: mdi:weather-sunset-down
   initial: true
   name: Turn on at sunset
 living_room_lights_on_upon_arrival_automation:
@@ -96,7 +100,7 @@ master_bathroom_fan_sleep_timer_automation:
   initial: true
   name: 'Bathroom: enable sleep timer'
 master_bedroom_lights_on_at_sunset_automation:
-  icon: mdi:weather-sunset
+  icon: mdi:weather-sunset-down
   initial: true
   name: Turn on at sunset
 master_bedroom_lights_sleep_timer_automation:
@@ -176,7 +180,7 @@ office_lights_off_at_10pm_automation:
   initial: true
   name: Turn off at 10pm
 office_lights_on_at_sunset_automation:
-  icon: mdi:weather-sunset
+  icon: mdi:weather-sunset-down
   initial: true
   name: Turn on at sunset
 office_lights_sleep_timer_automation:
@@ -188,7 +192,7 @@ patio_lights_off_at_11pm_automation:
   initial: true
   name: Turn off at 11pm
 patio_lights_on_at_sunset_automation:
-  icon: mdi:weather-sunset
+  icon: mdi:weather-sunset-down
   initial: true
   name: Turn on at sunset
 patio_lights_vacation_mode_automation:

@@ -14,6 +14,27 @@ fireplace_failsafe_automation:
     icon: mdi:fire
     initial: true
 
+christmas_tree_on_in_morning_automation:
+  module: switches
+  class: ToggleAtTime
+  dependencies:
+    - guest_mode
+    - presence_manager
+    - vacation_mode
+  entities:
+    switch: switch.christmas_tree
+  properties:
+    offset: -3600
+    schedule_time: sunrise
+    state: "on"
+  mode_alterations:
+    guest_mode: disable
+    vacation_mode: disable
+  enabled_config:
+    name: Turn on Christmas tree at sunrise
+    icon: mdi:weather-sunset-up
+    initial: true
+
 living_room_lights_on_at_sunset_automation:
   module: switches
   class: ToggleAtTime
@@ -22,18 +43,17 @@ living_room_lights_on_at_sunset_automation:
     - presence_manager
     - vacation_mode
   entities:
-    switch: switch.reading_lamp
+    switch: group.living_room_lights
   properties:
     presence_required: true
     schedule_time: sunset
-    seasonal_offset: true
     state: "on"
   mode_alterations:
     guest_mode: disable
     vacation_mode: disable
   enabled_config:
     name: Turn on at sunset
-    icon: mdi:weather-sunset
+    icon: mdi:weather-sunset-down
     initial: true
 
 living_room_lights_on_upon_arrival_automation:
@@ -43,7 +63,7 @@ living_room_lights_on_upon_arrival_automation:
     - guest_mode
     - presence_manager
   entities:
-    switch: switch.reading_lamp
+    switch: group.living_room_lights
   properties:
     possible_constraints:
       constrain_cloudy: true

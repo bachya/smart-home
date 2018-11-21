@@ -2,6 +2,7 @@
 group:
   living_room_lights:
     entities:
+      - switch.christmas_tree
       - switch.reading_lamp
       - switch.sofa_lamp
 
@@ -53,5 +54,6 @@ sensor:
 
 wemo:
   static:
-    - wemo-1.myserver.com
-    - wemo-2.myserver.com
+    - wemo-1.phil.iot
+    - wemo-2.phil.iot
+    - wemo-3.phil.iot

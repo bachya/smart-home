@@ -19,6 +19,7 @@ alexa:
       - script.empty_dishwasher
       - script.empty_wolfie
       - switch.backyard_lights
+      - switch.christmas_tree
       - switch.fireplace
       - switch.front_patio_light
       - switch.garage_lights
