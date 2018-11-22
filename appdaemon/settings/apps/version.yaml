@@ -17,7 +17,7 @@ new_appdaemon_version_automation:
     image_name: acockburn/appdaemon
     update_interval: 300
   enabled_config:
-    entity_name: notify_of_new_versions
+    toggle_name: notify_of_new_versions
     name: Notify of new versions
     icon: mdi:home-assistant
     initial: true
@@ -40,7 +40,7 @@ new_grafana_version_automation:
     image_name: grafana/grafana
     update_interval: 300
   enabled_config:
-    entity_name: notify_of_new_versions
+    toggle_name: notify_of_new_versions
     name: Notify of new versions
     icon: mdi:home-assistant
     initial: true
@@ -57,7 +57,7 @@ new_hass_version_automation:
   properties:
     app_name: Home Assistant
   enabled_config:
-    entity_name: notify_of_new_versions
+    toggle_name: notify_of_new_versions
     name: Notify of new versions
     icon: mdi:home-assistant
     initial: true
@@ -80,7 +80,7 @@ new_influxdb_version_automation:
     image_name: influxdb
     update_interval: 300
   enabled_config:
-    entity_name: notify_of_new_versions
+    toggle_name: notify_of_new_versions
     name: Notify of new versions
     icon: mdi:home-assistant
     initial: true
@@ -103,7 +103,7 @@ new_mosquitto_version_automation:
     image_name: eclipse-mosquitto
     update_interval: 300
   enabled_config:
-    entity_name: notify_of_new_versions
+    toggle_name: notify_of_new_versions
     name: Notify of new versions
     icon: mdi:home-assistant
     initial: true
@@ -126,7 +126,7 @@ new_portainer_version_automation:
     image_name: portainer/portainer
     update_interval: 300
   enabled_config:
-    entity_name: notify_of_new_versions
+    toggle_name: notify_of_new_versions
     name: Notify of new versions
     icon: mdi:home-assistant
     initial: true
@@ -149,7 +149,7 @@ new_tasmoadmin_version_automation:
     image_name: raymondmm/tasmoadmin
     update_interval: 300
   enabled_config:
-    entity_name: notify_of_new_versions
+    toggle_name: notify_of_new_versions
     name: Notify of new versions
     icon: mdi:home-assistant
     initial: true
@@ -175,7 +175,7 @@ new_tasmota_version_automation:
       - salt-lamp-2.phil.iot
     update_interval: 300
   enabled_config:
-    entity_name: notify_of_new_versions
+    toggle_name: notify_of_new_versions
     name: Notify of new versions
     icon: mdi:home-assistant
     initial: true
@@ -192,7 +192,7 @@ new_yi_hack_version_automation:
   properties:
     app_name: Yi Hack
   enabled_config:
-    entity_name: notify_of_new_versions
+    toggle_name: notify_of_new_versions
     name: Notify of new versions
     icon: mdi:home-assistant
     initial: true

@@ -19,8 +19,8 @@ with open(ARGS.path, 'r') as file:
         if not enabled_config:
             continue
 
-        if enabled_config.get('entity_name'):
-            name = enabled_config['entity_name']
+        if enabled_config.get('toggle_name'):
+            name = enabled_config['toggle_name']
 
         OUTPUT[name] = {
             'name': enabled_config['name'],

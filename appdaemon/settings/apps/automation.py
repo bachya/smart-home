@@ -103,9 +103,9 @@ class Automation(Base):
         self.enabled_entity_id = None  # type: ignore
         enabled_config = self.args.get('enabled_config', {})
         if enabled_config:
-            if enabled_config.get('entity_name'):
+            if enabled_config.get('toggle_name'):
                 self.enabled_entity_id = 'input_boolean.{0}'.format(
-                    enabled_config['entity_name'])
+                    enabled_config['toggle_name'])
             else:
                 self.enabled_entity_id = 'input_boolean.{0}'.format(self.name)
 
