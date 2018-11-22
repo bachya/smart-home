@@ -123,13 +123,15 @@ class NewTasmotaVersionNotification(DynamicSensor):
                     sleep(10)
                 else:
                     break
-            else:
-                self.error('Unable to connect to host: {0}'.format(host))
 
             try:
                 if lowest_version > tasmota_version:  # type: ignore
                     lowest_version = tasmota_version
             except TypeError:
                 lowest_version = tasmota_version
+
+        if not lowest_version:
+            self.error("Couldn't reach any Tasmota host")
+            return None
 
         return lowest_version
