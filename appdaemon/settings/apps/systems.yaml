@@ -18,7 +18,7 @@ notify_of_low_batteries_automation:
     icon: mdi:battery
     initial: true
 
-notify_of_entity_left_in_state_automation:
+notify_media_center_left_on_automation:
   module: systems
   class: LeftInState
   dependencies:
@@ -30,9 +30,24 @@ notify_of_entity_left_in_state_automation:
     seconds: 43200
     state: "on"
   enabled_config:
-    entity_name: media_center_left_on
     name: Media Center left on
     icon: mdi:server
+    initial: true
+
+notify_ps4_left_on_automation:
+  module: systems
+  class: LeftInState
+  dependencies:
+    - notification_manager
+    - presence_manager
+  entities:
+    entity: switch.ps4
+  properties:
+    seconds: 43200
+    state: "on"
+  enabled_config:
+    name: PS4 left on
+    icon: mdi:playstation
     initial: true
 
 notify_of_ssl_expiration_automation:

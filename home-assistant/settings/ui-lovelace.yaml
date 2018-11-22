@@ -204,9 +204,10 @@ views:
         type: entities
         title: Systems
         entities:
-          - input_boolean.media_center_left_on
+          - input_boolean.notify_media_center_left_on_automation
           - input_boolean.notify_of_low_batteries_automation
           - input_boolean.notify_of_ssl_expiration_automation
+          - input_boolean.notify_ps4_left_on_automation
 
       - id: 185c86ab96af4c82a04298927120b64a  # Automatically created id
         type: entities
