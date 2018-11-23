@@ -9,7 +9,7 @@ sensor:
       -H "Content-Type: application/json"
       https://pypi.python.org/pypi/appdaemon/json
     value_template: '{{ value_json.info.version }}'
-    scan_interval: 600
+    scan_interval: 1800
 
   - platform: command_line
     name: Grafana Available
@@ -19,7 +19,7 @@ sensor:
       -H "Content-Type: application/json"
       https://api.github.com/repos/grafana/grafana/releases/latest
     value_template: '{{ value_json.tag_name[1:] }}'
-    scan_interval: 600
+    scan_interval: 1800
 
   - platform: command_line
     name: InfluxDB Available
@@ -29,7 +29,7 @@ sensor:
       -H "Content-Type: application/json"
       https://api.github.com/repos/influxdata/influxdb/tags
     value_template: '{{ value_json[0].name[1:] }}'
-    scan_interval: 600
+    scan_interval: 1800
 
   - platform: command_line
     name: Mosquitto Available
@@ -39,7 +39,7 @@ sensor:
       -H "Content-Type: application/json"
       https://api.github.com/repos/eclipse/mosquitto/tags
     value_template: '{{ value_json[0].name[1:] }}'
-    scan_interval: 600
+    scan_interval: 1800
 
   - platform: command_line
     name: Portainer Available
@@ -49,7 +49,7 @@ sensor:
       -H "Content-Type: application/json"
       https://api.github.com/repos/portainer/portainer/releases/latest
     value_template: '{{ value_json.tag_name }}'
-    scan_interval: 600
+    scan_interval: 1800
 
   - platform: command_line
     name: ps4-waker Available
@@ -59,7 +59,7 @@ sensor:
       -H "Content-Type: application/json"
       https://api.github.com/repos/dhleong/ps4-waker/releases/latest
     value_template: '{{ value_json.tag_name }}'
-    scan_interval: 600
+    scan_interval: 1800
 
   - platform: command_line
     name: TasmoAdmin Available
@@ -69,7 +69,7 @@ sensor:
       -H "Content-Type: application/json"
       https://api.github.com/repos/reloxx13/TasmoAdmin/releases/latest
     value_template: '{{ value_json.tag_name[1:] }}'
-    scan_interval: 600
+    scan_interval: 1800
 
   - platform: command_line
     name: Tasmota Available
@@ -79,7 +79,7 @@ sensor:
       -H "Content-Type: application/json"
       https://api.github.com/repos/arendst/Sonoff-Tasmota/releases/latest
     value_template: '{{ value_json.tag_name[1:] }}'
-    scan_interval: 600
+    scan_interval: 1800
 
   - platform: command_line
     name: Yi Hack Available
@@ -89,7 +89,7 @@ sensor:
       -H "Content-Type: application/json"
       https://api.github.com/repos/shadow-1/yi-hack-v3/releases/latest
     value_template: '{{ value_json.tag_name }}'
-    scan_interval: 600
+    scan_interval: 1800
 
   - platform: version
     name: HASS Available
