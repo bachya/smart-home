@@ -7,10 +7,6 @@ from typing import Dict, Union  # noqa
 from automation import Base  # type: ignore
 from util import grammatical_list_join, relative_search_dict  # type: ignore
 
-SECURITY_COMMAND_AWAY = 'away'
-SECURITY_COMMAND_HOME = 'home'
-SECURITY_COMMAND_GOODNIGHT = 'goodnight'
-
 TOGGLE_MAP = {
     'Christmas Tree 🎄': 'switch.christmas_tree',
     'Media Center 🍿': 'switch.media_center',
@@ -60,15 +56,15 @@ class Security(SlashCommand):
                 self.message('The house is locked up and secure.')
             return
 
-        if self._text == SECURITY_COMMAND_AWAY:
+        if self._text == 'away':
             self._hass.call_service(
                 'scene/turn_on', entity_id='scene.depart_home')
             self.message('The house has been fully secured.')
-        elif self._text == SECURITY_COMMAND_GOODNIGHT:
+        elif self._text == 'goodnight':
             self._hass.call_service(
                 'scene/turn_on', entity_id='scene.good_night')
             self.message('The house has been secured for the evening.')
-        elif self._text == SECURITY_COMMAND_HOME:
+        elif self._text == 'home':
             sec_mgr = self._hass.security_manager
             sec_mgr.state = sec_mgr.States.home
             self.message('The security system has been set to "Home".')
