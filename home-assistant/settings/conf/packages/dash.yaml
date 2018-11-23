@@ -4,9 +4,10 @@ input_select:
     name: Amazon Basics Batteries
     options:
       - Activate "Good Night"
-      - Arm security system
-      - Bump climate 2°
+      - Arm Security System
+      - Bump Climate 2°
       - Toggle Master Bedroom Salt Lamp
+      - Turn on Christmas Tree
     initial: Toggle Master Bedroom Salt Lamp
     icon: mdi:amazon
 
@@ -14,8 +15,9 @@ input_select:
     name: Neat
     options:
       - Activate "Good Night"
-      - Arm security system
-      - Bump climate 2°
+      - Arm Security System
+      - Bump Climate 2°
       - Toggle Master Bedroom Salt Lamp
+      - Turn on Christmas Tree
     initial: Toggle Master Bedroom Salt Lamp
     icon: mdi:amazon
