@@ -1,5 +1,14 @@
 ---
 automation:
+  - alias: "Slack interactive command"
+    trigger:
+      platform: webhook
+      webhook_id: b71c3d7f-7d31-4e81-9106-36aa81d65ba1
+    action:
+      - event: SLACK_INTERACTIVE_COMMAND
+        event_data_template:
+          value: "{{ trigger.data.actions[0].value }}"
+          response_url: "{{ trigger.data.response_url }}"
   - alias: "Slack slash command"
     trigger:
       platform: webhook

@@ -1,7 +1,8 @@
 """Define automations for Slack."""
-# pylint: disable=attribute-defined-outside-init,unused-argument
+# pylint: disable=attribute-defined-outside-init,too-few-public-methods
+# pylint: disable=unused-argument,unused-import
 
-import requests
+from typing import Dict, Union  # noqa
 
 from automation import Base  # type: ignore
 from util import grammatical_list_join, relative_search_dict  # type: ignore
@@ -10,92 +11,98 @@ SECURITY_COMMAND_AWAY = 'away'
 SECURITY_COMMAND_HOME = 'home'
 SECURITY_COMMAND_GOODNIGHT = 'goodnight'
 
-TOGGLE_MAP = {'Media Center': 'switch.media_center', 'PS4': 'switch.ps4'}
+TOGGLE_MAP = {
+    'Christmas Tree 🎄': 'switch.christmas_tree',
+    'Media Center 🍿': 'switch.media_center',
+    'PS4 🎮': 'switch.ps4',
+}
 
 
-class Slack(Base):
-    """Define a class to interact with a Slack app."""
+class SlashCommand:
+    """Define a base class for slash commands."""
 
-    def initialize(self) -> None:
+    def __init__(self, hass: Base, text: str, response_url: str) -> None:
         """Initialize."""
-        super().initialize()
+        self._hass = hass
+        self._response_url = response_url
+        self._text = text
 
-        self._last_response_url = None
+    def execute(self) -> None:
+        """Execute the response to the slash command."""
+        raise NotImplementedError()
 
-        self.listen_event(self._slash_command_received, 'SLACK_SLASH_COMMAND')
+    def message(self, text: str, attachments: list = None) -> None:
+        """Send a response via the Slack app."""
+        import requests
 
-    def _respond(self, text: str, attachments: list = None) -> None:
-        """Respond to the slash command."""
-        payload = {'text': text}
+        payload = {'text': text}  # type: Dict[str, Union[str, list]]
         if attachments:
-            payload['attachments'] = attachments  # type: ignore
+            payload['attachments'] = attachments
 
-        requests.post(  # type: ignore
-            self._last_response_url,
+        requests.post(
+            self._response_url,
             headers={'Content-Type': 'application/json'},
             json=payload)
 
-    def _slash_command_received(
-            self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Respond to 'SLACK_SLASH_COMMAND' events."""
-        self._last_response_url = data['response_url']
 
-        try:
-            method = getattr(self, data['command'][1:])
-            method(data)
-        except AttributeError:
-            self.error(
-                'No implementation of slash command handler: {0}'.format(
-                    data['command']))
+class Security(SlashCommand):
+    """Define an object to handle the /security command."""
 
-    def security(self, data: dict) -> None:
-        """Interact with the security manager."""
-        command = data['text']
-
-        if not command:
-            insecure_entities = self.security_manager.get_insecure_entities()
-            if insecure_entities:
-                self._respond(
+    def execute(self) -> None:
+        """Execute the response to the slash command."""
+        if not self._text:
+            open_entities = self._hass.security_manager.get_insecure_entities()
+            if open_entities:
+                self.message(
                     'These entry points are insecure: {0}.'.format(
-                        grammatical_list_join(insecure_entities)))
+                        grammatical_list_join(open_entities)))
             else:
-                self._respond('The house is locked up and secure.')
+                self.message('The house is locked up and secure.')
             return
 
-        if command == SECURITY_COMMAND_AWAY:
-            self.call_service('scene/turn_on', entity_id='scene.depart_home')
-            self._respond('The house has been fully secured.')
-        elif command == SECURITY_COMMAND_GOODNIGHT:
-            self.call_service('scene/turn_on', entity_id='scene.good_night')
-            self._respond('The house has been secured for the evening.')
-        elif command == SECURITY_COMMAND_HOME:
-            self.security_manager.state = self.security_manager.States.home
-            self._respond('The security system has been set to "Home".')
+        if self._text == SECURITY_COMMAND_AWAY:
+            self._hass.call_service(
+                'scene/turn_on', entity_id='scene.depart_home')
+            self.message('The house has been fully secured.')
+        elif self._text == SECURITY_COMMAND_GOODNIGHT:
+            self._hass.call_service(
+                'scene/turn_on', entity_id='scene.good_night')
+            self.message('The house has been secured for the evening.')
+        elif self._text == SECURITY_COMMAND_HOME:
+            sec_mgr = self._hass.security_manager
+            sec_mgr.state = sec_mgr.States.home
+            self.message('The security system has been set to "Home".')
 
-    def thermostat(self, data: dict) -> None:
-        """Interact with the thermostat."""
-        command = data['text']
 
-        if not command:
-            if self.climate_manager.mode == self.climate_manager.Modes.eco:
+class Thermostat(SlashCommand):
+    """Define an object to handle the /thermostat command."""
+
+    def execute(self) -> None:
+        """Execute the response to the slash command."""
+        climate_mgr = self._hass.climate_manager
+
+        if not self._text:
+            if climate_mgr.mode == climate_mgr.Modes.eco:
                 message = 'The thermostat is set to eco mode.'
             else:
                 message = 'The thermostat is set to {0} to {1}°.'.format(
-                    self.climate_manager.mode.name,
-                    self.climate_manager.indoor_temp)
+                    climate_mgr.mode.name, climate_mgr.indoor_temp)
 
-            self._respond(
+            self.message(
                 '{0} (current indoor temperature: {1}°)'.format(
-                    message, self.climate_manager.average_indoor_temperature))
+                    message, climate_mgr.average_indoor_temperature))
             return
 
-        self.climate_manager.indoor_temp = int(command)
-        self._respond("I've set the thermostat to {0}°.".format(command))
+        climate_mgr.indoor_temp = int(self._text)
+        self.message("I've set the thermostat to {0}°.".format(self._text))
 
-    def toggle(self, data: dict) -> None:
-        """Toggle an entity."""
-        command = data['text']
-        tokens = command.split(' ')
+
+class ToggleEntity(SlashCommand):
+    """Define an object to handle the /toggle command."""
+
+    def execute(self) -> None:
+        """Execute the response to the slash command."""
+        tokens = self._text.split(' ')
 
         if 'on' in tokens:
             state = 'on'
@@ -104,17 +111,49 @@ class Slack(Base):
             state = 'off'
             tokens.remove('off')
         else:
-            self._respond("Didn't find either \"on\" or \"off\".")
+            self.message("Didn't find either \"on\" or \"off\".")
             return
 
         target = ' '.join(tokens)
+        key, entity = relative_search_dict(TOGGLE_MAP, target)
 
-        try:
-            _, entity = relative_search_dict(TOGGLE_MAP, target)
-        except ValueError:
-            self._respond("I'm sorry, I don't know \"{0}\".".format(target))
+        if not entity:
+            self.message("I'm sorry, I don't know \"{0}\".".format(target))
             return
 
-        method = getattr(self, 'turn_{0}'.format(state))
+        method = getattr(self._hass, 'turn_{0}'.format(state))
         method(entity)
-        self._respond("I've turned \"{0}\" {1}.".format(entity, state))
+        self.message("I've turned \"{0}\" {1}.".format(key, state))
+
+
+class SlackApp(Base):
+    """Define a class to interact with a Slack app."""
+
+    COMMAND_MAP = {
+        'security': Security,
+        'thermostat': Thermostat,
+        'toggle': ToggleEntity,
+    }
+
+    def initialize(self) -> None:
+        """Initialize."""
+        super().initialize()
+
+        self.listen_event(self.slash_command_received, 'SLACK_SLASH_COMMAND')
+
+    def slash_command_received(
+            self, event_name: str, data: dict, kwargs: dict) -> None:
+        """Respond to 'SLACK_SLASH_COMMAND' events."""
+        command = data['command'][1:]
+
+        if command not in self.COMMAND_MAP:
+            self.error('Unknown slash command: {0}'.format(command))
+            return
+
+        self.log(
+            'Running Slack slash command: {0} {1}'.format(
+                data['command'], data['text']))
+
+        slash_command = self.COMMAND_MAP[command](
+            self, data['text'], data['response_url'])
+        slash_command.execute()

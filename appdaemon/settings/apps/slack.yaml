@@ -1,7 +1,7 @@
 ---
 slack:
   module: slack
-  class: Slack
+  class: SlackApp
   dependencies:
     - climate_manager
     - security_manager
