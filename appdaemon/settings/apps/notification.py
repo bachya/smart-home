@@ -76,8 +76,15 @@ class NotificationManager(Base):
             if active_time > self.parse_time(notification.blackout_end_time):
                 target_date = target_date + timedelta(days=1)
 
-            notification.when = datetime.combine(
+            new_dt = datetime.combine(
                 target_date, self.parse_time(notification.blackout_end_time))
+
+            self.log('Rescheduling notification: {0}'.format(
+                notification.title
+                if notification.title else notification.message))
+            self.log('New date/time: {0}'.format(new_dt))
+
+            notification.when = new_dt
         else:
             notification.when = self.datetime() + timedelta(seconds=1)
 
