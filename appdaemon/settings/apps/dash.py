@@ -57,10 +57,10 @@ class ToggleEntity(ButtonAction):
 
     def run(self) -> None:
         """Toggle."""
-        entity = self._args['entity']
-        domain = entity.split('.')[0]
-
-        self._hass.call_service('{0}/toggle'.format(domain), entity_id=entity)
+        for entity in self._args['entities']:
+            domain = entity.split('.')[0]
+            self._hass.call_service(
+                '{0}/toggle'.format(domain), entity_id=entity)
 
 
 class DashButton(Automation):
@@ -76,13 +76,15 @@ class DashButton(Automation):
         'Bump Climate 2°': (BumpClimate, {
             'degrees': 2
         }),
+        'Toggle All Salt Lamps': (
+            ToggleEntity, {
+                'entities': [
+                    'light.salt_lamp_office', 'light.salt_lamp_master_bedroom'
+                ]
+            }),
         'Toggle Christmas Tree': (
             ToggleEntity, {
-                'entity': 'switch.christmas_tree'
-            }),
-        'Toggle Master Bedroom Salt Lamp': (
-            ToggleEntity, {
-                'entity': 'light.salt_lamp_master_bedroom'
+                'entities': ['switch.christmas_tree']
             }),
     }
 
