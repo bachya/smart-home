@@ -35,6 +35,8 @@
   icon: mdi:wifi
 "sensor.portainer_*":
   icon: mdi:database
+"sensor.ps4waker_*":
+  icon: mdi:playstation
 "sensor.tasmoadmin_*":
   icon: mdi:lightbulb-on
 "sensor.tasmota_*":

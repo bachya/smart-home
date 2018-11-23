@@ -52,6 +52,16 @@ sensor:
     scan_interval: 600
 
   - platform: command_line
+    name: ps4-waker Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/dhleong/ps4-waker/releases/latest
+    value_template: '{{ value_json.tag_name }}'
+    scan_interval: 600
+
+  - platform: command_line
     name: TasmoAdmin Available
     command: >-
       curl -L
@@ -87,6 +97,10 @@ sensor:
     beta: true
 
   # Installed Versions
+  - platform: command_line
+    name: ps4-waker Installed
+    command: ps4-waker --version
+
   - platform: command_line
     name: Yi Hack Installed
     command: >
