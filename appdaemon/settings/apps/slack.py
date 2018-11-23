@@ -95,11 +95,19 @@ class Slack(Base):
     def toggle(self, data: dict) -> None:
         """Toggle an entity."""
         command = data['text']
-        target, state = command.split(' ')
+        tokens = command.split(' ')
 
-        if state not in ('off', 'on'):
-            self._respond("\"{0}\" isn't a valid state.".format(state))
+        if 'on' in tokens:
+            state = 'on'
+            tokens.remove('on')
+        elif 'off' in tokens:
+            state = 'off'
+            tokens.remove('off')
+        else:
+            self._respond("Didn't find either \"on\" or \"off\".")
             return
+
+        target = ' '.join(tokens)
 
         try:
             _, entity = relative_search_dict(TOGGLE_MAP, target)
