@@ -135,7 +135,9 @@ class SlackApp(Base):
         """Initialize."""
         super().initialize()
 
-        self.listen_event(self.slash_command_received, 'SLACK_SLASH_COMMAND')
+        self.listen_event(
+            self.slash_command_received,
+            self.properties['slash_command_event'])
 
     def slash_command_received(
             self, event_name: str, data: dict, kwargs: dict) -> None:

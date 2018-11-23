@@ -1,20 +1,20 @@
 ---
 automation:
-  - alias: "Slack interactive command"
+  - alias: "Slack Interactive Command: Home Assistant App"
     trigger:
       platform: webhook
       webhook_id: b71c3d7f-7d31-4e81-9106-36aa81d65ba1
     action:
-      - event: SLACK_INTERACTIVE_COMMAND
+      - event: HOME_ASSISTANT_INTERACTIVE_COMMAND
         event_data_template:
           value: "{{ trigger.data.actions[0].value }}"
           response_url: "{{ trigger.data.response_url }}"
-  - alias: "Slack slash command"
+  - alias: "Slack Slash Command: Home Assistant App"
     trigger:
       platform: webhook
       webhook_id: 12345678-9012-abcd-ef12-4567890abcde
     action:
-      - event: SLACK_SLASH_COMMAND
+      - event: HOME_ASSISTANT_SLASH_COMMAND
         event_data_template:
           command: "{{ trigger.data.command }}"
           text: "{{ trigger.data.text }}"
