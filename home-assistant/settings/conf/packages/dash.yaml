@@ -8,7 +8,7 @@ input_select:
       - Bump Climate 2°
       - Toggle All Salt Lamps
       - Toggle Christmas Tree
-    initial: Toggle Master Bedroom Salt Lamp
+    initial: Toggle All Salt Lamps
     icon: mdi:amazon
 
   dash_neat:
@@ -19,5 +19,5 @@ input_select:
       - Bump Climate 2°
       - Toggle All Salt Lamps
       - Toggle Christmas Tree
-    initial: Toggle Master Bedroom Salt Lamp
+    initial: Toggle All Salt Lamps
     icon: mdi:amazon
