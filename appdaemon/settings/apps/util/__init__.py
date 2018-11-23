@@ -1,6 +1,6 @@
 """Define generic utils."""
 import datetime
-from typing import Any, Tuple
+from typing import Any, Tuple, Union
 
 import Levenshtein
 
@@ -15,49 +15,42 @@ def most_common(the_list: list) -> Any:
     return max(set(the_list), key=the_list.count)
 
 
-def relative_search_dict(the_dict: dict, search: str,
-                         threshold: float = 0.3) -> Tuple[str, str]:
+def relative_search_dict(
+        candidates: dict, target: str,
+        threshold: float = 0.3) -> Tuple[Union[None, str], Union[None, str]]:
     """Return a key/value pair (or its closest neighbor) from a dict."""
-    _search = search.lower()
+    if target.lower() in [k.lower() for k in candidates.keys()]:
+        return (target, candidates[target])
+
     try:
-        _match = [key for key in the_dict.keys() if key.lower() in _search][0]
-        match = (_match, the_dict[_match])
+        matches = sorted([
+            k for k in candidates.keys()
+            if Levenshtein.ratio(target, k) > threshold
+        ], reverse=True)
+        winner = matches[0]
+        return (winner, candidates[winner])
     except IndexError:
-        try:
-            _match = sorted(
-                [
-                    key for key in the_dict.keys()
-                    if Levenshtein.ratio(_search, key.lower()) > threshold
-                ],
-                key=lambda k: Levenshtein.ratio(_search, k.lower()),
-                reverse=True)[0]
-            match = (_match, the_dict[_match])
-        except IndexError:
-            match = (None, None)
+        pass
 
-    return match
+    return (None, None)
 
 
-def relative_search_list(the_list: list, search: str,
-                         threshold: float = 0.3) -> Tuple[str, str]:
+def relative_search_list(
+        candidates: list, target: str,
+        threshold: float = 0.3) -> Union[None, str]:
     """Return an item (or its closest neighbor) from a list."""
-    _search = search.lower()
-    try:
-        match = [value for value in the_list if value.lower() in _search][0]
-    except IndexError:
-        try:
-            _match = sorted(
-                [
-                    value for value in the_list
-                    if Levenshtein.ratio(_search, value.lower()) > threshold
-                ],
-                key=lambda v: Levenshtein.ratio(_search, v.lower()),
-                reverse=True)[0]
-            match = _match
-        except IndexError:
-            match = None
+    if target.lower() in [c.lower() for c in candidates]:
+        return target
 
-    return match
+    try:
+        matches = sorted([
+            c for c in candidates if Levenshtein.ratio(target, c) > threshold
+        ], reverse=True)
+        return matches[0]
+    except IndexError:
+        pass
+
+    return None
 
 
 def suffix_strftime(frmt: str, input_dt: datetime.datetime) -> str:

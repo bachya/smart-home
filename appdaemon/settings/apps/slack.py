@@ -4,11 +4,13 @@
 import requests
 
 from automation import Base  # type: ignore
-from util import grammatical_list_join  # type: ignore
+from util import grammatical_list_join, relative_search_dict  # type: ignore
 
 SECURITY_COMMAND_AWAY = 'away'
 SECURITY_COMMAND_HOME = 'home'
 SECURITY_COMMAND_GOODNIGHT = 'goodnight'
+
+TOGGLE_MAP = {'Media Center': 'switch.media_center', 'PS4': 'switch.ps4'}
 
 
 class Slack(Base):
@@ -22,12 +24,16 @@ class Slack(Base):
 
         self.listen_event(self._slash_command_received, 'SLACK_SLASH_COMMAND')
 
-    def _respond(self, text: str) -> None:
+    def _respond(self, text: str, attachments: list = None) -> None:
         """Respond to the slash command."""
+        payload = {'text': text}
+        if attachments:
+            payload['attachments'] = attachments  # type: ignore
+
         requests.post(  # type: ignore
             self._last_response_url,
             headers={'Content-Type': 'application/json'},
-            json={'text': text})
+            json=payload)
 
     def _slash_command_received(
             self, event_name: str, data: dict, kwargs: dict) -> None:
@@ -85,3 +91,22 @@ class Slack(Base):
 
         self.climate_manager.indoor_temp = int(command)
         self._respond("I've set the thermostat to {0}°.".format(command))
+
+    def toggle(self, data: dict) -> None:
+        """Toggle an entity."""
+        command = data['text']
+        target, state = command.split(' ')
+
+        if state not in ('off', 'on'):
+            self._respond("\"{0}\" isn't a valid state.".format(state))
+            return
+
+        try:
+            _, entity = relative_search_dict(TOGGLE_MAP, target)
+        except ValueError:
+            self._respond("I'm sorry, I don't know \"{0}\".".format(target))
+            return
+
+        method = getattr(self, 'turn_{0}'.format(state))
+        method(entity)
+        self._respond("I've turned \"{0}\" {1}.".format(entity, state))
