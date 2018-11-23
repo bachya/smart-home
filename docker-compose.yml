@@ -68,6 +68,11 @@ services:
       - grafana-config:/var/lib/grafana
 
   hass:
+    build:
+      context: ./home-assistant/docker
+      args:
+        ps4waker_version: 1.6.0
+        hass_version: 0.82.1
     container_name: hass
     depends_on:
       - glances
@@ -76,10 +81,6 @@ services:
       - mysql
     devices:
       - "/dev/zwave:/dev/zwave"
-    build:
-      context: ./home-assistant/docker
-      args:
-        version: 0.82.1
     image: bachya/home-assistant
     network_mode: "host"
     restart: unless-stopped
