@@ -133,7 +133,7 @@ class ScheduledCycle(Automation):
                 self.presence_manager.HomeStates.home):
             self.log('Changing alarm state to "away"')
 
-            self.security_manager.state = (self.security_manager.States.away)
+            self.security_manager.state = self.security_manager.States.away
 
         self.app.bin_state = (self.app.BinStates.full)
         self.initiated_by_app = False

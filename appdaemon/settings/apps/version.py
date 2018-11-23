@@ -33,12 +33,13 @@ class NewVersionNotification(Automation):
             self.get_state(self.entities['installed']))
 
         if new_version > installed_version:
-            self.log('New {0} version detected: {1}'.format(
-                self.properties['app_name'], new))
+            self.log(
+                'New {0} version detected: {1}'.format(
+                    self.properties['app_name'], new))
 
             self.notification_manager.send(
-                'New {0} Version: {1}'.format(self.properties['app_name'],
-                                              new),
+                'New {0} Version: {1}'.format(
+                    self.properties['app_name'], new),
                 title='New Software 💿',
                 target=['Aaron', 'slack'])
 
@@ -50,8 +51,9 @@ class DynamicSensor(NewVersionNotification):
         """Initialize."""
         super().initialize()
 
-        self.run_every(self.update_sensor, self.datetime(),
-                       self.properties['update_interval'])
+        self.run_every(
+            self.update_sensor, self.datetime(),
+            self.properties['update_interval'])
 
     @property
     def sensor_value(self) -> Union[None, str]:
@@ -93,12 +95,13 @@ class NewPortainerVersionNotification(DynamicSensor):
             }).json()
 
         try:
-            tagged_image = next((i for image in images_resp
-                                 for i in image['RepoTags']
-                                 if self.properties['image_name'] in i))
+            tagged_image = next((
+                i for image in images_resp for i in image['RepoTags']
+                if self.properties['image_name'] in i))
         except StopIteration:
-            self.error('No match for image: {0}'.format(
-                self.properties['image_name']))
+            self.error(
+                'No match for image: {0}'.format(
+                    self.properties['image_name']))
 
         return tagged_image.split(':')[1].replace('v', '').split('-')[0]
 
@@ -116,8 +119,8 @@ class NewTasmotaVersionNotification(DynamicSensor):
         for host in self.properties['tasmota_hosts']:
             for _ in range(DEFAULT_DYNAMIC_RETRIES - 1):
                 try:
-                    json = requests.get('http://{0}/{1}'.format(
-                        host, status_uri)).json()
+                    json = requests.get(
+                        'http://{0}/{1}'.format(host, status_uri)).json()
                     tasmota_version = json['StatusFWR']['Version']
                 except requests.exceptions.ConnectionError:
                     sleep(10)
