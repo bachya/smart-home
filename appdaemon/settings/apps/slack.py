@@ -75,7 +75,7 @@ class Slack(Base):
                 message = 'The thermostat is set to eco mode.'
             else:
                 message = 'The thermostat is set to {0} to {1}°.'.format(
-                    self.climate_manager.mode,
+                    self.climate_manager.mode.name,
                     self.climate_manager.indoor_temp)
 
             self._respond(
