@@ -25,8 +25,8 @@ class AdjustOnProximity(Automation):
             'PROXIMITY_CHANGE',
             constrain_input_boolean=self.enabled_entity_id)
 
-    def proximity_changed(self, event_name: str, data: dict,
-                          kwargs: dict) -> None:
+    def proximity_changed(
+            self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to "PROXIMITY_CHANGE" events."""
         if (self.climate_manager.outside_temp <
                 self.properties['outside_threshold_low']
@@ -39,7 +39,8 @@ class AdjustOnProximity(Automation):
                     self.presence_manager.ProximityStates.away.value):
                 self.log('Setting thermostat to "Away" (extreme temp)')
 
-                self.climate_manager.away_mode = True
+                self.climate_manager.set_away_mode(
+                    self.climate_manager.AwayModes.away)
 
             # Scenario 2: Away -> Anything (Extreme Temps)
             elif (data['old'] ==
@@ -48,7 +49,8 @@ class AdjustOnProximity(Automation):
                   self.presence_manager.ProximityStates.away.value):
                 self.log('Setting thermostat to "Home" (extreme temp)')
 
-                self.climate_manager.away_mode = False
+                self.climate_manager.set_away_mode(
+                    self.climate_manager.AwayModes.home)
         else:
             # Scenario 3: Home -> Anything
             if (data['old'] == self.presence_manager.ProximityStates.home.value
@@ -56,7 +58,8 @@ class AdjustOnProximity(Automation):
                     self.presence_manager.ProximityStates.home.value):
                 self.log('Setting thermostat to "Away"')
 
-                self.climate_manager.away_mode = True
+                self.climate_manager.set_away_mode(
+                    self.climate_manager.AwayModes.away)
 
             # Scenario 4: Anything -> Nearby
             elif (data['old'] !=
@@ -65,21 +68,29 @@ class AdjustOnProximity(Automation):
                   self.presence_manager.ProximityStates.nearby.value):
                 self.log('Setting thermostat to "Home"')
 
-                self.climate_manager.away_mode = False
+                self.climate_manager.set_away_mode(
+                    self.climate_manager.AwayModes.home)
 
     def arrived_home(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Last ditch: turn the thermostat to home when someone arrives."""
         if self.climate_manager.away_mode:
             self.log('Last ditch: setting thermostat to "Home" (arrived)')
 
-            self.climate_manager.away_mode = False
+            self.climate_manager.set_away_mode(
+                self.climate_manager.AwayModes.home)
 
 
 class ClimateManager(Base):
     """Define an app to represent climate control."""
 
+    class AwayModes(Enum):
+        """Define an enum for thermostat away modes."""
+
+        away = 1
+        home = 2
+
     class Modes(Enum):
-        """Define an enum for alarm states."""
+        """Define an enum for thermostat modes."""
 
         auto = 1
         cool = 2
@@ -104,12 +115,9 @@ class ClimateManager(Base):
         return self.get_state(
             self.entities['thermostat'], attribute='away_mode') == 'on'
 
-    @away_mode.setter
-    def away_mode(self, value: Union[int, bool, str]) -> None:
+    def set_away_mode(self, value: "AwayModes") -> None:
         """Set the state of away mode."""
-        self.call_service(
-            'nest/set_mode',
-            home_mode='away' if value in (1, True, 'on') else 'home')
+        self.call_service('nest/set_mode', home_mode=value.name)
 
     @property
     def indoor_temp(self) -> int:
@@ -121,8 +129,7 @@ class ClimateManager(Base):
         except TypeError:
             return 0
 
-    @indoor_temp.setter
-    def indoor_temp(self, value: int) -> None:
+    def set_indoor_temp(self, value: int) -> None:
         """Set the thermostat temperature."""
         self.call_service(
             'climate/set_temperature',
@@ -135,8 +142,7 @@ class ClimateManager(Base):
         return self.Modes[self.get_state(
             self.entities['thermostat'], attribute='operation_mode')]
 
-    @mode.setter
-    def mode(self, value: Enum) -> None:
+    def set_mode(self, value: Enum) -> None:
         """Set the themostat's operating mode."""
         self.call_service(
             'climate/set_operation_mode',
@@ -165,13 +171,13 @@ class ClimateManager(Base):
         # Anticipating that we'll get values like "5" and "-3" from the API
         # call:
         target_temp = self.indoor_temp + int(data['amount'])
-        self.indoor_temp = target_temp
+        self.set_indoor_temp(target_temp)
         return {
             "status":
-            "ok",
+                "ok",
             "message":
-            'Bumping temperature {0}° (to {1}°)'.format(
-                data['amount'], target_temp)
+                'Bumping temperature {0}° (to {1}°)'.format(
+                    data['amount'], target_temp)
         }, 200
 
 

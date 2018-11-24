@@ -30,14 +30,8 @@ class ArmSecuritySystem(ButtonAction):
 
     def run(self) -> None:
         """Set the security system."""
-        state = self._args['state']
-
-        try:
-            state = self._hass.security_manager.AlarmStates[state]
-        except KeyError:
-            self._hass.error('Unknown state: {0}'.format(state))
-
-        self._hass.security_manager.alarm_state = state
+        self._hass.security_manager.set_alarm(
+            self._hass.security_manager.AlarmStates[self._args['state']])
 
 
 class BumpClimate(ButtonAction):
@@ -98,16 +92,6 @@ class DashButton(Automation):
                 'entities': ['switch.christmas_tree']
             }),
     }
-
-    @property
-    def action_list(self) -> str:
-        """Return the action input select for this button."""
-        return self.entities['action_list']
-
-    @action_list.setter
-    def action_list(self, value: str) -> None:
-        """Set the action input select for this button."""
-        self.select_option(self.entities['action_list'], value)
 
     def initialize(self) -> None:
         """Initialize."""

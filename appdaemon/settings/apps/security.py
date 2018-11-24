@@ -234,8 +234,7 @@ class SecurityManager(Base):
         return self.AlarmStates(
             self.get_state(self.entities['alarm_control_panel']))
 
-    @alarm_state.setter
-    def alarm_state(self, new: "AlarmStates") -> None:
+    def set_alarm(self, new: "AlarmStates") -> None:
         """Set the security system."""
         if new == self.AlarmStates.disarmed:
             self.log('Disarming the security system')

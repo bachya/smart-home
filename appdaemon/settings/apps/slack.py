@@ -83,21 +83,22 @@ class Thermostat(SlashCommand):
 
     def execute(self) -> None:
         """Execute the response to the slash command."""
-        climate_mgr = self._hass.climate_manager
-
         if not self._text:
-            if climate_mgr.mode == climate_mgr.Modes.eco:
+            if (self._hass.climate_manager.mode ==
+                    self._hass.climate_manager.Modes.eco):
                 text = 'The thermostat is set to eco mode.'
             else:
                 text = 'The thermostat is set to {0} to {1}°.'.format(
-                    climate_mgr.mode.name, climate_mgr.indoor_temp)
+                    self._hass.climate_manager.mode.name,
+                    self._hass.climate_manager.indoor_temp)
 
             self.message(
                 '{0} (current indoor temperature: {1}°)'.format(
-                    text, climate_mgr.average_indoor_temperature))
+                    text,
+                    self._hass.climate_manager.average_indoor_temperature))
             return
 
-        climate_mgr.indoor_temp = int(self._text)
+        self._hass.climate_manager.set_indoor_temp(int(self._text))
         self.message("I've set the thermostat to {0}°.".format(self._text))
 
 
@@ -188,8 +189,10 @@ class SlackApp(Base):
         command_id = adler32(question.encode('utf-8'))
 
         attachments = [{
-            'fallback': '',
-            'callback_id': 'interactive_command_{0}'.format(command_id),
+            'fallback':
+                '',
+            'callback_id':
+                'interactive_command_{0}'.format(command_id),
             'actions': [{
                 'name': '{0}_{1}'.format(command_id, action),
                 'text': action,

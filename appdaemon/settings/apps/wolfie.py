@@ -113,7 +113,7 @@ class ScheduledCycle(Automation):
 
             self.call_service(
                 'vacuum/start_pause', entity_id=self.app.entities['vacuum'])
-            self.security_manager.alarm_state = (
+            self.security_manager.alarm_state(
                 self.security_manager.AlarmStates.home)
 
         # Scenario 3: Vacuum is paused when alarm is set to "Home":
@@ -135,7 +135,7 @@ class ScheduledCycle(Automation):
                 self.presence_manager.HomeStates.home):
             self.log('Changing alarm state to "away"')
 
-            self.security_manager.alarm_state = (
+            self.security_manager.set_alarm(
                 self.security_manager.AlarmStates.away)
 
         self.app.bin_state = self.app.BinStates.full
@@ -261,7 +261,7 @@ class Vacuum(Base):
                 self.security_manager.AlarmStates.away):
             self.log('Changing alarm state to "Home"')
 
-            self.security_manager.alarm_state = (
+            self.security_manager.alarm_state(
                 self.security_manager.AlarmStates.home)
         else:
             self.log('Activating vacuum')
