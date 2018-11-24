@@ -35,6 +35,7 @@ notify_of_garage_open_automation:
   dependencies:
     - notification_manager
     - presence_manager
+    - security_manager
     - slack_app_home_assistant
   entities:
     garage_door: cover.garage_door
@@ -84,9 +85,11 @@ notify_when_status_changes_automation:
 security_manager:
   module: security
   class: SecurityManager
-  properties:
+  entities:
     alarm_control_panel: alarm_control_panel.simplisafe
+    garage_door: cover.garage_door
     overall_security_status_sensor: sensor.secure_status
+  properties:
     secure_status_mapping:
       - entity_id: lock.garage_fire_door
         friendly_name: the door to the garage

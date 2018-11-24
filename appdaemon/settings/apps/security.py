@@ -165,15 +165,10 @@ class GarageLeftOpen(Automation):
                 'category': 'garage'
             }})
 
-        def close_garage():
-            """Close the garage."""
-            self.call_service(
-                'cover/close_cover', entity_id=self.entities['garage_door'])
-
         self.slack_app_home_assistant.ask(
             message, {
                 'Yes': {
-                    'callback': close_garage,
+                    'callback': self.security_manager.close_garage,
                     'response_text': 'You got it; closing it now.'
                 },
                 'No': {
@@ -185,14 +180,12 @@ class GarageLeftOpen(Automation):
     def response_from_push_notification(
             self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to 'ios.notification_action_fired' events."""
-        target = self.notification_manager.get_target_from_push_id(
-            data['sourceDevicePermanentID'])
-
         self.log('Responding to iOS request to close garage')
 
-        self.call_service(
-            'cover/close_cover', entity_id=self.entities['garage_door'])
+        self.security_manager.close_garage()
 
+        target = self.notification_manager.get_target_from_push_id(
+            data['sourceDevicePermanentID'])
         self.notification_manager.send(
             '{0} closed the garage.'.format(target.first_name),
             title='Issue Resolved 🚗',
@@ -236,33 +229,49 @@ class SecurityManager(Base):
         home = 'armed_home'
 
     @property
-    def secure(self) -> bool:
-        """Return whether the house is secure or not."""
-        return self.get_state(
-            self.properties['overall_security_status_sensor']) == 'Secure'
-
-    @property
     def alarm_state(self) -> "AlarmStates":
         """Return the current state of the security system."""
         return self.AlarmStates(
-            self.get_state(self.properties['alarm_control_panel']))
+            self.get_state(self.entities['alarm_control_panel']))
 
     @alarm_state.setter
     def alarm_state(self, new: "AlarmStates") -> None:
-        """Return the security state."""
+        """Set the security system."""
         if new == self.AlarmStates.disarmed:
             self.log('Disarming the security system')
+
             self.call_service(
                 'alarm_control_panel/alarm_disarm',
-                entity_id=self.properties['alarm_control_panel'])
+                entity_id=self.entities['alarm_control_panel'])
         elif new in (self.AlarmStates.away, self.AlarmStates.home):
             self.log('Arming the security system: "{0}"'.format(new.name))
+
             self.call_service(
                 'alarm_control_panel/alarm_arm_{0}'.format(
                     new.value.split('_')[1]),
-                entity_id=self.properties['alarm_control_panel'])
+                entity_id=self.entities['alarm_control_panel'])
         else:
-            raise AttributeError("Can't set alarm to state: {0}".format(new))
+            raise AttributeError("Unknown security state: {0}".format(new))
+
+    def close_garage(self) -> None:
+        """Close the garage."""
+        self.log('Closing the garage door')
+
+        self.call_service(
+            'cover.close_cover', entity_id=self.entities['garage_door'])
+
+    def open_garage(self) -> None:
+        """Open the garage."""
+        self.log('Closing the garage door')
+
+        self.call_service(
+            'cover.open_cover', entity_id=self.entities['garage_door'])
+
+    @property
+    def secure(self) -> bool:
+        """Return whether the house is secure or not."""
+        return self.get_state(
+            self.entities['overall_security_status_sensor']) == 'Secure'
 
     def initialize(self) -> None:
         """Initialize."""
@@ -270,7 +279,7 @@ class SecurityManager(Base):
 
         self.listen_state(
             self._security_system_change_cb,
-            self.properties['alarm_control_panel'])
+            self.entities['alarm_control_panel'])
 
     def _security_system_change_cb(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -283,6 +292,6 @@ class SecurityManager(Base):
         """Return a list of insecure entities."""
         return [
             entity['friendly_name']
-            for entity in self.properties['secure_status_mapping']
+            for entity in self.entities['secure_status_mapping']
             if self.get_state(entity['entity_id']) == entity['state']
         ]
