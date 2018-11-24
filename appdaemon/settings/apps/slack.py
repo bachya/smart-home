@@ -189,10 +189,8 @@ class SlackApp(Base):
         command_id = adler32(question.encode('utf-8'))
 
         attachments = [{
-            'fallback':
-                '',
-            'callback_id':
-                'interactive_command_{0}'.format(command_id),
+            'fallback': '',
+            'callback_id': 'interactive_command_{0}'.format(command_id),
             'actions': [{
                 'name': '{0}_{1}'.format(command_id, action),
                 'text': action,
