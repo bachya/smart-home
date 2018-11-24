@@ -21,8 +21,8 @@ views:
         entities:
           - sensor.aaron_presence_status
           - sensor.britt_presence_status
-          - device_tracker.tile_19af7a5915dc41f6
-          - device_tracker.tile_ff97d7de8dbb06c9
+          # - device_tracker.tile_19af7a5915dc41f6
+          # - device_tracker.tile_ff97d7de8dbb06c9
 
       - id: 5414ccb9c8f04e8da496011a8f5b5cf5  # Automatically created id
         type: glance
