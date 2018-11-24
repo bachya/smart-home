@@ -152,7 +152,7 @@ class GarageLeftOpen(Automation):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Send notifications when the garage has been left open."""
-        message = 'The garage has been left open for a while.'
+        message = 'The garage has been left open for a while. Want to close it?'
 
         self.handles[HANDLE_GARAGE_OPEN] = self.notification_manager.repeat(
             message,
