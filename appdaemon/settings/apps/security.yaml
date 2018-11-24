@@ -35,6 +35,7 @@ notify_of_garage_open_automation:
   dependencies:
     - notification_manager
     - presence_manager
+    - slack_app_home_assistant
   entities:
     garage_door: cover.garage_door
   properties:

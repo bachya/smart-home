@@ -2,7 +2,10 @@
 # pylint: disable=attribute-defined-outside-init,too-few-public-methods
 # pylint: disable=unused-argument,unused-import
 
-from typing import Dict, Union  # noqa
+import json
+from uuid import uuid4
+
+from typing import Any, Callable, Dict, Union  # noqa
 
 from automation import Base  # type: ignore
 from util import grammatical_list_join, relative_search_dict  # type: ignore
@@ -12,6 +15,20 @@ TOGGLE_MAP = {
     'Media Center 🍿': 'switch.media_center',
     'PS4 🎮': 'switch.ps4',
 }
+
+
+def message(response_url: str, text: str, attachments: list = None) -> None:
+    """Send a response via the Slack app."""
+    import requests
+
+    payload = {'text': text}  # type: Dict[str, Union[str, list]]
+    if attachments:
+        payload['attachments'] = attachments
+
+    requests.post(
+        response_url,
+        headers={'Content-Type': 'application/json'},
+        json=payload)
 
 
 class SlashCommand:
@@ -29,16 +46,7 @@ class SlashCommand:
 
     def message(self, text: str, attachments: list = None) -> None:
         """Send a response via the Slack app."""
-        import requests
-
-        payload = {'text': text}  # type: Dict[str, Union[str, list]]
-        if attachments:
-            payload['attachments'] = attachments
-
-        requests.post(
-            self._response_url,
-            headers={'Content-Type': 'application/json'},
-            json=payload)
+        message(self._response_url, text, attachments)
 
 
 class Security(SlashCommand):
@@ -79,14 +87,14 @@ class Thermostat(SlashCommand):
 
         if not self._text:
             if climate_mgr.mode == climate_mgr.Modes.eco:
-                message = 'The thermostat is set to eco mode.'
+                text = 'The thermostat is set to eco mode.'
             else:
-                message = 'The thermostat is set to {0} to {1}°.'.format(
+                text = 'The thermostat is set to {0} to {1}°.'.format(
                     climate_mgr.mode.name, climate_mgr.indoor_temp)
 
             self.message(
                 '{0} (current indoor temperature: {1}°)'.format(
-                    message, climate_mgr.average_indoor_temperature))
+                    text, climate_mgr.average_indoor_temperature))
             return
 
         climate_mgr.indoor_temp = int(self._text)
@@ -135,13 +143,80 @@ class SlackApp(Base):
         """Initialize."""
         super().initialize()
 
+        self._interactive_command_actions = {}  # type: Dict[str, dict]
+
+        self.listen_event(
+            self._interactive_command_received,
+            self.properties['interactive_command_event'])
         self.listen_event(
             self.slash_command_received,
             self.properties['slash_command_event'])
 
+    def _interactive_command_received(
+            self, event_name: str, data: dict, kwargs: dict) -> None:
+        """Respond to an interactive command."""
+        payload = json.loads(data['payload'])
+        response_value = payload['actions'][0]['value']
+        response_url = payload['response_url']
+
+        if response_value not in self._interactive_command_actions:
+            self.error('Unknown response: {0}'.format(response_value))
+            return
+
+        parameters = self._interactive_command_actions[response_value]
+        callback = parameters.get('callback')
+        response_text = parameters.get('response_text')
+
+        if callback:
+            callback()
+
+        if response_text:
+            message(response_url, response_text)
+
+        self._interactive_command_actions = {}
+
+    def ask(
+            self,
+            question: str,
+            actions: dict,
+            *,
+            urgent: bool = False,
+            image_url: str = None) -> None:
+        """Ask a question on Slack (with an optional image)."""
+        self._interactive_command_actions = actions
+
+        command_id = str(uuid4())
+
+        attachments = [{
+            'fallback': '',
+            'callback_id': 'interactive_command_{0}'.format(command_id),
+            'actions': [{
+                'name': command_id,
+                'text': action,
+                'type': 'button',
+                'value': action
+            } for action in actions]
+        }]
+
+        if image_url:
+            attachments.append({'title': '', 'image_url': image_url})
+
+        kwargs = {
+            'data': {
+                'attachments': attachments
+            },
+            'target': 'slack',
+        }  # type: Dict[str, Any]
+
+        if urgent:
+            kwargs['blackout_end_time'] = None
+            kwargs['blackout_start_time'] = None
+
+        self.notification_manager.send(question, **kwargs)
+
     def slash_command_received(
             self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Respond to 'SLACK_SLASH_COMMAND' events."""
+        """Respond to slash commands."""
         command = data['command'][1:]
 
         if command not in self.COMMAND_MAP:

@@ -53,8 +53,8 @@ class AbsentInsecure(Automation):
                 'category': 'security'
             }})
 
-    def response_from_push_notification(self, event_name: str, data: dict,
-                                        kwargs: dict) -> None:
+    def response_from_push_notification(
+            self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to 'ios.notification_action_fired' events."""
         target = self.notification_manager.get_target_from_push_id(
             data['sourceDevicePermanentID'])
@@ -152,19 +152,37 @@ class GarageLeftOpen(Automation):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Send notifications when the garage has been left open."""
+        message = 'The garage has been left open for a while.'
+
         self.handles[HANDLE_GARAGE_OPEN] = self.notification_manager.repeat(
-            "The garage has been left open for a while.",
+            message,
             self.properties['notification_interval'],
             title='Garage Open 🚗',
             blackout_start_time=None,
             blackout_end_time=None,
-            target=['everyone', 'slack'],
+            target=['everyone'],
             data={'push': {
                 'category': 'garage'
             }})
 
-    def response_from_push_notification(self, event_name: str, data: dict,
-                                        kwargs: dict) -> None:
+        def close_garage():
+            """Close the garage."""
+            self.call_service(
+                'cover/close_cover', entity_id=self.entities['garage_door'])
+
+        self.slack_app_home_assistant.ask(
+            message, {
+                'Yes': {
+                    'callback': close_garage,
+                    'response_text': 'You got it; closing it now.'
+                },
+                'No': {
+                    'response_text': 'If you really say so...'
+                }
+            }, urgent=True)
+
+    def response_from_push_notification(
+            self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to 'ios.notification_action_fired' events."""
         target = self.notification_manager.get_target_from_push_id(
             data['sourceDevicePermanentID'])
@@ -269,8 +287,8 @@ class SecurityManager(Base):
         """Initialize."""
         super().initialize()
 
-        self.listen_state(self._security_system_change_cb,
-                          self.ALARM_CONTROL_PANEL)
+        self.listen_state(
+            self._security_system_change_cb, self.ALARM_CONTROL_PANEL)
 
     def _security_system_change_cb(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,

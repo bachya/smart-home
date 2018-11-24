@@ -2,7 +2,7 @@
 - platform: slack
   name: slack
   api_key: !secret slack_api_key
-  default_channel: '#house'
+  default_channel: '#bot-testing'
 
 - platform: smtp
   name: omnifocus

@@ -7,8 +7,7 @@ automation:
     action:
       - event: HOME_ASSISTANT_INTERACTIVE_COMMAND
         event_data_template:
-          value: "{{ trigger.data.actions[0].value }}"
-          response_url: "{{ trigger.data.response_url }}"
+          payload: "{{ trigger.data.payload }}"
   - alias: "Slack Slash Command: Home Assistant App"
     trigger:
       platform: webhook
