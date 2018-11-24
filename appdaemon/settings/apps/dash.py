@@ -57,10 +57,17 @@ class ToggleEntity(ButtonAction):
 
     def run(self) -> None:
         """Toggle."""
-        for entity in self._args['entities']:
-            domain = entity.split('.')[0]
-            self._hass.call_service(
-                '{0}/toggle'.format(domain), entity_id=entity)
+        if self._args.get('master'):
+            if self._hass.get_state(self._args['master']) == 'on':
+                method_name = 'turn_off'
+            else:
+                method_name = 'turn_on'
+        else:
+            method_name = 'toggle'
+
+        method = getattr(self._hass, method_name)
+        for entity_id in self._args['entities']:
+            method(entity_id)
 
 
 class DashButton(Automation):
@@ -80,7 +87,8 @@ class DashButton(Automation):
             ToggleEntity, {
                 'entities': [
                     'light.salt_lamp_office', 'light.salt_lamp_master_bedroom'
-                ]
+                ],
+                'master': 'light.salt_lamp_master_bedroom'
             }),
         'Toggle Christmas Tree': (
             ToggleEntity, {
