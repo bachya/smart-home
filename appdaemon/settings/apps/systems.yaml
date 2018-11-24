@@ -24,6 +24,7 @@ notify_media_center_left_on_automation:
   dependencies:
     - notification_manager
     - presence_manager
+    - slack_app_home_assistant
   entities:
     entity: switch.media_center
   properties:
@@ -40,6 +41,7 @@ notify_ps4_left_on_automation:
   dependencies:
     - notification_manager
     - presence_manager
+    - slack_app_home_assistant
   entities:
     entity: switch.ps4
   properties:

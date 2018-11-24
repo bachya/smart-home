@@ -77,15 +77,24 @@ class LeftInState(Automation):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Notify when the threshold is reached."""
-        self.notification_manager.send(
-            'The {0} has been left {1} for {2} minutes. Use `/toggle {3} off` '
-            'to turn it off'.format(
+        def turn_off():
+            """Turn the entity off."""
+            self.turn_off(self.entities['entity'])
+          
+        self.slack_app_home_assistant.ask(
+            'The {0} has been left {1} for {2} minutes. Turn it off?'.format(
                 self.get_state(
                     self.entities['entity'],
                     attribute='friendly_name'), self.properties['state'],
-                int(self.properties['seconds']) / 60,
-                self.entities['entity'].split('.')[1]),
-            target='slack')
+                int(self.properties['seconds']) / 60), {
+                'Yes': {
+                    'callback': turn_off,
+                    'response_text': 'You got it; turning it off now.'
+                },
+                'No': {
+                    'response_text': 'Keep devouring electricity, little guy.'
+                }
+            })
 
 
 class SslExpiration(Automation):
