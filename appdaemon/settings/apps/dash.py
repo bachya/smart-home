@@ -37,7 +37,7 @@ class ArmSecuritySystem(ButtonAction):
         except KeyError:
             self._hass.error('Unknown state: {0}'.format(state))
 
-        self._hass.security_manager.state = state
+        self._hass.security_manager.alarm_state = state
 
 
 class BumpClimate(ButtonAction):

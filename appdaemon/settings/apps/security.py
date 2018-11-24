@@ -228,7 +228,7 @@ class NotifyOnChange(Automation):
 class SecurityManager(Base):
     """Define a class to represent the app."""
 
-    class States(Enum):
+    class AlarmStates(Enum):
         """Define an enum for alarm states."""
 
         away = 'armed_away'
@@ -263,19 +263,19 @@ class SecurityManager(Base):
         return self.get_state('sensor.secure_status') == 'Secure'
 
     @property
-    def state(self) -> Enum:
+    def alarm_state(self) -> "AlarmStates":
         """Return the current state of the security system."""
-        return self.States(self.get_state(self.ALARM_CONTROL_PANEL))
+        return self.AlarmStates(self.get_state(self.ALARM_CONTROL_PANEL))
 
-    @state.setter
-    def state(self, new: Enum) -> None:
+    @alarm_state.setter
+    def alarm_state(self, new: "AlarmStates") -> None:
         """Return the security state."""
-        if new == self.States.disarmed:
+        if new == self.AlarmStates.disarmed:
             self.log('Disarming the security system')
             self.call_service(
                 'alarm_control_panel/alarm_disarm',
                 entity_id=self.ALARM_CONTROL_PANEL)
-        elif new in (self.States.away, self.States.home):
+        elif new in (self.AlarmStates.away, self.AlarmStates.home):
             self.log('Arming the security system: "{0}"'.format(new.name))
             self.call_service(
                 'alarm_control_panel/alarm_arm_{0}'.format(

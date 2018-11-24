@@ -66,8 +66,9 @@ class ScheduledCycle(Automation):
             self.start_by_switch,
             'VACUUM_START',
             constrain_input_boolean=self.enabled_entity_id)
-        self.listen_ios_event(self.response_from_push_notification,
-                              self.properties['ios_emptied_key'])
+        self.listen_ios_event(
+            self.response_from_push_notification,
+            self.properties['ios_emptied_key'])
         self.listen_state(
             self.all_done,
             self.app.entities['status'],
@@ -99,24 +100,25 @@ class ScheduledCycle(Automation):
         state = self.app.States(self.get_state(self.app.entities['status']))
 
         # Scenario 1: Vacuum is charging and is told to start:
-        if ((self.initiated_by_app and state == self.app.States.docked)
-                and data['state'] == self.security_manager.States.home.value):
+        if ((self.initiated_by_app and state == self.app.States.docked) and
+                data['state'] == self.security_manager.AlarmStates.home.value):
             self.log('Activating vacuum (post-security)')
 
             self.turn_on(self.app.entities['vacuum'])
 
         # Scenario 2: Vacuum is running when alarm is set to "Away":
-        elif (state == self.app.States.cleaning
-              and data['state'] == self.security_manager.States.away.value):
+        elif (state == self.app.States.cleaning and
+              data['state'] == self.security_manager.AlarmStates.away.value):
             self.log('Security mode is "Away"; pausing until "Home"')
 
             self.call_service(
                 'vacuum/start_pause', entity_id=self.app.entities['vacuum'])
-            self.security_manager.state = (self.security_manager.States.home)
+            self.security_manager.alarm_state = (
+                self.security_manager.AlarmStates.home)
 
         # Scenario 3: Vacuum is paused when alarm is set to "Home":
-        elif (state == self.app.States.paused
-              and data['state'] == self.security_manager.States.home.value):
+        elif (state == self.app.States.paused and
+              data['state'] == self.security_manager.AlarmStates.home.value):
             self.log('Alarm in "Home"; resuming')
 
             self.call_service(
@@ -133,9 +135,10 @@ class ScheduledCycle(Automation):
                 self.presence_manager.HomeStates.home):
             self.log('Changing alarm state to "away"')
 
-            self.security_manager.state = self.security_manager.States.away
+            self.security_manager.alarm_state = (
+                self.security_manager.AlarmStates.away)
 
-        self.app.bin_state = (self.app.BinStates.full)
+        self.app.bin_state = self.app.BinStates.full
         self.initiated_by_app = False
 
     def bin_state_changed(  # pylint: disable=too-many-arguments
@@ -186,8 +189,8 @@ class ScheduledCycle(Automation):
             target='home',
         )
 
-    def response_from_push_notification(self, event_name: str, data: dict,
-                                        kwargs: dict) -> None:
+    def response_from_push_notification(
+            self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to iOS notification to empty vacuum."""
         self.log('Responding to iOS request that vacuum is empty')
 
@@ -212,8 +215,8 @@ class ScheduledCycle(Automation):
             self.app.start()
             self.initiated_by_app = True
 
-    def start_by_switch(self, event_name: str, data: dict,
-                        kwargs: dict) -> None:
+    def start_by_switch(
+            self, event_name: str, data: dict, kwargs: dict) -> None:
         """Start cleaning via the switch."""
         if not self.initiated_by_app:
             self.app.start()
@@ -254,10 +257,12 @@ class Vacuum(Base):
         """Start a cleaning cycle."""
         self.log('Starting vacuuming cycle')
 
-        if self.security_manager.state == self.security_manager.States.away:
+        if (self.security_manager.alarm_state ==
+                self.security_manager.AlarmStates.away):
             self.log('Changing alarm state to "Home"')
 
-            self.security_manager.state = self.security_manager.States.home
+            self.security_manager.alarm_state = (
+                self.security_manager.AlarmStates.home)
         else:
             self.log('Activating vacuum')
 
