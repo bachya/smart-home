@@ -84,3 +84,19 @@ notify_when_status_changes_automation:
 security_manager:
   module: security
   class: SecurityManager
+  properties:
+    alarm_control_panel: alarm_control_panel.simplisafe
+    overall_security_status_sensor: sensor.secure_status
+    secure_status_mapping:
+      - entity_id: lock.garage_fire_door
+        friendly_name: the door to the garage
+        state: unlocked
+      - entity_id: lock.front_door
+        friendly_name: the front door
+        state: unlocked
+      - entity_id: cover.garage_door
+        friendly_name: the garage door
+        state: open
+      - entity_id: alarm_control_panel.simplisafe
+        friendly_name: the security system
+        state: disarmed

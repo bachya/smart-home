@@ -235,37 +235,17 @@ class SecurityManager(Base):
         disarmed = 'disarmed'
         home = 'armed_home'
 
-    ALARM_CONTROL_PANEL = 'alarm_control_panel.simplisafe'
-    SECURE_STATUS_SENSOR = 'sensor.secure_status'
-
-    IS_INSECURE_MAPPING = {
-        'the door to the garage': {
-            'entity': 'lock.garage_fire_door',
-            'state': 'unlocked'
-        },
-        'the front door': {
-            'entity': 'lock.front_door',
-            'state': 'unlocked'
-        },
-        'the garage door': {
-            'entity': 'cover.garage_door',
-            'state': 'open'
-        },
-        'the security system': {
-            'entity': 'alarm_control_panel.simplisafe',
-            'state': 'disarmed'
-        }
-    }
-
     @property
     def secure(self) -> bool:
         """Return whether the house is secure or not."""
-        return self.get_state('sensor.secure_status') == 'Secure'
+        return self.get_state(
+            self.properties['overall_security_status_sensor']) == 'Secure'
 
     @property
     def alarm_state(self) -> "AlarmStates":
         """Return the current state of the security system."""
-        return self.AlarmStates(self.get_state(self.ALARM_CONTROL_PANEL))
+        return self.AlarmStates(
+            self.get_state(self.properties['alarm_control_panel']))
 
     @alarm_state.setter
     def alarm_state(self, new: "AlarmStates") -> None:
@@ -274,13 +254,13 @@ class SecurityManager(Base):
             self.log('Disarming the security system')
             self.call_service(
                 'alarm_control_panel/alarm_disarm',
-                entity_id=self.ALARM_CONTROL_PANEL)
+                entity_id=self.properties['alarm_control_panel'])
         elif new in (self.AlarmStates.away, self.AlarmStates.home):
             self.log('Arming the security system: "{0}"'.format(new.name))
             self.call_service(
                 'alarm_control_panel/alarm_arm_{0}'.format(
                     new.value.split('_')[1]),
-                entity_id=self.ALARM_CONTROL_PANEL)
+                entity_id=self.properties['alarm_control_panel'])
         else:
             raise AttributeError("Can't set alarm to state: {0}".format(new))
 
@@ -289,7 +269,8 @@ class SecurityManager(Base):
         super().initialize()
 
         self.listen_state(
-            self._security_system_change_cb, self.ALARM_CONTROL_PANEL)
+            self._security_system_change_cb,
+            self.properties['alarm_control_panel'])
 
     def _security_system_change_cb(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -301,6 +282,7 @@ class SecurityManager(Base):
     def get_insecure_entities(self) -> list:
         """Return a list of insecure entities."""
         return [
-            name for name, entity in self.IS_INSECURE_MAPPING.items()
-            if self.get_state(entity['entity']) == entity['state']
+            entity['friendly_name']
+            for entity in self.properties['secure_status_mapping']
+            if self.get_state(entity['entity_id']) == entity['state']
         ]
