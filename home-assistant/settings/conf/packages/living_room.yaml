@@ -51,9 +51,3 @@ sensor:
           {% else %}
             mdi:apps
           {% endif %}
-
-wemo:
-  static:
-    - wemo-1.phil.iot
-    - wemo-2.phil.iot
-    - wemo-3.phil.iot

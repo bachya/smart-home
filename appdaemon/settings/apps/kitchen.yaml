@@ -1,0 +1,40 @@
+---
+bar_cart_on_at_sunset_automation:
+  module: switches
+  class: ToggleAtTime
+  dependencies:
+    - guest_mode
+    - presence_manager
+    - vacation_mode
+  entities:
+    switch: switch.bar_cart
+  properties:
+    presence_required: true
+    schedule_time: sunset
+    state: "on"
+  mode_alterations:
+    guest_mode: disable
+    vacation_mode: disable
+  enabled_config:
+    name: Turn on at sunset
+    icon: mdi:weather-sunset-down
+    initial: true
+
+bar_cart_on_upon_arrival_automation:
+  module: switches
+  class: TurnOnUponArrival
+  dependencies:
+    - guest_mode
+    - presence_manager
+  entities:
+    switch: switch.bar_cart
+  properties:
+    possible_constraints:
+      constrain_sun: "down"
+    trigger_on_first_only: true
+  mode_alterations:
+    guest_mode: disable
+  enabled_config:
+    name: Turn on upon arrival
+    icon: mdi:car
+    initial: true

@@ -39,6 +39,14 @@ bad_login_notifications_automation:
   icon: mdi:alert-circle
   initial: true
   name: Bad login notifications
+bar_cart_on_at_sunset_automation:
+  icon: mdi:weather-sunset-down
+  initial: true
+  name: Turn on at sunset
+bar_cart_on_upon_arrival_automation:
+  icon: mdi:car
+  initial: true
+  name: Turn on upon arrival
 christmas_tree_on_in_morning_automation:
   icon: mdi:weather-sunset-up
   initial: true

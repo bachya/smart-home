@@ -12,6 +12,7 @@ google_actions:
       - script.empty_dishwasher
       - script.empty_wolfie
       - switch.backyard_lights
+      - switch.bar_cart
       - switch.christmas_tree
       - switch.fireplace
       - switch.front_patio_light
@@ -60,6 +61,8 @@ google_actions:
       room: Laundry area
     switch.backyard_lights:
       room: Backyard
+    switch.bar_cart:
+      room: Kitchen
     switch.christmas_tree:
       room: Living room
     switch.fireplace:

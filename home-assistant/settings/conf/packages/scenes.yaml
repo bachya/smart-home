@@ -18,6 +18,8 @@ scene:
         state: paused
       remote.living_room_tv:
         state: false
+      switch.bar_cart:
+        state: false
       switch.garage_lights:
         state: false
       switch.fireplace:
@@ -56,6 +58,8 @@ scene:
         state: false
       script.good_night_climate_adjust:
         state: true
+      switch.bar_cart:
+        state: false
       switch.garage_lights:
         state: false
       switch.fireplace:
