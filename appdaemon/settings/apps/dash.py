@@ -30,10 +30,12 @@ class ArmSecuritySystem(ButtonAction):
 
     def run(self) -> None:
         """Set the security system."""
+        state = self._args['state']
+
         try:
-            state = self._hass.security_manager.States[self._args['state']]
+            state = self._hass.security_manager.AlarmStates[state]
         except KeyError:
-            self._hass.error('Unknown state: {0}'.format(self._args['state']))
+            self._hass.error('Unknown state: {0}'.format(state))
 
         self._hass.security_manager.state = state
 
@@ -44,9 +46,9 @@ class BumpClimate(ButtonAction):
     def run(self) -> None:
         """Bump."""
         degrees = self._args['degrees']
-        current_mode = self._hass.climate_manager.mode
 
-        if current_mode == self._hass.climate_manager.Modes.cool:
+        if (self._hass.climate_manager.mode ==
+                self._hass.climate_manager.Modes.cool):
             degrees *= -1
 
         self._hass.climate_manager.indoor_temp += degrees
@@ -88,7 +90,8 @@ class DashButton(Automation):
                 'entities': [
                     'light.salt_lamp_office', 'light.salt_lamp_master_bedroom'
                 ],
-                'master': 'light.salt_lamp_master_bedroom'
+                'master':
+                    'light.salt_lamp_master_bedroom'
             }),
         'Toggle Christmas Tree': (
             ToggleEntity, {

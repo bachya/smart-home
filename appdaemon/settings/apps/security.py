@@ -152,7 +152,7 @@ class GarageLeftOpen(Automation):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Send notifications when the garage has been left open."""
-        message = 'The garage has been left open for a while. Want to close it?'
+        message = 'The garage has been left open. Want to close it?'
 
         self.handles[HANDLE_GARAGE_OPEN] = self.notification_manager.repeat(
             message,
@@ -179,7 +179,8 @@ class GarageLeftOpen(Automation):
                 'No': {
                     'response_text': 'If you really say so...'
                 }
-            }, urgent=True)
+            },
+            urgent=True)
 
     def response_from_push_notification(
             self, event_name: str, data: dict, kwargs: dict) -> None:
