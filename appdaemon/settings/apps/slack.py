@@ -3,7 +3,7 @@
 # pylint: disable=unused-argument,unused-import
 
 import json
-from uuid import uuid4
+from zlib import adler32
 
 from typing import Any, Callable, Dict, Union  # noqa
 
@@ -185,13 +185,13 @@ class SlackApp(Base):
         """Ask a question on Slack (with an optional image)."""
         self._interactive_command_actions = actions
 
-        command_id = str(uuid4())
+        command_id = adler32(question.encode('utf-8'))
 
         attachments = [{
             'fallback': '',
             'callback_id': 'interactive_command_{0}'.format(command_id),
             'actions': [{
-                'name': command_id,
+                'name': '{0}_{1}'.format(command_id, action),
                 'text': action,
                 'type': 'button',
                 'value': action
