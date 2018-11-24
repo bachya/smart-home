@@ -12,8 +12,6 @@ alexa:
       - script.empty_dishwasher
       - script.empty_wolfie
       - switch.backyard_lights
-      - switch.bar_cart
-      - switch.christmas_tree
       - switch.fireplace
       - switch.front_patio_light
       - switch.garage_lights
@@ -60,8 +58,6 @@ alexa:
       name: Empty Wolfie
       display_categories: SWITCH
     switch.backyard_lights:
-      display_categories: LIGHT
-    switch.bar_cart:
       display_categories: LIGHT
     switch.front_patio_light:
       display_categories: LIGHT
