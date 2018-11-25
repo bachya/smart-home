@@ -912,9 +912,9 @@ views:
         type: entities
         title: Network
         entities:
-          - sensor.speedtest_download
-          - sensor.speedtest_upload
-          - sensor.speedtest_ping
+          - sensor.filtered_speedtest_download
+          - sensor.filtered_speedtest_upload
+          - sensor.filtered_speedtest_ping
           - sensor.ssl_expiry
 
       - id: b49c37567da74b8aa4d91c2ac401334b  # Automatically created id

@@ -116,6 +116,30 @@ sensor:
     name: SSL Expiry
     host: !secret ssl_cert_host
 
+  - platform: filter
+    name: Filtered Speedtest Download
+    entity_id: sensor.speedtest_download
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 2
+
+  - platform: filter
+    name: Filtered Speedtest Ping
+    entity_id: sensor.speedtest_ping
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 2
+
+  - platform: filter
+    name: Filtered Speedtest Upload
+    entity_id: sensor.speedtest_upload
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 2
+
   - platform: speedtest
     minute:
       - 0
