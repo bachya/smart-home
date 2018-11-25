@@ -122,7 +122,7 @@ new_portainer_version_automation:
     created_entity_id: sensor.portainer_installed
     endpoint_id: 1
     friendly_name: Portainer Installed
-    icon: mdi:database
+    icon: mdi:server
     image_name: portainer/portainer
     update_interval: 300
   enabled_config:
@@ -184,7 +184,7 @@ new_tasmota_version_automation:
     app_name: Tasmota
     created_entity_id: sensor.lowest_tasmota_installed
     friendly_name: Lowest Tasmota Installed
-    icon: mdi:wifi
+    icon: mdi:lightbulb-on
     tasmota_hosts:
       - climate-sensor-2.phil.iot
       - rf-bridge.phil.iot

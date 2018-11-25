@@ -34,12 +34,12 @@
 "sensor.mosquitto_*":
   icon: mdi:wifi
 "sensor.portainer_*":
-  icon: mdi:database
+  icon: mdi:server
 "sensor.ps4waker_*":
   icon: mdi:playstation
 "sensor.tasmoadmin_*":
   icon: mdi:lightbulb-on
 "sensor.tasmota_*":
-  icon: mdi:wifi
+  icon: mdi:lightbulb-on
 "sensor.yi_hack_*":
   icon: mdi:cctv
