@@ -52,6 +52,14 @@ views:
           - input_boolean.mode_vacation_mode
         show_header_toggle: false
 
+      - type: entities
+        title: Celestial
+        entities:
+          - sensor.friendly_season
+          - sensor.moon_phase
+          - sensor.sunset
+          - sensor.sunrise
+
       - id: ed4c33ece2d94976b465d9876e2d19a0  # Automatically created id
         type: vertical-stack
         cards:

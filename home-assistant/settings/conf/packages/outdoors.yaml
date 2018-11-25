@@ -23,6 +23,47 @@ sensor:
       - temperature
       - wind_speed
 
+  - platform: moon
+
   - platform: season
+
+  - platform: template
+    sensors:
+      friendly_season:
+        friendly_name: Season
+        value_template: "{{ states.sensor.season.state | title }}"
+        icon_template: >
+          {% if states.sensor.season.state == 'spring' %}
+            mdi:flower
+          {% elif states.sensor.season.state == 'summer' %}
+            mdi:sunglasses
+          {% elif states.sensor.season.state == 'autumn' %}
+            mdi:leaf
+          {% elif states.sensor.season.state == 'winter' %}
+            mdi:snowflake
+          {% endif %}
+      moon_phase:
+        friendly_name: Moon Phase
+        value_template: >
+          {{ states.sensor.moon.state | replace('_', ' ') | title }}
+        icon_template: mdi:weather-night
+      sunrise:
+        friendly_name: Next Sunrise
+        value_template: >
+          {{
+            as_timestamp(states.sun.sun.attributes.next_rising) |
+            timestamp_custom(' %I:%M %p') |
+            replace(' 0', '')
+          }}
+        icon_template: mdi:weather-sunset-up
+      sunset:
+        friendly_name: Next Sunset
+        value_template: >
+          {{
+            as_timestamp(states.sun.sun.attributes.next_setting) |
+            timestamp_custom(' %I:%M %p') |
+            replace(' 0', '')
+          }}
+        icon_template: mdi:weather-sunset-down
 
 sun:
