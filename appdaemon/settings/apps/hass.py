@@ -51,19 +51,27 @@ class BadLoginNotification(Automation):
         """Initialize."""
         super().initialize()
 
-        self.listen_state(
-            self.bad_login_detected,
-            self.entities['notification'],
-            constrain_input_boolean=self.enabled_entity_id)
+        for notification_type in self.entities.values():
+            self.listen_state(
+                self.send_alert,
+                notification_type,
+                attribute='all',
+                constrain_input_boolean=self.enabled_entity_id)
 
-    def bad_login_detected(  # pylint: disable=too-many-arguments
-            self, entity: Union[str, dict], attribute: str, old: str, new: str,
+    def send_alert(  # pylint: disable=too-many-arguments
+            self, entity: str, attribute: str, old: str, new: dict,
             kwargs: dict) -> None:
         """Send a notification when there's a bad login attempt."""
-        self.log('Registering a hack attempt: {0}'.format(new))
-
-        if new != 'unknown':
-            self.notification_manager.send('Hack Attempt', new, target='Aaron')
+        if not new:
+            return
+        
+        if entity == self.entities['bad_login']:
+            title = 'Unauthorized Access Attempt'
+        else:
+            title = 'IP Ban'
+            
+        self.notification_manager.send(
+            new['attributes']['message'], title=title, target='Aaron')
 
 
 class DetectBlackout(Automation):
