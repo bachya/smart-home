@@ -1,26 +1,17 @@
 """Definetoo-few-public-methods an app for working with Alexa."""
 # pylint: disable=attribute-defined-outside-init,unused-argument
 
-import random
 from typing import Tuple
 
 from automation import Base  # type: ignore
 from util import grammatical_list_join, relative_search_dict  # type: ignore
+from util import random_affirmative_response
 from util.string import camel_to_underscore   # type: ignore
 
 
 class Alexa(Base):
     """Define a class to represent the app."""
 
-    AFFIRMATIVE_RESPONSES = [
-        '10 4.', 'Affirmative.', 'As you decree, so shall it be.',
-        'As you wish.', 'By your command.', 'Consider it done.', 'Done.',
-        'I can do that.', 'If you insist.', 'It shall be done.',
-        'Leave it to me.', 'No Problem.', 'No worries.', 'OK.', 'Roger that.',
-        'So say we all.', 'Sure.', 'Will do.', 'You got it.'
-    ]
-
-    # --- INITIALIZERS --------------------------------------------------------
     def initialize(self) -> None:
         """Initialize."""
         super().initialize()
@@ -35,7 +26,6 @@ class Alexa(Base):
 
         self.register_endpoint(self._alexa_endpoint, 'alexa')
 
-    # --- ENDPOINTS -----------------------------------------------------------
     def _alexa_endpoint(self, data: dict) -> Tuple[dict, int]:
         """Define an API endpoint to pull Alexa intents."""
         intent = self.get_alexa_intent(data)
@@ -43,11 +33,9 @@ class Alexa(Base):
 
         if intent is None:
             response = {
-                'status':
-                    'error',
-                'message':
-                    'Alexa error encountered: {}'.format(
-                        self.get_alexa_error(data))
+                'status': 'error',
+                'message': 'Alexa error encountered: {}'.format(
+                    self.get_alexa_error(data))
             }
             self.log(response)
             return response, 502
@@ -66,7 +54,6 @@ class Alexa(Base):
         self.log(response)
         return response, 200
 
-    # --- ALEXA INTENTS -------------------------------------------------------
     def empty_appliance_intent(self, data: dict) -> Tuple[str, str, str]:
         """Define a handler for the EmptyApplianceIntent intent."""
         appliance = self.get_alexa_slot_value(data, 'Appliance')
@@ -81,7 +68,7 @@ class Alexa(Base):
 
         setattr(app, state_attr, desired_state)
 
-        speech = self.random_affirmative_response()
+        speech = random_affirmative_response()
         return speech, speech, '{0} Is {1}'.format(
             name, desired_state.name)  # type: ignore
 
@@ -135,10 +122,6 @@ class Alexa(Base):
             title = title.format(plant)
 
         return speech, speech, title
-
-    def random_affirmative_response(self) -> str:
-        """Return a randomly chosen affirmative response."""
-        return random.choice(self.AFFIRMATIVE_RESPONSES)
 
     def repeat_tts_intent(self, data: dict) -> None:
         """Define a handler for the RepeatTTSIntent intent."""
