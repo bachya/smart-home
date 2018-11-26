@@ -6,10 +6,10 @@ from typing import Any, Tuple, Union
 import Levenshtein
 
 AFFIRMATIVE_RESPONSES = [
-    '10 4.', 'Affirmative.', 'As you decree, so shall it be.', 'As you wish.',
+    '10-4.', 'Affirmative.', 'As you decree, so shall it be.', 'As you wish.',
     'By your command.', 'Consider it done.', 'Done.', 'I can do that.',
     'If you insist.', 'It shall be done.', 'Leave it to me.',
-    'Making things happen.', 'No Problem.', 'No worries.', 'OK.',
+    'Making things happen.', 'No problem.', 'No worries.', 'OK.',
     'Roger that.', 'So say we all.', 'Sure.', 'Will do.', 'You got it.'
 ]
 
@@ -24,17 +24,26 @@ def most_common(the_list: list) -> Any:
     return max(set(the_list), key=the_list.count)
 
 
-def random_affirmative_response() -> str:
+def random_affirmative_response(replace_hyphens: bool = True) -> str:
     """Return a randomly chosen affirmative response."""
-    return random.choice(AFFIRMATIVE_RESPONSES)
+    choice = random.choice(AFFIRMATIVE_RESPONSES)
+
+    if replace_hyphens:
+        return choice.replace('-', ' ')
+
+    return choice
 
 
 def relative_search_dict(
         candidates: dict, target: str,
         threshold: float = 0.3) -> Tuple[Union[None, str], Union[None, str]]:
     """Return a key/value pair (or its closest neighbor) from a dict."""
-    if target.lower() in [k.lower() for k in candidates.keys()]:
-        return (target, candidates[target])
+    try:
+        key = next(
+            (k for k in candidates.keys() if target.lower() in k.lower()))
+        return (key, candidates[key])
+    except StopIteration:
+        pass
 
     try:
         matches = sorted([
@@ -53,8 +62,10 @@ def relative_search_list(
         candidates: list, target: str,
         threshold: float = 0.3) -> Union[None, str]:
     """Return an item (or its closest neighbor) from a list."""
-    if target.lower() in [c.lower() for c in candidates]:
-        return target
+    try:
+        return next((c for c in candidates if target.lower() in c.lower()))
+    except StopIteration:
+        pass
 
     try:
         matches = sorted([

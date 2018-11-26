@@ -9,10 +9,6 @@ slack_app_home_assistant:
   properties:
     interactive_command_event: HOME_ASSISTANT_INTERACTIVE_COMMAND
     slash_command_event: HOME_ASSISTANT_SLASH_COMMAND
-    toggle_entities:
-      - friendly_name: Christmas Tree
-        entity_id: switch.christmas_tree
-      - friendly_name: Media Center
-        entity_id: switch.media_center
-      - friendly_name: PS4
-        entity_id: switch.ps4
+    toggle_domains:
+      - light
+      - switch

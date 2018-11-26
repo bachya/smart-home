@@ -10,7 +10,7 @@ from typing import Any, Callable, Dict, Union  # noqa
 from automation import Base  # type: ignore
 from util import (
     grammatical_list_join, random_affirmative_response,
-    relative_search_dict)  # type: ignore
+    relative_search_list)  # type: ignore
 
 
 def message(response_url: str, text: str, attachments: list = None) -> None:
@@ -101,42 +101,46 @@ class Thermostat(SlashCommand):
 class Toggle(SlashCommand):
     """Define an object to handle the /toggle command."""
 
-    def __init__(self, hass: Base, text: str, response_url: str) -> None:
-        """Initialize."""
-        super().__init__(hass, text, response_url)
-
-        self._toggle_map = {}  # type: Dict[str, str]
-        for entity in hass.properties['toggle_entities']:
-            self._toggle_map[entity['friendly_name']] = entity['entity_id']
-
     def execute(self) -> None:
         """Execute the response to the slash command."""
+        entity_ids = [
+            entity_id for domain in self._hass.properties['toggle_domains']
+            for entity_id in self._hass.get_state(domain).keys()
+        ]
+
         tokens = self._text.split(' ')
 
         if 'on' in tokens:
             method_name = 'turn_on'
+            new_state = 'on'
             tokens.remove('on')
         elif 'off' in tokens:
             method_name = 'turn_off'
+            new_state = 'off'
             tokens.remove('off')
         else:
             method_name = 'toggle'
+            new_state = None  # type: ignore
 
-        target = ' '.join(tokens)
-        _, entity = relative_search_dict(self._toggle_map, target)
+        target = '_'.join(tokens)
+        entity_id = relative_search_list(entity_ids, target)
 
-        if not entity:
-            entity = target
+        if new_state is None:
+            if self._hass.get_state(entity_id) == 'on':
+                new_state = 'off'
+            else:
+                new_state = 'on'
 
         try:
             method = getattr(self._hass, method_name)
-            method(entity)
+            method(entity_id)
             self.message(
                 '{0} `{1}` is now `{2}`.'.format(
-                    random_affirmative_response(), entity,
-                    self._hass.get_state(entity)))
-        except ValueError:
-            self.message("Sorry: I don't know what `{0}` is.".format(entity))
+                    random_affirmative_response(replace_hyphens=False),
+                    entity_id,
+                    new_state))
+        except (TypeError, ValueError):
+            self.message("Sorry: I don't know what `{0}` is.".format(target))
 
 
 class SlackApp(Base):
