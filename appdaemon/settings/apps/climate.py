@@ -115,10 +115,6 @@ class ClimateManager(Base):
         return self.get_state(
             self.entities['thermostat'], attribute='away_mode') == 'on'
 
-    def set_away_mode(self, value: "AwayModes") -> None:
-        """Set the state of away mode."""
-        self.call_service('nest/set_mode', home_mode=value.name)
-
     @property
     def indoor_temp(self) -> int:
         """Return the temperature the thermostat is currently set to."""
@@ -129,25 +125,11 @@ class ClimateManager(Base):
         except TypeError:
             return 0
 
-    def set_indoor_temp(self, value: int) -> None:
-        """Set the thermostat temperature."""
-        self.call_service(
-            'climate/set_temperature',
-            entity_id=self.entities['thermostat'],
-            temperature=str(value))
-
     @property
     def mode(self) -> Enum:
         """Return the current operating mode."""
         return self.Modes[self.get_state(
             self.entities['thermostat'], attribute='operation_mode')]
-
-    def set_mode(self, value: Enum) -> None:
-        """Set the themostat's operating mode."""
-        self.call_service(
-            'climate/set_operation_mode',
-            entity_id=self.entities['thermostat'],
-            operation_mode=value.name)
 
     @property
     def outside_temp(self) -> float:
@@ -168,17 +150,34 @@ class ClimateManager(Base):
                 'message': 'Missing "amount" parameter'
             }, 502
 
-        # Anticipating that we'll get values like "5" and "-3" from the API
-        # call:
-        target_temp = self.indoor_temp + int(data['amount'])
-        self.set_indoor_temp(target_temp)
+        self.bump_indoor_temp(int(data['amount']))
+
         return {
-            "status":
-                "ok",
-            "message":
-                'Bumping temperature {0}° (to {1}°)'.format(
-                    data['amount'], target_temp)
+            "status": "ok",
+            "message": 'Bumping temperature {0}°'.format(data['amount'])
         }, 200
+
+    def bump_indoor_temp(self, value: int) -> None:
+        """Bump the current temperature."""
+        self.set_indoor_temp(self.indoor_temp + value)
+
+    def set_away_mode(self, value: "AwayModes") -> None:
+        """Set the state of away mode."""
+        self.call_service('nest/set_mode', home_mode=value.name)
+
+    def set_indoor_temp(self, value: int) -> None:
+        """Set the thermostat temperature."""
+        self.call_service(
+            'climate/set_temperature',
+            entity_id=self.entities['thermostat'],
+            temperature=str(value))
+
+    def set_mode(self, value: Enum) -> None:
+        """Set the themostat's operating mode."""
+        self.call_service(
+            'climate/set_operation_mode',
+            entity_id=self.entities['thermostat'],
+            operation_mode=value.name)
 
 
 class NotifyBadAqi(Automation):

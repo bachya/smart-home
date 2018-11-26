@@ -45,7 +45,7 @@ class BumpClimate(ButtonAction):
                 self._hass.climate_manager.Modes.cool):
             degrees *= -1
 
-        self._hass.climate_manager.indoor_temp += degrees
+        self._hass.climate_manager.bump_indoor_temp(degrees)
 
 
 class ToggleEntity(ButtonAction):
