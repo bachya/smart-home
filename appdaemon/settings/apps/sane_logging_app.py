@@ -51,8 +51,8 @@ class SaneLoggingApp(object):
         self.listen_event(
             self._handle_log_wrapper_debug, event='LOGWRAPPER_SET_DEBUG'
         )
-        format = "[%(levelname)s %(filename)s:%(lineno)s - " \
-                 "%(name)s.%(funcName)s() ] %(message)s"
+        format = "[ %(levelname)s %(filename)s:%(lineno)s - %(funcName)s() ] " \
+            "%(message)s"
         formatter = logging.Formatter(fmt=format)
         self.get_main_log().handlers[0].setFormatter(formatter)
         if debug_default:
