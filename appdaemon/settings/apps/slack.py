@@ -11,9 +11,9 @@ from automation import Base  # type: ignore
 from util import grammatical_list_join, relative_search_dict  # type: ignore
 
 TOGGLE_MAP = {
-    'Christmas Tree 🎄': 'switch.christmas_tree',
-    'Media Center 🍿': 'switch.media_center',
-    'PS4 🎮': 'switch.ps4',
+    'Christmas Tree': 'switch.christmas_tree',
+    'Media Center': 'switch.media_center',
+    'PS4': 'switch.ps4',
 }
 
 
@@ -102,7 +102,7 @@ class Thermostat(SlashCommand):
         self.message("I've set the thermostat to {0}°.".format(self._text))
 
 
-class ToggleEntity(SlashCommand):
+class Toggle(SlashCommand):
     """Define an object to handle the /toggle command."""
 
     def execute(self) -> None:
@@ -123,8 +123,8 @@ class ToggleEntity(SlashCommand):
         key, entity = relative_search_dict(TOGGLE_MAP, target)
 
         if not entity:
-            self.message("I'm sorry, I don't know \"{0}\".".format(target))
-            return
+            entity = target
+            key = target
 
         method = getattr(self._hass, 'turn_{0}'.format(state))
         method(entity)
@@ -137,7 +137,7 @@ class SlackApp(Base):
     COMMAND_MAP = {
         'security': Security,
         'thermostat': Thermostat,
-        'toggle': ToggleEntity,
+        'toggle': Toggle,
     }
 
     def initialize(self) -> None:
