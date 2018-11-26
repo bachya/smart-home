@@ -234,38 +234,6 @@ class SecurityManager(Base):
         return self.AlarmStates(
             self.get_state(self.entities['alarm_control_panel']))
 
-    def set_alarm(self, new: "AlarmStates") -> None:
-        """Set the security system."""
-        if new == self.AlarmStates.disarmed:
-            self.log('Disarming the security system')
-
-            self.call_service(
-                'alarm_control_panel/alarm_disarm',
-                entity_id=self.entities['alarm_control_panel'])
-        elif new in (self.AlarmStates.away, self.AlarmStates.home):
-            self.log('Arming the security system: "{0}"'.format(new.name))
-
-            self.call_service(
-                'alarm_control_panel/alarm_arm_{0}'.format(
-                    new.value.split('_')[1]),
-                entity_id=self.entities['alarm_control_panel'])
-        else:
-            raise AttributeError("Unknown security state: {0}".format(new))
-
-    def close_garage(self) -> None:
-        """Close the garage."""
-        self.log('Closing the garage door')
-
-        self.call_service(
-            'cover.close_cover', entity_id=self.entities['garage_door'])
-
-    def open_garage(self) -> None:
-        """Open the garage."""
-        self.log('Closing the garage door')
-
-        self.call_service(
-            'cover.open_cover', entity_id=self.entities['garage_door'])
-
     @property
     def secure(self) -> bool:
         """Return whether the house is secure or not."""
@@ -287,6 +255,13 @@ class SecurityManager(Base):
         if new != 'unknown':
             self.fire_event('ALARM_CHANGE', state=new)
 
+    def close_garage(self) -> None:
+        """Close the garage."""
+        self.log('Closing the garage door')
+
+        self.call_service(
+            'cover.close_cover', entity_id=self.entities['garage_door'])
+
     def get_insecure_entities(self) -> list:
         """Return a list of insecure entities."""
         return [
@@ -294,3 +269,28 @@ class SecurityManager(Base):
             for entity in self.entities['secure_status_mapping']
             if self.get_state(entity['entity_id']) == entity['state']
         ]
+
+    def open_garage(self) -> None:
+        """Open the garage."""
+        self.log('Closing the garage door')
+
+        self.call_service(
+            'cover.open_cover', entity_id=self.entities['garage_door'])
+
+    def set_alarm(self, new: "AlarmStates") -> None:
+        """Set the security system."""
+        if new == self.AlarmStates.disarmed:
+            self.log('Disarming the security system')
+
+            self.call_service(
+                'alarm_control_panel/alarm_disarm',
+                entity_id=self.entities['alarm_control_panel'])
+        elif new in (self.AlarmStates.away, self.AlarmStates.home):
+            self.log('Arming the security system: "{0}"'.format(new.name))
+
+            self.call_service(
+                'alarm_control_panel/alarm_arm_{0}'.format(
+                    new.value.split('_')[1]),
+                entity_id=self.entities['alarm_control_panel'])
+        else:
+            raise AttributeError("Unknown security state: {0}".format(new))
