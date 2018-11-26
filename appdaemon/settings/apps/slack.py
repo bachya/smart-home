@@ -10,12 +10,6 @@ from typing import Any, Callable, Dict, Union  # noqa
 from automation import Base  # type: ignore
 from util import grammatical_list_join, relative_search_dict  # type: ignore
 
-TOGGLE_MAP = {
-    'Christmas Tree': 'switch.christmas_tree',
-    'Media Center': 'switch.media_center',
-    'PS4': 'switch.ps4',
-}
-
 
 def message(response_url: str, text: str, attachments: list = None) -> None:
     """Send a response via the Slack app."""
@@ -105,6 +99,14 @@ class Thermostat(SlashCommand):
 class Toggle(SlashCommand):
     """Define an object to handle the /toggle command."""
 
+    def __init__(self, hass: Base, text: str, response_url: str) -> None:
+        """Initialize."""
+        super().__init__(hass, text, response_url)
+
+        self._toggle_map = {}  # type: Dict[str, str]
+        for entity in hass.properties['toggle_entities']:
+            self._toggle_map[entity['friendly_name']] = entity['entity_id']
+
     def execute(self) -> None:
         """Execute the response to the slash command."""
         tokens = self._text.split(' ')
@@ -120,7 +122,7 @@ class Toggle(SlashCommand):
             return
 
         target = ' '.join(tokens)
-        key, entity = relative_search_dict(TOGGLE_MAP, target)
+        key, entity = relative_search_dict(self._toggle_map, target)
 
         if not entity:
             entity = target
