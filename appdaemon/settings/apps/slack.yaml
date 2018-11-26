@@ -10,5 +10,7 @@ slack_app_home_assistant:
     interactive_command_event: HOME_ASSISTANT_INTERACTIVE_COMMAND
     slash_command_event: HOME_ASSISTANT_SLASH_COMMAND
     toggle_domains:
+      - group
       - light
+      - script
       - switch
