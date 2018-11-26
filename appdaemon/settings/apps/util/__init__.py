@@ -40,8 +40,7 @@ def relative_search_dict(
         matches = sorted([
             k for k in candidates.keys()
             if Levenshtein.ratio(target, k) > threshold
-        ],
-                         reverse=True)
+        ], reverse=True)
         winner = matches[0]
         return (winner, candidates[winner])
     except IndexError:
@@ -60,8 +59,7 @@ def relative_search_list(
     try:
         matches = sorted([
             c for c in candidates if Levenshtein.ratio(target, c) > threshold
-        ],
-                         reverse=True)
+        ], reverse=True)
         return matches[0]
     except IndexError:
         pass
