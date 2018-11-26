@@ -8,7 +8,9 @@ from zlib import adler32
 from typing import Any, Callable, Dict, Union  # noqa
 
 from automation import Base  # type: ignore
-from util import grammatical_list_join, relative_search_dict  # type: ignore
+from util import (
+    grammatical_list_join, random_affirmative_response,
+    relative_search_dict)  # type: ignore
 
 
 def message(response_url: str, text: str, attachments: list = None) -> None:
@@ -69,7 +71,7 @@ class Security(SlashCommand):
         elif self._text == 'home':
             sec_mgr = self._hass.security_manager
             sec_mgr.state = sec_mgr.States.home
-            self.message('The security system has been set to "Home".')
+            self.message('The security system has been set to `Home`.')
 
 
 class Thermostat(SlashCommand):
@@ -82,18 +84,18 @@ class Thermostat(SlashCommand):
                     self._hass.climate_manager.Modes.eco):
                 text = 'The thermostat is set to eco mode.'
             else:
-                text = 'The thermostat is set to {0} to {1}°.'.format(
+                text = 'The thermostat is set to `{0}` to `{1}°`.'.format(
                     self._hass.climate_manager.mode.name,
                     self._hass.climate_manager.indoor_temp)
 
             self.message(
-                '{0} (current indoor temperature: {1}°)'.format(
+                '{0} The current indoor temperature is `{1}°`.'.format(
                     text,
                     self._hass.climate_manager.average_indoor_temperature))
             return
 
         self._hass.climate_manager.set_indoor_temp(int(self._text))
-        self.message("I've set the thermostat to {0}°.".format(self._text))
+        self.message("I've set the thermostat to `{0}°`.".format(self._text))
 
 
 class Toggle(SlashCommand):
@@ -112,25 +114,29 @@ class Toggle(SlashCommand):
         tokens = self._text.split(' ')
 
         if 'on' in tokens:
-            state = 'on'
+            method_name = 'turn_on'
             tokens.remove('on')
         elif 'off' in tokens:
-            state = 'off'
+            method_name = 'turn_off'
             tokens.remove('off')
         else:
-            self.message("Didn't find either \"on\" or \"off\".")
-            return
+            method_name = 'toggle'
 
         target = ' '.join(tokens)
-        key, entity = relative_search_dict(self._toggle_map, target)
+        _, entity = relative_search_dict(self._toggle_map, target)
 
         if not entity:
             entity = target
-            key = target
 
-        method = getattr(self._hass, 'turn_{0}'.format(state))
-        method(entity)
-        self.message("I've turned \"{0}\" {1}.".format(key, state))
+        try:
+            method = getattr(self._hass, method_name)
+            method(entity)
+            self.message(
+                '{0} `{1}` is now `{2}`.'.format(
+                    random_affirmative_response(), entity,
+                    self._hass.get_state(entity)))
+        except ValueError:
+            self.message("Sorry: I don't know what `{0}` is.".format(entity))
 
 
 class SlackApp(Base):
@@ -191,8 +197,10 @@ class SlackApp(Base):
         command_id = adler32(question.encode('utf-8'))
 
         attachments = [{
-            'fallback': '',
-            'callback_id': 'interactive_command_{0}'.format(command_id),
+            'fallback':
+                '',
+            'callback_id':
+                'interactive_command_{0}'.format(command_id),
             'actions': [{
                 'name': '{0}_{1}'.format(command_id, action),
                 'text': action,

@@ -1,8 +1,17 @@
 """Define generic utils."""
 import datetime
+import random
 from typing import Any, Tuple, Union
 
 import Levenshtein
+
+AFFIRMATIVE_RESPONSES = [
+    '10 4.', 'Affirmative.', 'As you decree, so shall it be.', 'As you wish.',
+    'By your command.', 'Consider it done.', 'Done.', 'I can do that.',
+    'If you insist.', 'It shall be done.', 'Leave it to me.',
+    'Making things happen.', 'No Problem.', 'No worries.', 'OK.',
+    'Roger that.', 'So say we all.', 'Sure.', 'Will do.', 'You got it.'
+]
 
 
 def grammatical_list_join(the_list: list) -> str:
@@ -13,6 +22,11 @@ def grammatical_list_join(the_list: list) -> str:
 def most_common(the_list: list) -> Any:
     """Return the most common element in a list."""
     return max(set(the_list), key=the_list.count)
+
+
+def random_affirmative_response() -> str:
+    """Return a randomly chosen affirmative response."""
+    return random.choice(AFFIRMATIVE_RESPONSES)
 
 
 def relative_search_dict(
@@ -26,7 +40,8 @@ def relative_search_dict(
         matches = sorted([
             k for k in candidates.keys()
             if Levenshtein.ratio(target, k) > threshold
-        ], reverse=True)
+        ],
+                         reverse=True)
         winner = matches[0]
         return (winner, candidates[winner])
     except IndexError:
@@ -45,7 +60,8 @@ def relative_search_list(
     try:
         matches = sorted([
             c for c in candidates if Levenshtein.ratio(target, c) > threshold
-        ], reverse=True)
+        ],
+                         reverse=True)
         return matches[0]
     except IndexError:
         pass
