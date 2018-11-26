@@ -83,7 +83,8 @@ class PresenceManager(Base):
             self.state = self.ProximityStates.away
 
         if self.state != old_state:
-            self.log('Proximity event: {0}'.format(self.state.value))
+            self._log.debug('Proximity event: %s', self.state.value)
+
             self.fire_event(
                 'PROXIMITY_CHANGE', old=old_state.value, new=self.state.value)
 

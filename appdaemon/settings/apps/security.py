@@ -41,7 +41,7 @@ class AbsentInsecure(Automation):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Send notifications when the house has been left insecure."""
-        self.log('No one home and house is insecure; notifying')
+        self._log.info('No one home and house is insecure; notifying')
 
         self.notification_manager.send(
             "No one is home and the house isn't locked up.",
@@ -60,11 +60,11 @@ class AbsentInsecure(Automation):
             data['sourceDevicePermanentID'])
 
         if kwargs['action'] == 'home':
-            self.log('Responding to iOS request to lock up home (home)')
+            self._log.debug('Responding to iOS request to lock up home (home)')
 
             self.turn_on('scene.good_night')
         elif kwargs['action'] == 'away':
-            self.log('Responding to iOS request to lock up home (away)')
+            self._log.debug('Responding to iOS request to lock up home (away)')
 
             self.turn_on('scene.depart_home')
 
@@ -92,7 +92,7 @@ class AutoDepartureLockup(Automation):
                 data['old'] == self.presence_manager.ProximityStates.home.value
                 and data['new'] !=
                 self.presence_manager.ProximityStates.home.value):
-            self.log('Everyone has left; locking up')
+            self._log.info('Everyone has left; locking up')
 
             self.turn_on('scene.depart_home')
 
@@ -112,7 +112,7 @@ class AutoNighttimeLockup(Automation):
 
     def midnight(self, kwargs: dict) -> None:
         """Lock up the house at midnight."""
-        self.log('Activating "Good Night"')
+        self._log.info('Activating "Good Night"')
 
         self.call_service('scene/turn_on', entity_id='scene.good_night')
 
@@ -180,7 +180,7 @@ class GarageLeftOpen(Automation):
     def response_from_push_notification(
             self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to 'ios.notification_action_fired' events."""
-        self.log('Responding to iOS request to close garage')
+        self._log.debug('Responding to iOS request to close garage')
 
         self.security_manager.close_garage()
 
@@ -208,7 +208,7 @@ class NotifyOnChange(Automation):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Send a notification when the security state changes."""
-        self.log('Notifying of security status change: {0}'.format(new))
+        self._log.info('Notifying of security status change: %s', new)
 
         self.notification_manager.send(
             'The security status has changed to "{0}"'.format(new),
@@ -257,7 +257,7 @@ class SecurityManager(Base):
 
     def close_garage(self) -> None:
         """Close the garage."""
-        self.log('Closing the garage door')
+        self._log.info('Closing the garage door')
 
         self.call_service(
             'cover.close_cover', entity_id=self.entities['garage_door'])
@@ -272,7 +272,7 @@ class SecurityManager(Base):
 
     def open_garage(self) -> None:
         """Open the garage."""
-        self.log('Closing the garage door')
+        self._log.info('Closing the garage door')
 
         self.call_service(
             'cover.open_cover', entity_id=self.entities['garage_door'])
@@ -280,13 +280,13 @@ class SecurityManager(Base):
     def set_alarm(self, new: "AlarmStates") -> None:
         """Set the security system."""
         if new == self.AlarmStates.disarmed:
-            self.log('Disarming the security system')
+            self._log.info('Disarming the security system')
 
             self.call_service(
                 'alarm_control_panel/alarm_disarm',
                 entity_id=self.entities['alarm_control_panel'])
         elif new in (self.AlarmStates.away, self.AlarmStates.home):
-            self.log('Arming the security system: "{0}"'.format(new.name))
+            self._log.info('Arming the security system: "%s"', new.name)
 
             self.call_service(
                 'alarm_control_panel/alarm_arm_{0}'.format(

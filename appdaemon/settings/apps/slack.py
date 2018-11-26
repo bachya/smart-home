@@ -201,10 +201,8 @@ class SlackApp(Base):
         command_id = adler32(question.encode('utf-8'))
 
         attachments = [{
-            'fallback':
-                '',
-            'callback_id':
-                'interactive_command_{0}'.format(command_id),
+            'fallback': '',
+            'callback_id': 'interactive_command_{0}'.format(command_id),
             'actions': [{
                 'name': '{0}_{1}'.format(command_id, action),
                 'text': action,
@@ -238,9 +236,9 @@ class SlackApp(Base):
             self.error('Unknown slash command: {0}'.format(command))
             return
 
-        self.log(
-            'Running Slack slash command: {0} {1}'.format(
-                data['command'], data['text']))
+        self._log.info(
+            'Running Slack slash command: %s %s', data['command'],
+            data['text'])
 
         slash_command = self.COMMAND_MAP[command](
             self, data['text'], data['response_url'])

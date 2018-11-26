@@ -6,7 +6,7 @@ from typing import Tuple
 from automation import Base  # type: ignore
 from util import grammatical_list_join, relative_search_dict  # type: ignore
 from util import random_affirmative_response
-from util.string import camel_to_underscore   # type: ignore
+from util.string import camel_to_underscore  # type: ignore
 
 
 class Alexa(Base):
@@ -29,15 +29,19 @@ class Alexa(Base):
     def _alexa_endpoint(self, data: dict) -> Tuple[dict, int]:
         """Define an API endpoint to pull Alexa intents."""
         intent = self.get_alexa_intent(data)
-        self.log('Received Alexa intent: {}'.format(intent))
+
+        self._log.info('Received Alexa intent: %s', intent)
 
         if intent is None:
+            message = 'Alexa error encountered: {0}'.format(
+                self.get_alexa_error(data))
             response = {
                 'status': 'error',
-                'message': 'Alexa error encountered: {}'.format(
-                    self.get_alexa_error(data))
+                'message': message,
             }
-            self.log(response)
+
+            self._log.error(message)
+
             return response, 502
 
         try:
@@ -50,8 +54,9 @@ class Alexa(Base):
             speech = "I'm sorry, the {0} app does not exist.".format(intent)
             response = self.format_alexa_response(speech=speech)
 
-        self.log('Answering: {}'.format(speech), level='DEBUG')
-        self.log(response)
+        self._log.info('Answering: %s', speech)
+        self._log.debug(response)
+
         return response, 200
 
     def empty_appliance_intent(self, data: dict) -> Tuple[str, str, str]:
@@ -61,10 +66,10 @@ class Alexa(Base):
             self.appliance_state_info, appliance)
         app, state_attr, desired_state = attrs
 
-        self.log('Appliance name: {0}'.format(name), level='DEBUG')
-        self.log('App: {0}'.format(app), level='DEBUG')
-        self.log('State attribute: {0}'.format(state_attr), level='DEBUG')
-        self.log('Desired state: {0}'.format(desired_state), level='DEBUG')
+        self._log.debug('Appliance name: %s', name)
+        self._log.debug('App: %s', app)
+        self._log.debug('State attribute: %s', state_attr)
+        self._log.debug('Desired state: %s', desired_state)
 
         setattr(app, state_attr, desired_state)
 
@@ -100,8 +105,8 @@ class Alexa(Base):
         plant = self.get_alexa_slot_value(data, 'Plant')
         name, sensor = relative_search_dict(plant_sensors, plant)
 
-        self.log('Plant name: {0}'.format(name), level='DEBUG')
-        self.log('Plant moisture sensor: {0}'.format(sensor), level='DEBUG')
+        self._log.debug('Plant name: %s', name)
+        self._log.debug('Plant moisture sensor: %s', sensor)
 
         title = 'Is {0} Moist Enough?'
         if name and sensor:

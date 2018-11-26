@@ -34,7 +34,7 @@ class NotifyLowFuel(Automation):
                 if self.registered:
                     return
 
-                self.log('Low fuel detected detected: {0}'.format(name))
+                self._log.info('Low fuel detected detected: %s', name)
 
                 self.registered = True
                 self.handles[

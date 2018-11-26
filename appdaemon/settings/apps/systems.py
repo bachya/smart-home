@@ -40,7 +40,7 @@ class LowBatteries(Automation):
             if name in self._registered:
                 return
 
-            self.log('Low battery detected: {0}'.format(name))
+            self._log.info('Low battery detected: %s', name)
 
             self._registered.append(name)
 
@@ -116,7 +116,7 @@ class SslExpiration(Automation):
             kwargs: dict) -> None:
         """When SSL is about to expire, make an OmniFocus todo."""
         if int(new) < self.properties['expiry_threshold']:
-            self.log('SSL certificate about to expire: {0} days'.format(new))
+            self._log.info('SSL certificate about to expire: %s days', new)
 
             self.notification_manager.create_omnifocus_task(
                 'SSL expires in less than {0} days'.format(new))

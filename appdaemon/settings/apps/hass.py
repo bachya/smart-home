@@ -35,11 +35,11 @@ class AutoVacationMode(Automation):
                          kwargs: dict) -> None:
         """Alter Vacation Mode based on presence."""
         if (kwargs['action'] == 'on' and self.vacation_mode.state == 'off'):
-            self.log('Setting vacation mode to "on"')
+            self._log.info('Setting vacation mode to "on"')
 
             self.vacation_mode.state = 'on'
         elif (kwargs['action'] == 'off' and self.vacation_mode.state == 'on'):
-            self.log('Setting vacation mode to "off"')
+            self._log.info('Setting vacation mode to "off"')
 
             self.vacation_mode.state = 'off'
 
@@ -64,12 +64,12 @@ class BadLoginNotification(Automation):
         """Send a notification when there's a bad login attempt."""
         if not new:
             return
-        
+
         if entity == self.entities['bad_login']:
             title = 'Unauthorized Access Attempt'
         else:
             title = 'IP Ban'
-            
+
         self.notification_manager.send(
             new['attributes']['message'], title=title, target='Aaron')
 
@@ -99,7 +99,7 @@ class DetectBlackout(Automation):
 
     def boundary_reached(self, kwargs: dict) -> None:
         """Set the blackout sensor appropriately based on time."""
-        self.log('Setting blackout sensor: {0}'.format(kwargs['state']))
+        self._log.info('Setting blackout sensor: %s', kwargs['state'])
 
         if kwargs['state'] == 'on':
             self.turn_on(self.entities['blackout_switch'])

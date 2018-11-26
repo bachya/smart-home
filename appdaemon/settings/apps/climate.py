@@ -37,7 +37,7 @@ class AdjustOnProximity(Automation):
             if (data['old'] != self.presence_manager.ProximityStates.away.value
                     and data['new'] ==
                     self.presence_manager.ProximityStates.away.value):
-                self.log('Setting thermostat to "Away" (extreme temp)')
+                self._log.info('Setting thermostat to "Away" (extreme temp)')
 
                 self.climate_manager.set_away_mode(
                     self.climate_manager.AwayModes.away)
@@ -47,7 +47,7 @@ class AdjustOnProximity(Automation):
                   self.presence_manager.ProximityStates.away.value
                   and data['new'] !=
                   self.presence_manager.ProximityStates.away.value):
-                self.log('Setting thermostat to "Home" (extreme temp)')
+                self._log.info('Setting thermostat to "Home" (extreme temp)')
 
                 self.climate_manager.set_away_mode(
                     self.climate_manager.AwayModes.home)
@@ -56,7 +56,7 @@ class AdjustOnProximity(Automation):
             if (data['old'] == self.presence_manager.ProximityStates.home.value
                     and data['new'] !=
                     self.presence_manager.ProximityStates.home.value):
-                self.log('Setting thermostat to "Away"')
+                self._log.info('Setting thermostat to "Away"')
 
                 self.climate_manager.set_away_mode(
                     self.climate_manager.AwayModes.away)
@@ -66,7 +66,7 @@ class AdjustOnProximity(Automation):
                   self.presence_manager.ProximityStates.nearby.value
                   and data['new'] ==
                   self.presence_manager.ProximityStates.nearby.value):
-                self.log('Setting thermostat to "Home"')
+                self._log.info('Setting thermostat to "Home"')
 
                 self.climate_manager.set_away_mode(
                     self.climate_manager.AwayModes.home)
@@ -74,7 +74,8 @@ class AdjustOnProximity(Automation):
     def arrived_home(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Last ditch: turn the thermostat to home when someone arrives."""
         if self.climate_manager.away_mode:
-            self.log('Last ditch: setting thermostat to "Home" (arrived)')
+            self._log.info(
+                'Last ditch: setting thermostat to "Home" (arrived)')
 
             self.climate_manager.set_away_mode(
                 self.climate_manager.AwayModes.home)
@@ -206,7 +207,7 @@ class NotifyBadAqi(Automation):
         """Send select notifications when cooling and poor AQI."""
         if (not self.notification_sent
                 and self.current_aqi > self.properties['aqi_threshold']):
-            self.log('Poor AQI; notifying anyone at home')
+            self._log.info('Poor AQI; notifying anyone at home')
 
             self.notification_manager.send(
                 'AQI is at {0}; consider closing the humidifier vent.'.format(
