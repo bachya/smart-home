@@ -16,58 +16,71 @@ views:
     cards:
 
       - id: 3c08be832ceb4781ab8a803aea115514  # Automatically created id
-        type: glance
-        title: Location
-        entities:
-          - sensor.aaron_presence_status
-          - sensor.britt_presence_status
-          # - device_tracker.tile_19af7a5915dc41f6
-          # - device_tracker.tile_ff97d7de8dbb06c9
+        type: vertical-stack
+        cards:
+          - type: glance
+            title: Location
+            entities:
+              - sensor.aaron_presence_status
+              - sensor.britt_presence_status
+          - type: entities
+            title: Modes
+            entities:
+              - input_boolean.mode_do_not_disturb
+              - input_boolean.mode_guest_mode
+              - input_boolean.mode_vacation_mode
+            show_header_toggle: false
 
-      - id: 5414ccb9c8f04e8da496011a8f5b5cf5  # Automatically created id
-        type: entities
-        title: Scenes
-        entities:
-          - scene.depart_home
-          - scene.drive_home
-          - scene.walk_home
-          - scene.good_night
-        show_state: false
+          - type: entities
+            title: Scenes
+            entities:
+              - scene.depart_home
+              - scene.drive_home
+              - scene.walk_home
+              - scene.good_night
+            show_state: false
 
       - id: 9fc3529e44624549b976a36a4270b81b  # Automatically created id
-        type: entities
-        title: Security Status
-        entities:
-          - sensor.secure_status
-          - alarm_control_panel.simplisafe
-          - input_boolean.auto_departure_lockup_automation
-        show_header_toggle: false
-
-      - id: 4ae8dec3fae24c3b96a5800939a6ad41  # Automatically created id
-        type: entities
-        title: Modes
-        entities:
-          - input_boolean.mode_do_not_disturb
-          - input_boolean.mode_guest_mode
-          - input_boolean.mode_vacation_mode
-        show_header_toggle: false
-
-      - type: entities
-        title: Celestial
-        entities:
-          - sensor.friendly_season
-          - sensor.moon_phase
-          - sensor.sunset
-          - sensor.sunrise
+        type: vertical-stack
+        cards:
+          - type: entities
+            title: Security Status
+            entities:
+              - entity: sensor.secure_status
+          - type: glance
+            entities:
+              - entity: alarm_control_panel.simplisafe
+                name: Security
+              - entity: cover.garage_door
+              - entity: lock.front_door
+              - entity: lock.garage_fire_door
+                name: Door to Garage
 
       - id: ed4c33ece2d94976b465d9876e2d19a0  # Automatically created id
         type: vertical-stack
         cards:
           - type: entities
-            title: Climate
+            title: Thermostat
             entities:
-              - sensor.average_indoor_temperature
-              - sensor.average_indoor_humidity
+              - climate.thermostat
+          - type: horizontal-stack
+            cards:
+              - type: sensor
+                entity: sensor.average_indoor_temperature
+              - type: sensor
+                entity: sensor.average_indoor_humidity
+          - type: glance
+            entities:
+              - entity: sensor.thermostat_thermostat_operation_mode
+                name: Mode
+              - entity: binary_sensor.thermostat_thermostat_fan
+                name: Fan
+              - entity: sensor.thermostat_thermostat_hvac_state
+                name: State
+              - entity: binary_sensor.thermostat_thermostat_has_leaf
+                name: Leaf
+              - entity: sensor.thermostat_thermostat_target
+                name: Target
             show_header_toggle: false
 
   - title: Automation Controls
@@ -240,6 +253,34 @@ views:
           - input_boolean.notify_when_wolfie_consumable_low_automation
           - input_boolean.wolfie_scheduled_cycle_automation
 
+  - title: Backyard
+    icon: mdi:flower
+    id: backyard
+    cards:
+
+      - type: vertical-stack
+        title: Weather
+        cards:
+          - type: weather-forecast
+            entity: weather.weather
+          - type: glance
+            entities:
+              - sensor.friendly_season
+              - sensor.moon_phase
+              - sensor.sunset
+              - sensor.sunrise
+
+      - id: b548d149f6cb47178951ff6122776a9d  # Automatically created id
+        type: glance
+        title: Outside Lights
+        entities:
+          - entity: switch.backyard_lights
+            tap_action: toggle
+          - entity: switch.front_patio_light
+            tap_action: toggle
+          - entity: switch.kitchen_patio_light
+            tap_action: toggle
+
   - title: Basement
     icon: mdi:gamepad-variant
     id: basement
@@ -369,15 +410,6 @@ views:
           - sensor.recycling_pickup
           - sensor.trash_pickup
 
-  - title: Guest Bedroom
-    icon: mdi:briefcase
-    id: guest-bedroom
-    cards:
-
-      - id: 8353ba7128de4de887054f9e761e9d7c  # Automatically created id
-        type: picture-entity
-        entity: camera.guest_bedroom
-
   - title: Kitchen
     icon: mdi:stove
     id: kitchen
@@ -397,12 +429,22 @@ views:
             icon: mdi:speaker
 
       - id: 9f1e83011d1b47a386f7310e3ea1f610  # Automatically created id
-        type: entities
-        title: Climate
-        entities:
-          - climate.thermostat
-          - sensor.thermostat_thermostat_humidity
-          - sensor.thermostat_thermostat_hvac_state
+        type: vertical-stack
+        cards:
+          - type: entities
+            title: Thermostat
+            entities:
+              - climate.thermostat
+          - type: horizontal-stack
+            cards:
+              - type: glance
+                entities:
+                  - entity: sensor.thermostat_thermostat_temperature
+                    name: Temp.
+                  - entity: sensor.thermostat_thermostat_humidity
+                    name: Humidity
+                  - entity: sensor.thermostat_thermostat_hvac_state
+                    name: HVAC
 
       - id: c2b4dbd108274c21be9963bf06693e80  # Automatically created id
         type: entities
@@ -418,10 +460,11 @@ views:
           - lock.garage_fire_door
           - sensor.garage_fire_door_lock_battery
 
-      - type: entities
+      - type: glance
         title: Lights
         entities:
-          - switch.bar_cart
+          - entity: switch.bar_cart
+            tap_action: toggle
 
   - title: Living Room
     icon: mdi:sofa
@@ -438,31 +481,30 @@ views:
           - sensor.fiddle_leaf_fig_light_intensity
           - sensor.fiddle_leaf_fig_battery
 
-      - id: c27b3ba5f51a472aa081154d69c8183e  # Automatically created id
-        type: entities
-        title: Fireplace
-        entities:
-          - switch.fireplace
-        show_header_toggle: false
-
       - id: 70ccbfec2fd04cdd85b54dad5f635185  # Automatically created id
         type: entity-filter
         card:
-          type: entities
+          type: glance
           title: Lights
         entities:
-          - switch.christmas_tree
-          - switch.reading_lamp
-          - switch.sofa_lamp
+          - entity: switch.christmas_tree
+            tap_action: toggle
+          - entity: switch.reading_lamp
+            tap_action: toggle
+          - entity: switch.sofa_lamp
+            tap_action: toggle
         state_filter:
           - "off"
           - "on"
 
       - id: 4f5241b5ea3548e9831f4407a9ec24a4  # Automatically created id
-        type: entities
-        title: Powder Room
+        type: glance
+        title: Switches
         entities:
-          - switch.powder_room_fan
+          - entity: switch.fireplace
+            tap_action: toggle
+          - entity: switch.powder_room_fan
+            tap_action: toggle
         show_header_toggle: false
 
       - id: 3eb074583c654b808d0c44b49d2047e9  # Automatically created id
@@ -614,141 +656,38 @@ views:
     id: systems
     cards:
 
-      - id: 6f4b4f58d3e0446aa008559cc9543333  # Automatically created id
-        type: entities
-        title: Durmstrang
-        entities:
-          - sensor.durmstrang_cpu_temperature
-          - sensor.durmstrang_uptime
-          - sensor.durmstrang_disk_used
-          - sensor.durmstrang_ram_used
-          - sensor.durmstrang_cpu_load
-        show_header_toggle: false
-
-      - id: df417609a6dd4404aac034e34471e1ca  # Automatically created id
-        type: entities
-        title: Gryffindor
-        entities:
-          - sensor.gryffindor_cpu_temperature
-          - sensor.gryffindor_uptime
-          - sensor.gryffindor_disk_used
-          - sensor.gryffindor_ram_used
-          - sensor.gryffindor_cpu_load
-        show_header_toggle: false
-
-      - id: 5b75da280a874e8c9ea37af58bb87ba3  # Automatically created id
-        type: entities
-        title: Hub
-        entities:
-          - sensor.hub_cpu_temperature
-          - sensor.hub_uptime
-          - sensor.hub_disk_used
-          - sensor.hub_ram_used
-          - sensor.hub_cpu_load
-        show_header_toggle: false
-
-      - id: ff1450dd54764ac3966fcb38e5119eb2  # Automatically created id
-        type: entities
-        title: Hufflepuff
-        entities:
-          - sensor.hufflepuff_cpu_temperature
-          - sensor.hufflepuff_uptime
-          - sensor.hufflepuff_disk_used
-          - sensor.hufflepuff_ram_used
-          - sensor.hufflepuff_cpu_load
-        show_header_toggle: false
-
-      - id: b0e2014678ac4418b5f95aec8e652e9f  # Automatically created id
-        type: entities
-        title: Ravenclaw
-        entities:
-          - sensor.ravenclaw_cpu_temperature
-          - sensor.ravenclaw_uptime
-          - sensor.ravenclaw_disk_used
-          - sensor.ravenclaw_ram_used
-          - sensor.ravenclaw_cpu_load
-        show_header_toggle: false
-
-      - id: a020603ea51740ac9de86dd3d5cffc1a  # Automatically created id
-        type: entities
-        title: Slytherin
-        entities:
-          - sensor.slytherin_cpu_temperature
-          - sensor.slytherin_uptime
-          - sensor.slytherin_disk_used
-          - sensor.slytherin_ram_used
-          - sensor.slytherin_cpu_load
-        show_header_toggle: false
-
-      - id: efeeafd4894948af9eda32d4c3bed4b4  # Automatically created id
-        type: entities
-        title: Links
-        entities:
-          - type: weblink
-            name: Climate Sensor (Master Bathroom)
-            url: http://climate-sensor-2.myserver.com
-            icon: mdi:thermometer
-          - type: weblink
-            name: Durmstrang Glances
-            url: http://durmstrang.myserver.com:61208
-            icon: mdi:settings
-          - type: weblink
-            name: Gryffindor Glances
-            url: http://gryffindor.myserver.com:61208
-            icon: mdi:settings
-          - type: weblink
-            name: Hub Glances
-            url: http://hub.myserver.com:61208
-            icon: mdi:settings
-          - type: weblink
-            name: Hufflepuff Glances
-            url: http://hufflepuff.myserver.com:61208
-            icon: mdi:settings
-          - type: weblink
-            name: Ravenclaw Glances
-            url: http://ravenclaw.myserver.com:61208
-            icon: mdi:settings
-          - type: weblink
-            name: Salt Lamp (Master Bedroom)
-            url: http://salt-lamp-1.myserver.com
-            icon: mdi:lava-lamp
-          - type: weblink
-            name: Salt Lamp (Office)
-            url: http://salt-lamp-2.myserver.com
-            icon: mdi:lava-lamp
-          - type: weblink
-            name: Sonoff RF Bridge
-            url: http://rf-bridge.myserver.com
-            icon: mdi:access-point
-          - type: weblink
-            name: Slytherin Glances
-            url: http://slytherin.myserver.com:61208
-            icon: mdi:settings
-          - type: weblink
-            name: UniFi Cloud Key
-            url: https://cloud-key.myserver.com:8443
-            icon: mdi:router-wireless
-          - type: weblink
-            name: Wyze Camera (Garage)
-            url: http://garage-camera.myserver.com
-            icon: mdi:cctv
-          - type: weblink
-            name: Yi Camera (Guest Bedroom)
-            url: http://guest-bedroom-camera.myserver.com
-            icon: mdi:cctv
-          - type: weblink
-            name: Yi Camera (Kitchen)
-            url: http://kitchen-camera.myserver.com
-            icon: mdi:cctv
-
       - id: eadadac6ac39461899bd44f3980230a5  # Automatically created id
-        type: entities
-        title: Network
+        type: vertical-stack
+        cards:
+          - type: entities
+            title: Network
+            entities:
+              - sensor.ssl_expiry
+          - type: horizontal-stack
+            cards:
+              - type: sensor
+                entity: sensor.filtered_speedtest_download
+                name: Download
+              - type: sensor
+                entity: sensor.filtered_speedtest_upload
+                name: Upload
+
+      - type: entities
+        title: Z-Wave
         entities:
-          - sensor.filtered_speedtest_download
-          - sensor.filtered_speedtest_upload
-          - sensor.filtered_speedtest_ping
-          - sensor.ssl_expiry
+          - entity: zwave.aeotec_zw090_zstick_gen5_us
+            name: Aeotic USB Stick
+          - entity: zwave.dishwasher
+          - entity: zwave.fireplace
+          - entity: zwave.front_door
+          - entity: zwave.front_patio_light
+          - entity: zwave.garage_door
+          - entity: zwave.garage_lights
+          - entity: zwave.ge_14291_inwall_smart_switch
+          - entity: zwave.ge_14291_inwall_smart_switch_2
+          - entity: zwave.kitchen_patio_light
+          - entity: zwave.master_bathroom_fan
+          - entity: zwave.master_toilet_fan
 
       - id: b49c37567da74b8aa4d91c2ac401334b  # Automatically created id
         type: entities
@@ -788,7 +727,20 @@ views:
           - input_select.wolfie_bin_status
         show_header_toggle: false
 
-      - type: entities
+      - id: c063a8c30ce0448f854f61b600c4ab19  # Automatically created id
+        type: glance
+        title: Stats
+        entities:
+          - entity: sensor.vacuum_status
+          - entity: sensor.vacuum_battery
+            name: Battery
+          - entity: sensor.vacuum_fan_speed
+          - entity: sensor.vacuum_cleaning_time
+            name: Run Time
+          - entity: sensor.vacuum_cleaned_area
+            name: Run Area
+
+      - type: glance
         title: Consumables
         entities:
           - sensor.vacuum_filter_remaining
@@ -808,14 +760,3 @@ views:
           - input_boolean.vacuum_schedule_saturday
           - input_boolean.vacuum_schedule_sunday
         show_header_toggle: false
-
-      - id: c063a8c30ce0448f854f61b600c4ab19  # Automatically created id
-        type: entities
-        title: Stats
-        entities:
-          - sensor.vacuum_status
-          - sensor.vacuum_do_not_disturb
-          - sensor.vacuum_battery
-          - sensor.vacuum_fan_speed
-          - sensor.vacuum_cleaning_time
-          - sensor.vacuum_cleaned_area

@@ -16,12 +16,6 @@ sensor:
     api_key: !secret dark_sky_api_key
     monitored_conditions:
       - cloud_cover
-      - humidity
-      - precip_probability
-      - precip_type
-      - pressure
-      - temperature
-      - wind_speed
 
   - platform: moon
 
@@ -67,3 +61,8 @@ sensor:
         icon_template: mdi:weather-sunset-down
 
 sun:
+
+weather:
+  - platform: darksky
+    api_key: !secret dark_sky_api_key
+    name: Weather

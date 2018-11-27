@@ -89,6 +89,9 @@ sensor.thermostat_thermostat_humidity:
 sensor.thermostat_thermostat_hvac_state:
   friendly_name: Indoor HVAC State
   icon: mdi:fan
+sensor.thermostat_thermostat_temperature:
+  friendly_name: Indoor Temperature
+  icon: mdi:thermometer
 switch.backyard_lights:
   icon: mdi:lightbulb
 switch.bar_cart:
