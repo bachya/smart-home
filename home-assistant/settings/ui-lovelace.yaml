@@ -271,7 +271,7 @@ views:
               - sensor.sunrise
 
       - id: b548d149f6cb47178951ff6122776a9d  # Automatically created id
-        type: glance
+        type: entities
         title: Outside Lights
         entities:
           - entity: switch.backyard_lights
@@ -460,7 +460,7 @@ views:
           - lock.garage_fire_door
           - sensor.garage_fire_door_lock_battery
 
-      - type: glance
+      - type: entities
         title: Lights
         entities:
           - entity: switch.bar_cart
@@ -484,7 +484,7 @@ views:
       - id: 70ccbfec2fd04cdd85b54dad5f635185  # Automatically created id
         type: entity-filter
         card:
-          type: glance
+          type: entities
           title: Lights
         entities:
           - entity: switch.christmas_tree
@@ -498,7 +498,7 @@ views:
           - "on"
 
       - id: 4f5241b5ea3548e9831f4407a9ec24a4  # Automatically created id
-        type: glance
+        type: entities
         title: Switches
         entities:
           - entity: switch.fireplace
