@@ -44,17 +44,32 @@ _srcfile = os.path.normcase(_srcfile)
 
 
 class SaneLoggingApp(object):
-
     def _setup_logging(self, app_class_name, debug_default):
+        from colorlog import ColoredFormatter
+
         self._app_class_name = app_class_name
-        self._log = LogWrapper(self.get_main_log(), debug_as_info=debug_default)
+        self._log = LogWrapper(
+            self.get_main_log(), debug_as_info=debug_default)
         self.listen_event(
-            self._handle_log_wrapper_debug, event='LOGWRAPPER_SET_DEBUG'
-        )
-        format = "[ %(levelname)s %(filename)s:%(lineno)s - %(funcName)s() ] " \
-            "%(message)s"
-        formatter = logging.Formatter(fmt=format)
-        self.get_main_log().handlers[0].setFormatter(formatter)
+            self._handle_log_wrapper_debug, event='LOGWRAPPER_SET_DEBUG')
+
+        fmt = "%(asctime)s %(levelname)s [%(filename)s:%(lineno)s] %(message)s"
+        datefmt = '%Y-%m-%d %H:%M:%S'
+        colorfmt = "%(log_color)s{}%(reset)s".format(fmt)
+
+        self.get_main_log().handlers[0].setFormatter(ColoredFormatter(
+            colorfmt,
+            datefmt=datefmt,
+            reset=True,
+            log_colors={
+                'DEBUG': 'cyan',
+                'INFO': 'green',
+                'WARNING': 'yellow',
+                'ERROR': 'red',
+                'CRITICAL': 'red',
+            }
+        ))
+
         if debug_default:
             self.get_main_log().handlers[0].setLevel(logging.DEBUG)
 
@@ -67,15 +82,12 @@ class SaneLoggingApp(object):
         if data.get('app_class', 'unknown') != self._app_class_name:
             self._log.debug(
                 'Ignoring LOGWRAPPER_SET_DEBUG event for class: %s',
-                data.get('app_class', 'unknown')
-            )
+                data.get('app_class', 'unknown'))
             return
         val = data.get('debug_value', None)
         if val is not True and val is not False:
             self._log.error(
-                'LOGWRAPPER_SET_DEBUG event has invalid debug_value: %s',
-                val
-            )
+                'LOGWRAPPER_SET_DEBUG event has invalid debug_value: %s', val)
             return
         self._log.set_debug_as_info(val)
         if val is True:
