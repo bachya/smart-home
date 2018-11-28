@@ -35,13 +35,6 @@ views:
               - entity: scene.good_night
                 tap_action: toggle
             show_state: false
-          - type: entities
-            title: Modes
-            entities:
-              - input_boolean.mode_do_not_disturb
-              - input_boolean.mode_guest_mode
-              - input_boolean.mode_vacation_mode
-            show_header_toggle: false
 
       - id: 9fc3529e44624549b976a36a4270b81b  # Automatically created id
         type: vertical-stack
@@ -661,6 +654,14 @@ views:
     icon: mdi:server-network
     id: systems
     cards:
+
+      - type: entities
+        title: Modes
+        entities:
+          - input_boolean.mode_do_not_disturb
+          - input_boolean.mode_guest_mode
+          - input_boolean.mode_vacation_mode
+        show_header_toggle: false
 
       - id: eadadac6ac39461899bd44f3980230a5  # Automatically created id
         type: vertical-stack
