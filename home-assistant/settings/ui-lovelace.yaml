@@ -23,6 +23,18 @@ views:
             entities:
               - sensor.aaron_presence_status
               - sensor.britt_presence_status
+          - type: glance
+            title: Scenes
+            entities:
+              - entity: scene.depart_home
+                tap_action: toggle
+              - entity: scene.drive_home
+                tap_action: toggle
+              - entity: scene.walk_home
+                tap_action: toggle
+              - entity: scene.good_night
+                tap_action: toggle
+            show_state: false
           - type: entities
             title: Modes
             entities:
@@ -31,30 +43,24 @@ views:
               - input_boolean.mode_vacation_mode
             show_header_toggle: false
 
-          - type: entities
-            title: Scenes
-            entities:
-              - scene.depart_home
-              - scene.drive_home
-              - scene.walk_home
-              - scene.good_night
-            show_state: false
-
       - id: 9fc3529e44624549b976a36a4270b81b  # Automatically created id
         type: vertical-stack
         cards:
-          - type: entities
-            title: Security Status
-            entities:
-              - entity: sensor.secure_status
           - type: glance
             entities:
+              - entity: sensor.secure_status
+                name: Overall
               - entity: alarm_control_panel.simplisafe
                 name: Security
               - entity: cover.garage_door
+                name: Garage
+                tap_action: toggle
               - entity: lock.front_door
+                name: Front Door
+                tap_action: toggle
               - entity: lock.garage_fire_door
-                name: Door to Garage
+                name: Garage Door
+                tap_action: toggle
 
       - id: ed4c33ece2d94976b465d9876e2d19a0  # Automatically created id
         type: vertical-stack
