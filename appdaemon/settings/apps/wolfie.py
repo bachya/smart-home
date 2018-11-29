@@ -22,7 +22,7 @@ class MonitorConsumables(Automation):
         for consumable in self.properties['consumables']:
             self.listen_state(
                 self.consumable_changed,
-                self.app.entities['vacuum'],
+                self.app.entity_ids['vacuum'],
                 attribute=consumable,
                 constrain_input_boolean=self.enabled_entity_id)
 
@@ -71,22 +71,22 @@ class ScheduledCycle(Automation):
             self.properties['ios_emptied_key'])
         self.listen_state(
             self.all_done,
-            self.app.entities['status'],
+            self.app.entity_ids['status'],
             old=self.app.States.returning.value,
             new=self.app.States.docked.value,
             constrain_input_boolean=self.enabled_entity_id)
         self.listen_state(
             self.bin_state_changed,
-            self.app.entities['bin_state'],
+            self.app.entity_ids['bin_state'],
             constrain_input_boolean=self.enabled_entity_id)
         self.listen_state(
             self.errored,
-            self.app.entities['status'],
+            self.app.entity_ids['status'],
             new=self.app.States.error.value,
             constrain_input_boolean=self.enabled_entity_id)
         self.listen_state(
             self.error_cleared,
-            self.app.entities['status'],
+            self.app.entity_ids['status'],
             old=self.app.States.error.value,
             constrain_input_boolean=self.enabled_entity_id)
         for toggle in self.properties['schedule_switches']:
@@ -97,14 +97,14 @@ class ScheduledCycle(Automation):
 
     def alarm_changed(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to 'ALARM_CHANGE' events."""
-        state = self.app.States(self.get_state(self.app.entities['status']))
+        state = self.app.States(self.get_state(self.app.entity_ids['status']))
 
         # Scenario 1: Vacuum is charging and is told to start:
         if ((self.initiated_by_app and state == self.app.States.docked) and
                 data['state'] == self.security_manager.AlarmStates.home.value):
             self._log.info('Activating vacuum (post-security)')
 
-            self.turn_on(self.app.entities['vacuum'])
+            self.turn_on(self.app.entity_ids['vacuum'])
 
         # Scenario 2: Vacuum is running when alarm is set to "Away":
         elif (state == self.app.States.cleaning and
@@ -112,7 +112,7 @@ class ScheduledCycle(Automation):
             self._log.info('Security mode is "Away"; pausing until "Home"')
 
             self.call_service(
-                'vacuum/start_pause', entity_id=self.app.entities['vacuum'])
+                'vacuum/start_pause', entity_id=self.app.entity_ids['vacuum'])
             self.security_manager.set_alarm(
                 self.security_manager.AlarmStates.home)
 
@@ -122,7 +122,7 @@ class ScheduledCycle(Automation):
             self._log.info('Alarm in "Home"; resuming')
 
             self.call_service(
-                'vacuum/start_pause', entity_id=self.app.entities['vacuum'])
+                'vacuum/start_pause', entity_id=self.app.entity_ids['vacuum'])
 
     def all_done(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,

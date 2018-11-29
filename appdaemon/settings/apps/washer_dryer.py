@@ -22,11 +22,11 @@ class NotifyDone(Automation):
             self.properties['ios_emptied_key'])
         self.listen_state(
             self.power_changed,
-            self.app.entities['power'],
+            self.app.entity_ids['power'],
             constrain_input_boolean=self.enabled_entity_id)
         self.listen_state(
             self.status_changed,
-            self.app.entities['status'],
+            self.app.entity_ids['status'],
             constrain_input_boolean=self.enabled_entity_id)
 
     def power_changed(  # pylint: disable=too-many-arguments
