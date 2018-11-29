@@ -5,7 +5,7 @@ subaru_legacy_notify_low_fuel_automation:
   dependencies:
     - notification_manager
     - presence_manager
-  entities:
+  entity_ids:
     car: device_tracker.2010_subaru_legacy
   properties:
     friendly_name: Aaron's car

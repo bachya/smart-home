@@ -5,7 +5,7 @@ dash_button_amazon_basics_batteries:
   dependencies:
     - climate_manager
     - security_manager
-  entities:
+  entity_ids:
     action_list: input_select.dash_amazon_basics_batteries
   properties:
     friendly_name: Amazon Basics Batteries
@@ -16,7 +16,7 @@ dash_button_neat:
   dependencies:
     - climate_manager
     - security_manager
-  entities:
+  entity_ids:
     action_list: input_select.dash_neat
   properties:
     friendly_name: Neat

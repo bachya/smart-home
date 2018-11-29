@@ -21,7 +21,7 @@ class Base(Hass, SaneLoggingApp):
         self._setup_logging(self.__class__.__name__, False)
 
         # Define a holding place for HASS entity IDs:
-        self.entities = self.args.get('entities', {})
+        self.entity_ids = self.args.get('entities', {})
 
         # Define a holding place for any scheduler handles that the automation
         # wants to keep track of:

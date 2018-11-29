@@ -5,7 +5,7 @@ new_appdaemon_version_automation:
   dependencies:
     - notification_manager
     - presence_manager
-  entities:
+  entity_ids:
     available: sensor.appdaemon_available
     installed: sensor.appdaemon_installed
   properties:
@@ -28,7 +28,7 @@ new_grafana_version_automation:
   dependencies:
     - notification_manager
     - presence_manager
-  entities:
+  entity_ids:
     available: sensor.grafana_available
     installed: sensor.grafana_installed
   properties:
@@ -51,7 +51,7 @@ new_hass_version_automation:
   dependencies:
     - notification_manager
     - presence_manager
-  entities:
+  entity_ids:
     available: sensor.hass_available
     installed: sensor.hass_installed
   properties:
@@ -68,7 +68,7 @@ new_influxdb_version_automation:
   dependencies:
     - notification_manager
     - presence_manager
-  entities:
+  entity_ids:
     available: sensor.influxdb_available
     installed: sensor.influxdb_installed
   properties:
@@ -91,7 +91,7 @@ new_mosquitto_version_automation:
   dependencies:
     - notification_manager
     - presence_manager
-  entities:
+  entity_ids:
     available: sensor.mosquitto_available
     installed: sensor.mosquitto_installed
   properties:
@@ -114,7 +114,7 @@ new_portainer_version_automation:
   dependencies:
     - notification_manager
     - presence_manager
-  entities:
+  entity_ids:
     available: sensor.portainer_available
     installed: sensor.portainer_installed
   properties:
@@ -137,7 +137,7 @@ new_ps4_version_automation:
   dependencies:
     - notification_manager
     - presence_manager
-  entities:
+  entity_ids:
     available: sensor.ps4waker_available
     installed: sensor.ps4waker_installed
   properties:
@@ -154,7 +154,7 @@ new_tasmoadmin_version_automation:
   dependencies:
     - notification_manager
     - presence_manager
-  entities:
+  entity_ids:
     available: sensor.tasmoadmin_available
     installed: sensor.tasmoadmin_installed
   properties:
@@ -177,7 +177,7 @@ new_tasmota_version_automation:
   dependencies:
     - notification_manager
     - presence_manager
-  entities:
+  entity_ids:
     available: sensor.tasmota_available
     installed: sensor.lowest_tasmota_installed
   properties:
@@ -203,7 +203,7 @@ new_yi_hack_version_automation:
   dependencies:
     - notification_manager
     - presence_manager
-  entities:
+  entity_ids:
     available: sensor.yi_hack_available
     installed: sensor.yi_hack_installed
   properties:

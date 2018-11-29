@@ -21,16 +21,16 @@ class NewVersionNotification(Automation):
 
         self.listen_state(
             self.version_change_detected,
-            self.entities['available'],
+            self.entity_ids['available'],
             constrain_input_boolean=self.enabled_entity_id)
 
     def version_change_detected(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Notify me when there's a new app version."""
-        new_version = version.parse(self.get_state(self.entities['available']))
+        new_version = version.parse(self.get_state(self.entity_ids['available']))
         installed_version = version.parse(
-            self.get_state(self.entities['installed']))
+            self.get_state(self.entity_ids['installed']))
 
         if new_version > installed_version:
             self._log.info(

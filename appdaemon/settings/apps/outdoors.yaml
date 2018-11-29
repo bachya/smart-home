@@ -4,7 +4,7 @@ backyard_lights_off_at_930pm_automation:
   class: ToggleAtTime
   dependencies:
     - presence_manager
-  entities:
+  entity_ids:
     switch: switch.backyard_lights
   properties:
     run_on_days:
@@ -25,7 +25,7 @@ backyard_lights_off_at_11pm_automation:
   class: ToggleAtTime
   dependencies:
     - presence_manager
-  entities:
+  entity_ids:
     switch: switch.backyard_lights
   properties:
     run_on_days:
@@ -43,7 +43,7 @@ backyard_lights_on_at_sunset_automation:
   class: ToggleAtTime
   dependencies:
     - presence_manager
-  entities:
+  entity_ids:
     switch: switch.backyard_lights
   properties:
     schedule_time: sunset
@@ -58,7 +58,7 @@ kitchen_patio_light_double_tap_backyard_lights_automation:
   class: DoubleTapToggleSwitch
   dependencies:
     - presence_manager
-  entities:
+  entity_ids:
     zwave_device: zwave.kitchen_patio_light
     target: switch.backyard_lights
   enabled_config:
@@ -72,7 +72,7 @@ patio_lights_off_at_11pm_automation:
   dependencies:
     - presence_manager
     - vacation_mode
-  entities:
+  entity_ids:
     switch: group.patio_lights
   properties:
     schedule_time: "23:00:00"
@@ -90,7 +90,7 @@ patio_lights_on_at_sunset_automation:
   dependencies:
     - presence_manager
     - vacation_mode
-  entities:
+  entity_ids:
     switch: group.patio_lights
   properties:
     schedule_time: sunset
@@ -108,7 +108,7 @@ patio_lights_vacation_mode_automation:
   dependencies:
     - guest_mode
     - presence_manager
-  entities:
+  entity_ids:
     switch: group.patio_lights
   mode_alterations:
     guest_mode: disable

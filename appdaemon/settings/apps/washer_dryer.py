@@ -97,9 +97,9 @@ class WasherDryer(Base):
     @property
     def state(self) -> Enum:
         """Get the state."""
-        return self.States(self.get_state(self.entities['status']))
+        return self.States(self.get_state(self.entity_ids['status']))
 
     @state.setter
     def state(self, value: Enum) -> None:
         """Set the state."""
-        self.select_option(self.entities['status'], value.value)
+        self.select_option(self.entity_ids['status'], value.value)

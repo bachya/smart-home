@@ -4,7 +4,7 @@ garage_lights_off_after_garage_close_automation:
   class: ToggleOnState
   dependencies:
     - presence_manager
-  entities:
+  entity_ids:
     switch: switch.garage_lights
     target: cover.garage_door
   properties:
@@ -21,7 +21,7 @@ garage_lights_on_garage_open_sundown_automation:
   class: ToggleOnState
   dependencies:
     - presence_manager
-  entities:
+  entity_ids:
     switch: switch.garage_lights
     target: cover.garage_door
   properties:
@@ -39,7 +39,7 @@ garage_lights_on_upon_arrival_automation:
   class: TurnOnUponArrival
   dependencies:
     - presence_manager
-  entities:
+  entity_ids:
     switch: switch.garage_lights
   properties:
     possible_constraints:

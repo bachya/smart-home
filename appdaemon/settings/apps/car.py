@@ -19,7 +19,7 @@ class NotifyLowFuel(Automation):
 
         self.listen_state(
             self.low_fuel_found,
-            self.entities['car'],
+            self.entity_ids['car'],
             attribute='fuel_level',
             constrain_input_boolean=self.enabled_entity_id)
 
@@ -27,7 +27,7 @@ class NotifyLowFuel(Automation):
             self, entity: Union[str, dict], attribute: str, old: str,
             new: str, kwargs: dict) -> None:
         """Create an OmniFocus todo whenever my car is low on gas."""
-        name = self.get_state(self.entities['car'], attribute='friendly_name')
+        name = self.get_state(self.entity_ids['car'], attribute='friendly_name')
 
         try:
             if int(new) < self.properties['fuel_threshold']:

@@ -4,7 +4,7 @@ wolfie:
   class: Vacuum
   dependencies:
     - security_manager
-  entities:
+  entity_ids:
     bin_state: input_select.wolfie_bin_status
     status: sensor.vacuum_status
     vacuum: vacuum.xiaomi_vacuum_cleaner

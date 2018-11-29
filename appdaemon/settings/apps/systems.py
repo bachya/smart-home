@@ -18,7 +18,7 @@ class LowBatteries(Automation):
         self._registered = []  # type: ignore
         self.handles[HANDLE_BATTERY_LOW] = {}
 
-        for entity in self.entities['batteries_to_monitor']:
+        for entity in self.entity_ids['batteries_to_monitor']:
             self.listen_state(
                 self.low_battery_detected,
                 entity,
@@ -68,7 +68,7 @@ class LeftInState(Automation):
 
         self.listen_state(
             self.limit_reached,
-            self.entities['entity'],
+            self.entity_ids['entity'],
             new=self.properties['state'],
             duration=self.properties['seconds'],
             constrain_input_boolean=self.enabled_entity_id)
@@ -80,12 +80,12 @@ class LeftInState(Automation):
 
         def turn_off():
             """Turn the entity off."""
-            self.turn_off(self.entities['entity'])
+            self.turn_off(self.entity_ids['entity'])
 
         self.slack_app_home_assistant.ask(
             'The {0} has been left {1} for {2} minutes. Turn it off?'.format(
                 self.get_state(
-                    self.entities['entity'], attribute='friendly_name'),
+                    self.entity_ids['entity'], attribute='friendly_name'),
                 self.properties['state'],
                 int(self.properties['seconds']) / 60),
             {
@@ -108,7 +108,7 @@ class SslExpiration(Automation):
 
         self.listen_state(
             self.ssl_expiration_approaching,
-            self.entities['ssl_expiry'],
+            self.entity_ids['ssl_expiry'],
             constrain_input_boolean=self.enabled_entity_id)
 
     def ssl_expiration_approaching(  # pylint: disable=too-many-arguments

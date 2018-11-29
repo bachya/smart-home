@@ -51,7 +51,7 @@ class BadLoginNotification(Automation):
         """Initialize."""
         super().initialize()
 
-        for notification_type in self.entities.values():
+        for notification_type in self.entity_ids.values():
             self.listen_state(
                 self.send_alert,
                 notification_type,
@@ -65,7 +65,7 @@ class BadLoginNotification(Automation):
         if not new:
             return
 
-        if entity == self.entities['bad_login']:
+        if entity == self.entity_ids['bad_login']:
             title = 'Unauthorized Access Attempt'
         else:
             title = 'IP Ban'
@@ -82,9 +82,9 @@ class DetectBlackout(Automation):
         super().initialize()
 
         if self.now_is_between(BLACKOUT_START, BLACKOUT_END):
-            self.turn_on(self.entities['blackout_switch'])
+            self.turn_on(self.entity_ids['blackout_switch'])
         else:
-            self.turn_off(self.entities['blackout_switch'])
+            self.turn_off(self.entity_ids['blackout_switch'])
 
         self.run_daily(
             self.boundary_reached,
@@ -102,6 +102,6 @@ class DetectBlackout(Automation):
         self._log.info('Setting blackout sensor: %s', kwargs['state'])
 
         if kwargs['state'] == 'on':
-            self.turn_on(self.entities['blackout_switch'])
+            self.turn_on(self.entity_ids['blackout_switch'])
         else:
-            self.turn_off(self.entities['blackout_switch'])
+            self.turn_off(self.entity_ids['blackout_switch'])

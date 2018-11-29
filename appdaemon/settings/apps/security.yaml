@@ -37,7 +37,7 @@ notify_of_garage_open_automation:
     - presence_manager
     - security_manager
     - slack_app_home_assistant
-  entities:
+  entity_ids:
     garage_door: cover.garage_door
   properties:
     notification_interval: 300
@@ -56,7 +56,7 @@ notify_when_absent_insecure_automation:
     - notification_manager
     - presence_manager
     - security_manager
-  entities:
+  entity_ids:
     state: sensor.secure_status
   mode_alterations:
     do_not_disturb: disable
@@ -73,7 +73,7 @@ notify_when_status_changes_automation:
     - notification_manager
     - presence_manager
     - vacation_mode
-  entities:
+  entity_ids:
     state: sensor.secure_status
   mode_alterations:
     vacation_mode: enable
@@ -85,7 +85,7 @@ notify_when_status_changes_automation:
 security_manager:
   module: security
   class: SecurityManager
-  entities:
+  entity_ids:
     alarm_control_panel: alarm_control_panel.simplisafe
     garage_door: cover.garage_door
     overall_security_status_sensor: sensor.secure_status

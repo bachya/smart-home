@@ -14,7 +14,7 @@ class LowMoisture(Automation):
     @property
     def current_moisture(self) -> int:
         """Define a property to get the current moisture."""
-        return int(self.get_state(self.entities['current_moisture']))
+        return int(self.get_state(self.entity_ids['current_moisture']))
 
     def initialize(self) -> None:
         """Initialize."""
@@ -24,7 +24,7 @@ class LowMoisture(Automation):
 
         self.listen_state(
             self.low_moisture_detected,
-            self.entities['current_moisture'],
+            self.entity_ids['current_moisture'],
             constrain_input_boolean=self.enabled_entity_id)
 
     def low_moisture_detected(  # pylint: disable=too-many-arguments

@@ -18,14 +18,14 @@ class SonosSpeaker(Base):
     def volume(self) -> float:
         """Retrieve the audio player's volume."""
         return float(
-            self.get_state(self.entities['speaker'], attribute='volume_level'))
+            self.get_state(self.entity_ids['speaker'], attribute='volume_level'))
 
     @volume.setter
     def volume(self, value: float) -> None:
         """Set the audio player's volume."""
         self.call_service(
             'media_player/volume_set',
-            entity_id=self.entities['speaker'],
+            entity_id=self.entity_ids['speaker'],
             volume_level=value)
 
     def initialize(self) -> None:
@@ -37,23 +37,23 @@ class SonosSpeaker(Base):
 
     def __str__(self) -> str:
         """Define a string representation of the speaker."""
-        return self.entities['speaker']
+        return self.entity_ids['speaker']
 
     def pause(self) -> None:
         """Pause."""
         self.call_service(
-            'media_player/media_pause', entity_id=self.entities['speaker'])
+            'media_player/media_pause', entity_id=self.entity_ids['speaker'])
 
     def play(self) -> None:
         """Play."""
         self.call_service(
-            'media_player/media_play', entity_id=self.entities['speaker'])
+            'media_player/media_play', entity_id=self.entity_ids['speaker'])
 
     def play_file(self, url: str) -> None:
         """Play an audio file at a defined URL."""
         self.call_service(
             'media_player/play_media',
-            entity_id=self.entities['speaker'],
+            entity_id=self.entity_ids['speaker'],
             media_content_id=url,
             media_content_type='MUSIC')
 
@@ -61,7 +61,7 @@ class SonosSpeaker(Base):
         """Restore the previous snapshot of this entity."""
         self.call_service(
             'media_player/sonos_restore',
-            entity_id=self.entities['speaker'],
+            entity_id=self.entity_ids['speaker'],
             with_group=self._last_snapshot_included_group)
 
     def snapshot(self, include_grouping: bool = True) -> None:
@@ -69,7 +69,7 @@ class SonosSpeaker(Base):
         self._last_snapshot_included_group = include_grouping
         self.call_service(
             'media_player/sonos_snapshot',
-            entity_id=self.entities['speaker'],
+            entity_id=self.entity_ids['speaker'],
             with_group=include_grouping)
 
 
@@ -87,7 +87,7 @@ class SonosManager(Base):
         """Group a list of speakers together (default: all)."""
         entities = entity_list
         if not entity_list:
-            entities = [entity for entity in self.entities]
+            entities = [entity for entity in self.entity_ids]
 
         master = entities.pop(0)  # type: ignore
 

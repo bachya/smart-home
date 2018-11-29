@@ -24,7 +24,7 @@ class LeftSomewhere(Automation):
 
     def check_for_tile(self, kwargs: dict) -> None:
         """Notify the person if their Tile is missing."""
-        tile = self.get_state(self.entities['tile'], attribute='all')
+        tile = self.get_state(self.entity_ids['tile'], attribute='all')
         if tile['state'] == 'home':
             return
 

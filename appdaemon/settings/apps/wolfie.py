@@ -229,12 +229,12 @@ class Vacuum(Base):
     @property
     def bin_state(self) -> Enum:
         """Define a property to get the bin state."""
-        return self.BinStates(self.get_state(self.entities['bin_state']))
+        return self.BinStates(self.get_state(self.entity_ids['bin_state']))
 
     @bin_state.setter
     def bin_state(self, value: Enum) -> None:
         """Set the bin state."""
-        self.select_option(self.entities['bin_state'], value.value)
+        self.select_option(self.entity_ids['bin_state'], value.value)
 
     class BinStates(Enum):
         """Define an enum for vacuum bin states."""
@@ -267,4 +267,4 @@ class Vacuum(Base):
             self._log.info('Activating vacuum')
 
             self.call_service(
-                'vacuum/start', entity_id=self.entities['vacuum'])
+                'vacuum/start', entity_id=self.entity_ids['vacuum'])

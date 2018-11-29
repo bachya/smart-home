@@ -20,7 +20,7 @@ class BaseSwitch(Automation):
     @property
     def state(self) -> bool:
         """Return the current state of the switch."""
-        return self.get_state(self.entities['switch'])
+        return self.get_state(self.entity_ids['switch'])
 
     def attach_constraints(self, func: Callable) -> None:
         """Attach values from possible_constraints to a function."""
@@ -33,13 +33,13 @@ class BaseSwitch(Automation):
     def toggle(self, state: str) -> None:
         """Toggle the switch state."""
         if self.state == 'off' and state == 'on':
-            self._log.info('Turning on: %s', self.entities['switch'])
+            self._log.info('Turning on: %s', self.entity_ids['switch'])
 
-            self.turn_on(self.entities['switch'])
+            self.turn_on(self.entity_ids['switch'])
         elif self.state == 'on' and state == 'off':
-            self._log.info('Turning off: %s', (self.entities['switch']))
+            self._log.info('Turning off: %s', (self.entity_ids['switch']))
 
-            self.turn_off(self.entities['switch'])
+            self.turn_off(self.entity_ids['switch'])
 
     def toggle_on_schedule(self, kwargs: dict) -> None:
         """Turn off the switch at a certain time."""
@@ -56,14 +56,14 @@ class BaseZwaveSwitch(BaseSwitch):
         self.listen_event(
             self.double_up,
             'zwave.node_event',
-            entity_id=self.entities['zwave_device'],
+            entity_id=self.entity_ids['zwave_device'],
             basic_level=255,
             constrain_input_boolean=self.enabled_entity_id)
 
         self.listen_event(
             self.double_down,
             'zwave.node_event',
-            entity_id=self.entities['zwave_device'],
+            entity_id=self.entity_ids['zwave_device'],
             basic_level=0,
             constrain_input_boolean=self.enabled_entity_id)
 
@@ -82,7 +82,7 @@ class DoubleTapTimerSwitch(BaseZwaveSwitch):
     def double_up(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Turn on the target timer slider with a double up tap."""
         self.set_value(
-            self.entities['timer_slider'],
+            self.entity_ids['timer_slider'],
             round(self.properties['duration'] / 60))
 
 
@@ -91,11 +91,11 @@ class DoubleTapToggleSwitch(BaseZwaveSwitch):
 
     def double_down(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Turn off the target switch with a double down tap."""
-        self.turn_off(self.entities['target'])
+        self.turn_off(self.entity_ids['target'])
 
     def double_up(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Turn on the target switch with a double up tap."""
-        self.turn_on(self.entities['target'])
+        self.turn_on(self.entity_ids['target'])
 
 
 class PresenceFailsafe(BaseSwitch):
@@ -107,7 +107,7 @@ class PresenceFailsafe(BaseSwitch):
 
         self.listen_state(
             self.switch_activated,
-            self.entities['switch'],
+            self.entity_ids['switch'],
             new='on',
             constrain_noone='just_arrived,home',
             constrain_input_boolean=self.enabled_entity_id)
@@ -130,11 +130,11 @@ class SleepTimer(BaseSwitch):
 
         self.listen_state(
             self.timer_changed,
-            self.entities['timer_slider'],
+            self.entity_ids['timer_slider'],
             constrain_input_boolean=self.enabled_entity_id)
         self.listen_state(
             self.switch_turned_off,
-            self.entities['switch'],
+            self.entity_ids['switch'],
             new='off',
             constrain_input_boolean=self.enabled_entity_id)
 
@@ -142,7 +142,7 @@ class SleepTimer(BaseSwitch):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Reset the sleep timer when the switch turns off."""
-        self.set_value(self.entities['timer_slider'], 0)
+        self.set_value(self.entity_ids['timer_slider'], 0)
 
     def timer_changed(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -167,7 +167,7 @@ class SleepTimer(BaseSwitch):
         """Turn off a switch at the end of sleep timer."""
         self._log.info('Sleep timer over; turning switch off')
 
-        self.set_value(self.entities['timer_slider'], 0)
+        self.set_value(self.entity_ids['timer_slider'], 0)
 
 
 class ToggleAtTime(BaseSwitch):
@@ -221,7 +221,7 @@ class ToggleOnState(BaseSwitch):
 
         self.listen_state(
             self.state_changed,
-            self.entities['target'],
+            self.entity_ids['target'],
             constrain_input_boolean=self.enabled_entity_id,
             **constraints)
 
@@ -283,7 +283,7 @@ class TurnOnWhenCloudy(BaseSwitch):
 
         self.listen_state(
             self.cloud_coverage_reached,
-            self.entities['cloud_cover'],
+            self.entity_ids['cloud_cover'],
             constrain_start_time=BLACKOUT_END,
             constrain_end_time=BLACKOUT_START,
             constrain_input_boolean=self.enabled_entity_id,

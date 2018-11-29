@@ -7,7 +7,7 @@ fiddle_leaf_fig_low_moisture_automation:
     - notification_manager
     - presence_manager
     - vacation_mode
-  entities:
+  entity_ids:
     current_moisture: sensor.fiddle_leaf_fig_moisture
   properties:
     friendly_name: Fred

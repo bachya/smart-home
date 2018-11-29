@@ -31,7 +31,7 @@ class AbsentInsecure(Automation):
             action='home')
         self.listen_state(
             self.house_insecure,
-            self.entities['state'],
+            self.entity_ids['state'],
             new='Open',
             duration=60 * 5,
             constrain_input_boolean=self.enabled_entity_id,
@@ -131,12 +131,12 @@ class GarageLeftOpen(Automation):
             constrain_input_boolean=self.enabled_entity_id)
         self.listen_state(
             self.closed,
-            self.entities['garage_door'],
+            self.entity_ids['garage_door'],
             new='closed',
             constrain_input_boolean=self.enabled_entity_id)
         self.listen_state(
             self.left_open,
-            self.entities['garage_door'],
+            self.entity_ids['garage_door'],
             new='open',
             duration=self.properties['time_left_open'],
             constrain_input_boolean=self.enabled_entity_id)
@@ -201,7 +201,7 @@ class NotifyOnChange(Automation):
 
         self.listen_state(
             self.state_changed,
-            self.entities['state'],
+            self.entity_ids['state'],
             constrain_input_boolean=self.enabled_entity_id)
 
     def state_changed(  # pylint: disable=too-many-arguments
@@ -232,13 +232,13 @@ class SecurityManager(Base):
     def alarm_state(self) -> "AlarmStates":
         """Return the current state of the security system."""
         return self.AlarmStates(
-            self.get_state(self.entities['alarm_control_panel']))
+            self.get_state(self.entity_ids['alarm_control_panel']))
 
     @property
     def secure(self) -> bool:
         """Return whether the house is secure or not."""
         return self.get_state(
-            self.entities['overall_security_status_sensor']) == 'Secure'
+            self.entity_ids['overall_security_status_sensor']) == 'Secure'
 
     def initialize(self) -> None:
         """Initialize."""
@@ -246,7 +246,7 @@ class SecurityManager(Base):
 
         self.listen_state(
             self._security_system_change_cb,
-            self.entities['alarm_control_panel'])
+            self.entity_ids['alarm_control_panel'])
 
     def _security_system_change_cb(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -260,13 +260,13 @@ class SecurityManager(Base):
         self._log.info('Closing the garage door')
 
         self.call_service(
-            'cover.close_cover', entity_id=self.entities['garage_door'])
+            'cover.close_cover', entity_id=self.entity_ids['garage_door'])
 
     def get_insecure_entities(self) -> list:
         """Return a list of insecure entities."""
         return [
             entity['friendly_name']
-            for entity in self.entities['secure_status_mapping']
+            for entity in self.entity_ids['secure_status_mapping']
             if self.get_state(entity['entity_id']) == entity['state']
         ]
 
@@ -275,7 +275,7 @@ class SecurityManager(Base):
         self._log.info('Closing the garage door')
 
         self.call_service(
-            'cover.open_cover', entity_id=self.entities['garage_door'])
+            'cover.open_cover', entity_id=self.entity_ids['garage_door'])
 
     def set_alarm(self, new: "AlarmStates") -> None:
         """Set the security system."""
@@ -284,13 +284,13 @@ class SecurityManager(Base):
 
             self.call_service(
                 'alarm_control_panel/alarm_disarm',
-                entity_id=self.entities['alarm_control_panel'])
+                entity_id=self.entity_ids['alarm_control_panel'])
         elif new in (self.AlarmStates.away, self.AlarmStates.home):
             self._log.info('Arming the security system: "%s"', new.name)
 
             self.call_service(
                 'alarm_control_panel/alarm_arm_{0}'.format(
                     new.value.split('_')[1]),
-                entity_id=self.entities['alarm_control_panel'])
+                entity_id=self.entity_ids['alarm_control_panel'])
         else:
             raise AttributeError("Unknown security state: {0}".format(new))

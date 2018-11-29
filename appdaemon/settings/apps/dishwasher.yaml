@@ -2,7 +2,7 @@
 dishwasher:
   module: washer_dryer
   class: WasherDryer
-  entities:
+  entity_ids:
     power: sensor.dishwasher_power
     status: input_select.dishwasher_status
 

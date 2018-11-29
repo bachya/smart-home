@@ -16,7 +16,7 @@ adjust_climate_on_proximity_automation:
 climate_manager:
   module: climate
   class: ClimateManager
-  entities:
+  entity_ids:
     average_humidity_sensor: sensor.average_indoor_humidity
     average_temperature_sensor: sensor.average_indoor_temperature
     outside_temp: sensor.dark_sky_temperature
@@ -29,7 +29,7 @@ notify_bad_aqi_automation:
     - do_not_disturb
     - presence_manager
     - vacation_mode
-  entities:
+  entity_ids:
     aqi: sensor.us_air_quality_index
     hvac_state: sensor.thermostat_thermostat_hvac_state
   properties:

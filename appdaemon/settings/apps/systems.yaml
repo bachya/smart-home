@@ -5,7 +5,7 @@ notify_of_low_batteries_automation:
   dependencies:
     - notification_manager
     - presence_manager
-  entities:
+  entity_ids:
     batteries_to_monitor:
       - sensor.fiddle_leaf_fig_battery
       - sensor.front_door_lock_battery
@@ -25,7 +25,7 @@ notify_media_center_left_on_automation:
     - notification_manager
     - presence_manager
     - slack_app_home_assistant
-  entities:
+  entity_ids:
     entity: switch.media_center
   properties:
     seconds: 43200
@@ -42,7 +42,7 @@ notify_ps4_left_on_automation:
     - notification_manager
     - presence_manager
     - slack_app_home_assistant
-  entities:
+  entity_ids:
     entity: switch.ps4
   properties:
     seconds: 43200
@@ -58,7 +58,7 @@ notify_of_ssl_expiration_automation:
   dependencies:
     - notification_manager
     - presence_manager
-  entities:
+  entity_ids:
     ssl_expiry: sensor.ssl_expiry
   properties:
     expiry_threshold: 7

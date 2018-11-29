@@ -4,7 +4,7 @@ office_lights_sleep_timer_automation:
   class: SleepTimer
   dependencies:
     - presence_manager
-  entities:
+  entity_ids:
     switch: light.salt_lamp_office
     timer_slider: input_number.office_salt_lamp_timer
   enabled_config:
@@ -19,7 +19,7 @@ office_lights_off_at_10pm_automation:
     - guest_mode
     - presence_manager
     - vacation_mode
-  entities:
+  entity_ids:
     switch: light.salt_lamp_office
   properties:
     schedule_time: "22:00:00"
@@ -39,7 +39,7 @@ office_lights_on_at_sunset_automation:
     - guest_mode
     - presence_manager
     - vacation_mode
-  entities:
+  entity_ids:
     switch: light.salt_lamp_office
   properties:
     schedule_time: sunset

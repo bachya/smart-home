@@ -6,7 +6,7 @@ bar_cart_on_at_sunset_automation:
     - guest_mode
     - presence_manager
     - vacation_mode
-  entities:
+  entity_ids:
     switch: switch.bar_cart
   properties:
     presence_required: true
@@ -26,7 +26,7 @@ bar_cart_on_upon_arrival_automation:
   dependencies:
     - guest_mode
     - presence_manager
-  entities:
+  entity_ids:
     switch: switch.bar_cart
   properties:
     possible_constraints:

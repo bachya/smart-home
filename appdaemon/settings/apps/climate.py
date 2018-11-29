@@ -102,19 +102,19 @@ class ClimateManager(Base):
     @property
     def average_indoor_humidity(self) -> float:
         """Return the average indoor humidity based on a list of sensors."""
-        return float(self.get_state(self.entities['average_humidity_sensor']))
+        return float(self.get_state(self.entity_ids['average_humidity_sensor']))
 
     @property
     def average_indoor_temperature(self) -> float:
         """Return the average indoor temperature based on a list of sensors."""
         return float(
-            self.get_state(self.entities['average_temperature_sensor']))
+            self.get_state(self.entity_ids['average_temperature_sensor']))
 
     @property
     def away_mode(self) -> bool:
         """Return the state of away mode."""
         return self.get_state(
-            self.entities['thermostat'], attribute='away_mode') == 'on'
+            self.entity_ids['thermostat'], attribute='away_mode') == 'on'
 
     @property
     def indoor_temp(self) -> int:
@@ -122,7 +122,7 @@ class ClimateManager(Base):
         try:
             return int(
                 self.get_state(
-                    self.entities['thermostat'], attribute='temperature'))
+                    self.entity_ids['thermostat'], attribute='temperature'))
         except TypeError:
             return 0
 
@@ -130,12 +130,12 @@ class ClimateManager(Base):
     def mode(self) -> Enum:
         """Return the current operating mode."""
         return self.Modes[self.get_state(
-            self.entities['thermostat'], attribute='operation_mode')]
+            self.entity_ids['thermostat'], attribute='operation_mode')]
 
     @property
     def outside_temp(self) -> float:
         """Define a property to get the current outdoor temperature."""
-        return float(self.get_state(self.entities['outside_temp']))
+        return float(self.get_state(self.entity_ids['outside_temp']))
 
     def initialize(self) -> None:
         """Initialize."""
@@ -170,14 +170,14 @@ class ClimateManager(Base):
         """Set the thermostat temperature."""
         self.call_service(
             'climate/set_temperature',
-            entity_id=self.entities['thermostat'],
+            entity_id=self.entity_ids['thermostat'],
             temperature=str(value))
 
     def set_mode(self, value: Enum) -> None:
         """Set the themostat's operating mode."""
         self.call_service(
             'climate/set_operation_mode',
-            entity_id=self.entities['thermostat'],
+            entity_id=self.entity_ids['thermostat'],
             operation_mode=value.name)
 
 
@@ -187,7 +187,7 @@ class NotifyBadAqi(Automation):
     @property
     def current_aqi(self) -> int:
         """Define a property to get the current AQI."""
-        return int(self.get_state(self.entities['aqi']))
+        return int(self.get_state(self.entity_ids['aqi']))
 
     def initialize(self) -> None:
         """Initialize."""
@@ -197,7 +197,7 @@ class NotifyBadAqi(Automation):
 
         self.listen_state(
             self.bad_aqi_detected,
-            self.entities['hvac_state'],
+            self.entity_ids['hvac_state'],
             new='cooling',
             constrain_input_boolean=self.enabled_entity_id)
 

@@ -105,7 +105,7 @@ class DashButton(Automation):
     def button_pressed(
             self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond when button is pressed."""
-        action_name = self.get_state(self.entities['action_list'])
+        action_name = self.get_state(self.entity_ids['action_list'])
 
         if action_name not in self.OBJECT_MAP:
             self.error('Unknown action: {0}'.format(action_name))
