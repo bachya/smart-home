@@ -23,6 +23,9 @@ sensor:
 
   - platform: template
     sensors:
+      dark_sky_temperature:
+        value_template: "{{ states.weather.weather.attributes.temperature }}"
+        icon_template: mdi:thermometer
       friendly_season:
         friendly_name: Season
         value_template: "{{ states.sensor.season.state | title }}"
