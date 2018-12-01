@@ -74,7 +74,7 @@ services:
       context: ./home-assistant/docker
       args:
         ps4waker_version: 1.6.0
-        hass_version: 0.82.1
+        hass_version: 0.83.2
     container_name: hass
     depends_on:
       - glances

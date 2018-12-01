@@ -38,10 +38,6 @@ device_tracker:
     secret: !secret automatic_secret
     current_location: true
 
-  - platform: owntracks
-    max_gps_accuracy: 200
-    mqtt_topic: !secret mqtt_topic_owntracks
-
   - platform: tile
     username: !secret tile_username
     password: !secret tile_password
@@ -53,3 +49,7 @@ device_tracker:
     username: !secret unifi_username
     password: !secret unifi_password
     verify_ssl: false
+
+owntracks:
+  max_gps_accuracy: 200
+  mqtt_topic: !secret mqtt_topic_owntracks
