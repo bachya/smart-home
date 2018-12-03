@@ -266,7 +266,7 @@ class SecurityManager(Base):
         """Return a list of insecure entities."""
         return [
             entity['friendly_name']
-            for entity in self.entity_ids['secure_status_mapping']
+            for entity in self.properties['secure_status_mapping']
             if self.get_state(entity['entity_id']) == entity['state']
         ]
 
