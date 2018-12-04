@@ -38,6 +38,9 @@ device_tracker:
     secret: !secret automatic_secret
     current_location: true
 
+  - platform: googlehome
+    host: 172.16.11.30
+
   - platform: tile
     username: !secret tile_username
     password: !secret tile_password
