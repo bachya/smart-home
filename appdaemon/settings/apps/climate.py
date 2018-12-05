@@ -165,7 +165,7 @@ class ClimateManager(Base):
 
     def set_away_mode(self, value: "AwayModes") -> None:
         """Set the state of away mode."""
-        self.call_service('nest/set_mode', home_mode=value.name)
+        self.call_service('nest/set_away_mode', away_mode=value.name)
 
     def set_indoor_temp(self, value: int) -> None:
         """Set the thermostat temperature."""
