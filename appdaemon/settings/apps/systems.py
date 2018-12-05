@@ -77,7 +77,6 @@ class LeftInState(Automation):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Notify when the threshold is reached."""
-
         def turn_off():
             """Turn the entity off."""
             self.turn_off(self.entity_ids['entity'])

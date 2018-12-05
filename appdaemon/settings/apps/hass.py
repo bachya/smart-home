@@ -1,8 +1,6 @@
 """Define automations for Home Assistant itself."""
 # pylint: disable=attribute-defined-outside-init,import-error,unused-argument
 
-from typing import Union
-
 from automation import Automation  # type: ignore
 from const import BLACKOUT_END, BLACKOUT_START  # type: ignore
 

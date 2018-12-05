@@ -28,7 +28,8 @@ class NewVersionNotification(Automation):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Notify me when there's a new app version."""
-        new_version = version.parse(self.get_state(self.entity_ids['available']))
+        new_version = version.parse(
+            self.get_state(self.entity_ids['available']))
         installed_version = version.parse(
             self.get_state(self.entity_ids['installed']))
 

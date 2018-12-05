@@ -18,7 +18,8 @@ class SonosSpeaker(Base):
     def volume(self) -> float:
         """Retrieve the audio player's volume."""
         return float(
-            self.get_state(self.entity_ids['speaker'], attribute='volume_level'))
+            self.get_state(
+                self.entity_ids['speaker'], attribute='volume_level'))
 
     @volume.setter
     def volume(self, value: float) -> None:
