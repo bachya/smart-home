@@ -11,7 +11,8 @@ influxdb: !include conf/influxdb.yaml
 logbook:
 logger: !include conf/logger.yaml
 map:
-panel_iframe: !include conf/panels.yaml
+panel_custom: !include conf/panel-custom.yaml
+panel_iframe: !include conf/panel-iframe.yaml
 recorder: !include conf/recorder.yaml
 updater:
 zeroconf:
