@@ -260,7 +260,7 @@ class SecurityManager(Base):
         self._log.info('Closing the garage door')
 
         self.call_service(
-            'cover.close_cover', entity_id=self.entity_ids['garage_door'])
+            'cover/close_cover', entity_id=self.entity_ids['garage_door'])
 
     def get_insecure_entities(self) -> list:
         """Return a list of insecure entities."""
