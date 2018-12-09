@@ -4,8 +4,6 @@
 from automation import Automation  # type: ignore
 from const import BLACKOUT_END, BLACKOUT_START  # type: ignore
 
-DEFAULT_TASMOTA_RETRIES = 3
-
 
 class AutoVacationMode(Automation):
     """Define automated alterations to vacation mode."""
