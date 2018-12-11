@@ -61,7 +61,7 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: password
       GF_SECURITY_ADMIN_USER: admin
       GF_SERVER_DOMAIN: 129i98121212.myserver.com
-    image: grafana/grafana:5.4.0
+    image: grafana/grafana:5.4.1
     ports:
       - "3000:3000/tcp"
     restart: unless-stopped
