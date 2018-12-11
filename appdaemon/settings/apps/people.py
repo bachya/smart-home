@@ -23,7 +23,7 @@ class Person(Base):
         # (Extended) Away -> Just Arrived
         self.listen_state(
             self._change_input_select_cb,
-            self.at_home_sensor,
+            self.properties['at_home_sensor'],
             old='off',
             new='on',
             target_state=self.presence_manager.HomeStates.just_arrived)
@@ -39,7 +39,7 @@ class Person(Base):
         # Home -> Just Left
         self.listen_state(
             self._change_input_select_cb,
-            self.at_home_sensor,
+            self.properties['at_home_sensor'],
             old='on',
             new='off',
             target_state=self.presence_manager.HomeStates.just_left)
@@ -71,11 +71,6 @@ class Person(Base):
 
         # Render the presence sensor immediately upon init:
         self._render_presence_status_sensor()
-
-    @property
-    def at_home_sensor(self) -> str:
-        """Return the bayesian sensor defining the person's home status."""
-        return self.properties['at_home_sensor']
 
     @property
     def device_trackers(self) -> list:
