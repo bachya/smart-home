@@ -150,6 +150,14 @@ sensor:
             mdi:do-not-disturb-off
           {% endif %}
 
+      vacuum_last_run:
+        friendly_name: Last Run Date/Time
+        value_template: >
+          {{ as_timestamp(
+            states.vacuum.xiaomi_vacuum_cleaner.attributes.clean_stop
+            ) | timestamp_custom("%m/%d, %I:%M %p") }}
+        icon_template: mdi:calendar-check
+
 switch:
   - platform: template
     switches:
