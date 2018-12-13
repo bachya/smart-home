@@ -27,13 +27,17 @@ views:
             title: Scenes
             entities:
               - entity: scene.depart_home
-                tap_action: toggle
+                tap_action:
+                  action: toggle
               - entity: scene.drive_home
-                tap_action: toggle
+                tap_action:
+                  action: toggle
               - entity: scene.walk_home
-                tap_action: toggle
+                tap_action:
+                  action: toggle
               - entity: scene.good_night
-                tap_action: toggle
+                tap_action:
+                  action: toggle
             show_state: false
 
       - id: 9fc3529e44624549b976a36a4270b81b  # Automatically created id
@@ -47,13 +51,16 @@ views:
                 name: Security
               - entity: cover.garage_door
                 name: Garage
-                tap_action: toggle
+                tap_action:
+                  action: toggle
               - entity: lock.front_door
                 name: Front Door
-                tap_action: toggle
+                tap_action:
+                  action: toggle
               - entity: lock.garage_fire_door
                 name: Garage Door
-                tap_action: toggle
+                tap_action:
+                  action: toggle
 
       - id: ed4c33ece2d94976b465d9876e2d19a0  # Automatically created id
         type: vertical-stack
@@ -620,10 +627,10 @@ views:
               - sensor.ssl_expiry
           - type: horizontal-stack
             cards:
-              - type: sensor    
+              - type: sensor
                 entity: sensor.filtered_speedtest_download
                 name: Download
-              - type: sensor    
+              - type: sensor
                 entity: sensor.filtered_speedtest_upload
                 name: Upload
 
