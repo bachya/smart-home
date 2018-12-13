@@ -73,8 +73,10 @@ views:
             cards:
               - type: sensor
                 entity: sensor.average_indoor_temperature
+                graph: line
               - type: sensor
                 entity: sensor.average_indoor_humidity
+                graph: line
           - type: glance
             entities:
               - entity: sensor.thermostat_thermostat_operation_mode
