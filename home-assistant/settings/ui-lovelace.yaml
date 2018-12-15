@@ -171,7 +171,8 @@ views:
         type: entities
         title: Living Room Lights
         entities:
-          - input_boolean.christmas_tree_on_in_morning_automation
+          - input_boolean.christmas_lights_off_at_9am_automation
+          - input_boolean.christmas_lights_on_at_sunrise_automation
           - input_boolean.living_room_lights_on_at_sunset_automation
           - input_boolean.living_room_lights_on_upon_arrival_automation
           - input_boolean.living_room_lights_vacation_mode_automation

@@ -47,8 +47,12 @@ bar_cart_on_upon_arrival_automation:
   icon: mdi:car
   initial: true
   name: Turn on upon arrival
-christmas_tree_on_in_morning_automation:
-  icon: mdi:weather-sunset-up
+christmas_lights_off_at_9am_automation:
+  icon: mdi:pine-tree
+  initial: true
+  name: Turn on Christmas tree off at 9am (weekdays)
+christmas_lights_on_at_sunrise_automation:
+  icon: mdi:pine-tree
   initial: true
   name: Turn on Christmas tree at sunrise
 detect_blackout_automation:
