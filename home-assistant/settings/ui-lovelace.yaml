@@ -69,6 +69,7 @@ views:
             title: Thermostat
             entities:
               - climate.thermostat
+            show_header_toggle: false
           - type: horizontal-stack
             cards:
               - type: sensor
@@ -395,6 +396,7 @@ views:
         title: Cars
         entities:
           - device_tracker.2010_subaru_legacy
+        show_header_toggle: false
 
       - id: 6ef5446c5147412d88c91a149fc308ab  # Automatically created id
         type: entity-filter
@@ -418,6 +420,7 @@ views:
           - sensor.extra_trash_pickup
           - sensor.recycling_pickup
           - sensor.trash_pickup
+        show_header_toggle: false
 
   - title: Kitchen
     icon: mdi:stove
@@ -436,6 +439,7 @@ views:
             group: true
             hide_power: true
             icon: mdi:speaker
+        show_header_toggle: false
 
       - id: 9f1e83011d1b47a386f7310e3ea1f610  # Automatically created id
         type: vertical-stack
@@ -444,6 +448,7 @@ views:
             title: Thermostat
             entities:
               - climate.thermostat
+            show_header_toggle: false
           - type: horizontal-stack
             cards:
               - type: glance
@@ -461,6 +466,7 @@ views:
         entities:
           - input_select.dishwasher_status
           - sensor.dishwasher_power
+        show_header_toggle: false
 
       - id: 76478dbdc72f45cfa3dc0ead64e3edaf  # Automatically created id
         type: entities
@@ -468,6 +474,7 @@ views:
         entities:
           - lock.garage_fire_door
           - sensor.garage_fire_door_lock_battery
+        show_header_toggle: false
 
       - type: entities
         title: Lights
@@ -539,6 +546,7 @@ views:
             hide_power: true
             icon: mdi:speaker
             name: Sonos Playbar
+        show_header_toggle: false
 
   - title: Master Bedroom
     icon: mdi:hotel
@@ -551,6 +559,7 @@ views:
         entities:
           - input_select.dash_amazon_basics_batteries
           - input_select.dash_neat
+        show_header_toggle: false
 
       - type: entities
         title: Audio
@@ -560,6 +569,7 @@ views:
             group: true
             hide_power: true
             icon: mdi:speaker
+        show_header_toggle: false
 
       - id: 42adcc9a535341e3b3827f3b45cfb227  # Automatically created id
         type: entities
@@ -577,6 +587,7 @@ views:
           - sensor.climate_2_temperature
           - sensor.climate_2_humidity
           - sensor.climate_2_pressure
+        show_header_toggle: false
 
       - id: 3eee9b24f1604064a011e9ee9c98ded9  # Automatically created id
         type: entities
@@ -599,6 +610,7 @@ views:
             group: true
             hide_power: true
             icon: mdi:speaker
+        show_header_toggle: false
 
       - id: 7cd761fcd5124d75935172bfec0f7e37  # Automatically created id
         type: entities
@@ -628,6 +640,7 @@ views:
             title: Network
             entities:
               - sensor.ssl_expiry
+            show_header_toggle: false
           - type: horizontal-stack
             cards:
               - type: sensor
@@ -653,6 +666,7 @@ views:
           - entity: zwave.kitchen_patio_light
           - entity: zwave.master_bathroom_fan
           - entity: zwave.master_toilet_fan
+        show_header_toggle: false
 
       - id: b49c37567da74b8aa4d91c2ac401334b  # Automatically created id
         type: entities
@@ -678,6 +692,7 @@ views:
           - sensor.tasmota_available
           - sensor.yi_hack_available
           - sensor.yi_hack_installed
+        show_header_toggle: false
 
   - title: Wolfie
     icon: mdi:google-circles-group
