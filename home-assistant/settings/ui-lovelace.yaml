@@ -704,6 +704,7 @@ views:
         title: Run Cycle
         entities:
           - switch.wolfie_cycle
+          - sensor.vacuum_last_run
           - input_select.wolfie_bin_status
         show_header_toggle: false
 
