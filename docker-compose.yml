@@ -94,7 +94,7 @@ services:
 
   influxdb:
     container_name: influxdb
-    image: influxdb:1.7.1-alpine
+    image: influxdb:1.7.2-alpine
     environment:
       INFLUXDB_DB: hassdb
       INFLUXDB_USER: user
