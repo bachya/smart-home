@@ -152,6 +152,10 @@ class Person(Base):
 
         first = self.presence_manager.only_one(*states)
 
+        self._log.debug(
+            'Presence change: %s (%s -> %s) (first: %s)', self.first_name, old,
+            new, first)
+
         self.fire_event(
             'PRESENCE_CHANGE',
             person=self.first_name,
@@ -172,7 +176,8 @@ class Person(Base):
             self.presence_sensor,
             state=self.location,
             attributes={
-                'friendly_name': self.first_name,
+                'friendly_name':
+                    self.first_name,
                 'entity_picture':
                     '/local/{0}-{1}.png'.format(self.name, picture_state),
             })
