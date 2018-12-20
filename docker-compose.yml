@@ -18,7 +18,7 @@ services:
     depends_on:
       - hass
     environment:
-      EXTRA_CMD: -D DEBUG
+      EXTRA_CMD: -D INFO
     image: bachya/appdaemon
     restart: unless-stopped
     volumes:
