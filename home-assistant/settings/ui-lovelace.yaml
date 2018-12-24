@@ -28,16 +28,28 @@ views:
             entities:
               - entity: scene.depart_home
                 tap_action:
-                  action: toggle
+                  action: call-service
+                  service: scene.turn_on
+                  service_data:
+                    entity_id: scene.depart_home
               - entity: scene.drive_home
                 tap_action:
-                  action: toggle
+                  action: call-service
+                  service: scene.turn_on
+                  service_data:
+                    entity_id: scene.drive_home
               - entity: scene.walk_home
                 tap_action:
-                  action: toggle
+                  action: call-service
+                  service: scene.turn_on
+                  service_data:
+                    entity_id: scene.walk_home
               - entity: scene.good_night
                 tap_action:
-                  action: toggle
+                  action: call-service
+                  service: scene.turn_on
+                  service_data:
+                    entity_id: scene.good_night
             show_state: false
 
       - id: 9fc3529e44624549b976a36a4270b81b  # Automatically created id
