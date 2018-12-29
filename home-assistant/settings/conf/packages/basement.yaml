@@ -4,6 +4,12 @@ apple_tv:
     login_id: 00000000-1012-d722-4d49-70717fb642c1
     name: Basement Apple TV
 
+remote:
+  - platform: harmony
+    name: Basement TV
+    host: harmony-hub-2.phil.lan
+    activity: 37549209
+
 shell_command:
   turn_off_media_center: 'ssh bachya@media-center.phil.lan sudo /sbin/poweroff'
 

@@ -310,6 +310,7 @@ views:
       - type: entities
         title: Basement TV
         entities:
+          - remote.basement_tv
           - type: custom:mini-media-player
             artwork: none
             artwork_border: true
