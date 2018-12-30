@@ -8,7 +8,7 @@ garage_lights_off_after_garage_close_automation:
     switch: switch.garage_lights
     target: cover.garage_door
   properties:
-    delay: 300
+    delay: 600
     switch_state: "off"
     target_state: "closed"
   enabled_config:
