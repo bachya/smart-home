@@ -3,6 +3,10 @@ grafana:
   title: Grafana
   url: !secret panel_url_grafana
   icon: mdi:chart-bar
+jupyterlab:
+  title: JupyterLab
+  url: !secret panel_url_jupyterlab
+  icon: mdi:database-search
 portainer:
   title: Portainer
   url: !secret panel_url_portainer

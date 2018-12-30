@@ -105,6 +105,20 @@ services:
     volumes:
       - influxdb-config:/var/lib/influxdb
 
+  jupyterlab:
+    build:
+      context: ./jupyterlab/docker
+    container_name: jupyterlab
+    depends_on:
+      - hass
+    environment:
+      JUPYTER_ENABLE_LAB: 'yes'
+    image: bachya/jupyterlab
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - jupyterlab-config:/home/jovyan
+
   mosquitto:
     container_name: mosquitto
     image: eclipse-mosquitto:1.5.5
@@ -188,6 +202,7 @@ volumes:
   grafana-config:
   hass-config:
   influxdb-config:
+  jupyterlab-config:
   mosquitto-config:
   mosquitto-data:
   nginx-config:
