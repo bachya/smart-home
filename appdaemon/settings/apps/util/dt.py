@@ -1,5 +1,10 @@
 """Define date/time utilities."""
-import datetime
+from datetime import datetime, timedelta
+
+
+def ceil_dt(target_dt: datetime, delta: timedelta) -> datetime:
+    """Round a datetime up to the nearest delta."""
+    return target_dt + (datetime.min - target_dt) % delta
 
 
 def relative_time_of_day(hass) -> str:
@@ -18,11 +23,11 @@ def relative_time_of_day(hass) -> str:
 
 
 def time_is_between(
-        hass, target_dt: datetime.datetime, start_time: str,
+        hass, target_dt: datetime, start_time: str,
         end_time: str) -> bool:
     """Generalization of AppDaemon's now_is_between method."""
-    start_time_dt = hass.parse_time(start_time)  # type: datetime.datetime
-    end_time_dt = hass.parse_time(end_time)  # type: datetime.datetime
+    start_time_dt = hass.parse_time(start_time)  # type: datetime
+    end_time_dt = hass.parse_time(end_time)  # type: datetime
     start_dt = target_dt.replace(
         hour=start_time_dt.hour,
         minute=start_time_dt.minute,
@@ -35,6 +40,6 @@ def time_is_between(
     if end_dt < start_dt:
         # Spans midnight
         if target_dt < start_dt and target_dt < end_dt:
-            target_dt = target_dt + datetime.timedelta(days=1)
-        end_dt = end_dt + datetime.timedelta(days=1)
+            target_dt = target_dt + timedelta(days=1)
+        end_dt = end_dt + timedelta(days=1)
     return start_dt <= target_dt <= end_dt

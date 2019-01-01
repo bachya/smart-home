@@ -143,6 +143,7 @@ views:
         title: Climate
         entities:
           - input_boolean.adjust_climate_on_proximity_automation
+          - input_boolean.cycle_whole_house_fan_automation
           - input_boolean.notify_bad_aqi_automation
 
       - id: 78ddcab26d5e4e84a63594af2ab04fd5  # Automatically created id

@@ -5,9 +5,6 @@ adjust_climate_on_proximity_automation:
   dependencies:
     - climate_manager
     - presence_manager
-  properties:
-    outside_threshold_high: 85
-    outside_threshold_low: 35
   enabled_config:
     name: Adjust on proximity
     icon: mdi:car-side
@@ -21,6 +18,16 @@ climate_manager:
     average_temperature_sensor: sensor.average_indoor_temperature
     outside_temp: sensor.dark_sky_temperature
     thermostat: climate.thermostat
+
+cycle_whole_house_fan_automation:
+  module: climate
+  class: CycleFan
+  dependencies:
+    - climate_manager
+  enabled_config:
+    name: Cycle house fan every 15 min.
+    icon: mdi:fan
+    initial: true
 
 notify_bad_aqi_automation:
   module: climate

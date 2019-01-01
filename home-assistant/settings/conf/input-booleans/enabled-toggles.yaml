@@ -55,6 +55,10 @@ christmas_lights_on_at_sunrise_automation:
   icon: mdi:pine-tree
   initial: true
   name: Turn on Christmas tree at sunrise
+cycle_whole_house_fan_automation:
+  icon: mdi:fan
+  initial: true
+  name: Cycle house fan every 15 min.
 detect_blackout_automation:
   icon: mdi:theme-light-dark
   initial: true
