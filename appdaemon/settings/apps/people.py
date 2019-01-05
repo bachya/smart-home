@@ -6,7 +6,6 @@ from typing import Union
 
 from automation import Base  # type: ignore
 from const import CONF_PEOPLE
-from util import most_common
 
 
 class Person(Base):
@@ -23,9 +22,10 @@ class Person(Base):
         # (Extended) Away -> Just Arrived
         self.listen_state(
             self._change_input_select_cb,
-            self.properties['at_home_sensor'],
-            old='off',
-            new='on',
+            self.entity_ids['device_tracker'],
+            old='away',
+            new='home',
+            duration=10,
             target_state=self.presence_manager.HomeStates.just_arrived)
 
         # Just Arrived -> Home
@@ -39,9 +39,10 @@ class Person(Base):
         # Home -> Just Left
         self.listen_state(
             self._change_input_select_cb,
-            self.properties['at_home_sensor'],
-            old='on',
-            new='off',
+            self.entity_ids['device_tracker'],
+            old='home',
+            new='away',
+            duration=10,
             target_state=self.presence_manager.HomeStates.just_left)
 
         # Just Left -> Away
@@ -64,18 +65,13 @@ class Person(Base):
         self.listen_state(
             self._input_select_changed_cb, self.presence_input_select)
 
-        # Listen for changes to the device trackers (to initiate re-rendering
+        # Listen for changes to the device tracker (to initiate re-rendering
         # if needed):
-        for tracker in self.device_trackers:
-            self.listen_state(self._device_tracker_changed_cb, tracker)
+        self.listen_state(
+            self._device_tracker_changed_cb, self.entity_ids['device_tracker'])
 
         # Render the presence sensor immediately upon init:
-        self._render_presence_status_sensor()
-
-    @property
-    def device_trackers(self) -> list:
-        """Return the device trackers associated with the person."""
-        return self.properties['device_trackers']
+        self._set_presence_status_sensor()
 
     @property
     def first_name(self) -> str:
@@ -85,10 +81,8 @@ class Person(Base):
     @property
     def location(self) -> str:
         """Get the current location from combined device trackers."""
-        raw_location = most_common([
-            self.get_tracker_state(tracker_entity)
-            for tracker_entity in self.properties['device_trackers']
-        ])
+        raw_location = self.get_tracker_state(
+            self.entity_ids['device_tracker'])
 
         if raw_location not in ('home', 'not_home'):
             return raw_location
@@ -131,7 +125,7 @@ class Person(Base):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Respond when a device tracker changes state."""
-        self._render_presence_status_sensor()
+        self._set_presence_status_sensor()
 
     def _input_select_changed_cb(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -163,9 +157,9 @@ class Person(Base):
             new=new,
             first=first)
 
-        self._render_presence_status_sensor()
+        self._set_presence_status_sensor()
 
-    def _render_presence_status_sensor(self):
+    def _set_presence_status_sensor(self):
         """Update the presence status sensor."""
         if self.location in ('Home', 'Just Arrived'):
             picture_state = 'home'
