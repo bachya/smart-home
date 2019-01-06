@@ -23,9 +23,8 @@ class Person(Base):
         self.listen_state(
             self._change_input_select_cb,
             self.entity_ids['device_tracker'],
-            old='away',
+            old='not_home',
             new='home',
-            duration=10,
             target_state=self.presence_manager.HomeStates.just_arrived)
 
         # Just Arrived -> Home
@@ -41,8 +40,7 @@ class Person(Base):
             self._change_input_select_cb,
             self.entity_ids['device_tracker'],
             old='home',
-            new='away',
-            duration=10,
+            new='not_home',
             target_state=self.presence_manager.HomeStates.just_left)
 
         # Just Left -> Away
