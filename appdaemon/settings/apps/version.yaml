@@ -131,23 +131,6 @@ new_portainer_version_automation:
     icon: mdi:home-assistant
     initial: true
 
-new_ps4_version_automation:
-  module: version
-  class: NewVersionNotification
-  dependencies:
-    - notification_manager
-    - presence_manager
-  entity_ids:
-    available: sensor.ps4waker_available
-    installed: sensor.ps4waker_installed
-  properties:
-    app_name: ps4-waker
-  enabled_config:
-    toggle_name: notify_of_new_versions
-    name: Notify of new versions
-    icon: mdi:home-assistant
-    initial: true
-
 new_tasmoadmin_version_automation:
   module: version
   class: NewPortainerVersionNotification

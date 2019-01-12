@@ -698,8 +698,6 @@ views:
           - sensor.mosquitto_installed
           - sensor.portainer_available
           - sensor.portainer_installed
-          - sensor.ps4waker_available
-          - sensor.ps4waker_installed
           - sensor.tasmoadmin_available
           - sensor.tasmoadmin_installed
           - sensor.lowest_tasmota_installed
