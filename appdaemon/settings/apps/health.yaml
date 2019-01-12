@@ -1,0 +1,26 @@
+---
+notify_bad_aqi_automation:
+  module: health
+  class: NotifyBadAqi
+  dependencies:
+    - do_not_disturb
+    - notification_manager
+    - vacation_mode
+  entity_ids:
+    aqi: sensor.us_air_quality_index
+    hvac_state: sensor.thermostat_thermostat_hvac_state
+  properties:
+    aqi_threshold: 100
+  mode_alterations:
+    do_not_disturb: disable
+    vacation_mode: disable
+  enabled_config:
+    name: Bad AQI notifications
+    icon: mdi:weather-windy
+    initial: true
+
+update_uv_when_sunny_automation:
+  module: health
+  class: UpdateUvWhenSunny
+  properties:
+    update_interval: 1800
