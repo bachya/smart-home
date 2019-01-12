@@ -7,14 +7,6 @@ binary_sensor:
 
 camera:
   - platform: ffmpeg
-    name: Back Patio
-    input: -rtsp_transport tcp -i rtsp://172.16.10.75/live1
-
-  - platform: ffmpeg
-    name: Driveway
-    input: -rtsp_transport tcp -i rtsp://172.16.10.75/live0
-
-  - platform: ffmpeg
     name: Garage
     input: -rtsp_transport tcp -i rtsp://garage-camera.myserver.com:8554/unicast
 

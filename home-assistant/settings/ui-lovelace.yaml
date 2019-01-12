@@ -337,10 +337,6 @@ views:
     id: cameras
     cards:
 
-      - type: picture-entity
-        entity: camera.back_patio
-      - type: picture-entity
-        entity: camera.driveway
       - id: 03b0d2f6e91242b88ba451aad7625d6e  # Automatically created id
         type: picture-glance
         title: Front Door
