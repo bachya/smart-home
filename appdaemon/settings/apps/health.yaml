@@ -23,4 +23,4 @@ update_uv_when_sunny_automation:
   module: health
   class: UpdateUvWhenSunny
   properties:
-    update_interval: 1800
+    update_interval: 900
