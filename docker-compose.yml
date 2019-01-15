@@ -82,7 +82,7 @@ services:
     depends_on:
       - hass
     environment:
-      JUPYTER_ENABLE_LAB: 'yes'
+      JUPYTER_ENABLE_LAB: "yes"
     image: bachya/jupyterlab
     restart: unless-stopped
     volumes:
