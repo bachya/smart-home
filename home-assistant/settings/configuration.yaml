@@ -7,7 +7,6 @@ config:
 frontend: !include conf/frontend.yaml
 history:
 http: !include conf/http.yaml
-influxdb: !include conf/influxdb.yaml
 logbook:
 logger: !include conf/logger.yaml
 lovelace: !include conf/lovelace.yaml

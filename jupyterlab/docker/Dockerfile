@@ -10,7 +10,6 @@ RUN apt-get update \
     bokeh==1.0.2 \
     geopy==1.18.1 \
     HASS-data-detective==1.0 \
-    influxdb==5.2.1 \
     ipywidgets==7.4.2 \
     jupyterlab_github==0.7.0 \
     jupyterlab==0.35.4 \

@@ -120,8 +120,6 @@ switch.garage_lights:
   icon: mdi:lightbulb
 switch.home_assistant:
   icon: mdi:home-assistant
-switch.influxdb:
-  icon: mdi:database
 switch.kitchen_patio_light:
   icon: mdi:lightbulb
 switch.media_center:

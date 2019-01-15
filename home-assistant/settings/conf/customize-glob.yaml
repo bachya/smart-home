@@ -25,12 +25,8 @@
   friendly_name: Pressure
 "sensor.climate_*_temperature":
   friendly_name: Temperature
-"sensor.grafana_*":
-  icon: mdi:chart-bar
 "sensor.hass_*":
   icon: mdi:home-assistant
-"sensor.influxdb_*":
-  icon: mdi:database
 "sensor.mosquitto_*":
   icon: mdi:wifi
 "sensor.portainer_*":
