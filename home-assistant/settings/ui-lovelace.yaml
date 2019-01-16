@@ -15,7 +15,7 @@ views:
         type: vertical-stack
         cards:
           - type: glance
-            title: Location
+            title: Presence
             entities:
               - sensor.aaron_presence_status
               - sensor.britt_presence_status

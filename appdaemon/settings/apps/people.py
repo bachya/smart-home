@@ -1,11 +1,14 @@
 """Define people."""
 # pylint: disable=attribute-defined-outside-init,unused-argument
-
 from enum import Enum
 from typing import Union
 
 from automation import Base  # type: ignore
 from const import CONF_PEOPLE
+from util import most_common
+
+HANDLE_5_MINUTE_TIMER = '5_minute'
+HANDLE_24_HOUR_TIMER = '24_hour'
 
 
 class Person(Base):
@@ -15,61 +18,31 @@ class Person(Base):
         """Initialize."""
         super().initialize()
 
+        # Get the raw state of the device trackers and seed the home state:
+        self._raw_state = self._most_common_raw_state()
+        if self._raw_state == 'home':
+            self._home_state = self.presence_manager.HomeStates.home
+        else:
+            self._home_state = self.presence_manager.HomeStates.away
+
         # Store a global reference to this person:
         self.global_vars.setdefault(CONF_PEOPLE, [])
         self.global_vars[CONF_PEOPLE].append(self)
 
-        # (Extended) Away -> Just Arrived
-        self.listen_state(
-            self._change_input_select_cb,
-            self.entity_ids['device_tracker'],
-            old='not_home',
-            new='home',
-            target_state=self.presence_manager.HomeStates.just_arrived)
+        # Listen for changes to any of the person's device trackers:
+        for device_tracker in self.entity_ids['device_trackers']:
+            kind = self.get_state(device_tracker, attribute='source_type')
+            if kind == 'router':
+                self.listen_state(
+                    self._device_tracker_changed_cb,
+                    device_tracker,
+                    old='not_home')
+            else:
+                self.listen_state(
+                    self._device_tracker_changed_cb, device_tracker)
 
-        # Just Arrived -> Home
-        self.listen_state(
-            self._change_input_select_cb,
-            self.presence_input_select,
-            new=self.presence_manager.HomeStates.just_arrived.value,
-            duration=60 * 5,
-            target_state=self.presence_manager.HomeStates.home)
-
-        # Home -> Just Left
-        self.listen_state(
-            self._change_input_select_cb,
-            self.entity_ids['device_tracker'],
-            old='home',
-            new='not_home',
-            target_state=self.presence_manager.HomeStates.just_left)
-
-        # Just Left -> Away
-        self.listen_state(
-            self._change_input_select_cb,
-            self.presence_input_select,
-            new=self.presence_manager.HomeStates.just_left.value,
-            duration=60 * 5,
-            target_state=self.presence_manager.HomeStates.away)
-
-        # Away -> Extended Away
-        self.listen_state(
-            self._change_input_select_cb,
-            self.presence_input_select,
-            new=self.presence_manager.HomeStates.away.value,
-            duration=60 * 60 * 24,
-            target_state=self.presence_manager.HomeStates.extended_away)
-
-        # Listen for all changes to the presence input select:
-        self.listen_state(
-            self._input_select_changed_cb, self.presence_input_select)
-
-        # Listen for changes to the device tracker (to initiate re-rendering
-        # if needed):
-        self.listen_state(
-            self._device_tracker_changed_cb, self.entity_ids['device_tracker'])
-
-        # Render the presence sensor immediately upon init:
-        self._set_presence_status_sensor()
+        # Render the initial state of the presence sensor:
+        self._render_presence_status_sensor()
 
     @property
     def first_name(self) -> str:
@@ -77,96 +50,128 @@ class Person(Base):
         return self.name.title()
 
     @property
-    def location(self) -> str:
-        """Get the current location from combined device trackers."""
-        raw_location = self.get_tracker_state(
-            self.entity_ids['device_tracker'])
+    def home_state(self) -> Enum:
+        """Return the person's human-friendly home state."""
+        return self._home_state
 
-        if raw_location not in ('home', 'not_home'):
-            return raw_location
-
-        return self.get_state(self.presence_input_select)
+    @home_state.setter
+    def home_state(self, state: Enum) -> None:
+        """Set the home-friendly home state."""
+        original_state = self._home_state
+        self._home_state = state
+        self._fire_presence_change_event(original_state, state)
 
     @property
     def notifiers(self) -> list:
         """Return the notifiers associated with the person."""
-        return self.properties['notifiers']
-
-    @property
-    def presence_input_select(self) -> str:
-        """Return the input select related to the person's presence."""
-        return self.properties['presence_input_select']
-
-    @presence_input_select.setter
-    def presence_input_select(self, value: Enum) -> None:
-        self.select_option(
-            self.properties['presence_input_select'], value.value)
-
-    @property
-    def presence_sensor(self) -> str:
-        """Return the entity ID of the generated presence status sensor."""
-        return 'sensor.{0}_presence_status'.format(self.name)
+        return self.entity_ids['notifiers']
 
     @property
     def push_device_id(self) -> str:
         """Get the iOS device ID for push notifications."""
         return self.properties.get('push_device_id')
 
-    def _change_input_select_cb(  # pylint: disable=too-many-arguments
-            self, entity: Union[str, dict], attribute: str, old: str, new: str,
-            kwargs: dict) -> None:
-        """Change state of a home presence input select."""
-        target_state = kwargs['target_state']
-        self.presence_input_select = target_state
+    def _check_transition_cb(self, kwargs: dict) -> None:
+        """Transition the user's home state (if appropriate)."""
+        current_state = kwargs['current_state']
+
+        if not self._home_state == kwargs['current_state']:
+            return
+
+        if current_state == self.presence_manager.HomeStates.just_arrived:
+            self.home_state = self.presence_manager.HomeStates.home
+        elif current_state == self.presence_manager.HomeStates.just_left:
+            self.home_state = self.presence_manager.HomeStates.away
+        elif current_state == self.presence_manager.HomeStates.away:
+            self.home_state = self.presence_manager.HomeStates.extended_away
+
+        # Re-render the sensor:
+        self._render_presence_status_sensor()
 
     def _device_tracker_changed_cb(  # pylint: disable=too-many-arguments
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
-        """Respond when a device tracker changes state."""
-        self._set_presence_status_sensor()
-
-    def _input_select_changed_cb(  # pylint: disable=too-many-arguments
-            self, entity: Union[str, dict], attribute: str, old: str, new: str,
-            kwargs: dict) -> None:
-        """Respond when the home presence input select changes."""
-        if old == new:
+        """Respond when a device tracker changes."""
+        if self._raw_state == new:
             return
 
-        new_state = self.presence_manager.HomeStates(new)
-        if new_state in (self.presence_manager.HomeStates.just_arrived,
-                         self.presence_manager.HomeStates.home):
+        self._raw_state = new
+
+        # Cancel any old timers:
+        for handle in (HANDLE_5_MINUTE_TIMER, HANDLE_24_HOUR_TIMER):
+            if handle in self.handles:
+                self.cancel_timer(self.handles[handle])
+                del self.handles[handle]
+
+        # Set the home state and schedule transition checks (Just Left -> Away,
+        # for example) for various points in the future:
+        if new == 'home':
+            self.home_state = self.presence_manager.HomeStates.just_arrived
+            self.handles[HANDLE_5_MINUTE_TIMER] = self.run_in(
+                self._check_transition_cb,
+                60 * 5,
+                current_state=self.presence_manager.HomeStates.just_arrived)
+        elif old == 'home':
+            self.home_state = self.presence_manager.HomeStates.just_left
+            self.handles[HANDLE_5_MINUTE_TIMER] = self.run_in(
+                self._check_transition_cb,
+                60 * 5,
+                current_state=self.presence_manager.HomeStates.just_left)
+            self.handles[HANDLE_24_HOUR_TIMER] = self.run_in(
+                self._check_transition_cb,
+                60 * 60 * 24,
+                current_state=self.presence_manager.HomeStates.away)
+
+        # Re-render the sensor:
+        self._render_presence_status_sensor()
+
+    def _fire_presence_change_event(self, old: Enum, new: Enum) -> None:
+        """Fire a presence change event."""
+        if new in (self.presence_manager.HomeStates.just_arrived,
+                   self.presence_manager.HomeStates.home):
             states = [
                 self.presence_manager.HomeStates.just_arrived,
                 self.presence_manager.HomeStates.home
             ]
         else:
-            states = [new_state]
+            states = [new]
 
         first = self.presence_manager.only_one(*states)
 
         self._log.debug(
-            'Presence change: %s (%s -> %s) (first: %s)', self.first_name, old,
-            new, first)
+            'Presence change: %s (%s -> %s) (first: %s)', self.first_name,
+            old.value, new.value, first)
 
         self.fire_event(
             'PRESENCE_CHANGE',
             person=self.first_name,
-            old=old,
-            new=new,
+            old=old.value,
+            new=new.value,
             first=first)
 
-        self._set_presence_status_sensor()
+    def _most_common_raw_state(self) -> str:
+        """Get the most common raw state from the person's device trackers."""
+        return most_common([
+            self.get_tracker_state(dt)
+            for dt in self.entity_ids['device_trackers']
+        ])
 
-    def _set_presence_status_sensor(self):
-        """Update the presence status sensor."""
-        if self.location in ('Home', 'Just Arrived'):
+    def _render_presence_status_sensor(self) -> None:
+        """Update the sensor in the UI."""
+        if self._home_state in (self.presence_manager.HomeStates.home,
+                                self.presence_manager.HomeStates.just_arrived):
             picture_state = 'home'
         else:
             picture_state = 'away'
 
+        if self._home_state:
+            state = self._home_state.value
+        else:
+            state = self._raw_state
+
         self.set_state(
-            self.presence_sensor,
-            state=self.location,
+            self.entity_ids['presence_status_sensor'],
+            state=state,
             attributes={
                 'friendly_name':
                     self.first_name,

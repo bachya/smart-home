@@ -92,8 +92,7 @@ class PresenceManager(Base):
         """Return a list people who are in a certain set of states."""
         return [
             person for person in self.global_vars[CONF_PEOPLE]
-            if self.get_state(person.presence_input_select) in
-            [state.value for state in states]
+            if person.home_state in states
         ]
 
     def anyone(self, *states: Enum) -> bool:

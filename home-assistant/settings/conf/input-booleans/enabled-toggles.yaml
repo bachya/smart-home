@@ -13,7 +13,7 @@ amazon_basics_batteries_transition_to_salt_lamp:
   name: 'Amazon Basics Batteries: Salt lamp in morning'
 auto_departure_lockup_automation:
   icon: mdi:car-side
-  initial: true
+  initial: false
   name: Automatic departure lock up
 auto_nighttime_lockup_automation:
   icon: mdi:clock

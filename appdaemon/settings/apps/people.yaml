@@ -6,11 +6,15 @@ aaron:
     - presence_manager
   priority: 10
   entity_ids:
-    device_tracker: device_tracker.aaron
-  properties:
+    device_trackers:
+      - device_tracker.2010_subaru_legacy
+      - device_tracker.aaron_bachs_iphone
+      - device_tracker.aaron_iphone
+      - device_tracker.aarons_iphone
     notifiers:
       - ios_aaron_bachs_iphone
-    presence_input_select: input_select.aaron_presence_status
+    presence_status_sensor: sensor.aaron_presence_status
+  properties:
     push_device_id: 885F47F4-56F2-435C-A84C-84654D0A906F
 
 britt:
@@ -20,9 +24,12 @@ britt:
     - presence_manager
   priority: 10
   entity_ids:
-    device_tracker: device_tracker.britt
-  properties:
+    device_trackers:
+      - device_tracker.britt_iphone
+      - device_tracker.britts_apple_watch
+      - device_tracker.britts_iphone
     notifiers:
       - ios_brittany_bachs_iphone
-    presence_input_select: input_select.britt_presence_status
+    presence_status_sensor: sensor.britt_presence_status
+  properties:
     push_device_id: 3CCFD32B-8C04-4A0D-94C2-6E934E8B6705
