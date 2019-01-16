@@ -1,10 +1,6 @@
 ---
 resources:
-  - url: "/local/custom-lovelace/entity-attributes-card\
-          /entity-attributes-card.js?v=0.1.1"
-    type: js
-
-  - url: /local/mini-media-player/mini-media-player.js?v=0.9.2
+  - url: /local/mini-media-player-bundle.js?v=0.9.8
     type: module
 
 title: Bach Home
