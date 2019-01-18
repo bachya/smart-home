@@ -153,7 +153,7 @@ c.NotebookApp.allow_root = True
 #  completely without authentication. These services can disable all
 #  authentication and security checks, with the full knowledge of what that
 #  implies.
-#c.NotebookApp.disable_check_xsrf = False
+c.NotebookApp.disable_check_xsrf = True
 
 ## Whether to enable MathJax for typesetting math/TeX
 #  
@@ -201,7 +201,7 @@ c.NotebookApp.allow_root = True
 #c.NotebookApp.iopub_msg_rate_limit = 1000
 
 ## The IP address the notebook server will listen on.
-c.NotebookApp.ip = 'jupyterlab'
+c.NotebookApp.ip = '0.0.0.0'
 
 ## Supply extra arguments that will be passed to Jinja environment.
 #c.NotebookApp.jinja_environment_options = {}
@@ -226,7 +226,7 @@ c.NotebookApp.ip = 'jupyterlab'
 #  
 #  Local IP addresses (such as 127.0.0.1 and ::1) are automatically accepted as
 #  local as well.
-c.NotebookApp.local_hostnames = ['localhost', '192.168.7.7']
+#c.NotebookApp.local_hostnames = []
 
 ## The login handler class to use.
 #c.NotebookApp.login_handler_class = 'notebook.auth.login.LoginHandler'
@@ -273,7 +273,7 @@ c.NotebookApp.open_browser = False
 #    from notebook.auth import passwd; passwd()
 #  
 #  The string should be of the form type:salt:hashed-password.
-c.NotebookApp.password = 'sha1:cc2c9177e79b:8ec87ca9ef523a8b6a7f68ea0c4c17cfd335d885'
+c.NotebookApp.password = ''
 
 ## Forces users to use a password for the Notebook server. This is useful in a
 #  multi user environment, for instance when everybody in the LAN can access each
@@ -337,7 +337,7 @@ c.NotebookApp.password = 'sha1:cc2c9177e79b:8ec87ca9ef523a8b6a7f68ea0c4c17cfd335
 #  
 #  Setting to an empty string disables authentication altogether, which is NOT
 #  RECOMMENDED.
-#c.NotebookApp.token = '<generated>'
+c.NotebookApp.token = ''
 
 ## Supply overrides for the tornado.web.Application that the Jupyter notebook
 #  uses.
