@@ -52,6 +52,7 @@ views:
         type: vertical-stack
         cards:
           - type: glance
+            title: Security
             entities:
               - entity: sensor.secure_status
                 name: Overall
@@ -74,7 +75,7 @@ views:
         type: vertical-stack
         cards:
           - type: entities
-            title: Thermostat
+            title: Indoor Climate
             entities:
               - climate.thermostat
             show_header_toggle: false
