@@ -1,0 +1,24 @@
+[MESSAGES CONTROL]
+# Reasons disabled:
+# unnecessary-pass - This can hurt readability
+disable=
+  unnecessary-pass
+
+[REPORTS]
+reports=no
+
+[FORMAT]
+expected-line-ending-format=LF
+
+[SIMILARITIES]
+#Minimum lines number of a similarity.
+min-similarity-lines=6
+
+# Ignore comments when computing similarities.
+ignore-comments=yes
+
+# Ignore docstrings when computing similarities.
+ignore-docstrings=yes
+
+# Ignore imports when computing similarities.
+ignore-imports=no
