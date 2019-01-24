@@ -6,15 +6,14 @@ group:
       - switch.reading_lamp
       - switch.sofa_lamp
 
-media_player:
-  - platform: roku
-    host: 172.16.10.33
-
 remote:
   - platform: harmony
     name: Living Room TV
     host: harmony-hub-1.myserver.com
     activity: 22580039
+
+roku:
+  - host: 172.16.10.33
 
 sensor:
   - platform: template
