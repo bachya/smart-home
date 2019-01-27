@@ -305,6 +305,7 @@ views:
     icon: mdi:gamepad-variant
     id: basement
     cards:
+
       - type: entities
         title: Basement TV
         entities:
@@ -322,6 +323,18 @@ views:
             show_source: full
           - switch.ps4
         show_header_toggle: false
+
+      - type: entity-filter
+        card:
+          type: entities
+          title: Lights
+        entities:
+          - entity: switch.basement_lights
+            tap_action: toggle
+        state_filter:
+          - "off"
+          - "on"
+
       - id: da8cec22a3214cfc84f8c3764c85532c  # Automatically created id
         type: entities
         title: Media Center
@@ -514,8 +527,6 @@ views:
           type: entities
           title: Lights
         entities:
-          - entity: switch.christmas_tree
-            tap_action: toggle
           - entity: switch.reading_lamp
             tap_action: toggle
           - entity: switch.sofa_lamp

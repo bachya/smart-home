@@ -96,6 +96,8 @@ switch.backyard_lights:
   icon: mdi:lightbulb
 switch.bar_cart:
   icon: mdi:lightbulb
+switch.basement_lights:
+  icon: mdi:lightbulb
 switch.christmas_tree:
   icon: mdi:pine-tree
 switch.fireplace:

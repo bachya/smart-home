@@ -13,6 +13,7 @@ google_actions:
       - script.empty_wolfie
       - switch.backyard_lights
       - switch.bar_cart
+      - switch.basement_lights
       - switch.christmas_tree
       - switch.fireplace
       - switch.front_patio_light
@@ -63,6 +64,8 @@ google_actions:
       room: Backyard
     switch.bar_cart:
       room: Kitchen
+    switch.basement_lights:
+      room: Basement
     switch.christmas_tree:
       room: Living room
     switch.fireplace:

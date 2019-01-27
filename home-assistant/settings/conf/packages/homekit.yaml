@@ -22,6 +22,7 @@ homekit:
       - sensor.fiddle_leaf_fig_moisture
       - switch.backyard_lights
       - switch.bar_cart
+      - switch.basement_lights
       - switch.christmas_tree
       - switch.fireplace
       - switch.front_patio_light
