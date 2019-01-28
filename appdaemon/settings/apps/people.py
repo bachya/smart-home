@@ -100,8 +100,8 @@ class Person(Base):
         # Cancel any old timers:
         for handle in (HANDLE_5_MINUTE_TIMER, HANDLE_24_HOUR_TIMER):
             if handle in self.handles:
-                self.cancel_timer(self.handles[handle])
-                del self.handles[handle]
+                handle = self.handles.pop(handle)
+                self.cancel_timer(handle)
 
         # Set the home state and schedule transition checks (Just Left -> Away,
         # for example) for various points in the future:
