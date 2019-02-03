@@ -398,22 +398,22 @@ views:
           - cover.garage_door
           - switch.garage_lights
 
-      # - type: entities
-      #   title: Camera
-      #   entities:
-      #     - binary_sensor.garage_camera_motion_detected
-      #     - sensor.garage_camera_bitrate
-      #     - sensor.garage_camera_detected_brightness
-      #     - sensor.garage_camera_link_quality
-      #     - sensor.garage_camera_noise_level
-      #     - sensor.garage_camera_signal_level
-      #     - switch.garage_camera_night_mode
-      #     - switch.garage_camera_infrared_led
-      #     - switch.garage_camera_infrared_led_filter
-      #     - switch.garage_camera_motion_detection
-      #     - switch.garage_camera_rtsp_h264
-      #     - switch.garage_camera_rtsp_mjpeg
-      #   show_header_toggle: false
+      - type: entities
+        title: Camera
+        entities:
+          - binary_sensor.garage_camera_motion_detected
+          - sensor.garage_camera_bitrate
+          - sensor.garage_camera_detected_brightness
+          - sensor.garage_camera_link_quality
+          - sensor.garage_camera_noise_level
+          - sensor.garage_camera_signal_level
+          - switch.garage_camera_night_mode
+          - switch.garage_camera_infrared_led
+          - switch.garage_camera_infrared_led_filter
+          - switch.garage_camera_motion_detection
+          - switch.garage_camera_rtsp_h264
+          - switch.garage_camera_rtsp_mjpeg
+        show_header_toggle: false
 
       - id: d6d6e7ad6739437787c6b9ebe847d4e2  # Automatically created id
         type: entities
