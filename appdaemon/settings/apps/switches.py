@@ -1,6 +1,6 @@
 """Define automations for switches."""
 # pylint: disable=attribute-defined-outside-init,unused-argument
-
+from datetime import timedelta
 from typing import Callable, Union
 
 from automation import Automation  # type: ignore
@@ -9,6 +9,8 @@ from const import (  # type: ignore
 from util.scheduler import run_on_days  # type: ignore
 
 HANDLE_TIMER = 'timer'
+HANDLE_TOGGLE_IN_WINDOW = 'in_window'
+HANDLE_TOGGLE_OUT_WINDOW = 'out_window'
 HANDLE_TOGGLE_STATE = 'toggle_state'
 HANDLE_VACATION_MODE_OFF = 'vacation_mode_off'
 HANDLE_VACATION_MODE_ON = 'vacation_mode_on'
@@ -30,20 +32,34 @@ class BaseSwitch(Automation):
         else:
             func()
 
-    def toggle(self, state: str) -> None:
+    def toggle(self, *, state: str = None, opposite_of: str = None) -> None:
         """Toggle the switch state."""
-        if self.state == 'off' and state == 'on':
+        if not state and not opposite_of:
+            self._log.error('No state value provided')
+            return
+
+        if state:
+            _state = state
+        elif opposite_of == 'off':
+            _state = 'on'
+        else:
+            _state = 'off'
+
+        if self.state == 'off' and _state == 'on':
             self._log.info('Turning on: %s', self.entity_ids['switch'])
 
             self.turn_on(self.entity_ids['switch'])
-        elif self.state == 'on' and state == 'off':
+        elif self.state == 'on' and _state == 'off':
             self._log.info('Turning off: %s', (self.entity_ids['switch']))
 
             self.turn_off(self.entity_ids['switch'])
 
     def toggle_on_schedule(self, kwargs: dict) -> None:
         """Turn off the switch at a certain time."""
-        self.toggle(kwargs['state'])
+        if kwargs.get('opposite'):
+            self.toggle(opposite_of=kwargs['state'])
+        else:
+            self.toggle(state=kwargs['state'])
 
 
 class BaseZwaveSwitch(BaseSwitch):
@@ -118,7 +134,7 @@ class PresenceFailsafe(BaseSwitch):
         """Turn the switch off if no one is home."""
         self._log.info('No one home; not allowing switch to activate')
 
-        self.toggle('off')
+        self.toggle(state='off')
 
 
 class SleepTimer(BaseSwitch):
@@ -153,13 +169,13 @@ class SleepTimer(BaseSwitch):
         if minutes == 0:
             self._log.info('Deactivating sleep timer')
 
-            self.toggle('off')
+            self.toggle(state='off')
             handle = self.handles.pop(HANDLE_TIMER)
             self.cancel_timer(handle)
         else:
             self._log.info('Activating sleep timer: %s minutes', minutes)
 
-            self.toggle('on')
+            self.toggle(state='on')
             self.handles[HANDLE_TIMER] = self.run_in(
                 self.timer_completed, minutes * 60)
 
@@ -205,6 +221,46 @@ class ToggleAtTime(BaseSwitch):
                     **kwargs)
 
 
+class ToggleOnInterval(BaseSwitch):
+    """Define a feature to toggle the switch at intervals."""
+
+    def initialize(self) -> None:
+        """Initialize."""
+        super().initialize()
+
+        self.run_daily(
+            self.start_cycle, self.parse_time(self.properties['start_time']))
+
+        self.run_daily(
+            self.stop_cycle, self.parse_time(self.properties['end_time']))
+
+        if self.now_is_between(self.properties['start_time'],
+                               self.properties['end_time']):
+            self.start_cycle({})
+
+    def start_cycle(self, kwargs: dict) -> None:
+        """Start the toggle cycle."""
+        self.handles[HANDLE_TOGGLE_IN_WINDOW] = self.run_every(
+            self.toggle_on_schedule,
+            self.datetime(),
+            self.properties['window'],
+            state=self.properties['state'])
+        self.handles[HANDLE_TOGGLE_OUT_WINDOW] = self.run_every(
+            self.toggle_on_schedule,
+            self.datetime() + timedelta(seconds=self.properties['interval']),
+            self.properties['window'],
+            state=self.properties['state'],
+            opposite=True)
+
+    def stop_cycle(self, kwargs: dict) -> None:
+        """Stop the toggle cycle."""
+        self.toggle(opposite_of=self.properties['state'])
+
+        for handle in (HANDLE_TOGGLE_IN_WINDOW, HANDLE_TOGGLE_OUT_WINDOW):
+            name = self.handles.pop(handle)
+            self.cancel_timer(name)
+
+
 class ToggleOnState(BaseSwitch):
     """Define a feature to toggle the switch when an entity enters a state."""
 
@@ -236,7 +292,7 @@ class ToggleOnState(BaseSwitch):
                     self.properties['delay'],
                     state=self.properties['switch_state'])
             else:
-                self.toggle(self.properties['switch_state'])
+                self.toggle(state=self.properties['switch_state'])
         else:
             if HANDLE_TOGGLE_STATE in self.handles:
                 handle = self.handles.pop(HANDLE_TOGGLE_STATE)
@@ -271,7 +327,7 @@ class TurnOnUponArrival(BaseSwitch):
         """Turn on after dark when someone comes homes."""
         self._log.info('Someone came home; turning on the switch')
 
-        self.toggle('on')
+        self.toggle(state='on')
 
 
 class TurnOnWhenCloudy(BaseSwitch):
@@ -302,12 +358,12 @@ class TurnOnWhenCloudy(BaseSwitch):
         if (not self.cloudy and cloud_cover >= THRESHOLD_CLOUDY):
             self._log.info('Cloud cover above %s%', cloud_cover)
 
-            self.toggle('on')
+            self.toggle(state='on')
             self.cloudy = True
         elif (self.cloudy and cloud_cover < THRESHOLD_CLOUDY):
             self._log.info('Cloud cover below %s%', cloud_cover)
 
-            self.toggle('off')
+            self.toggle(state='off')
             self.cloudy = False
 
 

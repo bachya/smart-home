@@ -127,18 +127,14 @@ master_toilet_fan_double_tap_timer_automation:
   icon: mdi:timer
   initial: true
   name: 'Toilet: double tap 10-minute timer'
-master_toilet_fan_off_at_5pm_automation:
-  icon: mdi:fan
-  initial: true
-  name: 'Toilet: off at 5pm'
-master_toilet_fan_on_at_10am_automation:
-  icon: mdi:fan
-  initial: true
-  name: 'Toilet: on at 10am'
 master_toilet_fan_sleep_timer_automation:
   icon: mdi:sleep
   initial: true
   name: 'Toilet: enable sleep timer'
+master_toilet_fan_toggle_automation:
+  icon: mdi:fan
+  initial: true
+  name: Toggle toilet fan every 15 minutes
 notification_automation_manage_home_notifications:
   icon: mdi:car
   initial: true
