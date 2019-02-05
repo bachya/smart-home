@@ -9,7 +9,7 @@ history:
 http: !include conf/http.yaml
 logbook:
 logger: !include conf/logger.yaml
-lovelace: !include conf/lovelace.yaml
+lovelace:
 map:
 panel_custom: !include conf/panel-custom.yaml
 panel_iframe: !include conf/panel-iframe.yaml
