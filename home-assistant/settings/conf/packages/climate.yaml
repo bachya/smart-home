@@ -7,6 +7,7 @@ sensor:
     entity_ids:
       - sensor.climate_2_temperature
       - sensor.fiddle_leaf_fig_temperature
+      - sensor.side_yard_inside_temp
       - sensor.thermostat_thermostat_temperature
 
   - platform: min_max
@@ -15,6 +16,7 @@ sensor:
     round_digits: 1
     entity_ids:
       - sensor.climate_2_humidity
+      - sensor.side_yard_humidity_in
       - sensor.thermostat_thermostat_humidity
 
 switch:
