@@ -113,6 +113,7 @@ patio_lights_vacation_mode_automation:
   mode_alterations:
     guest_mode: disable
   enabled_config:
+    toggle_name: vacation_mode_lighting
     name: Simulate vacation mode
     icon: mdi:beach
     initial: true

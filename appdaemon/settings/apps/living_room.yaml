@@ -114,6 +114,7 @@ living_room_lights_vacation_mode_automation:
     guest_mode: disable
     vacation_mode: enable
   enabled_config:
+    toggle_name: vacation_mode_lighting
     name: Simulate vacation mode
     icon: mdi:beach
     initial: true
