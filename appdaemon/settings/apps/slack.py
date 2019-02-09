@@ -173,7 +173,7 @@ class SlackApp(Base):
         response_url = payload['response_url']
 
         if response_value not in self._interactive_command_actions:
-            self.error('Unknown response: {0}'.format(response_value))
+            self._log.error('Unknown response: {0}'.format(response_value))
             return
 
         parameters = self._interactive_command_actions[response_value]
