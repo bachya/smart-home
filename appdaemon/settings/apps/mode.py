@@ -53,8 +53,6 @@ class Mode(Base):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Make alterations when a mode enabled_toggle is toggled."""
-        self.fire_event('MODE_CHANGE', mode=self.name, state=new)
-
         if new == 'on':
             func1 = self.turn_off
             func2 = self.turn_on
