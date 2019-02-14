@@ -1,6 +1,7 @@
 """Define automations for switches."""
 # pylint: disable=attribute-defined-outside-init,unused-argument
 from datetime import timedelta
+from random import randint
 from typing import Callable, Union
 
 from automation import Automation  # type: ignore
@@ -12,8 +13,7 @@ HANDLE_TIMER = 'timer'
 HANDLE_TOGGLE_IN_WINDOW = 'in_window'
 HANDLE_TOGGLE_OUT_WINDOW = 'out_window'
 HANDLE_TOGGLE_STATE = 'toggle_state'
-HANDLE_VACATION_MODE_OFF = 'vacation_mode_off'
-HANDLE_VACATION_MODE_ON = 'vacation_mode_on'
+HANDLE_VACATION_MODE = 'vacation_mode'
 
 
 class BaseSwitch(Automation):
@@ -203,7 +203,7 @@ class ToggleAtTime(BaseSwitch):
         if self.properties.get('presence_required'):
             kwargs['constrain_anyone'] = 'home,just_arrived'
 
-        if self.properties['schedule_time'] in ['sunrise', 'sunset']:
+        if self.properties['schedule_time'] in ('sunrise', 'sunset'):
             method = getattr(
                 self, 'run_at_{0}'.format(self.properties['schedule_time']))
             method(self.toggle_on_schedule, **kwargs)
@@ -374,24 +374,39 @@ class VacationMode(BaseSwitch):
         """Initialize."""
         super().initialize()
 
-        self.listen_event(
-            self.vacation_mode_toggled, 'MODE_CHANGE', mode='vacation_mode')
+        self.set_schedule(self.properties['start_time'], self.start_cycle)
+        self.set_schedule(self.properties['end_time'], self.stop_cycle)
 
-    def vacation_mode_toggled(
-            self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Respond to changes when vacation mode gets toggled."""
-        if data['state'] == 'on':
-            self.handles[HANDLE_VACATION_MODE_ON] = self.run_at_sunset(
+    def set_schedule(self, time: str, handler: Callable) -> None:
+        """Set the appropriate schedulers based on the passed in time."""
+        if time in ('sunrise', 'sunset'):
+            method = getattr(self, 'run_at_{0}'.format(time))
+            method(
                 self.toggle_on_schedule,
-                state='on',
-                random_start=-60 * 60 * 1,
-                random_end=60 * 30 * 1)
-            self.handles[HANDLE_VACATION_MODE_OFF] = self.run_at_sunset(
-                self.toggle_on_schedule,
-                state='off',
-                random_start=60 * 60 * 2,
-                random_end=60 * 60 * 4)
+                constrain_input_boolean=self.enabled_entity_id)
         else:
-            for key in (HANDLE_VACATION_MODE_OFF, HANDLE_VACATION_MODE_ON):
-                handle = self.handles.pop(key)
-                self.cancel_timer(handle)
+            self.run_daily(
+                handler,
+                self.parse_time(time),
+                constrain_input_boolean=self.enabled_entity_id)
+
+    def start_cycle(self, kwargs: dict) -> None:
+        """Start the toggle cycle."""
+        self.toggle_and_run({'state': 'on'})
+
+    def stop_cycle(self, kwargs: dict) -> None:
+        """Stop the toggle cycle."""
+        handle = self.handles.pop(HANDLE_VACATION_MODE)
+        self.cancel_timer(handle)
+
+    def toggle_and_run(self, kwargs: dict) -> None:
+        """Toggle the swtich and randomize the next toggle."""
+        self.toggle(state=kwargs['state'])
+
+        if kwargs['state'] == 'on':
+            state = 'off'
+        else:
+            state = 'on'
+
+        self.handles[HANDLE_VACATION_MODE] = self.run_in(
+            self.toggle_and_run, randint(15 * 60, 45 * 60), state=state)

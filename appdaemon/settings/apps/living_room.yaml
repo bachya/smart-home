@@ -110,6 +110,9 @@ living_room_lights_vacation_mode_automation:
     - vacation_mode
   entity_ids:
     switch: group.living_room_lights
+  properties:
+    end_time: "23:30:00"
+    start_time: "sunset"
   mode_alterations:
     guest_mode: disable
     vacation_mode: enable
