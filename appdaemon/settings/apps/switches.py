@@ -229,13 +229,18 @@ class ToggleOnInterval(BaseSwitch):
         super().initialize()
 
         self.run_daily(
-            self.start_cycle, self.parse_time(self.properties['start_time']))
+            self.start_cycle,
+            self.parse_time(self.properties['start_time']),
+            constrain_input_boolean=self.enabled_entity_id)
 
         self.run_daily(
-            self.stop_cycle, self.parse_time(self.properties['end_time']))
+            self.stop_cycle,
+            self.parse_time(self.properties['end_time']),
+            constrain_input_boolean=self.enabled_entity_id)
 
-        if self.now_is_between(self.properties['start_time'],
-                               self.properties['end_time']):
+        if (self.now_is_between(self.properties['start_time'],
+                                self.properties['end_time'])
+                and self.get_state(self.enabled_entity_id) == 'on'):
             self.start_cycle({})
 
     def start_cycle(self, kwargs: dict) -> None:
