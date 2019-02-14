@@ -43,8 +43,6 @@ class Mode(Base):
         """Record how a enable toggle should respond when in this mode."""
         location = getattr(self, '_enabled_toggles_to_{0}'.format(value))
         if enabled_entity_id in location:
-            self._log.warning(
-                'Enabled entity already registered: %s', enabled_entity_id)
             return
 
         location.append(enabled_entity_id)
