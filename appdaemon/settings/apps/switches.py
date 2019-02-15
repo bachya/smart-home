@@ -387,7 +387,7 @@ class VacationMode(BaseSwitch):
         if time in ('sunrise', 'sunset'):
             method = getattr(self, 'run_at_{0}'.format(time))
             method(
-                self.toggle_on_schedule,
+                handler,
                 constrain_input_boolean=self.enabled_entity_id)
         else:
             self.run_daily(
@@ -401,6 +401,9 @@ class VacationMode(BaseSwitch):
 
     def stop_cycle(self, kwargs: dict) -> None:
         """Stop the toggle cycle."""
+        if HANDLE_VACATION_MODE not in self.handles:
+            return
+
         handle = self.handles.pop(HANDLE_VACATION_MODE)
         self.cancel_timer(handle)
 
