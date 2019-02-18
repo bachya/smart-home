@@ -53,7 +53,7 @@ class SaneLoggingApp(object):
         self.listen_event(
             self._handle_log_wrapper_debug, event='LOGWRAPPER_SET_DEBUG')
 
-        fmt = "%(asctime)s %(levelname)s [%(filename)s:%(lineno)s] %(message)s"
+        fmt = "%(asctime)s [%(levelname)s %(filename)s:%(lineno)s - %(name)s.%(funcName)s()] %(message)s"
         datefmt = '%Y-%m-%d %H:%M:%S'
         colorfmt = "%(log_color)s{}%(reset)s".format(fmt)
 
