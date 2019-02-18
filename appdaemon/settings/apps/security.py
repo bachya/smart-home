@@ -37,7 +37,7 @@ class AbsentInsecure(Base):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Send notifications when the house has been left insecure."""
-        self._log.info('No one home and house is insecure; notifying')
+        self.log('No one home and house is insecure; notifying')
 
         self.notification_manager.send(
             "No one is home and the house isn't locked up.",
@@ -56,12 +56,8 @@ class AbsentInsecure(Base):
             data['sourceDevicePermanentID'])
 
         if kwargs['action'] == 'home':
-            self._log.debug('Responding to iOS request to lock up home (home)')
-
             self.turn_on('scene.good_night')
         elif kwargs['action'] == 'away':
-            self._log.debug('Responding to iOS request to lock up home (away)')
-
             self.turn_on('scene.depart_home')
 
         self.notification_manager.send(
@@ -86,7 +82,7 @@ class AutoDepartureLockup(Base):
                 data['old'] == self.presence_manager.ProximityStates.home.value
                 and data['new'] !=
                 self.presence_manager.ProximityStates.home.value):
-            self._log.info('Everyone has left; locking up')
+            self.log('Everyone has left; locking up')
 
             self.turn_on('scene.depart_home')
 
@@ -104,7 +100,7 @@ class AutoNighttimeLockup(Base):
 
     def midnight(self, kwargs: dict) -> None:
         """Lock up the house at midnight."""
-        self._log.info('Activating "Good Night"')
+        self.log('Activating "Good Night"')
 
         self.call_service('scene/turn_on', entity_id='scene.good_night')
 
@@ -170,8 +166,6 @@ class GarageLeftOpen(Base):
     def response_from_push_notification(
             self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to 'ios.notification_action_fired' events."""
-        self._log.debug('Responding to iOS request to close garage')
-
         self.security_manager.close_garage()
 
         target = self.notification_manager.get_target_from_push_id(
@@ -196,7 +190,7 @@ class NotifyOnChange(Base):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Send a notification when the security state changes."""
-        self._log.info('Notifying of security status change: %s', new)
+        self.log('Notifying of security status change: {0}'.format(new))
 
         self.notification_manager.send(
             'The security status has changed to "{0}"'.format(new),
@@ -243,7 +237,7 @@ class SecurityManager(Base):
 
     def close_garage(self) -> None:
         """Close the garage."""
-        self._log.info('Closing the garage door')
+        self.log('Closing the garage door')
 
         self.call_service(
             'cover/close_cover', entity_id=self.entity_ids['garage_door'])
@@ -258,7 +252,7 @@ class SecurityManager(Base):
 
     def open_garage(self) -> None:
         """Open the garage."""
-        self._log.info('Closing the garage door')
+        self.log('Closing the garage door')
 
         self.call_service(
             'cover.open_cover', entity_id=self.entity_ids['garage_door'])
@@ -266,13 +260,13 @@ class SecurityManager(Base):
     def set_alarm(self, new: "AlarmStates") -> None:
         """Set the security system."""
         if new == self.AlarmStates.disarmed:
-            self._log.info('Disarming the security system')
+            self.log('Disarming the security system')
 
             self.call_service(
                 'alarm_control_panel/alarm_disarm',
                 entity_id=self.entity_ids['alarm_control_panel'])
         elif new in (self.AlarmStates.away, self.AlarmStates.home):
-            self._log.info('Arming the security system: "%s"', new.name)
+            self.log('Arming the security system: "{0}"'.format(new.name))
 
             self.call_service(
                 'alarm_control_panel/alarm_arm_{0}'.format(

@@ -28,8 +28,9 @@ class NotifyLowFuel(Base):
                 if self.registered:
                     return
 
-                self._log.info(
-                    'Low fuel detected detected: %s', self.entity_ids['car'])
+                self.log(
+                    'Low fuel detected detected: {0}'.format(
+                        self.entity_ids['car']))
 
                 self.registered = True
                 self.notification_manager.send(

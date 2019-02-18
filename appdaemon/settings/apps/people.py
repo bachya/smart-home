@@ -136,10 +136,6 @@ class Person(Base):
 
         first = self.presence_manager.only_one(*states)
 
-        self._log.debug(
-            'Presence change: %s (%s -> %s) (first: %s)', self.first_name,
-            old.value, new.value, first)
-
         self.fire_event(
             'PRESENCE_CHANGE',
             person=self.first_name,

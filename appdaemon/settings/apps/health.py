@@ -70,7 +70,7 @@ class NotifyBadAqi(Base):
         """Send select notifications when cooling and poor AQI."""
         if (not self.notification_sent
                 and self.current_aqi > self.properties['aqi_threshold']):
-            self._log.info('Poor AQI; notifying anyone at home')
+            self.log('Poor AQI; notifying anyone at home')
 
             self.notification_manager.send(
                 'AQI is at {0}; consider closing the humidifier vent.'.format(
@@ -101,6 +101,4 @@ class UpdateUvWhenSunny(Base):
 
     def update_data(self, kwargs: dict) -> None:
         """Update sensor value."""
-        self._log.debug('Updating OpenUV data')
-
         self.call_service('openuv/update_data')

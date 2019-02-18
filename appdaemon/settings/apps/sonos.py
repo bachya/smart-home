@@ -87,7 +87,9 @@ class SonosManager(Base):
         master = entities.pop(0)  # type: ignore
 
         if not entities:
-            self._log.warning('Refusing to group only one entity: %s', master)
+            self.error(
+                'Refusing to group only one entity: {0}'.format(master),
+                level='WARNING')
             return None
 
         self.call_service(
@@ -100,8 +102,9 @@ class SonosManager(Base):
     def register_entity(self, speaker_object: SonosSpeaker) -> None:
         """Register a Sonos entity object."""
         if speaker_object in self.speakers:
-            self._log.info(
-                'Entity already registered; skipping: %s', speaker_object)
+            self.log(
+                'Entity already registered; skipping: {0}'.format(
+                    speaker_object))
             return
 
         self.speakers.append(speaker_object)

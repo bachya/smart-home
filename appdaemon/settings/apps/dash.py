@@ -107,7 +107,7 @@ class DashButton(Base):
             self.error('Unknown action: {0}'.format(action_name))
             return
 
-        self._log.info('Running Dash action: %s', action_name)
+        self.log('Running Dash action: {0}'.format(action_name))
 
         klass, args = self.OBJECT_MAP[action_name]
         button = klass(self, args)  # type: ignore

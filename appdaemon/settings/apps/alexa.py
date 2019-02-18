@@ -26,7 +26,7 @@ class Alexa(Base):
         """Define an API endpoint to pull Alexa intents."""
         intent = self.get_alexa_intent(data)
 
-        self._log.info('Received Alexa intent: %s', intent)
+        self.log('Received Alexa intent: {0}'.format(intent))
 
         if intent is None:
             message = 'Alexa error encountered: {0}'.format(
@@ -36,7 +36,7 @@ class Alexa(Base):
                 'message': message,
             }
 
-            self._log.error(message)
+            self.error(message)
 
             return response, 502
 
@@ -50,8 +50,7 @@ class Alexa(Base):
             speech = "I'm sorry, the {0} app does not exist.".format(intent)
             response = self.format_alexa_response(speech=speech)
 
-        self._log.info('Answering: %s', speech)
-        self._log.debug(response)
+        self.log('Answering: {0}'.format(speech))
 
         return response, 200
 
@@ -61,11 +60,6 @@ class Alexa(Base):
         name, attrs = relative_search_dict(
             self.appliance_state_info, appliance)
         app, state_attr, desired_state = attrs  # type: ignore
-
-        self._log.debug('Appliance name: %s', name)
-        self._log.debug('App: %s', app)
-        self._log.debug('State attribute: %s', state_attr)
-        self._log.debug('Desired state: %s', desired_state)
 
         setattr(app, state_attr, desired_state)
 
@@ -100,9 +94,6 @@ class Alexa(Base):
 
         plant = self.get_alexa_slot_value(data, 'Plant')
         name, sensor = relative_search_dict(plant_sensors, plant)
-
-        self._log.debug('Plant name: %s', name)
-        self._log.debug('Plant moisture sensor: %s', sensor)
 
         title = 'Is {0} Moist Enough?'
         if name and sensor:

@@ -27,7 +27,7 @@ class MonitorConsumables(Base):
             kwargs: dict) -> None:
         """Create a task when a consumable is getting low."""
         if int(new) < self.properties['consumable_threshold']:
-            self._log.info('Consumable is low: %s', attribute)
+            self.log('Consumable is low: {0}'.format(attribute))
 
             self.notification_manager.create_omnifocus_task(
                 'Order a new Wolfie consumable: {0}'.format(attribute))
@@ -96,14 +96,14 @@ class ScheduledCycle(Base):
         # Scenario 1: Vacuum is charging and is told to start:
         if ((self.initiated_by_app and state == self.app.States.docked) and
                 data['state'] == self.security_manager.AlarmStates.home.value):
-            self._log.info('Activating vacuum (post-security)')
+            self.log('Activating vacuum (post-security)')
 
             self.turn_on(self.app.entity_ids['vacuum'])
 
         # Scenario 2: Vacuum is running when alarm is set to "Away":
         elif (state == self.app.States.cleaning and
               data['state'] == self.security_manager.AlarmStates.away.value):
-            self._log.info('Security mode is "Away"; pausing until "Home"')
+            self.log('Security mode is "Away"; pausing until "Home"')
 
             self.call_service(
                 'vacuum/start_pause', entity_id=self.app.entity_ids['vacuum'])
@@ -113,7 +113,7 @@ class ScheduledCycle(Base):
         # Scenario 3: Vacuum is paused when alarm is set to "Home":
         elif (state == self.app.States.paused and
               data['state'] == self.security_manager.AlarmStates.home.value):
-            self._log.info('Alarm in "Home"; resuming')
+            self.log('Alarm in "Home"; resuming')
 
             self.call_service(
                 'vacuum/start_pause', entity_id=self.app.entity_ids['vacuum'])
@@ -122,12 +122,12 @@ class ScheduledCycle(Base):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Re-arm security (if needed) when done."""
-        self._log.info('Vacuuming cycle all done')
+        self.log('Vacuuming cycle all done')
 
         if self.presence_manager.noone(
                 self.presence_manager.HomeStates.just_arrived,
                 self.presence_manager.HomeStates.home):
-            self._log.info('Changing alarm state to "away"')
+            self.log('Changing alarm state to "away"')
 
             self.security_manager.set_alarm(
                 self.security_manager.AlarmStates.away)
@@ -186,8 +186,6 @@ class ScheduledCycle(Base):
     def response_from_push_notification(
             self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to iOS notification to empty vacuum."""
-        self._log.debug('Responding to iOS request that vacuum is empty')
-
         self.app.bin_state = (self.app.BinStates.empty)
 
         target = self.notification_manager.get_target_from_push_id(
@@ -249,16 +247,16 @@ class Vacuum(Base):
 
     def start(self) -> None:
         """Start a cleaning cycle."""
-        self._log.info('Starting vacuuming cycle')
+        self.log('Starting vacuuming cycle')
 
         if (self.security_manager.alarm_state ==
                 self.security_manager.AlarmStates.away):
-            self._log.info('Changing alarm state to "Home"')
+            self.log('Changing alarm state to "Home"')
 
             self.security_manager.set_alarm(
                 self.security_manager.AlarmStates.home)
         else:
-            self._log.info('Activating vacuum')
+            self.log('Activating vacuum')
 
             self.call_service(
                 'vacuum/start', entity_id=self.entity_ids['vacuum'])

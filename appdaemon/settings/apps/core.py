@@ -7,19 +7,15 @@ from appdaemon.plugins.hass.hassapi import Hass  # type: ignore
 
 from const import (  # type: ignore
     BLACKOUT_START, BLACKOUT_END, THRESHOLD_CLOUDY)
-from sane_logging_app import SaneLoggingApp
 
 SENSOR_CLOUD_COVER = 'sensor.dark_sky_cloud_coverage'
 
 
-class Base(Hass, SaneLoggingApp):
+class Base(Hass):
     """Define a base automation object."""
 
     def initialize(self) -> None:
         """Initialize."""
-        # Set up better logging (http://tinyurl.com/yatx9ext):
-        self._setup_logging(self.__class__.__name__, False)
-
         # Define a holding place for HASS entity IDs:
         self.entity_ids = self.args.get('entity_ids', {})
 

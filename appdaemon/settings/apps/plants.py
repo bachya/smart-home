@@ -29,8 +29,7 @@ class LowMoisture(Base):
         """Notify when the plant's moisture is low."""
         if (not (self._low_moisture)
                 and int(new) < int(self.properties['moisture_threshold'])):
-            self._log.info(
-                'Notifying people at home that plant is low on moisture')
+            self.log('Notifying people at home that plant is low on moisture')
 
             self._low_moisture = True
             self.handles[

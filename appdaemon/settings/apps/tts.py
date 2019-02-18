@@ -29,7 +29,7 @@ class TTS(Base):
                 'message': 'Missing "name" parameter'
             }, 502
 
-        self._log.info('Emergency Notification from %s', name)
+        self.log('Emergency Notification from {0}'.format(name))
 
         statement = 'Please call {0} as soon as possible.'.format(name)
         self.speak(statement, iterations=3)
@@ -48,7 +48,7 @@ class TTS(Base):
                 'message': 'Missing "text" parameter'
             }, 502
 
-        self._log.info('Received TTS data: %s', data)
+        self.log('Received TTS data: {0}'.format(data))
 
         self.speak(text, iterations=data.get('iterations', 1))
         return {"status": "ok", "message": data['text']}, 200
@@ -106,7 +106,7 @@ class TTS(Base):
             final_string = self._calculate_iterated_text(
                 self._last_spoken_text, iterations)
 
-            self._log.info('Repeating over TTS: %s', final_string)
+            self.log('Repeating over TTS: {0}'.format(final_string))
 
             self.speak(final_string)
 
@@ -122,7 +122,7 @@ class TTS(Base):
         if self.living_room_tv.current_activity_id:
             self.living_room_tv.pause()
 
-        self._log.info('Speaking over TTS: %s', final_string)
+        self.log('Speaking over TTS: {0}'.format(final_string))
 
         self.run_in(
             self._speak_cb,

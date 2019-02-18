@@ -33,7 +33,7 @@ class BaseSwitch(Base):
     def toggle(self, *, state: str = None, opposite_of: str = None) -> None:
         """Toggle the switch state."""
         if not state and not opposite_of:
-            self._log.error('No state value provided')
+            self.error('No state value provided')
             return
 
         if state:
@@ -44,11 +44,11 @@ class BaseSwitch(Base):
             _state = 'off'
 
         if self.state == 'off' and _state == 'on':
-            self._log.info('Turning on: %s', self.entity_ids['switch'])
+            self.log('Turning on: {0}'.format(self.entity_ids['switch']))
 
             self.turn_on(self.entity_ids['switch'])
         elif self.state == 'on' and _state == 'off':
-            self._log.info('Turning off: %s', (self.entity_ids['switch']))
+            self.log('Turning off: {0}'.format(self.entity_ids['switch']))
 
             self.turn_off(self.entity_ids['switch'])
 
@@ -126,7 +126,7 @@ class PresenceFailsafe(BaseSwitch):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Turn the switch off if no one is home."""
-        self._log.info('No one home; not allowing switch to activate')
+        self.log('No one home; not allowing switch to activate')
 
         self.toggle(state='off')
 
@@ -159,13 +159,13 @@ class SleepTimer(BaseSwitch):
         minutes = int(float(new))
 
         if minutes == 0:
-            self._log.info('Deactivating sleep timer')
+            self.log('Deactivating sleep timer')
 
             self.toggle(state='off')
             handle = self.handles.pop(HANDLE_TIMER)
             self.cancel_timer(handle)
         else:
-            self._log.info('Activating sleep timer: %s minutes', minutes)
+            self.log('Activating sleep timer: {0} minutes'.format(minutes))
 
             self.toggle(state='on')
             self.handles[HANDLE_TIMER] = self.run_in(
@@ -173,7 +173,7 @@ class SleepTimer(BaseSwitch):
 
     def timer_completed(self, kwargs: dict) -> None:
         """Turn off a switch at the end of sleep timer."""
-        self._log.info('Sleep timer over; turning switch off')
+        self.log('Sleep timer over; turning switch off')
 
         self.set_value(self.entity_ids['timer_slider'], 0)
 
@@ -314,7 +314,7 @@ class TurnOnUponArrival(BaseSwitch):
     def someone_arrived(
             self, event_name: str, data: dict, kwargs: dict) -> None:
         """Turn on after dark when someone comes homes."""
-        self._log.info('Someone came home; turning on the switch')
+        self.log('Someone came home; turning on the switch')
 
         self.toggle(state='on')
 
@@ -345,12 +345,12 @@ class TurnOnWhenCloudy(BaseSwitch):
             cloud_cover = 0.0
 
         if (not self.cloudy and cloud_cover >= THRESHOLD_CLOUDY):
-            self._log.info('Cloud cover above %s%', cloud_cover)
+            self.log('Cloud cover above {0}%'.format(cloud_cover))
 
             self.toggle(state='on')
             self.cloudy = True
         elif (self.cloudy and cloud_cover < THRESHOLD_CLOUDY):
-            self._log.info('Cloud cover below %s%', cloud_cover)
+            self.log('Cloud cover below {0}%'.format(cloud_cover))
 
             self.toggle(state='off')
             self.cloudy = False

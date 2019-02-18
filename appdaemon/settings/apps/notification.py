@@ -74,10 +74,11 @@ class NotificationManager(Base):
             new_dt = datetime.combine(
                 target_date, self.parse_time(notification.blackout_end_time))
 
-            self._log.info(
-                'Rescheduling notification: %s', notification.title
-                if notification.title else notification.message)
-            self._log.info('New date/time: %s', new_dt)
+            self.log(
+                'Rescheduling notification: {0}'.format(
+                    notification.title if notification.title else notification.
+                    message))
+            self.log('New date/time: {0}'.format(new_dt))
 
             notification.when = new_dt
         else:
@@ -208,9 +209,10 @@ class NotificationManager(Base):
                 return
 
         for target in self._get_targets(notification.target):
-            self._log.info(
-                'Sending notification to "%s": %s', target, notification.title
-                if notification.title else notification.message)
+            self.log(
+                'Sending notification to "{0}": {1}'.format(
+                    target, notification.title
+                    if notification.title else notification.message))
 
             self.call_service(
                 'notify/{0}'.format(target),

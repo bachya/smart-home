@@ -32,17 +32,17 @@ class NotifyDone(Base):
         power = float(new)
         if (self.app.state != self.app.States.running
                 and power >= self.properties['running_threshold']):
-            self._log.info('Setting dishwasher to "Running"')
+            self.log('Setting dishwasher to "Running"')
 
             self.app.state = (self.app.States.running)
         elif (self.app.state == self.app.States.running
               and power <= self.properties['drying_threshold']):
-            self._log.info('Setting dishwasher to "Drying"')
+            self.log('Setting dishwasher to "Drying"')
 
             self.app.state = (self.app.States.drying)
         elif (self.app.state == self.app.States.drying
               and power == self.properties['clean_threshold']):
-            self._log.info('Setting dishwasher to "Clean"')
+            self.log('Setting dishwasher to "Clean"')
 
             self.app.state = (self.app.States.clean)
 
@@ -67,8 +67,6 @@ class NotifyDone(Base):
     def response_from_push_notification(
             self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to iOS notification to empty the appliance."""
-        self._log.debug('Responding to iOS request that dishwasher is empty')
-
         self.app.state = self.app.States.dirty
 
         target = self.notification_manager.get_target_from_push_id(

@@ -34,18 +34,19 @@ class AdjustOnProximity(Base):
 
             # Scenario 1: Anything -> Away (Extreme Temps)
             if (data['old'] != self.presence_manager.ProximityStates.away.value
-                    and data['new'] == self.presence_manager.ProximityStates.
-                    away.value):
-                self._log.info('Setting thermostat to "Away" (extreme temp)')
+                    and data['new'] ==
+                    self.presence_manager.ProximityStates.away.value):
+                self.log('Setting thermostat to "Away" (extreme temp)')
 
                 self.climate_manager.set_away_mode(
                     self.climate_manager.AwayModes.away)
 
             # Scenario 2: Away -> Anything (Extreme Temps)
-            elif (data['old'] == self.presence_manager.ProximityStates.away.
-                  value and data['new'] !=
+            elif (data['old'] ==
+                  self.presence_manager.ProximityStates.away.value
+                  and data['new'] !=
                   self.presence_manager.ProximityStates.away.value):
-                self._log.info('Setting thermostat to "Home" (extreme temp)')
+                self.log('Setting thermostat to "Home" (extreme temp)')
 
                 self.climate_manager.set_away_mode(
                     self.climate_manager.AwayModes.home)
@@ -54,7 +55,7 @@ class AdjustOnProximity(Base):
             if (data['old'] == self.presence_manager.ProximityStates.home.value
                     and data['new'] !=
                     self.presence_manager.ProximityStates.home.value):
-                self._log.info('Setting thermostat to "Away"')
+                self.log('Setting thermostat to "Away"')
 
                 self.climate_manager.set_away_mode(
                     self.climate_manager.AwayModes.away)
@@ -62,9 +63,9 @@ class AdjustOnProximity(Base):
             # Scenario 4: Anything -> Nearby
             elif (data['old'] !=
                   self.presence_manager.ProximityStates.nearby.value
-                  and data['new'] == self.presence_manager.ProximityStates.
-                  nearby.value):
-                self._log.info('Setting thermostat to "Home"')
+                  and data['new'] ==
+                  self.presence_manager.ProximityStates.nearby.value):
+                self.log('Setting thermostat to "Home"')
 
                 self.climate_manager.set_away_mode(
                     self.climate_manager.AwayModes.home)
@@ -72,8 +73,7 @@ class AdjustOnProximity(Base):
     def arrived_home(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Last ditch: turn the thermostat to home when someone arrives."""
         if self.climate_manager.away_mode:
-            self._log.info(
-                'Last ditch: setting thermostat to "Home" (arrived)')
+            self.log('Last ditch: setting thermostat to "Home" (arrived)')
 
             self.climate_manager.set_away_mode(
                 self.climate_manager.AwayModes.home)
@@ -223,14 +223,8 @@ class CycleFan(Base):
 
     def cycle_off(self, kwargs: dict) -> None:
         """Turn off the whole-house fan."""
-        self._log.debug('Turning off whole-house')
-
         self.climate_manager.set_fan_mode(self.climate_manager.FanModes.auto)
 
     def cycle_on(self, kwargs: dict) -> None:
         """Turn on the whole-house fan."""
-        self._log.debug(
-            'Turning on whole-house fan until %s',
-            self.datetime() + timedelta(minutes=15))
-
         self.climate_manager.set_fan_mode(self.climate_manager.FanModes.on)

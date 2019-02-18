@@ -27,11 +27,11 @@ class AutoVacationMode(Base):
             self, event_name: str, data: dict, kwargs: dict) -> None:
         """Alter Vacation Mode based on presence."""
         if (kwargs['action'] == 'on' and self.vacation_mode.state == 'off'):
-            self._log.info('Setting vacation mode to "on"')
+            self.log('Setting vacation mode to "on"')
 
             self.vacation_mode.state = 'on'
         elif (kwargs['action'] == 'off' and self.vacation_mode.state == 'on'):
-            self._log.info('Setting vacation mode to "off"')
+            self.log('Setting vacation mode to "off"')
 
             self.vacation_mode.state = 'off'
 
@@ -87,7 +87,7 @@ class DetectBlackout(Base):
 
     def boundary_reached(self, kwargs: dict) -> None:
         """Set the blackout sensor appropriately based on time."""
-        self._log.info('Setting blackout sensor: %s', kwargs['state'])
+        self.log('Setting blackout sensor: {0}'.format(kwargs['state']))
 
         if kwargs['state'] == 'on':
             self.turn_on(self.entity_ids['blackout_switch'])

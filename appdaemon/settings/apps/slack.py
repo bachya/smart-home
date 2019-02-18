@@ -5,8 +5,7 @@ from zlib import adler32
 
 from core import Base
 from helper import (
-    grammatical_list_join, random_affirmative_response,
-    relative_search_list)
+    grammatical_list_join, random_affirmative_response, relative_search_list)
 
 
 def message(response_url: str, text: str, attachments: list = None) -> None:
@@ -133,8 +132,7 @@ class Toggle(SlashCommand):
             self.message(
                 '{0} `{1}` is now `{2}`.'.format(
                     random_affirmative_response(replace_hyphens=False),
-                    entity_id,
-                    new_state))
+                    entity_id, new_state))
         except (TypeError, ValueError):
             self.message("Sorry: I don't know what `{0}` is.".format(target))
 
@@ -167,7 +165,7 @@ class SlackApp(Base):
         response_url = payload['response_url']
 
         if response_value not in self._interactive_command_actions:
-            self._log.error('Unknown response: {0}'.format(response_value))
+            self.error('Unknown response: {0}'.format(response_value))
             return
 
         parameters = self._interactive_command_actions[response_value]
@@ -195,8 +193,10 @@ class SlackApp(Base):
         command_id = adler32(question.encode('utf-8'))
 
         attachments = [{
-            'fallback': '',
-            'callback_id': 'interactive_command_{0}'.format(command_id),
+            'fallback':
+                '',
+            'callback_id':
+                'interactive_command_{0}'.format(command_id),
             'actions': [{
                 'name': '{0}_{1}'.format(command_id, action),
                 'text': action,
@@ -230,9 +230,9 @@ class SlackApp(Base):
             self.error('Unknown slash command: {0}'.format(command))
             return
 
-        self._log.info(
-            'Running Slack slash command: %s %s', data['command'],
-            data['text'])
+        self.log(
+            'Running Slack slash command: {0} {1}'.format(
+                data['command'], data['text']))
 
         slash_command = self.COMMAND_MAP[command](
             self, data['text'], data['response_url'])

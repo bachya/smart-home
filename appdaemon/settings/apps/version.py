@@ -30,9 +30,9 @@ class NewVersionNotification(Base):
             self.get_state(self.entity_ids['installed']))
 
         if new_version > installed_version:
-            self._log.info(
-                'New %s version detected: %s', self.properties['app_name'],
-                new)
+            self.log(
+                'New {0} version detected: {1}'.format(
+                    self.properties['app_name'], new))
 
             self.notification_manager.send(
                 'New {0} Version: {1}'.format(
