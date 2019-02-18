@@ -1,30 +1,26 @@
 """Define automations for tracking software versions."""
-# pylint: disable=attribute-defined-outside-init,import-error,unused-argument
-
 from time import sleep
 from typing import Union
 
 import requests
 from packaging import version  # type: ignore
 
-from automation import Automation  # type: ignore
+from core import Base
 
 DEFAULT_DYNAMIC_RETRIES = 3
 
 
-class NewVersionNotification(Automation):
+class NewVersionNotification(Base):
     """Define a feature to detect new versions of key apps."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.listen_state(
             self.version_change_detected,
             self.entity_ids['available'],
             constrain_input_boolean=self.enabled_entity_id)
 
-    def version_change_detected(  # pylint: disable=too-many-arguments
+    def version_change_detected(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Notify me when there's a new app version."""
@@ -48,10 +44,8 @@ class NewVersionNotification(Automation):
 class DynamicSensor(NewVersionNotification):
     """Define a feature to generate a dynamic version sensor."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.run_every(
             self.update_sensor, self.datetime(),
             self.properties['update_interval'])

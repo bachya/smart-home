@@ -1,20 +1,16 @@
 """Define automations for various home systems."""
-# pylint: disable=attribute-defined-outside-init,unused-argument
-
 from typing import Union
 
-from automation import Automation  # type: ignore
+from core import Base
 
 HANDLE_BATTERY_LOW = 'battery_low'
 
 
-class LowBatteries(Automation):
+class LowBatteries(Base):
     """Define a feature to notify us of low batteries."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self._registered = []  # type: ignore
         self.handles[HANDLE_BATTERY_LOW] = {}
 
@@ -25,7 +21,7 @@ class LowBatteries(Automation):
                 attribute='all',
                 constrain_input_boolean=self.enabled_entity_id)
 
-    def low_battery_detected(  # pylint: disable=too-many-arguments
+    def low_battery_detected(
             self, entity: Union[str, dict], attribute: str, old: str,
             new: dict, kwargs: dict) -> None:
         """Create OmniFocus todos whenever there's a low battery."""
@@ -59,13 +55,11 @@ class LowBatteries(Automation):
                 return
 
 
-class LeftInState(Automation):
+class LeftInState(Base):
     """Define a feature to monitor whether an entity is left in a state."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.listen_state(
             self.limit_reached,
             self.entity_ids['entity'],
@@ -73,10 +67,11 @@ class LeftInState(Automation):
             duration=self.properties['seconds'],
             constrain_input_boolean=self.enabled_entity_id)
 
-    def limit_reached(  # pylint: disable=too-many-arguments
+    def limit_reached(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Notify when the threshold is reached."""
+
         def turn_off():
             """Turn the entity off."""
             self.turn_off(self.entity_ids['entity'])
@@ -98,19 +93,17 @@ class LeftInState(Automation):
             })
 
 
-class SslExpiration(Automation):
+class SslExpiration(Base):
     """Define a feature to notify me when the SSL cert is expiring."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.listen_state(
             self.ssl_expiration_approaching,
             self.entity_ids['ssl_expiry'],
             constrain_input_boolean=self.enabled_entity_id)
 
-    def ssl_expiration_approaching(  # pylint: disable=too-many-arguments
+    def ssl_expiration_approaching(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """When SSL is about to expire, make an OmniFocus todo."""

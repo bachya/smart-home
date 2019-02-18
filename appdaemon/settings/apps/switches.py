@@ -1,13 +1,11 @@
 """Define automations for switches."""
-# pylint: disable=attribute-defined-outside-init,unused-argument
 from datetime import timedelta
 from random import randint
 from typing import Callable, Union
 
-from automation import Automation  # type: ignore
-from const import (  # type: ignore
-    BLACKOUT_END, BLACKOUT_START, THRESHOLD_CLOUDY)
-from helper.scheduler import run_on_days  # type: ignore
+from core import Base
+from const import (BLACKOUT_END, BLACKOUT_START, THRESHOLD_CLOUDY)
+from helper.scheduler import run_on_days
 
 HANDLE_TIMER = 'timer'
 HANDLE_TOGGLE_IN_WINDOW = 'in_window'
@@ -16,7 +14,7 @@ HANDLE_TOGGLE_STATE = 'toggle_state'
 HANDLE_VACATION_MODE = 'vacation_mode'
 
 
-class BaseSwitch(Automation):
+class BaseSwitch(Base):
     """Define a base feature for all switches."""
 
     @property
@@ -65,10 +63,8 @@ class BaseSwitch(Automation):
 class BaseZwaveSwitch(BaseSwitch):
     """Define a Zwave switch."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.listen_event(
             self.double_up,
             'zwave.node_event',
@@ -117,10 +113,8 @@ class DoubleTapToggleSwitch(BaseZwaveSwitch):
 class PresenceFailsafe(BaseSwitch):
     """Define a feature to restrict activation when we're not home."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.listen_state(
             self.switch_activated,
             self.entity_ids['switch'],
@@ -128,7 +122,7 @@ class PresenceFailsafe(BaseSwitch):
             constrain_noone='just_arrived,home',
             constrain_input_boolean=self.enabled_entity_id)
 
-    def switch_activated(  # pylint: disable=too-many-arguments
+    def switch_activated(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Turn the switch off if no one is home."""
@@ -140,10 +134,8 @@ class PresenceFailsafe(BaseSwitch):
 class SleepTimer(BaseSwitch):
     """Define a feature to turn a switch off after an amount of time."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.listen_state(
             self.timer_changed,
             self.entity_ids['timer_slider'],
@@ -154,13 +146,13 @@ class SleepTimer(BaseSwitch):
             new='off',
             constrain_input_boolean=self.enabled_entity_id)
 
-    def switch_turned_off(  # pylint: disable=too-many-arguments
+    def switch_turned_off(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Reset the sleep timer when the switch turns off."""
         self.set_value(self.entity_ids['timer_slider'], 0)
 
-    def timer_changed(  # pylint: disable=too-many-arguments
+    def timer_changed(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Start/stop a sleep timer for this switch."""
@@ -189,10 +181,8 @@ class SleepTimer(BaseSwitch):
 class ToggleAtTime(BaseSwitch):
     """Define a feature to toggle a switch at a certain time."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         kwargs = {
             'state': self.properties['state'],
             'constrain_input_boolean': self.enabled_entity_id
@@ -224,10 +214,8 @@ class ToggleAtTime(BaseSwitch):
 class ToggleOnInterval(BaseSwitch):
     """Define a feature to toggle the switch at intervals."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.run_daily(
             self.start_cycle,
             self.parse_time(self.properties['start_time']),
@@ -269,10 +257,8 @@ class ToggleOnInterval(BaseSwitch):
 class ToggleOnState(BaseSwitch):
     """Define a feature to toggle the switch when an entity enters a state."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.attach_constraints(self.listen_for_state_change)
 
     def listen_for_state_change(self, constraints: dict = None) -> None:
@@ -286,7 +272,7 @@ class ToggleOnState(BaseSwitch):
             constrain_input_boolean=self.enabled_entity_id,
             **constraints)
 
-    def state_changed(  # pylint: disable=too-many-arguments
+    def state_changed(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Toggle the switch depending on the target entity's state."""
@@ -307,10 +293,8 @@ class ToggleOnState(BaseSwitch):
 class TurnOnUponArrival(BaseSwitch):
     """Define a feature to turn a switch on when one of us arrives."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.attach_constraints(self.listen_for_arrival)
 
     def listen_for_arrival(self, constraints: dict = None) -> None:
@@ -338,7 +322,7 @@ class TurnOnUponArrival(BaseSwitch):
 class TurnOnWhenCloudy(BaseSwitch):
     """Define a feature to turn a switch on at certain cloud coverage."""
 
-    def initialize(self) -> None:
+    def configure(self) -> None:
         """Initialize."""
         self.cloudy = False
 
@@ -351,7 +335,7 @@ class TurnOnWhenCloudy(BaseSwitch):
             constrain_anyone='just_arrived,home'
             if self.properties.get('presence_required') else None)
 
-    def cloud_coverage_reached(  # pylint: disable=too-many-arguments
+    def cloud_coverage_reached(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Turn on the switch when a "cloudy event" occurs."""
@@ -375,10 +359,8 @@ class TurnOnWhenCloudy(BaseSwitch):
 class VacationMode(BaseSwitch):
     """Define a feature to simulate craziness when we're out of town."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.set_schedule(self.properties['start_time'], self.start_cycle)
         self.set_schedule(self.properties['end_time'], self.stop_cycle)
 
@@ -386,9 +368,7 @@ class VacationMode(BaseSwitch):
         """Set the appropriate schedulers based on the passed in time."""
         if time in ('sunrise', 'sunset'):
             method = getattr(self, 'run_at_{0}'.format(time))
-            method(
-                handler,
-                constrain_input_boolean=self.enabled_entity_id)
+            method(handler, constrain_input_boolean=self.enabled_entity_id)
         else:
             self.run_daily(
                 handler,

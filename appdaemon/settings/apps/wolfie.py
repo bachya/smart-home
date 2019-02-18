@@ -1,24 +1,20 @@
 """Define automations for robot vacuums."""
-# pylint: disable=attribute-defined-outside-init,unused-argument
-
 from enum import Enum
 from typing import Union
 
-from automation import Automation, Base  # type: ignore
-from helper.scheduler import run_on_days  # type: ignore
+from core import Base
+from helper.scheduler import run_on_days
 
 HANDLE_BIN = 'vacuum_bin'
 HANDLE_SCHEDULE = 'schedule'
 HANDLE_STUCK = 'vacuum_stuck'
 
 
-class MonitorConsumables(Automation):
+class MonitorConsumables(Base):
     """Define a feature to notify when a consumable gets low."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         for consumable in self.properties['consumables']:
             self.listen_state(
                 self.consumable_changed,
@@ -26,7 +22,7 @@ class MonitorConsumables(Automation):
                 attribute=consumable,
                 constrain_input_boolean=self.enabled_entity_id)
 
-    def consumable_changed(  # pylint: disable=too-many-arguments
+    def consumable_changed(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Create a task when a consumable is getting low."""
@@ -37,7 +33,7 @@ class MonitorConsumables(Automation):
                 'Order a new Wolfie consumable: {0}'.format(attribute))
 
 
-class ScheduledCycle(Automation):
+class ScheduledCycle(Base):
     """Define a feature to run the vacuum on a schedule."""
 
     @property
@@ -51,10 +47,8 @@ class ScheduledCycle(Automation):
 
         return on_days
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.initiated_by_app = False
         self.create_schedule()
 
@@ -124,7 +118,7 @@ class ScheduledCycle(Automation):
             self.call_service(
                 'vacuum/start_pause', entity_id=self.app.entity_ids['vacuum'])
 
-    def all_done(  # pylint: disable=too-many-arguments
+    def all_done(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Re-arm security (if needed) when done."""
@@ -141,7 +135,7 @@ class ScheduledCycle(Automation):
         self.app.bin_state = self.app.BinStates.full
         self.initiated_by_app = False
 
-    def bin_state_changed(  # pylint: disable=too-many-arguments
+    def bin_state_changed(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Listen for changes in bin status."""
@@ -156,7 +150,7 @@ class ScheduledCycle(Automation):
                 }})
         elif new == self.app.BinStates.empty.value:
             if HANDLE_BIN in self.handles:
-                self.handles.pop(HANDLE_BIN)()
+                self.handles.pop(HANDLE_BIN)()  # type: ignore
 
     def create_schedule(self) -> None:
         """Create the vacuuming schedule from the on booleans."""
@@ -171,14 +165,14 @@ class ScheduledCycle(Automation):
             self.parse_time(self.properties['schedule_time']),
             constrain_input_boolean=self.enabled_entity_id)
 
-    def error_cleared(  # pylint: disable=too-many-arguments
+    def error_cleared(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Clear the error when Wolfie is no longer stuck."""
         if HANDLE_STUCK in self.handles:
-            self.handles.pop(HANDLE_STUCK)()
+            self.handles.pop(HANDLE_STUCK)()  # type: ignore
 
-    def errored(  # pylint: disable=too-many-arguments
+    def errored(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Brief when Wolfie's had an error."""
@@ -203,7 +197,7 @@ class ScheduledCycle(Automation):
             title='Vacuum Emptied 🤖',
             target='not {0}'.format(target.first_name))
 
-    def schedule_changed(  # pylint: disable=too-many-arguments
+    def schedule_changed(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Reload the schedule when one of the input booleans change."""

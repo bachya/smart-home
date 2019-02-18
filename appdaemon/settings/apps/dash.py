@@ -1,14 +1,13 @@
 """Define automations for Amazon Dash Buttons."""
-# pylint: disable=too-few-public-methods,unused-argument
-
-from automation import Automation  # type: ignore
+# pylint: disable=too-few-public-methods
+from core import Base
 
 
 class ButtonAction:
     """Define a base class for button actions."""
 
-    def __init__(self, hass: Automation, args: dict) -> None:
-        """Initialize."""
+    def __init__(self, hass: Base, args: dict) -> None:
+        """Configure."""
         self._args = args
         self._hass = hass
 
@@ -66,7 +65,7 @@ class ToggleEntity(ButtonAction):
             method(entity_id)
 
 
-class DashButton(Automation):
+class DashButton(Base):
     """Define an automation for Amazon Dash Buttons."""
 
     OBJECT_MAP = {
@@ -84,8 +83,7 @@ class DashButton(Automation):
                 'entities': [
                     'light.salt_lamp_office', 'light.salt_lamp_master_bedroom'
                 ],
-                'master':
-                    'light.salt_lamp_master_bedroom'
+                'master': 'light.salt_lamp_master_bedroom'
             }),
         'Toggle Christmas Tree': (
             ToggleEntity, {
@@ -93,10 +91,8 @@ class DashButton(Automation):
             }),
     }
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.listen_event(
             self.button_pressed,
             'AMAZON_DASH_PRESS',

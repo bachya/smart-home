@@ -1,22 +1,18 @@
 """Define automations for washer/dryer appliances."""
-# pylint: disable=unused-argument
-
 from datetime import timedelta
 from enum import Enum
 from typing import Union
 
-from automation import Automation, Base  # type: ignore
+from core import Base
 
 HANDLE_CLEAN = 'clean'
 
 
-class NotifyDone(Automation):
+class NotifyDone(Base):
     """Define a feature to notify a target when the appliancer is done."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.listen_ios_event(
             self.response_from_push_notification,
             self.properties['ios_emptied_key'])
@@ -29,7 +25,7 @@ class NotifyDone(Automation):
             self.app.entity_ids['status'],
             constrain_input_boolean=self.enabled_entity_id)
 
-    def power_changed(  # pylint: disable=too-many-arguments
+    def power_changed(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Deal with changes to the power draw."""
@@ -50,7 +46,7 @@ class NotifyDone(Automation):
 
             self.app.state = (self.app.States.clean)
 
-    def status_changed(  # pylint: disable=too-many-arguments
+    def status_changed(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Deal with changes to the status."""
@@ -66,7 +62,7 @@ class NotifyDone(Automation):
                 }})
         elif old == self.app.States.clean.value:
             if HANDLE_CLEAN in self.handles:
-                self.handles.pop(HANDLE_CLEAN)()
+                self.handles.pop(HANDLE_CLEAN)()  # type: ignore
 
     def response_from_push_notification(
             self, event_name: str, data: dict, kwargs: dict) -> None:

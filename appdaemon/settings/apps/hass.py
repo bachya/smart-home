@@ -1,17 +1,13 @@
 """Define automations for Home Assistant itself."""
-# pylint: disable=attribute-defined-outside-init,import-error,unused-argument
-
-from automation import Automation  # type: ignore
-from const import BLACKOUT_END, BLACKOUT_START  # type: ignore
+from core import Base
+from const import BLACKOUT_END, BLACKOUT_START
 
 
-class AutoVacationMode(Automation):
+class AutoVacationMode(Base):
     """Define automated alterations to vacation mode."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.listen_event(
             self.presence_changed,
             'PRESENCE_CHANGE',
@@ -27,8 +23,8 @@ class AutoVacationMode(Automation):
             action='off',
             constrain_input_boolean=self.enabled_entity_id)
 
-    def presence_changed(self, event_name: str, data: dict,
-                         kwargs: dict) -> None:
+    def presence_changed(
+            self, event_name: str, data: dict, kwargs: dict) -> None:
         """Alter Vacation Mode based on presence."""
         if (kwargs['action'] == 'on' and self.vacation_mode.state == 'off'):
             self._log.info('Setting vacation mode to "on"')
@@ -40,13 +36,11 @@ class AutoVacationMode(Automation):
             self.vacation_mode.state = 'off'
 
 
-class BadLoginNotification(Automation):
+class BadLoginNotification(Base):
     """Define a feature to notify me of unauthorized login attempts."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         for notification_type in self.entity_ids.values():
             self.listen_state(
                 self.send_alert,
@@ -54,7 +48,7 @@ class BadLoginNotification(Automation):
                 attribute='all',
                 constrain_input_boolean=self.enabled_entity_id)
 
-    def send_alert(  # pylint: disable=too-many-arguments
+    def send_alert(
             self, entity: str, attribute: str, old: str, new: dict,
             kwargs: dict) -> None:
         """Send a notification when there's a bad login attempt."""
@@ -70,13 +64,11 @@ class BadLoginNotification(Automation):
             new['attributes']['message'], title=title, target='Aaron')
 
 
-class DetectBlackout(Automation):
+class DetectBlackout(Base):
     """Define a feature to manage blackout awareness."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         if self.now_is_between(BLACKOUT_START, BLACKOUT_END):
             self.turn_on(self.entity_ids['blackout_switch'])
         else:

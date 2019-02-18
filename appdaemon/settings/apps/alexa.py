@@ -1,21 +1,17 @@
-"""Definetoo-few-public-methods an app for working with Alexa."""
-# pylint: disable=attribute-defined-outside-init,unused-argument
-
+"""Define an app for working with Alexa."""
 from typing import Tuple
 
-from automation import Base  # type: ignore
-from util import grammatical_list_join, relative_search_dict  # type: ignore
-from util import random_affirmative_response
-from helper.string import camel_to_underscore  # type: ignore
+from core import Base
+from helper import (
+    grammatical_list_join, relative_search_dict, random_affirmative_response)
+from helper.string import camel_to_underscore
 
 
 class Alexa(Base):
     """Define a class to represent the app."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.appliance_state_info = {
             'The Dishwasher': (
                 self.dishwasher, 'state', self.dishwasher.States.dirty),
@@ -64,7 +60,7 @@ class Alexa(Base):
         appliance = self.get_alexa_slot_value(data, 'Appliance')
         name, attrs = relative_search_dict(
             self.appliance_state_info, appliance)
-        app, state_attr, desired_state = attrs
+        app, state_attr, desired_state = attrs  # type: ignore
 
         self._log.debug('Appliance name: %s', name)
         self._log.debug('App: %s', app)

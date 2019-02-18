@@ -1,8 +1,14 @@
 [MESSAGES CONTROL]
 # Reasons disabled:
+# attribute-defined-outside-init - AppDaemon doesn't give access to __init__
+# too-many-arguments - Lots of AppDaemon callbacks have lots of arguments
 # unnecessary-pass - This can hurt readability
+# unused-argument - Not all callback arguments are used
 disable=
-  unnecessary-pass
+  attribute-defined-outside-init,
+  too-many-arguments,
+  unnecessary-pass,
+  unused-argument
 
 [REPORTS]
 reports=no

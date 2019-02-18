@@ -1,22 +1,18 @@
 """Define automations for security."""
-# pylint: disable=unused-argument
-
 from datetime import time
 from enum import Enum
 from typing import Union
 
-from automation import Automation, Base  # type: ignore
+from core import Base
 
 HANDLE_GARAGE_OPEN = 'garage_open'
 
 
-class AbsentInsecure(Automation):
+class AbsentInsecure(Base):
     """Define a feature to notify us when we've left home insecure."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.listen_event(
             self.response_from_push_notification,
             'ios.notification_action_fired',
@@ -37,7 +33,7 @@ class AbsentInsecure(Automation):
             constrain_input_boolean=self.enabled_entity_id,
             constrain_noone='just_arrived,home')
 
-    def house_insecure(  # pylint: disable=too-many-arguments
+    def house_insecure(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Send notifications when the house has been left insecure."""
@@ -74,13 +70,11 @@ class AbsentInsecure(Automation):
             target=['not {0}'.format(target.first_name), 'slack'])
 
 
-class AutoDepartureLockup(Automation):
+class AutoDepartureLockup(Base):
     """Define a feature to automatically lock up when we leave."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.listen_event(
             self.everyone_gone,
             'PROXIMITY_CHANGE',
@@ -97,13 +91,11 @@ class AutoDepartureLockup(Automation):
             self.turn_on('scene.depart_home')
 
 
-class AutoNighttimeLockup(Automation):
+class AutoNighttimeLockup(Base):
     """Define a feature to automatically lock up at night."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.run_daily(
             self.midnight,
             time(0, 0, 0),
@@ -117,13 +109,11 @@ class AutoNighttimeLockup(Automation):
         self.call_service('scene/turn_on', entity_id='scene.good_night')
 
 
-class GarageLeftOpen(Automation):
+class GarageLeftOpen(Base):
     """Define a feature to notify us when the garage is left open."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.listen_event(
             self.response_from_push_notification,
             'ios.notification_action_fired',
@@ -141,14 +131,14 @@ class GarageLeftOpen(Automation):
             duration=self.properties['time_left_open'],
             constrain_input_boolean=self.enabled_entity_id)
 
-    def closed(  # pylint: disable=too-many-arguments
+    def closed(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Cancel notification when the garage is closed."""
         if HANDLE_GARAGE_OPEN in self.handles:
-            self.handles.pop(HANDLE_GARAGE_OPEN)()
+            self.handles.pop(HANDLE_GARAGE_OPEN)()  # type: ignore
 
-    def left_open(  # pylint: disable=too-many-arguments
+    def left_open(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Send notifications when the garage has been left open."""
@@ -192,19 +182,17 @@ class GarageLeftOpen(Automation):
             target=['not {0}'.format(target.first_name), 'slack'])
 
 
-class NotifyOnChange(Automation):
+class NotifyOnChange(Base):
     """Define a feature to notify us the secure status changes."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.listen_state(
             self.state_changed,
             self.entity_ids['state'],
             constrain_input_boolean=self.enabled_entity_id)
 
-    def state_changed(  # pylint: disable=too-many-arguments
+    def state_changed(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Send a notification when the security state changes."""
@@ -240,15 +228,13 @@ class SecurityManager(Base):
         return self.get_state(
             self.entity_ids['overall_security_status_sensor']) == 'Secure'
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.listen_state(
             self._security_system_change_cb,
             self.entity_ids['alarm_control_panel'])
 
-    def _security_system_change_cb(  # pylint: disable=too-many-arguments
+    def _security_system_change_cb(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Fire events when the security system status changes."""

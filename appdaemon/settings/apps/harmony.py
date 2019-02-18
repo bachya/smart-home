@@ -1,9 +1,7 @@
 """Define an app for working the Living Room TV."""
-# pylint: disable=attribute-defined-outside-init
-
 from typing import Union
 
-from automation import Base  # type: ignore
+from core import Base
 
 
 class HarmonyRemote(Base):
@@ -18,10 +16,8 @@ class HarmonyRemote(Base):
         except KeyError:
             return None
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure the automation."""
         self.activities = self.args['activities']
         self.entity = self.args['entity']
 

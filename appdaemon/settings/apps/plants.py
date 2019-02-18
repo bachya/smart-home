@@ -1,25 +1,16 @@
 """Define automations for plants."""
-# pylint: disable=attribute-defined-outside-init,unused-argument
-
 from typing import Union
 
-from automation import Automation  # type: ignore
+from core import Base
 
 HANDLE_LOW_MOISTURE = 'low_moisture'
 
 
-class LowMoisture(Automation):
+class LowMoisture(Base):
     """Define a feature to notify us of low moisture."""
 
-    @property
-    def current_moisture(self) -> int:
-        """Define a property to get the current moisture."""
-        return int(self.get_state(self.entity_ids['current_moisture']))
-
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self._low_moisture = False
 
         self.listen_state(
@@ -27,7 +18,12 @@ class LowMoisture(Automation):
             self.entity_ids['current_moisture'],
             constrain_input_boolean=self.enabled_entity_id)
 
-    def low_moisture_detected(  # pylint: disable=too-many-arguments
+    @property
+    def current_moisture(self) -> int:
+        """Define a property to get the current moisture."""
+        return int(self.get_state(self.entity_ids['current_moisture']))
+
+    def low_moisture_detected(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Notify when the plant's moisture is low."""
@@ -49,4 +45,4 @@ class LowMoisture(Automation):
         else:
             self._low_moisture = False
             if HANDLE_LOW_MOISTURE in self.handles:
-                self.handles.pop(HANDLE_LOW_MOISTURE)()
+                self.handles.pop(HANDLE_LOW_MOISTURE)()  # type: ignore

@@ -1,16 +1,12 @@
 """Define automations for Slack."""
-# pylint: disable=attribute-defined-outside-init,too-few-public-methods
-# pylint: disable=unused-argument,unused-import
-
 import json
+from typing import Any, Dict, Union  # pylint: disable=unused-import
 from zlib import adler32
 
-from typing import Any, Callable, Dict, Union  # noqa
-
-from automation import Base  # type: ignore
-from util import (
+from core import Base
+from helper import (
     grammatical_list_join, random_affirmative_response,
-    relative_search_list)  # type: ignore
+    relative_search_list)
 
 
 def message(response_url: str, text: str, attachments: list = None) -> None:
@@ -152,10 +148,8 @@ class SlackApp(Base):
         'toggle': Toggle,
     }
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self._interactive_command_actions = {}  # type: Dict[str, dict]
 
         self.listen_event(

@@ -1,15 +1,13 @@
 """Define a notification mechanism for all AppDaemon apps."""
-# pylint: disable=unused-import
-
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Callable, List, Union  # noqa
+from typing import Callable, List, Union  # pylint: disable=unused-import
 from uuid import UUID
 
-from automation import Base  # type: ignore
-from const import BLACKOUT_END, BLACKOUT_START, CONF_PEOPLE  # type: ignore
+from core import Base
+from const import BLACKOUT_END, BLACKOUT_START, CONF_PEOPLE
 from people import Person
-from helper.dt import time_is_between  # type: ignore
+from helper.dt import time_is_between
 
 
 class NotificationTypes(Enum):
@@ -54,11 +52,8 @@ class Notification:
 class NotificationManager(Base):
     """Define an app to act as a system-wide notifier."""
 
-    # pylint: disable=attribute-defined-outside-init
-    def initialize(self):
-        """Initialize."""
-        super().initialize()
-
+    def configure(self):
+        """Configure."""
         self.registry = []
 
         self.listen_event(self._notifier_test_cb, 'NOTIFIER_TEST')
@@ -266,7 +261,7 @@ class NotificationManager(Base):
 
         return cancel
 
-    def get_target_from_push_id(self, push_id: UUID) -> Person:
+    def get_target_from_push_id(self, push_id: UUID) -> Union[None, Person]:
         """Return a person from a provided permanent device ID."""
         try:
             return next((
@@ -275,7 +270,7 @@ class NotificationManager(Base):
         except StopIteration:
             return None
 
-    def repeat(  # pylint: disable=too-many-arguments
+    def repeat(
             self,
             message: str,
             interval: int,
@@ -299,7 +294,7 @@ class NotificationManager(Base):
                 target=target,
                 when=when))
 
-    def send(  # pylint: disable=too-many-arguments
+    def send(
             self,
             message: str,
             *,

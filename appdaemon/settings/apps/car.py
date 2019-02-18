@@ -1,20 +1,16 @@
 """Define automations for our cars."""
-# pylint: disable=attribute-defined-outside-init,unused-argument
-
 from typing import Union
 
-from automation import Automation  # type: ignore
+from core import Base
 
 HANDLE_LOW_FUEL = 'low_fuel'
 
 
-class NotifyLowFuel(Automation):
+class NotifyLowFuel(Base):
     """Define a feature to notify of the vehicle's ETA to home."""
 
-    def initialize(self):
-        """Initialize."""
-        super().initialize()
-
+    def configure(self):
+        """Configure."""
         self.registered = False
 
         self.listen_state(
@@ -23,9 +19,9 @@ class NotifyLowFuel(Automation):
             attribute='fuel_level',
             constrain_input_boolean=self.enabled_entity_id)
 
-    def low_fuel_found(  # pylint: disable=too-many-arguments
-            self, entity: Union[str, dict], attribute: str, old: str,
-            new: str, kwargs: dict) -> None:
+    def low_fuel_found(
+            self, entity: Union[str, dict], attribute: str, old: str, new: str,
+            kwargs: dict) -> None:
         """Send a notification when my car is low on gas."""
         try:
             if int(new) < self.properties['fuel_threshold']:

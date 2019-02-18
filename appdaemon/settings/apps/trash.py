@@ -1,23 +1,19 @@
 """Define automations for trash."""
-# pylint: disable=attribute-defined-outside-init,unused-argument
-
 import datetime
 from enum import Enum
 from math import ceil
 from typing import Tuple
 
-from automation import Automation, Base  # type: ignore
-from util import grammatical_list_join, suffix_strftime  # type: ignore
-from helper.scheduler import run_on_days  # type: ignore
+from core import Base
+from helper import grammatical_list_join, suffix_strftime
+from helper.scheduler import run_on_days
 
 
-class NotifyOfPickup(Automation):
+class NotifyOfPickup(Base):
     """Define a feature to notify us of low batteries."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         run_on_days(
             self,
             self.time_to_notify, ['Sunday'],
@@ -46,10 +42,8 @@ class TrashManager(Base):
         recycling = 'Recycling'
         trash = 'Trash'
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.sensors = {
             self.PickupTypes.extra_trash: 'sensor.extra_trash_pickup',
             self.PickupTypes.recycling: 'sensor.recycling_pickup',

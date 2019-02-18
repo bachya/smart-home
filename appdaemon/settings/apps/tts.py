@@ -1,10 +1,8 @@
 """Define an app for working with TTS (over Sonos)."""
-# pylint: disable=attribute-defined-outside-init
-
 from typing import Tuple
 
-from automation import Base  # type: ignore
-from helper.dt import relative_time_of_day  # type: ignore
+from core import Base
+from helper.dt import relative_time_of_day
 
 OPENER_FILE_URL = 'https://hass.myserver.com/local/tts_opener.mp3'
 
@@ -12,10 +10,8 @@ OPENER_FILE_URL = 'https://hass.myserver.com/local/tts_opener.mp3'
 class TTS(Base):
     """Define a class to represent the app."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self._last_spoken_text = ''
         self.register_endpoint(self._emergency_endpoint, 'emergency')
         self.register_endpoint(self._tts_endpoint, 'tts')

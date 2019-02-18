@@ -1,10 +1,8 @@
 """Define apps related to presence."""
-# pylint: disable=attribute-defined-outside-init
-
 from enum import Enum
 from typing import Union
 
-from automation import Base  # type: ignore
+from core import Base
 from const import CONF_PEOPLE
 
 
@@ -34,18 +32,8 @@ class PresenceManager(Base):
     NEARBY_THRESHOLD = 15840
     EDGE_THRESHOLD = 31680
 
-    @property
-    def proximity(self) -> int:
-        """Return the current proximity."""
-        try:
-            return int(self.get_state(self.PROXIMITY_SENSOR))
-        except ValueError:
-            return 0
-
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         if self.proximity == self.HOME_THRESHOLD:
             self.state = self.ProximityStates.home
         elif self.HOME_THRESHOLD < self.proximity <= self.NEARBY_THRESHOLD:
@@ -59,7 +47,15 @@ class PresenceManager(Base):
             attribute='all',
             duration=60)
 
-    def _proximity_change_cb(  # pylint: disable=too-many-arguments
+    @property
+    def proximity(self) -> int:
+        """Return the current proximity."""
+        try:
+            return int(self.get_state(self.PROXIMITY_SENSOR))
+        except ValueError:
+            return 0
+
+    def _proximity_change_cb(
             self, entity: Union[str, dict], attribute: str, old: dict,
             new: dict, kwargs: dict) -> None:
         """Lock up when we leave home."""

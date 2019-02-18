@@ -1,13 +1,19 @@
 """Define a mode."""
-# pylint: disable=attribute-defined-outside-init,import-error
-
 from typing import Union
 
-from automation import Base  # type: ignore
+from core import Base
 
 
 class Mode(Base):
     """Define a mode."""
+
+    def configure(self) -> None:
+        """Configure."""
+        self._enabled_toggles_to_disable = []  # type: ignore
+        self._enabled_toggles_to_enable = []  # type: ignore
+        self.switch = 'input_boolean.mode_{0}'.format(self.name)
+
+        self.listen_state(self.switch_toggled_cb, entity=self.switch)
 
     @property
     def state(self) -> str:
@@ -28,16 +34,6 @@ class Mode(Base):
 
         func(self.switch)
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
-        self._enabled_toggles_to_disable = []  # type: ignore
-        self._enabled_toggles_to_enable = []  # type: ignore
-        self.switch = 'input_boolean.mode_{0}'.format(self.name)
-
-        self.listen_state(self.switch_toggled_cb, entity=self.switch)
-
     def register_enabled_entity(
             self, enabled_entity_id: str, value: str) -> None:
         """Record how a enable toggle should respond when in this mode."""
@@ -47,7 +43,7 @@ class Mode(Base):
 
         location.append(enabled_entity_id)
 
-    def switch_toggled_cb(  # pylint: disable=too-many-arguments
+    def switch_toggled_cb(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Make alterations when a mode enabled_toggle is toggled."""

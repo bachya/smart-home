@@ -1,11 +1,10 @@
 """Define people."""
-# pylint: disable=attribute-defined-outside-init,unused-argument
 from enum import Enum
 from typing import Union
 
-from automation import Base  # type: ignore
+from core import Base
 from const import CONF_PEOPLE
-from util import most_common
+from helper import most_common
 
 HANDLE_5_MINUTE_TIMER = '5_minute'
 HANDLE_24_HOUR_TIMER = '24_hour'
@@ -14,9 +13,8 @@ HANDLE_24_HOUR_TIMER = '24_hour'
 class Person(Base):
     """Define a class to represent a person."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
+    def configure(self) -> None:
+        """Configure."""
 
         # Get the raw state of the device trackers and seed the home state:
         self._raw_state = self._most_common_raw_state()
@@ -88,7 +86,7 @@ class Person(Base):
         # Re-render the sensor:
         self._render_presence_status_sensor()
 
-    def _device_tracker_changed_cb(  # pylint: disable=too-many-arguments
+    def _device_tracker_changed_cb(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Respond when a device tracker changes."""

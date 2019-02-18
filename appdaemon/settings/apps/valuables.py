@@ -1,16 +1,12 @@
 """Define automations for our valuables."""
-# pylint: disable=unused-argument
-
-from automation import Automation  # type: ignore
+from core import Base
 
 
-class LeftSomewhere(Automation):
+class LeftSomewhere(Base):
     """Define a feature to notify when a Tile has been left somewhere."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.listen_event(
             self.arrived_home,
             'PRESENCE_CHANGE',

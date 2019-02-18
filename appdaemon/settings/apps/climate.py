@@ -1,23 +1,20 @@
 """Define automations for climate control."""
-# pylint: disable=attribute-defined-outside-init,unused-argument
 from datetime import timedelta
 from enum import Enum
 from typing import Tuple
 
-from automation import Automation, Base  # type: ignore
+from core import Base
 from helper.dt import ceil_dt
 
 OUTSIDE_THRESHOLD_HIGH = 75
 OUTSIDE_THRESHOLD_LOW = 35
 
 
-class AdjustOnProximity(Automation):
+class AdjustOnProximity(Base):
     """Define a feature to adjust climate based on proximity to home."""
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.listen_event(
             self.arrived_home,
             'PRESENCE_CHANGE',
@@ -145,10 +142,8 @@ class ClimateManager(Base):
         """Define a property to get the current outdoor temperature."""
         return float(self.get_state(self.entity_ids['outside_temp']))
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.register_endpoint(self._climate_bump_endpoint, 'climate_bump')
 
     def _climate_bump_endpoint(self, data: dict) -> Tuple[dict, int]:
@@ -196,15 +191,13 @@ class ClimateManager(Base):
             operation_mode=value.name)
 
 
-class CycleFan(Automation):
+class CycleFan(Base):
     """Define a feature to cycle the whole-house fan."""
 
     CYCLE_MINUTES = 15
 
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
+    def configure(self) -> None:
+        """Configure."""
         self.register_constraint('constrain_extreme_temperature')
 
         cycle_on_dt = ceil_dt(

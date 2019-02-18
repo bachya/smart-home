@@ -1,13 +1,20 @@
 """Define an app to manage our Sonos players."""
-# pylint: disable=attribute-defined-outside-init
-
 from typing import Union
 
-from automation import Base  # type: ignore
+from core import Base
 
 
 class SonosSpeaker(Base):
     """Define a class to represent a Sonos speaker."""
+
+    def configure(self) -> None:
+        """Configure."""
+        self._last_snapshot_included_group = False
+        self.sonos_manager.register_entity(self)
+
+    def __str__(self) -> str:
+        """Define a string representation of the speaker."""
+        return self.entity_ids['speaker']
 
     @property
     def default_volume(self) -> float:
@@ -28,17 +35,6 @@ class SonosSpeaker(Base):
             'media_player/volume_set',
             entity_id=self.entity_ids['speaker'],
             volume_level=value)
-
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
-        self._last_snapshot_included_group = False
-        self.sonos_manager.register_entity(self)
-
-    def __str__(self) -> str:
-        """Define a string representation of the speaker."""
-        return self.entity_ids['speaker']
 
     def pause(self) -> None:
         """Pause."""
@@ -77,12 +73,10 @@ class SonosSpeaker(Base):
 class SonosManager(Base):
     """Define a class to represent the Sono manager."""
 
-    def initialize(self) -> None:
-        """Initialize."""
+    def configure(self) -> None:
+        """Configure."""
         self._last_snapshot_included_group = False
         self.speakers = []  # type: ignore
-
-        super().initialize()
 
     def group(self, entity_list: list = None) -> Union[SonosSpeaker, None]:
         """Group a list of speakers together (default: all)."""

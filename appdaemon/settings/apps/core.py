@@ -35,6 +35,30 @@ class Base(Hass, SaneLoggingApp):
             if not getattr(self, app, None):
                 setattr(self, app, self.get_app(app))
 
+        # Define a reference to the "manager app" – for example, a trash-
+        # related automation might carry a reference to TrashManager:
+        if self.args.get('app'):
+            self.app = getattr(self, self.args['app'])
+
+        # Set the entity ID of the input boolean that will control whether
+        # this automation is enabled or not:
+        self.enabled_entity_id = None  # type: ignore
+        enabled_config = self.args.get('enabled_config', {})
+        if enabled_config:
+            if enabled_config.get('toggle_name'):
+                self.enabled_entity_id = 'input_boolean.{0}'.format(
+                    enabled_config['toggle_name'])
+            else:
+                self.enabled_entity_id = 'input_boolean.{0}'.format(self.name)
+
+        # Register any "mode alterations" for this automation – for example,
+        # perhaps it should be disabled when Vacation Mode is enabled:
+        mode_alterations = self.args.get('mode_alterations', {})
+        if mode_alterations:
+            for mode, value in mode_alterations.items():
+                mode_app = getattr(self, mode)
+                mode_app.register_enabled_entity(self.enabled_entity_id, value)
+
         # Register custom constraints:
         self.register_constraint('constrain_anyone')
         self.register_constraint('constrain_blackout')
@@ -43,8 +67,12 @@ class Base(Hass, SaneLoggingApp):
         self.register_constraint('constrain_noone')
         self.register_constraint('constrain_sun')
 
-    def _constrain_presence(self, method: str,
-                            value: Union[str, None]) -> bool:
+        # Run any user-specific configuration:
+        if hasattr(self, 'configure'):
+            self.configure()
+
+    def _constrain_presence(
+            self, method: str, value: Union[str, None]) -> bool:
         """Constrain presence in a generic fashion."""
         if not value:
             return True
@@ -88,38 +116,6 @@ class Base(Hass, SaneLoggingApp):
                 or (position == 'down' and self.sun_down())):
             return True
         return False
-
-
-class Automation(Base):
-    """Define a base automation object."""
-
-    def initialize(self) -> None:
-        """Initialize."""
-        super().initialize()
-
-        # Define a reference to the "manager app" – for example, a trash-
-        # related automation might carry a reference to TrashManager:
-        if self.args.get('app'):
-            self.app = getattr(self, self.args['app'])
-
-        # Set the entity ID of the input boolean that will control whether
-        # this automation is enabled or not:
-        self.enabled_entity_id = None  # type: ignore
-        enabled_config = self.args.get('enabled_config', {})
-        if enabled_config:
-            if enabled_config.get('toggle_name'):
-                self.enabled_entity_id = 'input_boolean.{0}'.format(
-                    enabled_config['toggle_name'])
-            else:
-                self.enabled_entity_id = 'input_boolean.{0}'.format(self.name)
-
-        # Register any "mode alterations" for this automation – for example,
-        # perhaps it should be disabled when Vacation Mode is enabled:
-        mode_alterations = self.args.get('mode_alterations', {})
-        if mode_alterations:
-            for mode, value in mode_alterations.items():
-                mode_app = getattr(self, mode)
-                mode_app.register_enabled_entity(self.enabled_entity_id, value)
 
     def listen_ios_event(self, callback: Callable, action: str) -> None:
         """Register a callback for an iOS event."""
