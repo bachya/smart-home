@@ -7,7 +7,7 @@ from typing import Callable, Union
 from automation import Automation  # type: ignore
 from const import (  # type: ignore
     BLACKOUT_END, BLACKOUT_START, THRESHOLD_CLOUDY)
-from util.scheduler import run_on_days  # type: ignore
+from helper.scheduler import run_on_days  # type: ignore
 
 HANDLE_TIMER = 'timer'
 HANDLE_TOGGLE_IN_WINDOW = 'in_window'

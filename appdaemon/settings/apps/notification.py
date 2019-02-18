@@ -9,7 +9,7 @@ from uuid import UUID
 from automation import Base  # type: ignore
 from const import BLACKOUT_END, BLACKOUT_START, CONF_PEOPLE  # type: ignore
 from people import Person
-from util.dt import time_is_between  # type: ignore
+from helper.dt import time_is_between  # type: ignore
 
 
 class NotificationTypes(Enum):

@@ -4,7 +4,7 @@
 from typing import Tuple
 
 from automation import Base  # type: ignore
-from util.dt import relative_time_of_day  # type: ignore
+from helper.dt import relative_time_of_day  # type: ignore
 
 OPENER_FILE_URL = 'https://hass.myserver.com/local/tts_opener.mp3'
 

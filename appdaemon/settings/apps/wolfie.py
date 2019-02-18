@@ -5,7 +5,7 @@ from enum import Enum
 from typing import Union
 
 from automation import Automation, Base  # type: ignore
-from util.scheduler import run_on_days  # type: ignore
+from helper.scheduler import run_on_days  # type: ignore
 
 HANDLE_BIN = 'vacuum_bin'
 HANDLE_SCHEDULE = 'schedule'

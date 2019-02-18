@@ -8,7 +8,7 @@ from typing import Tuple
 
 from automation import Automation, Base  # type: ignore
 from util import grammatical_list_join, suffix_strftime  # type: ignore
-from util.scheduler import run_on_days  # type: ignore
+from helper.scheduler import run_on_days  # type: ignore
 
 
 class NotifyOfPickup(Automation):

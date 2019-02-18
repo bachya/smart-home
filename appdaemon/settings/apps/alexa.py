@@ -6,7 +6,7 @@ from typing import Tuple
 from automation import Base  # type: ignore
 from util import grammatical_list_join, relative_search_dict  # type: ignore
 from util import random_affirmative_response
-from util.string import camel_to_underscore  # type: ignore
+from helper.string import camel_to_underscore  # type: ignore
 
 
 class Alexa(Base):
