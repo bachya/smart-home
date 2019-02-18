@@ -101,4 +101,9 @@ class UpdateUvWhenSunny(Base):
 
     def update_data(self, kwargs: dict) -> None:
         """Update sensor value."""
-        self.call_service('openuv/update_data')
+        from requests.exceptions import HTTPError
+
+        try:
+            self.call_service('openuv/update_data')
+        except HTTPError as err:
+            self.error('Error while updating OpenUV: {0}'.format(err))
