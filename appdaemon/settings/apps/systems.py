@@ -1,7 +1,18 @@
 """Define automations for various home systems."""
 from typing import Union
 
-from core import Base
+import voluptuous as vol
+
+from core import APP_SCHEMA, Base
+from const import (
+    CONF_DURATION, CONF_ENTITY, CONF_ENTITY_IDS, CONF_NOTIFICATION_INTERVAL,
+    CONF_PROPERTIES, CONF_STATE, TOGGLE_STATES)
+from helpers import config_validation as cv
+
+CONF_BATTERIES_TO_MONITOR = 'batteries_to_monitor'
+CONF_BATTERY_LEVEL_THRESHOLD = 'battery_level_threshold'
+CONF_EXPIRY_THRESHOLD = 'expiry_threshold'
+CONF_SSL_EXPIRY = 'ssl_expiry'
 
 HANDLE_BATTERY_LOW = 'battery_low'
 
@@ -9,12 +20,22 @@ HANDLE_BATTERY_LOW = 'battery_low'
 class LowBatteries(Base):
     """Define a feature to notify us of low batteries."""
 
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_BATTERIES_TO_MONITOR): cv.ensure_list,
+        }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES: vol.Schema({
+            vol.Required(CONF_BATTERY_LEVEL_THRESHOLD): int,
+            vol.Required(CONF_NOTIFICATION_INTERVAL): int,
+        }, extra=vol.ALLOW_EXTRA),
+    })
+
     def configure(self) -> None:
         """Configure."""
         self._registered = []  # type: ignore
         self.handles[HANDLE_BATTERY_LOW] = {}
 
-        for entity in self.entity_ids['batteries_to_monitor']:
+        for entity in self.entity_ids[CONF_BATTERIES_TO_MONITOR]:
             self.listen_state(
                 self.low_battery_detected,
                 entity,
@@ -32,7 +53,7 @@ class LowBatteries(Base):
         except ValueError:
             return
 
-        if value < self.properties['battery_level_threshold']:
+        if value < self.properties[CONF_BATTERY_LEVEL_THRESHOLD]:
             if name in self._registered:
                 return
 
@@ -44,7 +65,7 @@ class LowBatteries(Base):
                 name] = self.notification_manager.repeat(
                     '{0} has low batteries ({1})%. Replace them ASAP!'.format(
                         name, value),
-                    self.properties['notification_interval'],
+                    self.properties[CONF_NOTIFICATION_INTERVAL],
                     target='slack')
         else:
             try:
@@ -58,13 +79,23 @@ class LowBatteries(Base):
 class LeftInState(Base):
     """Define a feature to monitor whether an entity is left in a state."""
 
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_ENTITY): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES: vol.Schema({
+            vol.Required(CONF_DURATION): int,
+            vol.Required(CONF_STATE): vol.In(TOGGLE_STATES),
+        }, extra=vol.ALLOW_EXTRA),
+    })
+
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
             self.limit_reached,
-            self.entity_ids['entity'],
-            new=self.properties['state'],
-            duration=self.properties['seconds'],
+            self.entity_ids[CONF_ENTITY],
+            new=self.properties[CONF_STATE],
+            duration=self.properties[CONF_DURATION],
             constrain_input_boolean=self.enabled_entity_id)
 
     def limit_reached(
@@ -74,14 +105,14 @@ class LeftInState(Base):
 
         def turn_off():
             """Turn the entity off."""
-            self.turn_off(self.entity_ids['entity'])
+            self.turn_off(self.entity_ids[CONF_ENTITY])
 
         self.slack_app_home_assistant.ask(
             'The {0} has been left {1} for {2} minutes. Turn it off?'.format(
                 self.get_state(
-                    self.entity_ids['entity'], attribute='friendly_name'),
-                self.properties['state'],
-                int(self.properties['seconds']) / 60),
+                    self.entity_ids[CONF_ENTITY], attribute='friendly_name'),
+                self.properties[CONF_STATE],
+                int(self.properties[CONF_DURATION]) / 60),
             {
                 'Yes': {
                     'callback': turn_off,
@@ -96,18 +127,27 @@ class LeftInState(Base):
 class SslExpiration(Base):
     """Define a feature to notify me when the SSL cert is expiring."""
 
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_SSL_EXPIRY): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES: vol.Schema({
+            vol.Required(CONF_EXPIRY_THRESHOLD): int,
+        }, extra=vol.ALLOW_EXTRA),
+    })
+
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
             self.ssl_expiration_approaching,
-            self.entity_ids['ssl_expiry'],
+            self.entity_ids[CONF_SSL_EXPIRY],
             constrain_input_boolean=self.enabled_entity_id)
 
     def ssl_expiration_approaching(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """When SSL is about to expire, make an OmniFocus todo."""
-        if int(new) < self.properties['expiry_threshold']:
+        if int(new) < self.properties[CONF_EXPIRY_THRESHOLD]:
             self.log('SSL certificate about to expire: {0} days'.format(new))
 
             self.notification_manager.create_omnifocus_task(

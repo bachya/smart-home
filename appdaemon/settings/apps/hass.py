@@ -1,6 +1,13 @@
 """Define automations for Home Assistant itself."""
-from core import Base
-from const import BLACKOUT_END, BLACKOUT_START
+import voluptuous as vol
+
+from const import BLACKOUT_END, BLACKOUT_START, CONF_ENTITY_IDS
+from core import APP_SCHEMA, Base
+from helpers import config_validation as cv
+
+CONF_BAD_LOGIN = 'bad_login'
+CONF_BLACKOUT_SWITCH = 'blackout_switch'
+CONF_IP_BAN = 'ip_ban'
 
 
 class AutoVacationMode(Base):
@@ -39,6 +46,13 @@ class AutoVacationMode(Base):
 class BadLoginNotification(Base):
     """Define a feature to notify me of unauthorized login attempts."""
 
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_BAD_LOGIN): cv.entity_id,
+            vol.Required(CONF_IP_BAN): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+    })
+
     def configure(self) -> None:
         """Configure."""
         for notification_type in self.entity_ids.values():
@@ -55,7 +69,7 @@ class BadLoginNotification(Base):
         if not new:
             return
 
-        if entity == self.entity_ids['bad_login']:
+        if entity == self.entity_ids[CONF_BAD_LOGIN]:
             title = 'Unauthorized Access Attempt'
         else:
             title = 'IP Ban'
@@ -67,12 +81,18 @@ class BadLoginNotification(Base):
 class DetectBlackout(Base):
     """Define a feature to manage blackout awareness."""
 
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_BLACKOUT_SWITCH): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+    })
+
     def configure(self) -> None:
         """Configure."""
         if self.now_is_between(BLACKOUT_START, BLACKOUT_END):
-            self.turn_on(self.entity_ids['blackout_switch'])
+            self.turn_on(self.entity_ids[CONF_BLACKOUT_SWITCH])
         else:
-            self.turn_off(self.entity_ids['blackout_switch'])
+            self.turn_off(self.entity_ids[CONF_BLACKOUT_SWITCH])
 
         self.run_daily(
             self.boundary_reached,
@@ -90,6 +110,6 @@ class DetectBlackout(Base):
         self.log('Setting blackout sensor: {0}'.format(kwargs['state']))
 
         if kwargs['state'] == 'on':
-            self.turn_on(self.entity_ids['blackout_switch'])
+            self.turn_on(self.entity_ids[CONF_BLACKOUT_SWITCH])
         else:
-            self.turn_off(self.entity_ids['blackout_switch'])
+            self.turn_off(self.entity_ids[CONF_BLACKOUT_SWITCH])

@@ -3,13 +3,30 @@ from datetime import time
 from enum import Enum
 from typing import Union
 
-from core import Base
+import voluptuous as vol
+
+from core import APP_SCHEMA, Base
+from const import (
+    CONF_ENTITY_IDS, CONF_FRIENDLY_NAME, CONF_NOTIFICATION_INTERVAL,
+    CONF_PROPERTIES, CONF_STATE)
+from helpers import config_validation as cv
+
+CONF_ALARM_CONTROL_PANEL = 'alarm_control_panel'
+CONF_GARAGE_DOOR = 'garage_door'
+CONF_OVERALL_SECURITY_STATUS = 'overall_security_status_sensor'
+CONF_TIME_LEFT_OPEN = 'time_left_open'
 
 HANDLE_GARAGE_OPEN = 'garage_open'
 
 
 class AbsentInsecure(Base):
     """Define a feature to notify us when we've left home insecure."""
+
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_STATE): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+    })
 
     def configure(self) -> None:
         """Configure."""
@@ -27,7 +44,7 @@ class AbsentInsecure(Base):
             action='home')
         self.listen_state(
             self.house_insecure,
-            self.entity_ids['state'],
+            self.entity_ids[CONF_STATE],
             new='Open',
             duration=60 * 5,
             constrain_input_boolean=self.enabled_entity_id,
@@ -108,6 +125,16 @@ class AutoNighttimeLockup(Base):
 class GarageLeftOpen(Base):
     """Define a feature to notify us when the garage is left open."""
 
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_GARAGE_DOOR): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES: vol.Schema({
+            vol.Required(CONF_NOTIFICATION_INTERVAL): int,
+            vol.Required(CONF_TIME_LEFT_OPEN): int,
+        }, extra=vol.ALLOW_EXTRA),
+    })
+
     def configure(self) -> None:
         """Configure."""
         self.listen_event(
@@ -117,14 +144,14 @@ class GarageLeftOpen(Base):
             constrain_input_boolean=self.enabled_entity_id)
         self.listen_state(
             self.closed,
-            self.entity_ids['garage_door'],
+            self.entity_ids[CONF_GARAGE_DOOR],
             new='closed',
             constrain_input_boolean=self.enabled_entity_id)
         self.listen_state(
             self.left_open,
-            self.entity_ids['garage_door'],
+            self.entity_ids[CONF_GARAGE_DOOR],
             new='open',
-            duration=self.properties['time_left_open'],
+            duration=self.properties[CONF_TIME_LEFT_OPEN],
             constrain_input_boolean=self.enabled_entity_id)
 
     def closed(
@@ -142,7 +169,7 @@ class GarageLeftOpen(Base):
 
         self.handles[HANDLE_GARAGE_OPEN] = self.notification_manager.repeat(
             message,
-            self.properties['notification_interval'],
+            self.properties[CONF_NOTIFICATION_INTERVAL],
             title='Garage Open 🚗',
             blackout_start_time=None,
             blackout_end_time=None,
@@ -179,11 +206,17 @@ class GarageLeftOpen(Base):
 class NotifyOnChange(Base):
     """Define a feature to notify us the secure status changes."""
 
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_STATE): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+    })
+
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
             self.state_changed,
-            self.entity_ids['state'],
+            self.entity_ids[CONF_STATE],
             constrain_input_boolean=self.enabled_entity_id)
 
     def state_changed(
@@ -203,6 +236,14 @@ class NotifyOnChange(Base):
 class SecurityManager(Base):
     """Define a class to represent the app."""
 
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_ALARM_CONTROL_PANEL): cv.entity_id,
+            vol.Required(CONF_GARAGE_DOOR): cv.entity_id,
+            vol.Required(CONF_OVERALL_SECURITY_STATUS): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+    })
+
     class AlarmStates(Enum):
         """Define an enum for alarm states."""
 
@@ -214,19 +255,19 @@ class SecurityManager(Base):
     def alarm_state(self) -> "AlarmStates":
         """Return the current state of the security system."""
         return self.AlarmStates(
-            self.get_state(self.entity_ids['alarm_control_panel']))
+            self.get_state(self.entity_ids[CONF_ALARM_CONTROL_PANEL]))
 
     @property
     def secure(self) -> bool:
         """Return whether the house is secure or not."""
         return self.get_state(
-            self.entity_ids['overall_security_status_sensor']) == 'Secure'
+            self.entity_ids[CONF_OVERALL_SECURITY_STATUS]) == 'Secure'
 
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
             self._security_system_change_cb,
-            self.entity_ids['alarm_control_panel'])
+            self.entity_ids[CONF_ALARM_CONTROL_PANEL])
 
     def _security_system_change_cb(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -240,14 +281,14 @@ class SecurityManager(Base):
         self.log('Closing the garage door')
 
         self.call_service(
-            'cover/close_cover', entity_id=self.entity_ids['garage_door'])
+            'cover/close_cover', entity_id=self.entity_ids[CONF_GARAGE_DOOR])
 
     def get_insecure_entities(self) -> list:
         """Return a list of insecure entities."""
         return [
-            entity['friendly_name']
+            entity[CONF_FRIENDLY_NAME]
             for entity in self.properties['secure_status_mapping']
-            if self.get_state(entity['entity_id']) == entity['state']
+            if self.get_state(entity['entity_id']) == entity[CONF_STATE]
         ]
 
     def open_garage(self) -> None:
@@ -255,7 +296,7 @@ class SecurityManager(Base):
         self.log('Closing the garage door')
 
         self.call_service(
-            'cover.open_cover', entity_id=self.entity_ids['garage_door'])
+            'cover.open_cover', entity_id=self.entity_ids[CONF_GARAGE_DOOR])
 
     def set_alarm(self, new: "AlarmStates") -> None:
         """Set the security system."""
@@ -264,13 +305,13 @@ class SecurityManager(Base):
 
             self.call_service(
                 'alarm_control_panel/alarm_disarm',
-                entity_id=self.entity_ids['alarm_control_panel'])
+                entity_id=self.entity_ids[CONF_ALARM_CONTROL_PANEL])
         elif new in (self.AlarmStates.away, self.AlarmStates.home):
             self.log('Arming the security system: "{0}"'.format(new.name))
 
             self.call_service(
                 'alarm_control_panel/alarm_arm_{0}'.format(
                     new.value.split('_')[1]),
-                entity_id=self.entity_ids['alarm_control_panel'])
+                entity_id=self.entity_ids[CONF_ALARM_CONTROL_PANEL])
         else:
             raise AttributeError("Unknown security state: {0}".format(new))

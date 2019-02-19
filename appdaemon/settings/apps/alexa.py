@@ -2,9 +2,9 @@
 from typing import Tuple
 
 from core import Base
-from helper import (
+from helpers import (
     grammatical_list_join, relative_search_dict, random_affirmative_response)
-from helper.string import camel_to_underscore
+from helpers.string import camel_to_underscore
 
 
 class Alexa(Base):

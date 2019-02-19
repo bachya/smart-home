@@ -3,8 +3,17 @@ from datetime import timedelta
 from enum import Enum
 from typing import Tuple
 
-from core import Base
-from helper.dt import ceil_dt
+import voluptuous as vol
+
+from const import CONF_ENTITY_IDS
+from core import APP_SCHEMA, Base
+from helpers import config_validation as cv
+from helpers.dt import ceil_dt
+
+CONF_AVG_HUMIDITY_SENSOR = 'average_humidity_sensor'
+CONF_AVG_TEMP_SENSOR = 'average_temperature_sensor'
+CONF_OUTSIDE_TEMP = 'outside_temp'
+CONF_THERMOSTAT = 'thermostat'
 
 OUTSIDE_THRESHOLD_HIGH = 75
 OUTSIDE_THRESHOLD_LOW = 35
@@ -82,6 +91,15 @@ class AdjustOnProximity(Base):
 class ClimateManager(Base):
     """Define an app to represent climate control."""
 
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_AVG_HUMIDITY_SENSOR): cv.entity_id,
+            vol.Required(CONF_AVG_TEMP_SENSOR): cv.entity_id,
+            vol.Required(CONF_OUTSIDE_TEMP): cv.entity_id,
+            vol.Required(CONF_THERMOSTAT): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+    })
+
     class AwayModes(Enum):
         """Define an enum for thermostat away modes."""
 
@@ -107,19 +125,19 @@ class ClimateManager(Base):
     def average_indoor_humidity(self) -> float:
         """Return the average indoor humidity based on a list of sensors."""
         return float(
-            self.get_state(self.entity_ids['average_humidity_sensor']))
+            self.get_state(self.entity_ids[CONF_AVG_HUMIDITY_SENSOR]))
 
     @property
     def average_indoor_temperature(self) -> float:
         """Return the average indoor temperature based on a list of sensors."""
         return float(
-            self.get_state(self.entity_ids['average_temperature_sensor']))
+            self.get_state(self.entity_ids[CONF_AVG_TEMP_SENSOR]))
 
     @property
     def away_mode(self) -> bool:
         """Return the state of away mode."""
         return self.get_state(
-            self.entity_ids['thermostat'], attribute='away_mode') == 'on'
+            self.entity_ids[CONF_THERMOSTAT], attribute='away_mode') == 'on'
 
     @property
     def indoor_temp(self) -> int:
@@ -127,7 +145,7 @@ class ClimateManager(Base):
         try:
             return int(
                 self.get_state(
-                    self.entity_ids['thermostat'], attribute='temperature'))
+                    self.entity_ids[CONF_THERMOSTAT], attribute='temperature'))
         except TypeError:
             return 0
 
@@ -135,12 +153,12 @@ class ClimateManager(Base):
     def mode(self) -> Enum:
         """Return the current operating mode."""
         return self.Modes[self.get_state(
-            self.entity_ids['thermostat'], attribute='operation_mode')]
+            self.entity_ids[CONF_THERMOSTAT], attribute='operation_mode')]
 
     @property
     def outside_temp(self) -> float:
         """Define a property to get the current outdoor temperature."""
-        return float(self.get_state(self.entity_ids['outside_temp']))
+        return float(self.get_state(self.entity_ids[CONF_OUTSIDE_TEMP]))
 
     def configure(self) -> None:
         """Configure."""
@@ -173,21 +191,21 @@ class ClimateManager(Base):
         """Set the thermostat temperature."""
         self.call_service(
             'climate/set_temperature',
-            entity_id=self.entity_ids['thermostat'],
+            entity_id=self.entity_ids[CONF_THERMOSTAT],
             temperature=str(value))
 
     def set_fan_mode(self, value: Enum) -> None:
         """Set the themostat's fan mode."""
         self.call_service(
             'climate/set_fan_mode',
-            entity_id=self.entity_ids['thermostat'],
-            operation_mode=value.name)
+            entity_id=self.entity_ids[CONF_THERMOSTAT],
+            fan_mode=value.name)
 
     def set_mode(self, value: Enum) -> None:
         """Set the themostat's operating mode."""
         self.call_service(
             'climate/set_operation_mode',
-            entity_id=self.entity_ids['thermostat'],
+            entity_id=self.entity_ids[CONF_THERMOSTAT],
             operation_mode=value.name)
 
 

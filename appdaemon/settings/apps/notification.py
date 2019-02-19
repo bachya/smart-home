@@ -7,7 +7,7 @@ from uuid import UUID
 from core import Base
 from const import BLACKOUT_END, BLACKOUT_START, CONF_PEOPLE
 from people import Person
-from helper.dt import time_is_between
+from helpers.dt import time_is_between
 
 
 class NotificationTypes(Enum):

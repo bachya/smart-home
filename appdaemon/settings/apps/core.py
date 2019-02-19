@@ -1,21 +1,54 @@
 """Define generic automation objects and logic."""
-# pylint: disable=attribute-defined-outside-init,import-error
-
 from typing import Callable, Dict, Union  # noqa, pylint: disable=unused-import
 
+import voluptuous as vol
 from appdaemon.plugins.hass.hassapi import Hass  # type: ignore
 
-from const import (  # type: ignore
-    BLACKOUT_START, BLACKOUT_END, THRESHOLD_CLOUDY)
+from const import BLACKOUT_START, BLACKOUT_END, THRESHOLD_CLOUDY
+from helpers import config_validation as cv
+
+CONF_APP = 'app'
+CONF_CLASS = 'class'
+CONF_DEPENDENCIES = 'dependencies'
+CONF_ENABLED_CONFIG = 'enabled_config'
+CONF_ICON = 'icon'
+CONF_INITIAL = 'initial'
+CONF_MODULE = 'module'
+CONF_NAME = 'name'
+CONF_TOGGLE_NAME = 'toggle_name'
 
 SENSOR_CLOUD_COVER = 'sensor.dark_sky_cloud_coverage'
+
+
+APP_SCHEMA = vol.Schema({
+    vol.Required(CONF_MODULE): str,
+    vol.Required(CONF_CLASS): str,
+    vol.Optional(CONF_DEPENDENCIES): cv.ensure_list,
+    vol.Optional(CONF_APP): str,
+    vol.Optional(CONF_ENABLED_CONFIG): vol.Schema({
+        vol.Required(CONF_NAME): str,
+        vol.Required(CONF_ICON): str,
+        vol.Required(CONF_INITIAL): bool,
+        vol.Optional(CONF_TOGGLE_NAME): str,
+    }),
+}, extra=vol.ALLOW_EXTRA)
 
 
 class Base(Hass):
     """Define a base automation object."""
 
+    APP_SCHEMA = APP_SCHEMA
+
     def initialize(self) -> None:
         """Initialize."""
+
+        # Check the app definition against its schema:
+        try:
+            self.APP_SCHEMA(self.args)
+        except vol.Invalid as err:
+            self.error('Invalid app schema: {0}'.format(err), level='ERROR')
+            return
+
         # Define a holding place for HASS entity IDs:
         self.entity_ids = self.args.get('entity_ids', {})
 

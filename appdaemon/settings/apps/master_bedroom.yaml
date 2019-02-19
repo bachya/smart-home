@@ -85,7 +85,7 @@ master_toilet_fan_toggle_automation:
     switch: switch.master_toilet_fan
   properties:
     end_time: "17:00:00"
-    interval: 900
+    duration: 900
     state: "on"
     start_time: "10:00:00"
     window: 3600

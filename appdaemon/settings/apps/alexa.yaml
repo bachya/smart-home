@@ -7,5 +7,4 @@ alexa:
     - presence_manager
     - security_manager
     - trash_manager
-    - tts
     - wolfie

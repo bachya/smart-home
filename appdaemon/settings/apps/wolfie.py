@@ -2,8 +2,23 @@
 from enum import Enum
 from typing import Union
 
-from core import Base
-from helper.scheduler import run_on_days
+import voluptuous as vol
+
+from core import APP_SCHEMA, Base
+from const import CONF_ENTITY_IDS, CONF_PROPERTIES
+from helpers import config_validation as cv
+from helpers.scheduler import run_on_days
+
+CONF_BIN_STATE = 'bin_state'
+CONF_CONSUMABLES = 'consumables'
+CONF_CONSUMABLE_THRESHOLD = 'consumable_threshold'
+CONF_IOS_EMPTIED_KEY = 'ios_emptied_key'
+CONF_NOTIFICATION_INTERVAL_FULL = 'notification_interval_full'
+CONF_NOTIFICATION_INTERVAL_STUCK = 'notification_interval_stuck'
+CONF_SCHEDULE_SWITCHES = 'schedule_switches'
+CONF_SCHEDULE_TIME = 'schedule_time'
+CONF_STATUS = 'status'
+CONF_VACUUM = 'vacuum'
 
 HANDLE_BIN = 'vacuum_bin'
 HANDLE_SCHEDULE = 'schedule'
@@ -12,6 +27,13 @@ HANDLE_STUCK = 'vacuum_stuck'
 
 class MonitorConsumables(Base):
     """Define a feature to notify when a consumable gets low."""
+
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_PROPERTIES: vol.Schema({
+            vol.Required(CONF_CONSUMABLE_THRESHOLD): int,
+            vol.Required(CONF_CONSUMABLES): cv.ensure_list,
+        }, extra=vol.ALLOW_EXTRA),
+    })
 
     def configure(self) -> None:
         """Configure."""
@@ -35,6 +57,16 @@ class MonitorConsumables(Base):
 
 class ScheduledCycle(Base):
     """Define a feature to run the vacuum on a schedule."""
+
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_PROPERTIES: vol.Schema({
+            vol.Required(CONF_IOS_EMPTIED_KEY): str,
+            vol.Required(CONF_NOTIFICATION_INTERVAL_FULL): int,
+            vol.Required(CONF_NOTIFICATION_INTERVAL_STUCK): int,
+            vol.Required(CONF_SCHEDULE_SWITCHES): cv.ensure_list,
+            vol.Required(CONF_SCHEDULE_TIME): str,
+        }, extra=vol.ALLOW_EXTRA),
+    })
 
     @property
     def active_days(self) -> list:
@@ -217,6 +249,14 @@ class ScheduledCycle(Base):
 
 class Vacuum(Base):
     """Define an app to represent a vacuum-type appliance."""
+
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_BIN_STATE): cv.entity_id,
+            vol.Required(CONF_STATUS): cv.entity_id,
+            vol.Required(CONF_VACUUM): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+    })
 
     @property
     def bin_state(self) -> Enum:

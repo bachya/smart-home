@@ -5,8 +5,8 @@ from math import ceil
 from typing import Tuple
 
 from core import Base
-from helper import grammatical_list_join, suffix_strftime
-from helper.scheduler import run_on_days
+from helpers import grammatical_list_join, suffix_strftime
+from helpers.scheduler import run_on_days
 
 
 class NotifyOfPickup(Base):

@@ -1,13 +1,33 @@
 """Define automations for plants."""
 from typing import Union
 
-from core import Base
+import voluptuous as vol
+
+from core import APP_SCHEMA, Base
+from const import (
+    CONF_ENTITY_IDS, CONF_FRIENDLY_NAME, CONF_NOTIFICATION_INTERVAL,
+    CONF_PROPERTIES)
+from helpers import config_validation as cv
+
+CONF_CURRENT_MOISTURE = 'current_moisture'
+CONF_MOISTURE_THRESHOLD = 'moisture_threshold'
 
 HANDLE_LOW_MOISTURE = 'low_moisture'
 
 
 class LowMoisture(Base):
     """Define a feature to notify us of low moisture."""
+
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_CURRENT_MOISTURE): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES: vol.Schema({
+            vol.Required(CONF_FRIENDLY_NAME): str,
+            vol.Required(CONF_MOISTURE_THRESHOLD): int,
+            vol.Required(CONF_NOTIFICATION_INTERVAL): int,
+        }, extra=vol.ALLOW_EXTRA),
+    })
 
     def configure(self) -> None:
         """Configure."""

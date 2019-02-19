@@ -28,7 +28,7 @@ notify_media_center_left_on_automation:
   entity_ids:
     entity: switch.media_center
   properties:
-    seconds: 43200
+    duration: 43200
     state: "on"
   enabled_config:
     name: Media Center left on
@@ -45,7 +45,7 @@ notify_ps4_left_on_automation:
   entity_ids:
     entity: switch.ps4
   properties:
-    seconds: 43200
+    duration: 43200
     state: "on"
   enabled_config:
     name: PS4 left on

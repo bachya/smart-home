@@ -1,12 +1,27 @@
 """Define automations for health."""
 from typing import Union
 
-from core import Base
-from const import BLACKOUT_START
+import voluptuous as vol
+
+from const import (
+    BLACKOUT_START, CONF_ENTITY_IDS, CONF_PROPERTIES, CONF_UPDATE_INTERVAL)
+from core import APP_SCHEMA, Base
+from helpers import config_validation as cv
+
+CONF_AARON_ROUTER_TRACKER = 'aaron_router_tracker'
+CONF_AQI = 'aqi'
+CONF_AQI_THRESHOLD = 'aqi_threshold'
+CONF_HVAC_STATE = 'hvac_state'
 
 
 class AaronAccountability(Base):
     """Define features to keep me accountable on my phone."""
+
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_AARON_ROUTER_TRACKER): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+    })
 
     def configure(self) -> None:
         """Configure."""
@@ -16,7 +31,7 @@ class AaronAccountability(Base):
 
         self.listen_state(
             self.send_notification_on_disconnect,
-            self.entity_ids['aaron_router_tracker'],
+            self.entity_ids[CONF_AARON_ROUTER_TRACKER],
             new='not_home',
             constrain_in_blackout=True,
             constrain_anyone='home')
@@ -24,7 +39,8 @@ class AaronAccountability(Base):
     @property
     def router_tracker_state(self) -> str:
         """Return the state of Aaron's Unifi tracker."""
-        return self.get_state(self.entity_ids['aaron_router_tracker'])
+        return self.get_state(
+            self.entity_ids[CONF_AARON_ROUTER_TRACKER])
 
     def _send_notification(self) -> None:
         """Send notification to my love."""
@@ -49,10 +65,20 @@ class AaronAccountability(Base):
 class NotifyBadAqi(Base):
     """Define a feature to notify us of bad air quality."""
 
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_AQI): cv.entity_id,
+            vol.Required(CONF_HVAC_STATE): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES: vol.Schema({
+            vol.Required(CONF_AQI_THRESHOLD): int,
+        }, extra=vol.ALLOW_EXTRA),
+    })
+
     @property
     def current_aqi(self) -> int:
         """Define a property to get the current AQI."""
-        return int(self.get_state(self.entity_ids['aqi']))
+        return int(self.get_state(self.entity_ids[CONF_AQI]))
 
     def configure(self) -> None:
         """Configure."""
@@ -60,7 +86,7 @@ class NotifyBadAqi(Base):
 
         self.listen_state(
             self.bad_aqi_detected,
-            self.entity_ids['hvac_state'],
+            self.entity_ids[CONF_HVAC_STATE],
             new='cooling',
             constrain_input_boolean=self.enabled_entity_id)
 
@@ -69,7 +95,7 @@ class NotifyBadAqi(Base):
             kwargs: dict) -> None:
         """Send select notifications when cooling and poor AQI."""
         if (not self.notification_sent
-                and self.current_aqi > self.properties['aqi_threshold']):
+                and self.current_aqi > self.properties[CONF_AQI_THRESHOLD]):
             self.log('Poor AQI; notifying anyone at home')
 
             self.notification_manager.send(
@@ -79,7 +105,7 @@ class NotifyBadAqi(Base):
                 target='home')
             self.notification_sent = True
         elif (self.notification_sent
-              and self.current_aqi <= self.properties['aqi_threshold']):
+              and self.current_aqi <= self.properties[CONF_AQI_THRESHOLD]):
             self.notification_manager.send(
                 'AQI is at {0}; open the humidifer vent again.'.format(
                     self.current_aqi),
@@ -91,12 +117,18 @@ class NotifyBadAqi(Base):
 class UpdateUvWhenSunny(Base):
     """Define a feature to update OpenUV data when the sun is up."""
 
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_PROPERTIES: vol.Schema({
+            vol.Required(CONF_UPDATE_INTERVAL): int,
+        }, extra=vol.ALLOW_EXTRA),
+    })
+
     def configure(self) -> None:
         """Configure."""
         self.run_every(
             self.update_data,
             self.datetime(),
-            self.properties['update_interval'],
+            self.properties[CONF_UPDATE_INTERVAL],
             constrain_sun='up')
 
     def update_data(self, kwargs: dict) -> None:
@@ -106,4 +138,5 @@ class UpdateUvWhenSunny(Base):
         try:
             self.call_service('openuv/update_data')
         except HTTPError as err:
-            self.error('Error while updating OpenUV: {0}'.format(err))
+            self.error(
+                'Error while updating OpenUV: {0}'.format(err), level='ERROR')

@@ -1,6 +1,12 @@
 """Define automations for Amazon Dash Buttons."""
 # pylint: disable=too-few-public-methods
-from core import Base
+import voluptuous as vol
+
+from const import CONF_ENTITY_IDS, CONF_FRIENDLY_NAME, CONF_PROPERTIES
+from core import APP_SCHEMA, Base
+from helpers import config_validation as cv
+
+CONF_ACTION_LIST = 'action_list'
 
 
 class ButtonAction:
@@ -68,6 +74,15 @@ class ToggleEntity(ButtonAction):
 class DashButton(Base):
     """Define an automation for Amazon Dash Buttons."""
 
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_ACTION_LIST): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES: vol.Schema({
+            vol.Required(CONF_FRIENDLY_NAME): str,
+        }, extra=vol.ALLOW_EXTRA),
+    })
+
     OBJECT_MAP = {
         'Activate "Good Night"': (ActivateScene, {
             'scene': 'good_night'
@@ -96,12 +111,12 @@ class DashButton(Base):
         self.listen_event(
             self.button_pressed,
             'AMAZON_DASH_PRESS',
-            button_label=self.properties['friendly_name'])
+            button_label=self.properties[CONF_FRIENDLY_NAME])
 
     def button_pressed(
             self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond when button is pressed."""
-        action_name = self.get_state(self.entity_ids['action_list'])
+        action_name = self.get_state(self.entity_ids[CONF_ACTION_LIST])
 
         if action_name not in self.OBJECT_MAP:
             self.error('Unknown action: {0}'.format(action_name))

@@ -1,8 +1,0 @@
----
-tts:
-  module: tts
-  class: TTS
-  dependencies:
-    - living_room_tv
-    - presence_manager
-    - sonos_manager

@@ -2,9 +2,16 @@
 from enum import Enum
 from typing import Union
 
-from core import Base
-from const import CONF_PEOPLE
-from helper import most_common
+import voluptuous as vol
+
+from const import (
+    CONF_DEVICE_TRACKERS, CONF_ENTITY_IDS, CONF_NOTIFIERS, CONF_PEOPLE,
+    CONF_PROPERTIES)
+from core import APP_SCHEMA, Base
+from helpers import config_validation as cv, most_common
+
+CONF_PRESENCE_STATUS_SENSOR = 'presence_status_sensor'
+CONF_PUSH_DEVICE_ID = 'push_device_id'
 
 HANDLE_5_MINUTE_TIMER = '5_minute'
 HANDLE_24_HOUR_TIMER = '24_hour'
@@ -12,6 +19,17 @@ HANDLE_24_HOUR_TIMER = '24_hour'
 
 class Person(Base):
     """Define a class to represent a person."""
+
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_DEVICE_TRACKERS): cv.ensure_list,
+            vol.Required(CONF_NOTIFIERS): cv.ensure_list,
+            vol.Required(CONF_PRESENCE_STATUS_SENSOR): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES: vol.Schema({
+            vol.Optional(CONF_PUSH_DEVICE_ID): str,
+        }, extra=vol.ALLOW_EXTRA),
+    })
 
     def configure(self) -> None:
         """Configure."""
@@ -28,7 +46,7 @@ class Person(Base):
         self.global_vars[CONF_PEOPLE].append(self)
 
         # Listen for changes to any of the person's device trackers:
-        for device_tracker in self.entity_ids['device_trackers']:
+        for device_tracker in self.entity_ids[CONF_DEVICE_TRACKERS]:
             kind = self.get_state(device_tracker, attribute='source_type')
             if kind == 'router':
                 self.listen_state(
@@ -62,12 +80,12 @@ class Person(Base):
     @property
     def notifiers(self) -> list:
         """Return the notifiers associated with the person."""
-        return self.entity_ids['notifiers']
+        return self.entity_ids[CONF_NOTIFIERS]
 
     @property
     def push_device_id(self) -> str:
         """Get the iOS device ID for push notifications."""
-        return self.properties.get('push_device_id')
+        return self.properties.get(CONF_PUSH_DEVICE_ID)
 
     def _check_transition_cb(self, kwargs: dict) -> None:
         """Transition the user's home state (if appropriate)."""
@@ -147,7 +165,7 @@ class Person(Base):
         """Get the most common raw state from the person's device trackers."""
         return most_common([
             self.get_tracker_state(dt)
-            for dt in self.entity_ids['device_trackers']
+            for dt in self.entity_ids[CONF_DEVICE_TRACKERS]
         ])
 
     def _render_presence_status_sensor(self) -> None:
@@ -164,7 +182,7 @@ class Person(Base):
             state = self._raw_state
 
         self.set_state(
-            self.entity_ids['presence_status_sensor'],
+            self.entity_ids[CONF_PRESENCE_STATUS_SENSOR],
             state=state,
             attributes={
                 'friendly_name':

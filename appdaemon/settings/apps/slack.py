@@ -4,7 +4,7 @@ from typing import Any, Dict, Union  # pylint: disable=unused-import
 from zlib import adler32
 
 from core import Base
-from helper import (
+from helpers import (
     grammatical_list_join, random_affirmative_response, relative_search_list)
 
 
