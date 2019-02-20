@@ -120,11 +120,4 @@ sensor:
         time_constant: 10
         precision: 2
 
-  - platform: speedtest
-    minute:
-      - 0
-      - 30
-    monitored_conditions:
-      - ping
-      - download
-      - upload
+speedtestdotnet:
