@@ -29,9 +29,10 @@ bar_cart_on_upon_arrival_automation:
   entity_ids:
     switch: switch.bar_cart
   properties:
-    possible_constraints:
-      constrain_sun: "down"
     trigger_on_first_only: true
+  constraints:
+    constraints:
+      constrain_sun: "down"
   mode_alterations:
     guest_mode: disable
   enabled_config:

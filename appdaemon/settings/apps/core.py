@@ -4,27 +4,37 @@ from typing import Callable, Dict, Union  # noqa, pylint: disable=unused-import
 import voluptuous as vol
 from appdaemon.plugins.hass.hassapi import Hass  # type: ignore
 
-from const import BLACKOUT_START, BLACKOUT_END, THRESHOLD_CLOUDY
+from const import (
+    BLACKOUT_START, BLACKOUT_END, OPERATOR_ALL, OPERATOR_ANY, OPERATORS,
+    THRESHOLD_CLOUDY)
 from helpers import config_validation as cv
 
-CONF_APP = 'app'
 CONF_CLASS = 'class'
+CONF_MODULE = 'module'
 CONF_DEPENDENCIES = 'dependencies'
+
+CONF_APP = 'app'
+CONF_CONSTRAINTS = 'constraints'
+
 CONF_ENABLED_CONFIG = 'enabled_config'
 CONF_ICON = 'icon'
 CONF_INITIAL = 'initial'
-CONF_MODULE = 'module'
 CONF_NAME = 'name'
 CONF_TOGGLE_NAME = 'toggle_name'
 
-SENSOR_CLOUD_COVER = 'sensor.dark_sky_cloud_coverage'
+CONF_OPERATOR = 'operator'
 
+SENSOR_CLOUD_COVER = 'sensor.dark_sky_cloud_coverage'
 
 APP_SCHEMA = vol.Schema({
     vol.Required(CONF_MODULE): str,
     vol.Required(CONF_CLASS): str,
     vol.Optional(CONF_DEPENDENCIES): cv.ensure_list,
     vol.Optional(CONF_APP): str,
+    vol.Optional(CONF_CONSTRAINTS): vol.Schema({
+        vol.Optional(CONF_OPERATOR, default=OPERATOR_ALL): vol.In(OPERATORS),
+        vol.Required(CONF_CONSTRAINTS): dict
+    }),
     vol.Optional(CONF_ENABLED_CONFIG): vol.Schema({
         vol.Required(CONF_NAME): str,
         vol.Required(CONF_ICON): str,
@@ -153,3 +163,40 @@ class Base(Hass):
             'ios.notification_action_fired',
             actionName=action,
             constrain_input_boolean=self.enabled_entity_id)
+
+    def _attach_constraints_to_listener(
+            self, listener_name: str, callback: Callable, item: str,
+            **kwargs: dict) -> Union[str, list]:
+        """Attach the constraint mechanism to an AppDaemon function."""
+        method = getattr(super(), listener_name)
+
+        if not self.args.get(CONF_CONSTRAINTS):
+            return method(callback, item, **kwargs)
+
+        constraints = self.args[CONF_CONSTRAINTS][CONF_CONSTRAINTS]
+
+        if self.args[CONF_CONSTRAINTS].get(CONF_OPERATOR) == OPERATOR_ALL:
+            return method(callback, item, **constraints, **kwargs)
+
+        handles = []  # type: ignore
+        for name, value in constraints.items():
+            method(callback, item, **{name: value}, **kwargs)
+        return handles
+
+    def listen_event(
+            self, callback, event=None, auto_constraints=False, **kwargs):
+        """Wrap AppDaemon's event listener with the constraint mechanism."""
+        if not auto_constraints:
+            return super().listen_event(callback, event, **kwargs)
+
+        return self._attach_constraints_to_listener(
+            'listen_event', callback, event, **kwargs)
+
+    def listen_state(
+            self, callback, entity=None, auto_constraints=False, **kwargs):
+        """Wrap AppDaemon's state listener with the constraint mechanism."""
+        if not auto_constraints:
+            return super().listen_state(callback, entity, **kwargs)
+
+        return self._attach_constraints_to_listener(
+            'listen_state', callback, entity, **kwargs)

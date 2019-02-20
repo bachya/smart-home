@@ -32,10 +32,15 @@ CONF_NOTIFIERS = 'notifiers'
 CONF_NOTIFICATION_INTERVAL = 'notification_interval'
 CONF_NOTIFICATION_TARGET = 'notification_target'
 
+# Collections of valid inputs:
+OPERATOR_ALL = 'all'
+OPERATOR_ANY = 'any'
+OPERATORS = (OPERATOR_ALL, OPERATOR_ANY)
+TOGGLE_STATES = ('closed', 'off', 'on', 'open')
+
 # Misc. config keys:
 CONF_PEOPLE = 'people'
 CONF_TRIGGER_FIRST = 'trigger_on_first_only'
 
-TOGGLE_STATES = ('closed', 'off', 'on', 'open')
 
 THRESHOLD_CLOUDY = 70.0

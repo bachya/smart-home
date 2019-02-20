@@ -23,7 +23,6 @@ CONF_TARGET_STATE = 'target_state'
 CONF_TIMER_SLIDER = 'timer_slider'
 CONF_WINDOW = 'window'
 CONF_ZWAVE_DEVICE = 'zwave_device'
-CONF_POSSIBLE_CONSTRAINTS = 'possible_constraints'
 
 HANDLE_TIMER = 'timer'
 HANDLE_TOGGLE_IN_WINDOW = 'in_window'
@@ -41,14 +40,6 @@ class BaseSwitch(Base):
     def state(self) -> bool:
         """Return the current state of the switch."""
         return self.get_state(self.entity_ids['switch'])
-
-    def attach_constraints(self, func: Callable) -> None:
-        """Attach values from possible_constraints to a function."""
-        if self.properties.get('possible_constraints'):
-            for name, value in self.properties['possible_constraints'].items():
-                func({name: value})
-        else:
-            func()
 
     def toggle(self, *, state: str = None, opposite_of: str = None) -> None:
         """Toggle the switch state."""
@@ -349,18 +340,11 @@ class ToggleOnState(BaseSwitch):
 
     def configure(self) -> None:
         """Configure."""
-        self.attach_constraints(self.listen_for_state_change)
-
-    def listen_for_state_change(self, constraints: dict = None) -> None:
-        """Create a state listener for the target."""
-        if not constraints:
-            constraints = {}
-
         self.listen_state(
             self.state_changed,
             self.entity_ids[CONF_TARGET],
-            constrain_input_boolean=self.enabled_entity_id,
-            **constraints)
+            auto_constraints=True,
+            constrain_input_boolean=self.enabled_entity_id)
 
     def state_changed(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -391,21 +375,12 @@ class TurnOnUponArrival(BaseSwitch):
 
     def configure(self) -> None:
         """Configure."""
-        self.attach_constraints(self.listen_for_arrival)
-
-    def listen_for_arrival(self, constraints: dict = None) -> None:
-        """Create an event listener for someone arriving."""
-        if not constraints:
-            constraints = {}
-        if self.properties.get(CONF_TRIGGER_FIRST):
-            constraints['first'] = True
-
         self.listen_event(
             self.someone_arrived,
             'PRESENCE_CHANGE',
             new=self.presence_manager.HomeStates.just_arrived.value,
-            constrain_input_boolean=self.enabled_entity_id,
-            **constraints)
+            auto_constraints=True,
+            constrain_input_boolean=self.enabled_entity_id)
 
     def someone_arrived(
             self, event_name: str, data: dict, kwargs: dict) -> None:
