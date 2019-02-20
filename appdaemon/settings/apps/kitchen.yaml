@@ -9,9 +9,11 @@ bar_cart_on_at_sunset_automation:
   entity_ids:
     switch: switch.bar_cart
   properties:
-    presence_required: true
     schedule_time: sunset
     state: "on"
+  constraints:
+    constraints:
+      constrain_anyone: home,just_arrived
   mode_alterations:
     guest_mode: disable
     vacation_mode: disable

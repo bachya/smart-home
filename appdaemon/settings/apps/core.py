@@ -1,4 +1,5 @@
 """Define generic automation objects and logic."""
+import datetime
 from typing import Callable, Dict, Union  # noqa, pylint: disable=unused-import
 
 import voluptuous as vol
@@ -32,8 +33,10 @@ APP_SCHEMA = vol.Schema({
     vol.Optional(CONF_DEPENDENCIES): cv.ensure_list,
     vol.Optional(CONF_APP): str,
     vol.Optional(CONF_CONSTRAINTS): vol.Schema({
-        vol.Optional(CONF_OPERATOR, default=OPERATOR_ALL): vol.In(OPERATORS),
-        vol.Required(CONF_CONSTRAINTS): dict
+        vol.Optional(CONF_OPERATOR, default=OPERATOR_ALL):
+            vol.In(OPERATORS),
+        vol.Required(CONF_CONSTRAINTS):
+            dict
     }),
     vol.Optional(CONF_ENABLED_CONFIG): vol.Schema({
         vol.Required(CONF_NAME): str,
@@ -110,6 +113,23 @@ class Base(Hass):
         if hasattr(self, 'configure'):
             self.configure()
 
+    def _attach_constraints(
+            self, method: Callable, callback: Callable, *args: list,
+            **kwargs: dict) -> Union[str, list]:
+        """Attach the constraint mechanism to an AppDaemon listener."""
+        if not self.args.get(CONF_CONSTRAINTS):
+            return method(callback, *args, **kwargs)
+
+        constraints = self.args[CONF_CONSTRAINTS][CONF_CONSTRAINTS]
+
+        if self.args[CONF_CONSTRAINTS].get(CONF_OPERATOR) == OPERATOR_ALL:
+            return method(callback, *args, **constraints, **kwargs)
+
+        handles = []  # type: ignore
+        for name, value in constraints.items():
+            method(callback, *args, **{name: value}, **kwargs)
+        return handles
+
     def _constrain_presence(
             self, method: str, value: Union[str, None]) -> bool:
         """Constrain presence in a generic fashion."""
@@ -164,33 +184,14 @@ class Base(Hass):
             actionName=action,
             constrain_input_boolean=self.enabled_entity_id)
 
-    def _attach_constraints_to_listener(
-            self, listener_name: str, callback: Callable, item: str,
-            **kwargs: dict) -> Union[str, list]:
-        """Attach the constraint mechanism to an AppDaemon function."""
-        method = getattr(super(), listener_name)
-
-        if not self.args.get(CONF_CONSTRAINTS):
-            return method(callback, item, **kwargs)
-
-        constraints = self.args[CONF_CONSTRAINTS][CONF_CONSTRAINTS]
-
-        if self.args[CONF_CONSTRAINTS].get(CONF_OPERATOR) == OPERATOR_ALL:
-            return method(callback, item, **constraints, **kwargs)
-
-        handles = []  # type: ignore
-        for name, value in constraints.items():
-            method(callback, item, **{name: value}, **kwargs)
-        return handles
-
     def listen_event(
             self, callback, event=None, auto_constraints=False, **kwargs):
         """Wrap AppDaemon's event listener with the constraint mechanism."""
         if not auto_constraints:
             return super().listen_event(callback, event, **kwargs)
 
-        return self._attach_constraints_to_listener(
-            'listen_event', callback, event, **kwargs)
+        return self._attach_constraints(
+            super().listen_event, callback, event, **kwargs)
 
     def listen_state(
             self, callback, entity=None, auto_constraints=False, **kwargs):
@@ -198,5 +199,44 @@ class Base(Hass):
         if not auto_constraints:
             return super().listen_state(callback, entity, **kwargs)
 
-        return self._attach_constraints_to_listener(
-            'listen_state', callback, entity, **kwargs)
+        return self._attach_constraints(
+            super().listen_state, callback, entity, **kwargs)
+
+    def run_daily(self, callback, start, auto_constraints=False, **kwargs):
+        """Wrap AppDaemon's daily run with the constraint mechanism."""
+        if not auto_constraints:
+            return super().run_daily(callback, start, **kwargs)
+
+        return self._attach_constraints(
+            super().run_daily, callback, start, **kwargs)
+
+    def run_at_sunrise(
+            self, callback, *args, auto_constraints=False, **kwargs):
+        """Wrap AppDaemon's sunrise run with the constraint mechanism."""
+        if not auto_constraints:
+            return super().run_at_sunrise(callback, **kwargs)
+
+        return self._attach_constraints(
+            super().run_at_sunrise, callback, **kwargs)
+
+    def run_at_sunset(
+            self,
+            callback: Callable[..., None],
+            *args: list,
+            auto_constraints=False,
+            **kwargs: dict):
+        """Wrap AppDaemon's sunset run with the constraint mechanism."""
+        if not auto_constraints:
+            return super().run_at_sunset(callback, **kwargs)
+
+        return self._attach_constraints(
+            super().run_at_sunset, callback, **kwargs)
+
+    def run_every(
+            self, callback, start, interval, auto_constraints=False, **kwargs):
+        """Wrap AppDaemon's everday run with the constraint mechanism."""
+        if not auto_constraints:
+            return super().run_every(callback, start, interval, **kwargs)
+
+        return self._attach_constraints(
+            super().run_every, callback, start, interval, **kwargs)

@@ -13,7 +13,6 @@ from const import (
     CONF_TRIGGER_FIRST, THRESHOLD_CLOUDY, TOGGLE_STATES)
 from helpers.scheduler import run_on_days
 
-CONF_PRESENCE_REQUIRED = 'presence_required'
 CONF_RUN_ON_DAYS = 'run_on_days'
 CONF_SCHEDULE_TIME = 'schedule_time'
 CONF_SWITCH = 'switch'
@@ -233,7 +232,6 @@ class ToggleAtTime(BaseSwitch):
             vol.Required(CONF_SCHEDULE_TIME):
                 vol.Any(str, vol.In(SOLAR_EVENTS)),
             vol.Required(CONF_STATE): vol.In(TOGGLE_STATES),
-            vol.Optional(CONF_PRESENCE_REQUIRED): bool,
             vol.Optional(CONF_RUN_ON_DAYS): cv.ensure_list,
         }, extra=vol.ALLOW_EXTRA)
     })
@@ -245,24 +243,23 @@ class ToggleAtTime(BaseSwitch):
             'constrain_input_boolean': self.enabled_entity_id
         }
 
-        if self.properties.get(CONF_PRESENCE_REQUIRED):
-            kwargs['constrain_anyone'] = 'home,just_arrived'
-
         if self.properties[CONF_SCHEDULE_TIME] in SOLAR_EVENTS:
             method = getattr(
                 self, 'run_at_{0}'.format(self.properties[CONF_SCHEDULE_TIME]))
-            method(self.toggle_on_schedule, **kwargs)
+            method(self.toggle_on_schedule, auto_constraints=True, **kwargs)
         else:
             if self.properties.get(CONF_RUN_ON_DAYS):
                 run_on_days(
                     self, self.toggle_on_schedule,
                     self.properties[CONF_RUN_ON_DAYS],
                     self.parse_time(self.properties[CONF_SCHEDULE_TIME]),
+                    auto_constraints=True,
                     **kwargs)
             else:
                 self.run_daily(
                     self.toggle_on_schedule,
                     self.parse_time(self.properties[CONF_SCHEDULE_TIME]),
+                    auto_constraints=True,
                     **kwargs)
 
 
