@@ -75,10 +75,6 @@ fireplace_failsafe_automation:
   icon: mdi:fire
   initial: true
   name: Disable fireplace when away
-garage_camera_auto_night_mode:
-  icon: mdi:weather-sunset-down
-  initial: true
-  name: 'Garage Cam: Auto Night Mode'
 garage_lights_off_after_garage_close_automation:
   icon: mdi:garage
   initial: true
