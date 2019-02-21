@@ -167,14 +167,6 @@ notify_ps4_left_on_automation:
   icon: mdi:playstation
   initial: true
   name: PS4 left on
-notify_when_aarons_keys_missing_automation:
-  icon: mdi:key
-  initial: true
-  name: Notify AMB keys missing
-notify_when_aarons_wallet_missing_automation:
-  icon: mdi:key
-  initial: true
-  name: Notify AMB wallet missing
 notify_when_absent_insecure_automation:
   icon: mdi:lock-open
   initial: true
