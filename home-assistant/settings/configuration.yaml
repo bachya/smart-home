@@ -3,21 +3,14 @@
 homeassistant: !include conf/homeassistant.yaml
 
 # Core Configuration
-config:
+default_config:
 frontend: !include conf/frontend.yaml
-history:
 http: !include conf/http.yaml
-logbook:
 logger: !include conf/logger.yaml
 lovelace:
-map:
 panel_custom: !include conf/panel-custom.yaml
 panel_iframe: !include conf/panel-iframe.yaml
-person:
 recorder: !include conf/recorder.yaml
-system_health:
-updater:
-zeroconf:
 
 # Components:
 cloud: !include_dir_merge_named conf/cloud/
