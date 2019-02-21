@@ -32,6 +32,18 @@ class NotifyDone(Base):
         }, extra=vol.ALLOW_EXTRA),
     })
 
+    def _send_notification(self) -> str:
+        """Send a repeating notification about the washer/dryer being done."""
+        return self.notification_manager.repeat(
+            "Empty it now and you won't have to do it later!",
+            self.properties[CONF_NOTIFICATION_INTERVAL],
+            title='Dishwasher Clean 🍽',
+            when=self.datetime() + timedelta(minutes=15),
+            target='home',
+            data={'push': {
+                'category': 'dishwasher'
+            }})
+
     def configure(self) -> None:
         """Configure."""
         self.listen_ios_event(
@@ -45,6 +57,11 @@ class NotifyDone(Base):
             self.status_changed,
             self.app.entity_ids[CONF_STATUS],
             constrain_input_boolean=self.enabled_entity_id)
+
+        # If AppDaemon is restarted when the washer/dryer is done, start the
+        # notification process immediately:
+        if self.app.state == self.app.States.clean:
+            self._send_notification()
 
     def power_changed(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
@@ -72,15 +89,7 @@ class NotifyDone(Base):
             kwargs: dict) -> None:
         """Deal with changes to the status."""
         if new == self.app.States.clean.value:
-            self.handles[HANDLE_CLEAN] = self.notification_manager.repeat(
-                "Empty it now and you won't have to do it later!",
-                self.properties[CONF_NOTIFICATION_INTERVAL],
-                title='Dishwasher Clean 🍽',
-                when=self.datetime() + timedelta(minutes=15),
-                target='home',
-                data={'push': {
-                    'category': 'dishwasher'
-                }})
+            self.handles[HANDLE_CLEAN] = self._send_notification()
         elif old == self.app.States.clean.value:
             if HANDLE_CLEAN in self.handles:
                 self.handles.pop(HANDLE_CLEAN)()  # type: ignore
