@@ -211,6 +211,9 @@ powder_room_fan_auto_turn_on_automation:
   icon: mdi:fan
   initial: true
   name: Turn on if turned off
+reading_lamp_cloudy_morning_automation:
+  icon: mdi:weather-cloudy
+  name: Turn on with cloudy mornings
 subaru_legacy_notify_eta_automation:
   icon: mdi:car
   initial: true

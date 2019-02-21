@@ -141,3 +141,25 @@ powder_room_fan_auto_turn_on_automation:
     name: Turn on if turned off
     icon: "mdi:fan"
     initial: true
+
+reading_lamp_cloudy_morning_automation:
+  module: switches
+  class: ToggleAtTime
+  dependencies:
+    - guest_mode
+    - vacation_mode
+  entity_ids:
+    switch: switch.reading_lamp
+  properties:
+    schedule_time: sunrise
+    state: "on"
+  constraints:
+    constraints:
+      constrain_cloudy: true
+  mode_alterations:
+    guest_mode: disable
+    vacation_mode: disable
+  enabled_config:
+    name: Turn on with cloudy mornings
+    icon: mdi:weather-cloudy
+    initial: true
