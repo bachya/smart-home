@@ -95,11 +95,9 @@ class Base(Hass):
 
         # Register any "mode alterations" for this automation – for example,
         # perhaps it should be disabled when Vacation Mode is enabled:
-        mode_alterations = self.args.get('mode_alterations', {})
-        if mode_alterations:
-            for mode, value in mode_alterations.items():
-                mode_app = getattr(self, mode)
-                mode_app.register_enabled_entity(self.enabled_entity_id, value)
+        for mode, value in self.args.get('mode_alterations', {}).items():
+            mode_app = getattr(self, mode)
+            mode_app.register_enabled_entity(self.enabled_entity_id, value)
 
         # Register custom constraints:
         self.register_constraint('constrain_anyone')
