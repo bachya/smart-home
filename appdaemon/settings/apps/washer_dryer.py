@@ -61,7 +61,10 @@ class NotifyDone(Base):
         # If AppDaemon is restarted when the washer/dryer is done, start the
         # notification process immediately:
         if self.app.state == self.app.States.clean:
-            self._send_notification()
+            if HANDLE_CLEAN in self.handles:
+                handle = self.handles.pop(HANDLE_CLEAN)
+                handle()
+            self.handles[HANDLE_CLEAN] = self._send_notification()
 
     def power_changed(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,

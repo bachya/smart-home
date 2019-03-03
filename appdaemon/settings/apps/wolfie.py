@@ -124,7 +124,10 @@ class ScheduledCycle(Base):
         # If AppDaemon is restarted when the washer/dryer is done, start the
         # notification process immediately:
         if self.app.bin_state == self.app.BinStates.full:
-            self._send_notification()
+            if HANDLE_BIN in self.handles:
+                handle = self.handles.pop(HANDLE_BIN)
+                handle()
+            self.handles[HANDLE_BIN] = self._send_notification()
 
     def _send_notification(self) -> str:
         """Send a notification about bin status."""
