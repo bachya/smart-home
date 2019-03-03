@@ -32,6 +32,12 @@ CONF_NOTIFIERS = 'notifiers'
 CONF_NOTIFICATION_INTERVAL = 'notification_interval'
 CONF_NOTIFICATION_TARGET = 'notification_target'
 
+# Comparison-related config keys:
+CONF_ABOVE = 'above'
+CONF_BELOW = 'below'
+CONF_EQUAL_TO = 'equal_to'
+COMPARITORS = (CONF_ABOVE, CONF_BELOW, CONF_EQUAL_TO)
+
 # Collections of valid inputs:
 OPERATOR_ALL = 'all'
 OPERATOR_ANY = 'any'

@@ -8,9 +8,10 @@ import voluptuous as vol
 import helpers.config_validation as cv
 from core import APP_SCHEMA, Base
 from const import (
-    BLACKOUT_END, BLACKOUT_START, CONF_DELAY, CONF_DURATION, CONF_END_TIME,
-    CONF_ENTITY_IDS, CONF_PROPERTIES, CONF_START_TIME, CONF_STATE,
-    CONF_TRIGGER_FIRST, THRESHOLD_CLOUDY, TOGGLE_STATES)
+    BLACKOUT_END, BLACKOUT_START, CONF_ABOVE, CONF_BELOW, CONF_DELAY,
+    CONF_DURATION, CONF_END_TIME, CONF_ENTITY_IDS, CONF_PROPERTIES,
+    CONF_START_TIME, CONF_STATE, CONF_TRIGGER_FIRST, THRESHOLD_CLOUDY,
+    TOGGLE_STATES)
 from helpers.scheduler import run_on_days
 
 CONF_RUN_ON_DAYS = 'run_on_days'
@@ -261,6 +262,51 @@ class ToggleAtTime(BaseSwitch):
                     self.parse_time(self.properties[CONF_SCHEDULE_TIME]),
                     auto_constraints=True,
                     **kwargs)
+
+
+class ToggleNumericThreshold(BaseSwitch):
+    """Define a feature to toggle the switch above/below a threshold."""
+
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_ENTITY_IDS:
+            vol.Schema({
+                vol.Required(CONF_SWITCH): cv.entity_id,
+                vol.Required(CONF_TARGET): cv.entity_id,
+            }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES:
+            vol.All(
+                vol.Schema({
+                    vol.Required(CONF_STATE): vol.In(TOGGLE_STATES),
+                    vol.Optional(CONF_ABOVE): int,
+                    vol.Optional(CONF_BELOW): int,
+                }, extra=vol.ALLOW_EXTRA),
+                cv.has_at_least_one_key(CONF_ABOVE, CONF_BELOW)),
+
+    })
+
+    def configure(self) -> None:
+        """Configure."""
+        self.listen_state(
+            self.target_state_changed,
+            self.entity_ids[CONF_TARGET],
+            auto_constraints=True,
+            constrain_input_boolean=self.enabled_entity_id)
+
+    def target_state_changed(
+            self, entity: Union[str, dict], attribute: str, old: str, new: str,
+            kwargs: dict) -> None:
+        """Toggle the switch if outside the threshold."""
+        new_value = float(new)
+
+        above = self.properties.get(CONF_ABOVE)
+        below = self.properties.get(CONF_BELOW)
+
+        if above and new_value >= above:
+            self.toggle(state=self.properties[CONF_STATE])
+        elif below and new_value < below:
+            self.toggle(state=self.properties[CONF_STATE])
+        else:
+            self.toggle(opposite_of=self.properties[CONF_STATE])
 
 
 class ToggleOnInterval(BaseSwitch):
