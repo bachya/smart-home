@@ -1,10 +1,4 @@
 ---
-apple_tv:
-  - host: apple-tv-1.phil.lan
-    login_id: !secret basement_apple_tv_id
-    credentials: !secret basement_apple_tv_credentials
-    name: Basement Apple TV
-
 remote:
   - platform: harmony
     name: Basement TV
