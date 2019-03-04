@@ -18,9 +18,3 @@ notify_bad_aqi_automation:
     name: Bad AQI notifications
     icon: mdi:weather-windy
     initial: true
-
-update_uv_when_sunny_automation:
-  module: health
-  class: UpdateUvWhenSunny
-  properties:
-    update_interval: 1800

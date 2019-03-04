@@ -112,31 +112,3 @@ class NotifyBadAqi(Base):
                 title='Better AQI 😅',
                 target='home')
             self.notification_sent = True
-
-
-class UpdateUvWhenSunny(Base):
-    """Define a feature to update OpenUV data when the sun is up."""
-
-    APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_PROPERTIES: vol.Schema({
-            vol.Required(CONF_UPDATE_INTERVAL): int,
-        }, extra=vol.ALLOW_EXTRA),
-    })
-
-    def configure(self) -> None:
-        """Configure."""
-        self.run_every(
-            self.update_data,
-            self.datetime(),
-            self.properties[CONF_UPDATE_INTERVAL],
-            constrain_sun='up')
-
-    def update_data(self, kwargs: dict) -> None:
-        """Update sensor value."""
-        from requests.exceptions import HTTPError
-
-        try:
-            self.call_service('openuv/update_data')
-        except HTTPError as err:
-            self.error(
-                'Error while updating OpenUV: {0}'.format(err), level='ERROR')
