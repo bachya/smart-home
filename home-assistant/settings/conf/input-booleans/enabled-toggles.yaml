@@ -103,10 +103,6 @@ master_bathroom_fan_double_tap_timer_automation:
   icon: mdi:timer
   initial: true
   name: 'Bathroom: double tap 10-minute timer'
-master_bathroom_fan_on_high_humidity_automation:
-  icon: mdi:fan
-  initial: true
-  name: 'Bathroom: Fan on high humidity'
 master_bathroom_fan_sleep_timer_automation:
   icon: mdi:sleep
   initial: true

@@ -47,25 +47,6 @@ master_bathroom_fan_double_tap_timer_automation:
     icon: mdi:timer
     initial: true
 
-master_bathroom_fan_on_high_humidity_automation:
-  module: switches
-  class: ToggleNumericThreshold
-  dependencies:
-    - presence_manager
-  entity_ids:
-    switch: switch.master_bathroom_fan
-    target: sensor.climate_2_humidity
-  properties:
-    above: 20
-    state: "on"
-  constraints:
-    constraints:
-      constrain_in_blackout: false
-  enabled_config:
-    name: "Bathroom: Fan on high humidity"
-    icon: mdi:fan
-    initial: true
-
 master_bathroom_fan_sleep_timer_automation:
   module: switches
   class: SleepTimer
