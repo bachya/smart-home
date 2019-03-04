@@ -1,7 +1,9 @@
 ci:
 	pipenv run gixy nginx/settings/nginx/*.conf nginx/settings/nginx/conf.d/*
+clean:
+	pipenv --rm
 init:
-	pip install --upgrade pip pipenv
+	pip3 install --upgrade pip pipenv
 	pipenv lock
 	pipenv install --dev
 lint:
