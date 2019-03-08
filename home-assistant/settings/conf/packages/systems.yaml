@@ -57,8 +57,8 @@ sensor:
       curl -L
       -H "User-Agent: Home Assistant"
       -H "Content-Type: application/json"
-      https://api.github.com/repos/shadow-1/yi-hack-v3/releases/latest
-    value_template: '{{ value_json.tag_name }}'
+      https://api.github.com/repos/TheCrypt0/yi-hack-v4/releases/latest
+    value_template: '{{ value_json.tag_name[1:] }}'
     scan_interval: 1800
 
   - platform: version
@@ -71,8 +71,7 @@ sensor:
     name: Yi Hack Installed
     command: >
       ssh -i /config/id_rsa -o StrictHostKeyChecking=no
-      root@kitchen-camera.phil.lan
-      cat /home/yi-hack-v3/.hackinfo | grep VERSION | awk -F= \'{ print $2 }\'
+      root@guest-bedroom-camera.phil.lan cat version
 
   - platform: version
     name: HASS Installed
