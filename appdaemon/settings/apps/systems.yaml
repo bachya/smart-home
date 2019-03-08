@@ -43,10 +43,10 @@ notify_ps4_left_on_automation:
     - presence_manager
     - slack_app_home_assistant
   entity_ids:
-    entity: switch.ps4
+    entity: media_player.playstation_4
   properties:
     duration: 43200
-    state: "on"
+    state: "idle"
   enabled_config:
     name: PS4 left on
     icon: mdi:playstation
