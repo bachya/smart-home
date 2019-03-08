@@ -22,7 +22,6 @@ alexa:
       - switch.powder_room_fan
       - switch.program_evening
       - switch.program_morning
-      - switch.ps4
       - switch.wolfie_cycle
       - switch.zone_flower_box
       - switch.zone_landscaping
@@ -69,8 +68,6 @@ alexa:
       name: Evening Program
     switch.program_morning:
       name: Morning Program
-    switch.ps4:
-      name: PS4 (Playstation 4)
     switch.wolfie_cycle:
       name: Wolfie
     switch.zone_flower_box:

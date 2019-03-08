@@ -54,11 +54,6 @@ services:
       - glances-config:/etc/glances:ro
 
   hass:
-    build:
-      context: ./home-assistant/docker
-      args:
-        ps4waker_version: 1.6.0
-        hass_version: 0.88.2
     container_name: hass
     depends_on:
       - glances
@@ -66,7 +61,7 @@ services:
       - mysql
     devices:
       - "/dev/zwave:/dev/zwave"
-    image: bachya/home-assistant
+    image: homeassistant/home-assistant:0.89.0
     network_mode: "host"
     restart: unless-stopped
     volumes:

@@ -25,7 +25,6 @@ google_actions:
       - switch.powder_room_fan
       - switch.program_evening
       - switch.program_morning
-      - switch.ps4
       - switch.wolfie_cycle
       - switch.zone_flower_box
       - switch.zone_landscaping
@@ -88,11 +87,6 @@ google_actions:
       room: Backyard
     switch.program_morning:
       room: Backyard
-    switch.ps4:
-      name: PS4
-      room: Basement
-      aliases:
-        - Playstation 4
     switch.wolfie_cycle:
       room: Laundry area
     switch.zone_flower_box:

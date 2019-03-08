@@ -142,8 +142,6 @@ switch.program_evening:
   icon: mdi:water
 switch.program_evening_no_planter:
   icon: mdi:water
-switch.ps4:
-  icon: mdi:playstation
 switch.ravenclaw_hass_elder_bachs:
   friendly_name: Home Assistant
   icon: mdi:home-assistant
