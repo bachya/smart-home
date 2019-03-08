@@ -16,6 +16,7 @@ homekit:
       - alarm_control_panel
       - light
       - lock
+      - media_player
     include_entities:
       - climate.thermostat
       - cover.garage_door

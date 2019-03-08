@@ -31,7 +31,6 @@ alexa:
       - climate
       - group
       - input_boolean
-      - media_player
       - script
       - sensor
       - switch
