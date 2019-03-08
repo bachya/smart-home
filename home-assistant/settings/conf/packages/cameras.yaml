@@ -10,14 +10,11 @@ camera:
     name: Garage
     input: -rtsp_transport tcp -i rtsp://garage-camera.myserver.com:8554/unicast
 
-  - platform: nest
+  - platform: ffmpeg
+    name: Kitchen Camera
+    input: -rtsp_transport tcp -i rtsp://kitchen-camera.phil.lan/ch0_0.h264
 
-  - platform: yi
-    name: Kitchen
-    host: kitchen-camera.myserver.com
-    username: !secret yi_username
-    password: !secret yi_password
-    ffmpeg_arguments: -s 800x450
+  - platform: nest
 
   - platform: yi
     name: Guest Bedroom
