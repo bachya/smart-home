@@ -14,14 +14,11 @@ camera:
     name: Kitchen Camera
     input: -rtsp_transport tcp -i rtsp://kitchen-camera.phil.lan/ch0_0.h264
 
-  - platform: nest
+  - platform: ffmpeg
+    name: Guest Bedroom Camera
+    input: -rtsp_transport tcp -i rtsp://guest-bedroom-camera.phil.lan/ch0_0.h264
 
-  - platform: yi
-    name: Guest Bedroom
-    host: guest-bedroom-camera.myserver.com
-    username: !secret yi_username
-    password: !secret yi_password
-    ffmpeg_arguments: -s 800x450
+  - platform: nest
 
 sensor:
   - platform: mqtt
