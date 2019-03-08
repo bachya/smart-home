@@ -85,7 +85,7 @@ class LeftInState(Base):
         }, extra=vol.ALLOW_EXTRA),
         CONF_PROPERTIES: vol.Schema({
             vol.Required(CONF_DURATION): int,
-            vol.Required(CONF_STATE): vol.In(TOGGLE_STATES),
+            vol.Required(CONF_STATE): str,
         }, extra=vol.ALLOW_EXTRA),
     })
 
