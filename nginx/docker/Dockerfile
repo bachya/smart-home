@@ -1,4 +1,4 @@
-FROM alpine:3.6
+FROM alpine:3.9
 
 ARG geoip_version
 ARG nginx_version
