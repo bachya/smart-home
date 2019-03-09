@@ -1,7 +1,8 @@
 FROM alpine:3.9
 
-ARG geoip_version
+ARG libmaxminddb_version
 ARG nginx_version
+ARG ngx_http_geoip2_module_version
 
 VOLUME /etc/nginx
 
@@ -18,6 +19,7 @@ RUN apk update \
     && apk add --update \
       fail2ban \
       openssl \
+      perl \
       pcre \
       rsyslog \
       supervisor \
@@ -25,42 +27,44 @@ RUN apk update \
       zlib \
     && mkdir /tmp/src \
     && cd /tmp/src \
-    && wget https://github.com/maxmind/geoip-api-c/releases/download/v${geoip_version}/GeoIP-${geoip_version}.tar.gz \
-    && tar -zxvf GeoIP-${geoip_version}.tar.gz \
-    && cd /tmp/src/GeoIP-${geoip_version} \
+    && wget https://github.com/maxmind/libmaxminddb/releases/download/${libmaxminddb_version}/libmaxminddb-${libmaxminddb_version}.tar.gz \
+    && tar xzvf libmaxminddb-${libmaxminddb_version}.tar.gz \
+    && cd /tmp/src/libmaxminddb-${libmaxminddb_version} \
     && ./configure \
     && make \
     && make check \
     && make install \
+    && ldconfig /usr/local/lib \
     && cd /tmp/src \
-    && wget -N http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz \
-    && gunzip GeoIP.dat.gz \
+    && wget -N https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz \
+    && tar xzvf GeoLite2-Country.tar.gz --strip-components=1 \
     && mkdir -p /usr/local/share/GeoIP/ \
-    && mv GeoIP.dat /usr/local/share/GeoIP/ \
+    && mv GeoLite2-Country.mmdb /usr/local/share/GeoIP/ \
+    && wget https://github.com/leev/ngx_http_geoip2_module/archive/${ngx_http_geoip2_module_version}.tar.gz \
+    && tar xzvf ${ngx_http_geoip2_module_version}.tar.gz \
     && wget http://nginx.org/download/nginx-${nginx_version}.tar.gz \
     && tar -zxvf nginx-${nginx_version}.tar.gz \
     && cd /tmp/src/nginx-${nginx_version} \
     && ./configure \
+      --add-module=/tmp/src/ngx_http_geoip2_module-${ngx_http_geoip2_module_version} \
+      --conf-path=/etc/nginx/nginx.conf \
+      --error-log-path=/var/log/nginx/error.log \
+      --http-log-path=/var/log/nginx/access.log \
+      --lock-path=/run/nginx.lock \
+      --pid-path=/run/nginx.pid \
       --prefix=/etc/nginx \
       --sbin-path=/usr/local/sbin/nginx \
-      --conf-path=/etc/nginx/nginx.conf \
-      --pid-path=/run/nginx.pid \
-      --lock-path=/run/nginx.lock \
-      --http-log-path=/var/log/nginx/access.log \
-      --error-log-path=/var/log/nginx/error.log \
-      --with-pcre-jit \
+      --with-http_auth_request_module \
+      --with-http_gzip_static_module \
       --with-http_ssl_module \
+      --with-http_stub_status_module \
+      --with-http_v2_module \
+      --with-pcre-jit \
       --with-stream \
       --with-stream_ssl_module \
-      --with-http_stub_status_module \
-      --with-http_gzip_static_module \
-      --with-http_v2_module \
-      --with-http_auth_request_module \
-      --with-http_geoip_module \
     && make \
     && make install \
     && apk del build-dependencies \
-    && rm /usr/local/lib/libGeoIP.a \
     && rm -rf /tmp/src \
     && rm -rf /var/cache/apk/*
 
@@ -70,7 +74,6 @@ RUN ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime \
     && echo "$TZ" > /etc/timezone
 
 # Copy configuration files:
-RUN mkdir /var/run/fail2ban
 COPY conf/supervisor/supervisor.conf /etc/supervisor.conf
 
 # Create a www-data user and group:
