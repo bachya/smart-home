@@ -8,7 +8,8 @@ VOLUME /etc/nginx
 
 # Update, install, and clean up packages all in one step:
 RUN apk update \
-    && apk add --update --virtual build-dependencies \
+    && apk add --no-cache --virtual build-dependencies \
+      apk-cron \
       build-base \
       ca-certificates \
       linux-headers \
@@ -26,24 +27,22 @@ RUN apk update \
       tzdata \
       zlib \
     && mkdir /tmp/src \
-    && cd /tmp/src \
-    && wget https://github.com/maxmind/libmaxminddb/releases/download/${libmaxminddb_version}/libmaxminddb-${libmaxminddb_version}.tar.gz \
-    && tar xzvf libmaxminddb-${libmaxminddb_version}.tar.gz \
+    && wget -N -P /tmp/src https://github.com/maxmind/libmaxminddb/releases/download/${libmaxminddb_version}/libmaxminddb-${libmaxminddb_version}.tar.gz \
+    && tar xzvf /tmp/src/libmaxminddb-${libmaxminddb_version}.tar.gz -C /tmp/src \
     && cd /tmp/src/libmaxminddb-${libmaxminddb_version} \
     && ./configure \
     && make \
     && make check \
     && make install \
     && ldconfig /usr/local/lib \
-    && cd /tmp/src \
-    && wget -N https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz \
-    && tar xzvf GeoLite2-Country.tar.gz --strip-components=1 \
     && mkdir -p /usr/local/share/GeoIP/ \
-    && mv GeoLite2-Country.mmdb /usr/local/share/GeoIP/ \
-    && wget https://github.com/leev/ngx_http_geoip2_module/archive/${ngx_http_geoip2_module_version}.tar.gz \
-    && tar xzvf ${ngx_http_geoip2_module_version}.tar.gz \
-    && wget http://nginx.org/download/nginx-${nginx_version}.tar.gz \
-    && tar -zxvf nginx-${nginx_version}.tar.gz \
+    && wget -N -P /tmp/src https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz \
+    && tar xzvf /tmp/src/GeoLite2-Country.tar.gz -C /tmp/src --strip-components=1 \
+    && mv /tmp/src/GeoLite2-Country.mmdb /usr/local/share/GeoIP \
+    && wget -N -P /tmp/src https://github.com/leev/ngx_http_geoip2_module/archive/${ngx_http_geoip2_module_version}.tar.gz \
+    && tar xzvf /tmp/src/${ngx_http_geoip2_module_version}.tar.gz -C /tmp/src \
+    && wget -N -P /tmp/src http://nginx.org/download/nginx-${nginx_version}.tar.gz \
+    && tar -zxvf /tmp/src/nginx-${nginx_version}.tar.gz -C /tmp/src \
     && cd /tmp/src/nginx-${nginx_version} \
     && ./configure \
       --add-module=/tmp/src/ngx_http_geoip2_module-${ngx_http_geoip2_module_version} \
@@ -73,17 +72,17 @@ ENV TZ=America/Denver
 RUN ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime \
     && echo "$TZ" > /etc/timezone
 
-# Copy configuration files:
-COPY conf/supervisor/supervisor.conf /etc/supervisor.conf
-
 # Create a www-data user and group:
 RUN set -x ; \
     addgroup -g 82 -S www-data ; \
     adduser -u 82 -D -S -G www-data www-data && exit 0 ; exit 1
 
-# Set up necessary NGINX directories, configs, etc.:
+# Set up configuration structures:
+COPY conf/supervisor/supervisor.conf /etc/supervisor.conf
+COPY conf/crontab.txt /crontab.txt
+COPY geolite-download.sh /geolite-download.sh
 RUN mkdir -p /var/run/nginx \
     && mkdir -p /var/lib/nginx \
-    && chown -R www-data:www-data /var/lib/nginx
-
-WORKDIR /etc/nginx
+    && chown -R www-data:www-data /var/lib/nginx \
+    && chmod 755 /geolite-download.sh \
+    && /usr/bin/crontab /crontab.txt

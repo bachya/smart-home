@@ -1,0 +1,3 @@
+# Download the latest GeoLite DB on the first Wednesday
+# (since the release occurs on each first Tuesday):
+5 9 * * 3 [ %(date +\%d) -le 7 ] && /geolite-download.sh
