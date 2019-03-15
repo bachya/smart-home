@@ -121,25 +121,6 @@ class ScheduledCycle(Base):
                 toggle,
                 constrain_input_boolean=self.enabled_entity_id)
 
-        # If AppDaemon is restarted when the washer/dryer is done, start the
-        # notification process immediately:
-        if self.app.bin_state == self.app.BinStates.full:
-            if HANDLE_BIN in self.handles:
-                handle = self.handles.pop(HANDLE_BIN)
-                handle()
-            self.handles[HANDLE_BIN] = self._send_notification()
-
-    def _send_notification(self) -> str:
-        """Send a notification about bin status."""
-        return self.notification_manager.repeat(
-            "Empty him now and you won't have to do it later!",
-            self.properties[CONF_NOTIFICATION_INTERVAL_FULL],
-            title='Wolfie Full 🤖',
-            target='home',
-            data={'push': {
-                'category': 'wolfie'
-            }})
-
     def alarm_changed(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to 'ALARM_CHANGE' events."""
         state = self.app.States(self.get_state(self.app.entity_ids['status']))
@@ -191,7 +172,14 @@ class ScheduledCycle(Base):
             kwargs: dict) -> None:
         """Listen for changes in bin status."""
         if new == self.app.BinStates.full.value:
-            self.handles[HANDLE_BIN] = self._send_notification()
+            self.handles[HANDLE_BIN] = self.notification_manager.repeat(
+                "Empty him now and you won't have to do it later!",
+                self.properties[CONF_NOTIFICATION_INTERVAL_FULL],
+                title='Wolfie Full 🤖',
+                target='home',
+                data={'push': {
+                    'category': 'wolfie'
+                }})
         elif new == self.app.BinStates.empty.value:
             if HANDLE_BIN in self.handles:
                 self.handles.pop(HANDLE_BIN)()  # type: ignore
