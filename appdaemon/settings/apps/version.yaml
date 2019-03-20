@@ -85,55 +85,6 @@ new_portainer_version_automation:
     icon: mdi:home-assistant
     initial: true
 
-new_tasmoadmin_version_automation:
-  module: version
-  class: NewPortainerVersionNotification
-  dependencies:
-    - notification_manager
-    - presence_manager
-  entity_ids:
-    available: sensor.tasmoadmin_available
-    installed: sensor.tasmoadmin_installed
-  properties:
-    app_name: TasmoAdmin
-    created_entity_id: sensor.tasmoadmin_installed
-    endpoint_id: 1
-    friendly_name: TasmoAdmin Installed
-    icon: mdi:lightbulb-on
-    image_name: raymondmm/tasmoadmin
-    update_interval: 300
-  enabled_config:
-    toggle_name: notify_of_new_versions
-    name: Notify of new versions
-    icon: mdi:home-assistant
-    initial: true
-
-new_tasmota_version_automation:
-  module: version
-  class: NewTasmotaVersionNotification
-  dependencies:
-    - notification_manager
-    - presence_manager
-  entity_ids:
-    available: sensor.tasmota_available
-    installed: sensor.lowest_tasmota_installed
-  properties:
-    app_name: Tasmota
-    created_entity_id: sensor.lowest_tasmota_installed
-    friendly_name: Lowest Tasmota Installed
-    icon: mdi:lightbulb-on
-    tasmota_hosts:
-      - climate-sensor-2.phil.iot
-      - rf-bridge.phil.iot
-      - salt-lamp-1.phil.iot
-      - salt-lamp-2.phil.iot
-    update_interval: 300
-  enabled_config:
-    toggle_name: notify_of_new_versions
-    name: Notify of new versions
-    icon: mdi:home-assistant
-    initial: true
-
 new_yi_hack_version_automation:
   module: version
   class: NewVersionNotification

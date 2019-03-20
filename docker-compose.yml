@@ -161,14 +161,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer-config:/data
 
-  tasmoadmin:
-    container_name: tasmoadmin
-    image: raymondmm/tasmoadmin:v1.6.0
-    restart: unless-stopped
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - tasmoadmin-config:/data
-
 volumes:
 
   amazon-dash-config:
@@ -180,4 +172,3 @@ volumes:
   mosquitto-data:
   portainer-config:
   shared:
-  tasmoadmin-config:

@@ -31,9 +31,5 @@
   icon: mdi:wifi
 "sensor.portainer_*":
   icon: mdi:server
-"sensor.tasmoadmin_*":
-  icon: mdi:lightbulb-on
-"sensor.tasmota_*":
-  icon: mdi:lightbulb-on
 "sensor.yi_hack_*":
   icon: mdi:cctv
