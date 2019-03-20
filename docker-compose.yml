@@ -136,7 +136,11 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /etc/localtime:/etc/localtime:ro
       - /etc/ssl:/etc/ssl:ro
-      - fail2ban-config:/etc/fail2ban
+      - /var/lib/docker/volumes/hub_fail2ban-config/_data/filter.d/nginx-4xx.conf:/etc/fail2ban/filter.d/nginx-4xx.conf
+      - /var/lib/docker/volumes/hub_fail2ban-config/_data/filter.d/nginx-noproxy.conf:/etc/fail2ban/filter.d/nginx-noproxy.conf
+      - /var/lib/docker/volumes/hub_fail2ban-config/_data/filter.d/nginx-noscript.conf:/etc/fail2ban/filter.d/nginx-noscript.conf
+      - /var/lib/docker/volumes/hub_fail2ban-config/_data/filter.d/nginx-req-limit.conf:/etc/fail2ban/filter.d/nginx-req-limit.conf
+      - /var/lib/docker/volumes/hub_fail2ban-config/_data/jail.d/nginx.conf:/etc/fail2ban/jail.d/nginx.conf
       - nginx-config:/etc/nginx
 
   portainer:

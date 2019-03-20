@@ -2,32 +2,3 @@
 ignoreip = 172.16.10.0/24
 bantime = 172800
 maxretry = 2
-
-[nginx-4xx]
-enabled = true
-action = iptables-multiport[name=4xxResponse, port="http,https"]
-filter = nginx-4xx
-logpath = /var/log/nginx/*access*.log
-backend = auto
-
-[nginx-noscript]
-enabled = true
-action = iptables-multiport[name=NoScript, port="http,https"]
-filter = nginx-noscript
-logpath = /var/log/nginx/*access*.log
-backend = auto
-
-[nginx-noproxy]
-enabled = true
-action = iptables-multiport[name=NoProxy, port="http,https"]
-filter = nginx-noproxy
-logpath = /var/log/nginx*/*access*.log
-maxretry = 0
-backend = auto
-
-[nginx-req-limit]
-enabled = true
-action = iptables-multiport[name=ReqLimit, port="http,https"]
-filter = nginx-req-limit
-logpath = /var/log/nginx/*error*.log
-backend = auto
