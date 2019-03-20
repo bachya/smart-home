@@ -78,13 +78,13 @@ RUN set -x ; \
     adduser -u 82 -D -S -G www-data www-data && exit 0 ; exit 1
 
 # Set up configuration structures:
-COPY geolite-download.sh /geolite-download.sh
+COPY bin/geolite-download /usr/local/bin/geolite-download
 COPY bin/fail2ban-mqtt-notifier /usr/local/bin/fail2ban-mqtt-notifier
 COPY conf/supervisor/supervisor.conf /etc/supervisor.conf
 COPY conf/crontab.txt /crontab.txt
 RUN mkdir -p /var/run/nginx \
     && mkdir -p /var/lib/nginx \
     && chown -R www-data:www-data /var/lib/nginx \
-    && chmod 755 /geolite-download.sh \
     && chmod 755 /usr/local/bin/fail2ban-mqtt-notifier \
+    && chmod 755 /usr/local/bin/geolite-download \
     && /usr/bin/crontab /crontab.txt
