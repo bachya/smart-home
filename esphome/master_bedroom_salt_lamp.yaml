@@ -1,0 +1,26 @@
+---
+api:
+  password: "password"
+
+esphome:
+  name: master_bedroom_salt_lamp
+  platform: ESP8266
+  board: esp01_1m
+
+logger:
+
+ota:
+
+switch:
+  - platform: gpio
+    name: Master Bedroom Salt Lamp
+    pin: GPIO12
+    id: relay
+
+wifi:
+  ssid: "SSID"
+  password: "password"
+  manual_ip:
+    static_ip: 172.16.11.15
+    gateway: 172.16.11.1
+    subnet: 255.255.255.0

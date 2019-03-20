@@ -27,19 +27,6 @@ input_number:
     unit_of_measurement: minutes
     icon: mdi:timer
 
-light:
-  - platform: mqtt
-    name: "Salt Lamp (Master Bedroom)"
-    state_topic: "stat/salt-lamp-1/POWER1"
-    command_topic: "cmnd/salt-lamp-1/POWER1"
-    availability_topic: "tele/salt-lamp-1/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    retain: false
-
 sensor:
   - platform: mqtt
     name: "Climate 2 Temperature"

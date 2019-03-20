@@ -43,7 +43,7 @@ alexa:
     group.outdoor_lights:
       name: Outdoor Lights
       display_categories: LIGHT
-    light.salt_lamp_master_bedroom:
+    switch.master_bedroom_salt_lamp:
       name: Master Bedroom Salt Lamp
       display_categories: LIGHT
     switch.office_salt_lamp:

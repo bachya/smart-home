@@ -1,4 +1,4 @@
 ---
 entities:
-  - light.salt_lamp_master_bedroom
+  - switch.master_bedroom_salt_lamp
   - switch.office_salt_lamp

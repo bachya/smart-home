@@ -5,7 +5,7 @@ master_bedroom_lights_sleep_timer_automation:
   dependencies:
     - presence_manager
   entity_ids:
-    switch: light.salt_lamp_master_bedroom
+    switch: switch.master_bedroom_salt_lamp
     timer_slider: input_number.master_bedroom_salt_lamp_timer
   enabled_config:
     name: Enable sleep timer
@@ -20,7 +20,7 @@ master_bedroom_lights_on_at_sunset_automation:
     - presence_manager
     - vacation_mode
   entity_ids:
-    switch: light.salt_lamp_master_bedroom
+    switch: switch.master_bedroom_salt_lamp
   properties:
     schedule_time: sunset
     state: "on"

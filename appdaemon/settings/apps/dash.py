@@ -96,9 +96,9 @@ class DashButton(Base):
         'Toggle All Salt Lamps': (
             ToggleEntity, {
                 'entities': [
-                    'switch.office_salt_lamp', 'light.salt_lamp_master_bedroom'
+                    'switch.office_salt_lamp', 'switch.master_bedroom_salt_lamp'
                 ],
-                'master': 'light.salt_lamp_master_bedroom'
+                'master': 'switch.master_bedroom_salt_lamp'
             }),
         'Toggle Christmas Tree': (
             ToggleEntity, {
