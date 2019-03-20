@@ -133,15 +133,22 @@ services:
       - "443:443/tcp"
     restart: unless-stopped
     volumes:
+      - ./nginx/settings/fail2ban/filter.d/nginx-4xx.conf:/etc/fail2ban/filter.d/nginx-4xx.conf
+      - ./nginx/settings/fail2ban/filter.d/nginx-noproxy.conf:/etc/fail2ban/filter.d/nginx-noproxy.conf
+      - ./nginx/settings/fail2ban/filter.d/nginx-noscript.conf:/etc/fail2ban/filter.d/nginx-noscript.conf
+      - ./nginx/settings/fail2ban/filter.d/nginx-req-limit.conf:/etc/fail2ban/filter.d/nginx-req-limit.conf
+      - ./nginx/settings/fail2ban/jail.d/nginx.conf:/etc/fail2ban/jail.d/nginx.conf
+      - ./nginx/settings/nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/settings/nginx/dhparams.pem:/etc/nginx/dhparams.pem
+      - ./nginx/settings/nginx/geoip.rules:/etc/nginx/geoip.rules
+      - ./nginx/settings/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/settings/nginx/proxy.conf:/etc/nginx/proxy.conf
+      - ./nginx/settings/nginx/security.conf:/etc/nginx/security.conf
+      - ./nginx/settings/nginx/ssl.conf:/etc/nginx/ssl.conf
+      - ./nginx/settings/nginx/useragents.rules:/etc/nginx/useragents.rules
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /etc/localtime:/etc/localtime:ro
       - /etc/ssl:/etc/ssl:ro
-      - /var/lib/docker/volumes/hub_fail2ban-config/_data/filter.d/nginx-4xx.conf:/etc/fail2ban/filter.d/nginx-4xx.conf
-      - /var/lib/docker/volumes/hub_fail2ban-config/_data/filter.d/nginx-noproxy.conf:/etc/fail2ban/filter.d/nginx-noproxy.conf
-      - /var/lib/docker/volumes/hub_fail2ban-config/_data/filter.d/nginx-noscript.conf:/etc/fail2ban/filter.d/nginx-noscript.conf
-      - /var/lib/docker/volumes/hub_fail2ban-config/_data/filter.d/nginx-req-limit.conf:/etc/fail2ban/filter.d/nginx-req-limit.conf
-      - /var/lib/docker/volumes/hub_fail2ban-config/_data/jail.d/nginx.conf:/etc/fail2ban/jail.d/nginx.conf
-      - nginx-config:/etc/nginx
 
   portainer:
     container_name: portainer
@@ -166,13 +173,11 @@ volumes:
 
   amazon-dash-config:
   appdaemon-config:
-  fail2ban-config:
   glances-config:
   hass-config:
   jupyterlab-config:
   mosquitto-config:
   mosquitto-data:
-  nginx-config:
   portainer-config:
   shared:
   tasmoadmin-config:

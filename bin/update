@@ -56,10 +56,6 @@ copy_config_data "hub_hass-config" "/home-assistant/settings"
 # Update Mosquitto configs:
 copy_config_data "hub_mosquitto-config" "/mosquitto/settings"
 
-# Update NGINX configs:
-copy_config_data "hub_fail2ban-config" "/nginx/settings/fail2ban"
-copy_config_data "hub_nginx-config" "/nginx/settings/nginx"
-
 # Re-build the containers if necessary:
 docker-compose build
 

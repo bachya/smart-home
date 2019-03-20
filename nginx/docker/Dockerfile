@@ -4,8 +4,6 @@ ARG maxminddb_version
 ARG nginx_version
 ARG ngx_http_geoip2_module_version
 
-VOLUME /etc/nginx
-
 # Update, install, and clean up packages all in one step:
 RUN apk update \
     && apk add --no-cache --virtual build-dependencies \
