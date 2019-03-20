@@ -1,6 +1,6 @@
 FROM alpine:3.9
 
-ARG libmaxminddb_version
+ARG maxminddb_version
 ARG nginx_version
 ARG ngx_http_geoip2_module_version
 
@@ -19,17 +19,19 @@ RUN apk update \
       zlib-dev \
     && apk add --update \
       fail2ban \
+      gzip \
+      mosquitto-clients \
       openssl \
-      perl \
       pcre \
+      perl \
       rsyslog \
       supervisor \
       tzdata \
       zlib \
     && mkdir /tmp/src \
-    && wget -N -P /tmp/src https://github.com/maxmind/libmaxminddb/releases/download/${libmaxminddb_version}/libmaxminddb-${libmaxminddb_version}.tar.gz \
-    && tar xzvf /tmp/src/libmaxminddb-${libmaxminddb_version}.tar.gz -C /tmp/src \
-    && cd /tmp/src/libmaxminddb-${libmaxminddb_version} \
+    && wget -N -P /tmp/src https://github.com/maxmind/libmaxminddb/releases/download/${maxminddb_version}/libmaxminddb-${maxminddb_version}.tar.gz \
+    && tar xzvf /tmp/src/libmaxminddb-${maxminddb_version}.tar.gz -C /tmp/src \
+    && cd /tmp/src/libmaxminddb-${maxminddb_version} \
     && ./configure \
     && make \
     && make check \
@@ -78,11 +80,13 @@ RUN set -x ; \
     adduser -u 82 -D -S -G www-data www-data && exit 0 ; exit 1
 
 # Set up configuration structures:
+COPY geolite-download.sh /geolite-download.sh
+COPY bin/fail2ban-mqtt-notifier /usr/local/bin/fail2ban-mqtt-notifier
 COPY conf/supervisor/supervisor.conf /etc/supervisor.conf
 COPY conf/crontab.txt /crontab.txt
-COPY geolite-download.sh /geolite-download.sh
 RUN mkdir -p /var/run/nginx \
     && mkdir -p /var/lib/nginx \
     && chown -R www-data:www-data /var/lib/nginx \
     && chmod 755 /geolite-download.sh \
+    && chmod 755 /usr/local/bin/fail2ban-mqtt-notifier \
     && /usr/bin/crontab /crontab.txt
