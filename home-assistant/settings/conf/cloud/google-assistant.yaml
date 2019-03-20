@@ -45,7 +45,7 @@ google_actions:
     light.salt_lamp_master_bedroom:
       name: Master Bedroom Salt Lamp
       room: Master bedroom
-    light.salt_lamp_office:
+    switch.office_salt_lamp:
       name: Office Salt Lamp
       room: Office
     lock.front_door:

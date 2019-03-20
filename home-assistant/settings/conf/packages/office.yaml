@@ -8,16 +8,3 @@ input_number:
     step: 5
     unit_of_measurement: minutes
     icon: mdi:timer
-
-light:
-  - platform: mqtt
-    name: "Salt Lamp (Office)"
-    state_topic: "stat/salt-lamp-2/POWER1"
-    command_topic: "cmnd/salt-lamp-2/POWER1"
-    availability_topic: "tele/salt-lamp-2/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    retain: false
