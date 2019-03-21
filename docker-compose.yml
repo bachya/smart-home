@@ -138,6 +138,7 @@ services:
       - ./nginx/settings/fail2ban/filter.d/nginx-noscript.conf:/etc/fail2ban/filter.d/nginx-noscript.conf
       - ./nginx/settings/fail2ban/filter.d/nginx-req-limit.conf:/etc/fail2ban/filter.d/nginx-req-limit.conf
       - ./nginx/settings/fail2ban/jail.d/nginx.conf:/etc/fail2ban/jail.d/nginx.conf
+      - ./nginx/settings/fail2ban/jail.local:/etc/fail2ban/jail.local
       - ./nginx/settings/nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/settings/nginx/dhparams.pem:/etc/nginx/dhparams.pem
       - ./nginx/settings/nginx/geoip.rules:/etc/nginx/geoip.rules
