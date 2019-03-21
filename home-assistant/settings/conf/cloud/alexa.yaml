@@ -17,8 +17,10 @@ alexa:
       - switch.garage_lights
       - switch.kitchen_patio_light
       - switch.master_bathroom_fan
+      - switch.master_bedroom_salt_lamp
       - switch.master_toilet_fan
       - switch.media_center
+      - switch.office_salt_lamp
       - switch.powder_room_fan
       - switch.program_evening
       - switch.program_morning

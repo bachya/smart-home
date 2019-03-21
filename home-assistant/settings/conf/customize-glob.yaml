@@ -1,6 +1,4 @@
 ---
-"light.salt_lamp_*":
-  friendly_name: Switch
 "sensor.*_cpu_load":
   friendly_name: CPU
 "sensor.*_cpu_temperature":
