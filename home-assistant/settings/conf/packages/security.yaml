@@ -34,6 +34,12 @@ sensor:
 
   - platform: mqtt
     state_topic: "stat/fail2ban"
+    name: "Fail2Ban: Last Ban Jail"
+    icon: mdi:target-account
+    value_template: "{{ value_json.last_ban_jail }}"
+
+  - platform: mqtt
+    state_topic: "stat/fail2ban"
     name: "Fail2Ban: Last Ban IP"
     icon: mdi:target-account
     value_template: "{{ value_json.last_ban_ip }}"

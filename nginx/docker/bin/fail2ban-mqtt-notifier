@@ -64,6 +64,9 @@ send_info() {
     local bans=$(get_bans)
     local ban_count=$(echo "$bans" | sed '/^\s*$/d' | wc -l)
     local last_ban="$(echo "$bans" | tail -n 1)"
+    local last_ban_jail="$(
+        echo $last_ban | cut -d " " -f6 | sed 's/^.\(.*\).$/\1/'
+    )"
     local last_ban_ts="$(echo "$last_ban" | awk -F, '{ print $1 }')"
     local last_ban_ip="$(
         echo "$last_ban" | awk -F\ -\  '{ print $1}' | sed 's/.\+Ban\s//g'
@@ -85,6 +88,7 @@ send_info() {
         \"last_failure_ts\": \"$last_failure_ts\", \
         \"last_failure_country\": \"$last_failure_country\", \
         \"ban_count\": $ban_count, \
+        \"last_ban_jail\": \"$last_ban_jail\", \
         \"last_ban_ip\": \"$last_ban_ip\", \
         \"last_ban_ts\": \"$last_ban_ts\", \
         \"last_ban_country\": \"$last_ban_country\" }"
