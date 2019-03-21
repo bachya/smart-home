@@ -1,0 +1,34 @@
+---
+api:
+  password: "password"
+
+esphome:
+  name: master_bathroom_climate_sensor
+  platform: ESP8266
+  board: d1_mini
+
+i2c:
+  scl: GPIO5
+  sda: GPIO4
+
+logger:
+
+ota:
+
+sensor:
+  - platform: bme280
+    address: 0x76
+    temperature:
+      name: "Master Bathroom Temperature"
+    pressure:
+      name: "Master Bathroom Pressure"
+    humidity:
+      name: "Master Bathroom Humidity"
+
+wifi:
+  ssid: "SSID"
+  password: "password"
+  manual_ip:
+    static_ip: 172.16.11.9
+    gateway: 172.16.11.1
+    subnet: 255.255.255.0
