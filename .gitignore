@@ -1,3 +1,4 @@
+**/.mypy_cache
 *.pyc
 .DS_Store
 .config_entries.json
@@ -8,6 +9,8 @@
 Pipfile.lock
 emulated_hue_ids.json
 entity_registry.yaml
+esphome/**
+esphome/.gitignore
 harmony_living_room_tv.conf
 home-assistant/settings/.storage
 home-assistant/settings/conf/hass/.HA_VERSION
