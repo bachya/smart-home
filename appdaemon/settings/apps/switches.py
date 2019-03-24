@@ -485,4 +485,4 @@ class VacationMode(BaseSwitch):
             state = 'on'
 
         self.handles[HANDLE_VACATION_MODE] = self.run_in(
-            self.toggle_and_run, randint(15 * 60, 45 * 60), state=state)
+            self.toggle_and_run, randint(5 * 60, 60 * 60), state=state)
