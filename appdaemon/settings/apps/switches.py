@@ -473,6 +473,7 @@ class VacationMode(BaseSwitch):
 
         handle = self.handles.pop(HANDLE_VACATION_MODE)
         self.cancel_timer(handle)
+        self.toggle(state='off')
 
     def toggle_and_run(self, kwargs: dict) -> None:
         """Toggle the swtich and randomize the next toggle."""
