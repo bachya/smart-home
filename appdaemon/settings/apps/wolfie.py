@@ -37,6 +37,8 @@ class MonitorConsumables(Base):
 
     def configure(self) -> None:
         """Configure."""
+        self.triggered = False
+
         for consumable in self.properties['consumables']:
             self.listen_state(
                 self.consumable_changed,
@@ -53,6 +55,10 @@ class MonitorConsumables(Base):
 
             self.notification_manager.create_omnifocus_task(
                 'Order a new Wolfie consumable: {0}'.format(attribute))
+
+            self.triggered = True
+        elif self.triggered:
+            self.triggered = False
 
 
 class ScheduledCycle(Base):
