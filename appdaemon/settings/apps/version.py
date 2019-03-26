@@ -1,31 +1,54 @@
 """Define automations for tracking software versions."""
-from time import sleep
-from typing import Union
+from typing import Optional, Union
 
+from packaging import version  # type: ignore
 import requests
 import voluptuous as vol
-from packaging import version  # type: ignore
 
 from core import APP_SCHEMA, Base
 from const import (
-    CONF_ENTITY_IDS, CONF_FRIENDLY_NAME, CONF_PROPERTIES, CONF_UPDATE_INTERVAL)
+    CONF_ENTITY_IDS, CONF_FRIENDLY_NAME, CONF_ICON, CONF_PROPERTIES,
+    CONF_UPDATE_INTERVAL)
 from helpers import config_validation as cv
 
 CONF_APP_NAME = 'app_name'
 CONF_AVAILABLE = 'available'
 CONF_CREATED_ENTITY_ID = 'created_entity_id'
 CONF_ENDPOINT_ID = 'endpoint_id'
-CONF_FRIENDLY_NAME = 'friendly_name'
-CONF_ICON = 'icon'
 CONF_IMAGE_NAME = 'image_name'
 CONF_INSTALLED = 'installed'
-CONF_TASMOTA_HOSTS = 'tasmota_hosts'
+CONF_VERSION_SENSORS = 'version_sensors'
 
 DEFAULT_DYNAMIC_RETRIES = 3
 
+ENTITY_IDS_SCHEMA = vol.Schema({
+    vol.Required(CONF_AVAILABLE): cv.entity_id,
+    vol.Required(CONF_INSTALLED): cv.entity_id,
+}, extra=vol.ALLOW_EXTRA)
+
+PROPERTIES_SCHEMA = vol.Schema({
+    vol.Required(CONF_APP_NAME): str,
+}, extra=vol.ALLOW_EXTRA)
+
+VERSION_APP_SCHEMA = APP_SCHEMA.extend({
+    vol.Optional(CONF_ENTITY_IDS): ENTITY_IDS_SCHEMA,
+    vol.Optional(CONF_PROPERTIES): PROPERTIES_SCHEMA,
+})
+
+DYNAMIC_APP_SCHEMA = VERSION_APP_SCHEMA.extend({
+    vol.Required(CONF_PROPERTIES): PROPERTIES_SCHEMA.extend({
+        vol.Required(CONF_CREATED_ENTITY_ID): cv.entity_id,
+        vol.Required(CONF_FRIENDLY_NAME): str,
+        vol.Required(CONF_ICON): str,
+        vol.Required(CONF_UPDATE_INTERVAL): int,
+    })
+})
+
 
 class NewVersionNotification(Base):
-    """Define a feature to detect new versions of key apps."""
+    """Detect new versions of apps."""
+
+    APP_SCHEMA = VERSION_APP_SCHEMA
 
     def configure(self) -> None:
         """Configure."""
@@ -56,7 +79,9 @@ class NewVersionNotification(Base):
 
 
 class DynamicSensor(NewVersionNotification):
-    """Define a feature to generate a dynamic version sensor."""
+    """Generate a dynamic version sensor."""
+
+    APP_SCHEMA = DYNAMIC_APP_SCHEMA
 
     def configure(self) -> None:
         """Configure."""
@@ -65,7 +90,7 @@ class DynamicSensor(NewVersionNotification):
             self.properties[CONF_UPDATE_INTERVAL])
 
     @property
-    def sensor_value(self) -> Union[None, str]:
+    def sensor_value(self) -> Optional[str]:
         """Raise if not implemented."""
         raise NotImplementedError()
 
@@ -80,40 +105,56 @@ class DynamicSensor(NewVersionNotification):
             })
 
 
-class NewPortainerVersionNotification(DynamicSensor):
-    """Define a feature to detect new versions Portainer-defined images."""
+class NewMultiSensorVersionNotification(DynamicSensor):
+    """Detect version changes by examining multiple version sensors."""
 
-    APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS: vol.Schema({
-            vol.Required(CONF_AVAILABLE): cv.entity_id,
-            vol.Required(CONF_INSTALLED): cv.entity_id,
-        }, extra=vol.ALLOW_EXTRA),
-        CONF_PROPERTIES: vol.Schema({
-            vol.Required(CONF_APP_NAME): str,
-            vol.Required(CONF_CREATED_ENTITY_ID): cv.entity_id,
+    APP_SCHEMA = DYNAMIC_APP_SCHEMA.extend({
+        vol.Required(CONF_ENTITY_IDS): ENTITY_IDS_SCHEMA.extend({
+            vol.Required(CONF_VERSION_SENSORS): vol.All(cv.ensure_list),
+        })
+    })
+
+    @property
+    def sensor_value(self) -> Optional[str]:
+        """Determine the lowest value from the sensor list."""
+        lowest_version = None
+        for entity_id in self.entity_ids[CONF_VERSION_SENSORS]:
+            ver = version.parse(self.get_state(entity_id))
+            try:
+                if ver > lowest_version:
+                    lowest_version = ver
+            except TypeError:
+                lowest_version = ver
+
+        return str(lowest_version)
+
+
+class NewPortainerVersionNotification(DynamicSensor):
+    """Detect new versions of Portainer-defined images."""
+
+    APP_SCHEMA = DYNAMIC_APP_SCHEMA.extend({
+        vol.Required(CONF_PROPERTIES): PROPERTIES_SCHEMA.extend({
             vol.Required(CONF_ENDPOINT_ID): int,
-            vol.Required(CONF_FRIENDLY_NAME): str,
-            vol.Required(CONF_ICON): str,
             vol.Required(CONF_IMAGE_NAME): str,
-            vol.Required(CONF_UPDATE_INTERVAL): int,
-        }, extra=vol.ALLOW_EXTRA),
+        })
     })
 
     API_URL = 'http://portainer:9000/api'
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS: vol.Schema({
-            vol.Required(CONF_AVAILABLE): cv.entity_id,
-            vol.Required(CONF_INSTALLED): cv.entity_id,
-        }, extra=vol.ALLOW_EXTRA),
-        CONF_PROPERTIES: vol.Schema({
-            vol.Required(CONF_APP_NAME): str,
-        }, extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS:
+            vol.Schema({
+                vol.Required(CONF_AVAILABLE): cv.entity_id,
+                vol.Required(CONF_INSTALLED): cv.entity_id,
+            }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES:
+            vol.Schema({
+                vol.Required(CONF_APP_NAME): str,
+            }, extra=vol.ALLOW_EXTRA),
     })
 
-
     @property
-    def sensor_value(self) -> Union[None, str]:
+    def sensor_value(self) -> Optional[str]:
         """Get the version from Portainer."""
         auth_resp = requests.post(
             '{0}/auth'.format(self.API_URL),
@@ -140,52 +181,3 @@ class NewPortainerVersionNotification(DynamicSensor):
                     self.properties[CONF_IMAGE_NAME]))
 
         return tagged_image.split(':')[1].replace('v', '').split('-')[0]
-
-
-class NewTasmotaVersionNotification(DynamicSensor):
-    """Define a feature to detect new versions of Tasmota."""
-
-    APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS: vol.Schema({
-            vol.Required(CONF_AVAILABLE): cv.entity_id,
-            vol.Required(CONF_INSTALLED): cv.entity_id,
-        }, extra=vol.ALLOW_EXTRA),
-        CONF_PROPERTIES: vol.Schema({
-            vol.Required(CONF_APP_NAME): str,
-            vol.Required(CONF_CREATED_ENTITY_ID): cv.entity_id,
-            vol.Required(CONF_FRIENDLY_NAME): str,
-            vol.Required(CONF_ICON): str,
-            vol.Required(CONF_TASMOTA_HOSTS): cv.ensure_list,
-            vol.Required(CONF_UPDATE_INTERVAL): int,
-        }, extra=vol.ALLOW_EXTRA),
-    })
-
-    @property
-    def sensor_value(self) -> Union[None, str]:
-        """Get the lowest Tasmota version from all Sonoffs."""
-        lowest_version = None
-        status_uri = 'cm?cmnd=Status%202'
-        tasmota_version = None
-
-        for host in self.properties[CONF_TASMOTA_HOSTS]:
-            for _ in range(DEFAULT_DYNAMIC_RETRIES - 1):
-                try:
-                    json = requests.get(
-                        'http://{0}/{1}'.format(host, status_uri)).json()
-                    tasmota_version = json['StatusFWR']['Version']
-                except requests.exceptions.ConnectionError:
-                    sleep(10)
-                else:
-                    break
-
-            try:
-                if lowest_version > tasmota_version:  # type: ignore
-                    lowest_version = tasmota_version
-            except TypeError:
-                lowest_version = tasmota_version
-
-        if not lowest_version:
-            self.error("Couldn't reach any Tasmota host")
-            return None
-
-        return lowest_version

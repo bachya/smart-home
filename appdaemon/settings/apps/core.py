@@ -1,13 +1,12 @@
 """Define generic automation objects and logic."""
-import datetime
 from typing import Callable, Dict, Union  # noqa, pylint: disable=unused-import
 
 import voluptuous as vol
 from appdaemon.plugins.hass.hassapi import Hass  # type: ignore
 
 from const import (
-    BLACKOUT_START, BLACKOUT_END, OPERATOR_ALL, OPERATOR_ANY, OPERATORS,
-    THRESHOLD_CLOUDY)
+    BLACKOUT_START, BLACKOUT_END, CONF_ICON, OPERATOR_ALL, OPERATOR_ANY,
+    OPERATORS, THRESHOLD_CLOUDY)
 from helpers import config_validation as cv
 
 CONF_CLASS = 'class'
@@ -18,7 +17,6 @@ CONF_APP = 'app'
 CONF_CONSTRAINTS = 'constraints'
 
 CONF_ENABLED_CONFIG = 'enabled_config'
-CONF_ICON = 'icon'
 CONF_INITIAL = 'initial'
 CONF_NAME = 'name'
 CONF_TOGGLE_NAME = 'toggle_name'

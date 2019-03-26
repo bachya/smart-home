@@ -22,6 +22,31 @@ new_appdaemon_version_automation:
     icon: mdi:home-assistant
     initial: true
 
+new_esphome_version_automation:
+  module: version
+  class: NewMultiSensorVersionNotification
+  dependencies:
+    - notification_manager
+    - presence_manager
+  entity_ids:
+    available: sensor.esphome_available
+    installed: sensor.esphome_installed
+    version_sensors:
+      - sensor.master_bathroom_climate_sensor_esphome_version_short
+      - sensor.master_bedroom_salt_lamp_sensor_esphome_version_short
+      - sensor.office_salt_lamp_sensor_esphome_version_short
+  properties:
+    app_name: ESPHome
+    created_entity_id: sensor.esphome_installed
+    friendly_name: ESPHome Installed
+    icon: mdi:chip
+    update_interval: 300
+  enabled_config:
+    toggle_name: notify_of_new_versions
+    name: Notify of new versions
+    icon: mdi:home-assistant
+    initial: true
+
 new_hass_version_automation:
   module: version
   class: NewVersionNotification
