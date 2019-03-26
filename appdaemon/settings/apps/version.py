@@ -121,7 +121,7 @@ class NewMultiSensorVersionNotification(DynamicSensor):
         for entity_id in self.entity_ids[CONF_VERSION_SENSORS]:
             ver = version.parse(self.get_state(entity_id))
             try:
-                if ver > lowest_version:
+                if ver < lowest_version:
                     lowest_version = ver
             except TypeError:
                 lowest_version = ver
