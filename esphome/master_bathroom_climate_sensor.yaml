@@ -2,6 +2,10 @@
 api:
   password: "password"
 
+binary_sensor:
+  - platform: status
+    name: "Master Bathroom Climate Sensor Status"
+
 esphome:
   name: master_bathroom_climate_sensor
   platform: ESP8266
@@ -24,6 +28,21 @@ sensor:
       name: "Master Bathroom Pressure"
     humidity:
       name: "Master Bathroom Humidity"
+
+switch:
+  - platform: restart
+    name: "Bathroom Climate Sensor Restart"
+
+text_sensor:
+  - platform: template
+    name: "Master Bathroom Climate Sensor: ESPHome Version (Short)"
+    lambda: |-
+      auto state = id(version).state;
+      return state.substr(0, state.find(' '));
+
+  - platform: version
+    name: "Master Bathroom Climate Sensor: ESPHome Version"
+    id: version
 
 wifi:
   ssid: "SSID"

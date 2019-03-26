@@ -2,6 +2,19 @@
 api:
   password: "password"
 
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+      inverted: true
+    name: "Sonoff Basic Button"
+    on_press:
+      - switch.toggle: relay
+
+  - platform: status
+    name: "Office Salt Lamp Status"
+
 esphome:
   name: office_salt_lamp
   platform: ESP8266
@@ -11,11 +24,30 @@ logger:
 
 ota:
 
+status_led:
+  pin:
+    number: GPIO13
+    inverted: true
+
 switch:
   - platform: gpio
     name: Office Salt Lamp
     pin: GPIO12
     id: relay
+
+  - platform: restart
+    name: "Office Salt Lamp Restart"
+
+text_sensor:
+  - platform: template
+    name: "Office Salt Lamp: ESPHome Version (Short)"
+    lambda: |-
+      auto state = id(version).state;
+      return state.substr(0, state.find(' '));
+
+  - platform: version
+    name: "Office Salt Lamp: ESPHome Version"
+    id: version
 
 wifi:
   ssid: "SSID"
