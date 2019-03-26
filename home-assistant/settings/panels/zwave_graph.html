@@ -1,47 +1,47 @@
-<dom-module id='ha-panel-zwavegraph2'>
+<dom-module id='ha-panel-zwave_graph'>
   <template>
     <style include="ha-style">
-      .node > rect
+      .node > rect, .node > circle
       {
         stroke: black;
       }
 
-      .node.layer-1 > rect, .edgePath.layer-1 > path
+      .node.layer-1 > rect, .node.layer-1 > circle, .edgePath.layer-1 > path
       {
         fill: #3598DB;
         stroke: #2470A2;
       }
 
-      .node.layer-1 > polygon, .node.layer-1 > rect, .edgePath.layer-1 > path
+      .node.layer-1 > polygon, .node.layer-1 > rect, .node.layer-1 > circle, .edgePath.layer-1 > path
       {
         fill: #3598DB;
         stroke: #2470A2;
       }
 
-      .node.layer-1 text { 
+      .node.layer-1 text {
         fill: #1E5B84;
       }
 
-      .node.layer-2 > polygon, .node.layer-2 > rect, .edgePath.layer-2 > path
+      .node.layer-2 > polygon, .node.layer-2 > rect, .node.layer-2 > circle, .edgePath.layer-2 > path
       {
         stroke: #1D8548;
       }
 
-      .node.layer-2 > rect, .edgePath.layer-2 > path
+      .node.layer-2 > rect, .node.layer-2 > circle, .edgePath.layer-2 > path
       {
         fill: #1BBC9B;
       }
 
-      .node.layer-2 text { 
+      .node.layer-2 text {
         fill: #11512C;
       }
 
-      .node.layer-3 > polygon, .node.layer-3 > rect, .edgePath.layer-3 > path
+      .node.layer-3 > polygon, .node.layer-3 > rect, .node.layer-3 > circle, .edgePath.layer-3 > path
       {
         stroke: #1D8548;
       }
 
-      .node.layer-3 > rect, .edgePath.layer-3 > path
+      .node.layer-3 > rect, .node.layer-3 > circle, .edgePath.layer-3 > path
       {
         fill: #2DCC70;
       }
@@ -51,12 +51,12 @@
         fill: #1D8548;
       }
 
-      .node.layer-4 > polygon, .node.layer-4 > rect, .edgePath.layer-4 > path
+      .node.layer-4 > polygon, .node.layer-4 > rect, .node.layer-4 > circle, .edgePath.layer-4 > path
       {
         stroke: #D25400;
       }
 
-      .node.layer-4 > rect, .edgePath.layer-4 > path
+      .node.layer-4 > rect, .node.layer-4 > circle, .edgePath.layer-4 > path
       {
         fill: #F1C40F;
       }
@@ -66,12 +66,12 @@
         fill: #D25400;
       }
 
-      .node.layer-5 > polygon, .node.layer-5 > rect, .edgePath.layer-5 > path
+      .node.layer-5 > polygon, .node.layer-5 > rect, .node.layer-5 > circle, .edgePath.layer-5 > path
       {
         stroke: #D25400;
       }
 
-      .node.layer-5 > rect, .edgePath.layer-5 > path
+      .node.layer-5 > rect, .node.layer-5 > circle, .edgePath.layer-5 > path
       {
         fill: #E77E23;
       }
@@ -81,7 +81,7 @@
         fill: #D25400;
       }
 
-      .node.Error > polygon, .node.Error > rect
+      .node.Error > polygon, .node.Error > rect, .node.Error > circle
       {
         fill: #ff7676;
         stroke: darkred;
@@ -92,29 +92,14 @@
         fill: darkred;
       }
 
-      .node.unset > rect,
+      .node.unset > rect, .node.unset > circle
       {
         stroke: #666;
       }
 
-      .node.unset > polygon, .node.unset > rect
+      .node.unset > polygon, .node.unset > rect, .node.unset > circle
       {
         stroke: #666;
-        fill: lightgray;
-      }
-
-      .cluster > rect
-      {
-        stroke: lightgray;
-        fill: #f8f8f8;
-        stroke-width: 1px;
-        stroke-linecap: round;
-      }
-
-      .cluster > .label
-      {
-        /* stroke: gray; */
-        fill: lightgray;
       }
 
       .node.unset text
@@ -137,9 +122,13 @@
         fill: #333;
       }
 
+      .node > circle {
+        stroke-width: 1px;
+      }
+
       .node > polygon {
         opacity: 0.7;
-      } 
+      }
 
       .node > rect {
         stroke-width: 1px;
@@ -169,7 +158,7 @@
 <script>
 
   class HaPanelZWave extends Polymer.Element {
-    static get is() { return 'ha-panel-zwavegraph2'; }
+    static get is() { return 'ha-panel-zwave_graph'; }
 
     static get properties() {
       return {
@@ -205,7 +194,7 @@
 
       var data = this.listNodes(this.hass);
 
-      var g = new dagreD3.graphlib.Graph({compound:true}).setGraph({});
+      var g = new dagreD3.graphlib.Graph().setGraph({});
       g.graph().rankDir = "BT";
       g.graph().nodeSep = 15;
 
@@ -266,18 +255,10 @@
         return shapeSvg;
       };
 
-      var groups = [];
-
-      // Set the parents to define which nodes belong to which cluster
-
       // add nodes  to graph
       for (var i = 0; i < data["nodes"].length; i++) {
         var node = data["nodes"][i];
         g.setNode(node.id, node);
-        if (node.location != "" && node.location != undefined) {
-          g.setNode(node.location, { label: node.location, clusterLabelPos: 'bottom', class: "group" });
-          g.setParent(node.id, node.location);
-        }
       }
 
       // add edges to graph
@@ -312,13 +293,13 @@
         // Use D3 to select element, change color and size
         svg.querySelectorAll(".edgePath")
           .forEach(function (node) { node.style.opacity = "0.3" });
-        
+
         var edges = svg.querySelectorAll(".edgePath.node-" + d);
         for(let i = 0; i < edges.length; i++){
           edges[i].style.opacity = "1"
           edges[i].style['stroke-width'] = "2";
           };
-        
+
         var neighbors = svg.querySelectorAll(".node.neighbor-" + d);
         for(let i = 0; i < neighbors.length; i++){
           neighbors[i].style.opacity = "0.7"
@@ -380,7 +361,7 @@
       svg.selectAll(".node")
         .on("mouseover", handleMouseOver)
         .on("mouseout", handleMouseOut);
-      
+
 
       this.addLegend(svg, legends, 5, 20);
 
@@ -413,7 +394,7 @@
       for (let state in hass.states) {
         states.push({ name: state, entity: hass.states[state] });
       }
-      let zwaves = states.filter((s) => { return s.name.indexOf("zwave.") == 0  && s.entity.attributes["capabilities"] !== undefined });
+      let zwaves = states.filter((s) => { return s.name.indexOf("zwave.") == 0 });
       let result = { "edges": [], "nodes": [] };
 
       let hubNode = 0;
@@ -445,7 +426,6 @@
           "neighbors" : neighbors[id],
           "battery_level" : batlev,
           "mains" : batlev,
-          "location" : node.attributes["location"],
           "failed" : node.attributes["is_failed"],
           "title": "<b>" + node.attributes["node_name"] + "</b>" +
             "<br />Entity ID: " + node.entity_id +
@@ -460,7 +440,7 @@
         };
 
         entity["shape"] = id === hubNode ? "house" : (entity.forwards || batlev === undefined ? "rect" : "battery");
-        
+
         if (node.attributes["is_failed"]) {
           entity.label = "FAILED: " + entity.label;
           entity["font.multi"] = true;
@@ -485,7 +465,7 @@
         let previousRow = [hubNode];
         let mappedNodes = [hubNode];
         let layers = [];
-        
+
         while (previousRow.length > 0) {
           layer = layer + 1;
           let nextRow = [];
@@ -493,13 +473,13 @@
           layers[layer] = layerMembers;
 
           for (let target in previousRow) {
-            
+
             // assign node to layer
             result.nodes.filter((n) => { return ((n.id == previousRow[target]) && (n.group = "unset")) })
               .every((d) => {
                 d.class = "layer-" + layer; d.layer = layer;
                 if(d.failed){
-                  d.class = d.class + " Error"                  
+                  d.class = d.class + " Error"
                 }
 
                 if (d.neighbors !== undefined) {
