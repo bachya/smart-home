@@ -51,6 +51,9 @@ class MonitorConsumables(Base):
             kwargs: dict) -> None:
         """Create a task when a consumable is getting low."""
         if int(new) < self.properties['consumable_threshold']:
+            if self.triggered:
+                return
+
             self.log('Consumable is low: {0}'.format(attribute))
 
             self.notification_manager.create_omnifocus_task(
