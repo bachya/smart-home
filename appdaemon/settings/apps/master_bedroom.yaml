@@ -41,7 +41,7 @@ master_bathroom_fan_double_tap_timer_automation:
     timer_slider: input_number.master_bathroom_fan_timer
     zwave_device: zwave.master_bathroom_fan
   properties:
-    duration: 600
+    duration: 3600
   enabled_config:
     name: "Bathroom: double tap 10-minute timer"
     icon: mdi:timer
