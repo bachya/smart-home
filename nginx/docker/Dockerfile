@@ -13,7 +13,6 @@ RUN apk update \
       linux-headers \
       openssl-dev \
       pcre-dev \
-      wget \
       zlib-dev \
     && apk add --update \
       fail2ban \
@@ -25,6 +24,7 @@ RUN apk update \
       rsyslog \
       supervisor \
       tzdata \
+      wget \
       zlib \
     && mkdir /tmp/src \
     && wget -N -P /tmp/src https://github.com/maxmind/libmaxminddb/releases/download/${maxminddb_version}/libmaxminddb-${maxminddb_version}.tar.gz \
