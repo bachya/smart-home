@@ -61,8 +61,8 @@ docker-compose build
 
 # Restart the containers:
 docker-compose down --remove-orphans
-docker image prune -f
 docker container prune -f
+docker image prune -f
 docker-compose up -d
 docker network prune -f
 docker volume prune -f
