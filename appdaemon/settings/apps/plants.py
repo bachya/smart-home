@@ -19,14 +19,16 @@ class LowMoisture(Base):
     """Define a feature to notify us of low moisture."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS: vol.Schema({
-            vol.Required(CONF_CURRENT_MOISTURE): cv.entity_id,
-        }, extra=vol.ALLOW_EXTRA),
-        CONF_PROPERTIES: vol.Schema({
-            vol.Required(CONF_FRIENDLY_NAME): str,
-            vol.Required(CONF_MOISTURE_THRESHOLD): int,
-            vol.Required(CONF_NOTIFICATION_INTERVAL): int,
-        }, extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS:
+            vol.Schema({
+                vol.Required(CONF_CURRENT_MOISTURE): cv.entity_id,
+            }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES:
+            vol.Schema({
+                vol.Required(CONF_FRIENDLY_NAME): str,
+                vol.Required(CONF_MOISTURE_THRESHOLD): int,
+                vol.Required(CONF_NOTIFICATION_INTERVAL): int,
+            }, extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:
@@ -47,7 +49,7 @@ class LowMoisture(Base):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Notify when the plant's moisture is low."""
-        if (not (self._low_moisture)
+        if (not self._low_moisture
                 and int(new) < int(self.properties['moisture_threshold'])):
             self.log('Notifying people at home that plant is low on moisture')
 
