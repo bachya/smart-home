@@ -13,7 +13,7 @@ services:
     build:
       context: ./appdaemon/docker
       args:
-        VERSION: 3.0.2
+        VERSION: 3.0.4
     container_name: appdaemon
     depends_on:
       - hass
