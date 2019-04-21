@@ -12,11 +12,11 @@ camera:
 
   - platform: ffmpeg
     name: Kitchen Camera
-    input: -rtsp_transport tcp -i rtsp://kitchen-camera.phil.lan/ch0_0.h264
+    input: -rtsp_transport tcp -i rtsp://kitchen-camera.phil.iot/ch0_0.h264
 
   - platform: ffmpeg
     name: Guest Bedroom Camera
-    input: -rtsp_transport tcp -i rtsp://guest-bedroom-camera.phil.lan/ch0_0.h264
+    input: -rtsp_transport tcp -i rtsp://guest-bedroom-camera.phil.iot/ch0_0.h264
 
   - platform: nest
 

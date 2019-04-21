@@ -2,7 +2,7 @@
 remote:
   - platform: harmony
     name: Basement TV
-    host: harmony-hub-2.phil.lan
+    host: harmony-hub-2.phil.iot
     activity: 37549209
 
 shell_command:
