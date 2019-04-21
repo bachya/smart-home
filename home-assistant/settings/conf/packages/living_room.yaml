@@ -13,7 +13,7 @@ remote:
     activity: 22580039
 
 roku:
-  - host: 172.16.10.33
+  - host: 172.16.11.38
 
 sensor:
   - platform: template
