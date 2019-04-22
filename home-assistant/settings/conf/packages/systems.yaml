@@ -61,7 +61,7 @@ sensor:
     name: Yi Hack Installed
     command: >
       ssh -i /config/id_rsa -o StrictHostKeyChecking=no
-      root@guest-bedroom-camera.phil.iot cat version
+      root@yi-camera-guest-bedroom.phil.iot cat version
 
   - platform: version
     name: HASS Installed
