@@ -33,8 +33,8 @@ new_esphome_version_automation:
     installed: sensor.esphome_installed
     version_sensors:
       - sensor.master_bathroom_climate_sensor_esphome_version_short
-      - sensor.master_bedroom_salt_lamp_sensor_esphome_version_short
-      - sensor.office_salt_lamp_sensor_esphome_version_short
+      - sensor.master_bedroom_salt_lamp_esphome_version_short
+      - sensor.office_salt_lamp_esphome_version_short
   properties:
     app_name: ESPHome
     created_entity_id: sensor.esphome_installed
