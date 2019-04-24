@@ -42,12 +42,12 @@ text_sensor:
   - platform: template
     name: "Office Salt Lamp: ESPHome Version (Short)"
     lambda: |-
-      auto state = id(version).state;
+      auto state = id(esphome_version).state;
       return state.substr(0, state.find(' '));
 
   - platform: version
     name: "Office Salt Lamp: ESPHome Version"
-    id: version
+    id: esphome_version
 
 wifi:
   ssid: "SSID"
