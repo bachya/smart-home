@@ -61,7 +61,7 @@ services:
       - mysql
     devices:
       - "/dev/zwave:/dev/zwave"
-    image: homeassistant/home-assistant:0.91.4
+    image: homeassistant/home-assistant:0.92.0
     network_mode: "host"
     restart: unless-stopped
     volumes:
