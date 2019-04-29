@@ -2,11 +2,3 @@
 sensor:
   - platform: denvertrash
     api_key: !secret google_api_key
-    monitored_conditions:
-      - extra_trash
-      - recycling
-      - trash
-
-  # - platform: recollect_waste
-  #   place_id: !secret recollect_place_id
-  #   service_id: !secret recollect_service_id
