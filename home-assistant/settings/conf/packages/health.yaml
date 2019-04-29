@@ -14,9 +14,6 @@ automation:
     action:
       service: openuv.update_data
 
-iqvia:
-  zip_code: !secret iqvia_zip_code
-
 openuv:
   api_key: !secret openuv_api_key
   sensors:
@@ -36,3 +33,13 @@ sensor:
     show_on_map: false
 
   - platform: flunearyou
+
+  - platform: pollen
+    zip_code: !secret pollen_zip_code
+    monitored_conditions:
+      - allergy_average_forecasted
+      - allergy_average_historical
+      - allergy_index_today
+      - allergy_index_tomorrow
+      - allergy_index_yesterday
+      - disease_average_forecasted
