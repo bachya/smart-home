@@ -19,3 +19,9 @@ notify_of_trash_pickup_automation:
 trash_manager:
   module: trash
   class: TrashManager
+  entity_ids:
+    trash_type_sensors:
+      compost: sensor.compost_pickup
+      extra_trash: sensor.extra_trash_pickup
+      recycling: sensor.recycling_pickup
+      trash: sensor.trash_pickup
