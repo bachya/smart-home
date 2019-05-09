@@ -152,3 +152,28 @@ class SslExpiration(Base):
 
             self.notification_manager.create_omnifocus_task(
                 'SSL expires in less than {0} days'.format(new))
+
+
+class StartHomeKitOnZwaveReady(Base):
+    """Define a feature to start HomeKit when the Z-Wave network is ready."""
+
+    def configure(self) -> None:
+        """Configure."""
+        self.scan({})
+
+    def network_ready(self) -> bool:
+        """Return whether the Z-Wave network is ready."""
+        zwave_devices = self.get_state('zwave')
+        for attrs in zwave_devices.values():
+            if attrs['state'] != 'ready':
+                return False
+        return True
+
+    def scan(self, kwargs: dict) -> None:
+        """Start the scanning process."""
+        if self.network_ready():
+            self.log('Z-Wave network is ready for HomeKit to start')
+            self.call_service('homekit/start')
+            return
+
+        self.run_in(self.scan, 60)
