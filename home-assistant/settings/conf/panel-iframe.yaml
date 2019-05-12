@@ -11,3 +11,7 @@ portainer:
   title: Portainer
   url: !secret panel_url_portainer
   icon: mdi:database
+rainmachine:
+  title: RainMachine
+  url: !secret panel_url_rainmachine
+  icon: mdi:water
