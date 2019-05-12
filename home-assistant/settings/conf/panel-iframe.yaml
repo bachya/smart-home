@@ -1,4 +1,8 @@
 ---
+ambient:
+  title: Ambient PWS
+  url: !secret panel_url_ambient
+  icon: mdi:weather-cloudy
 jupyterlab:
   title: JupyterLab
   url: !secret panel_url_jupyterlab
