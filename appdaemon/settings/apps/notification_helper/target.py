@@ -121,7 +121,7 @@ def get_targets_from_string(app: Hass, target: str) -> List[Target]:
     """Return the appropriate factory for the passed target."""
     if 'person:' in target:
         factory = PersonFactory(app, target)
-    if 'presence:' in target:
+    elif 'presence:' in target:
         factory = PresenceFactory(app, target)  # type: ignore
     elif 'slack:' in target:
         factory = SlackFactory(app, target)  # type: ignore

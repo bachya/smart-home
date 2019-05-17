@@ -1,4 +1,6 @@
 """Define various test automations."""
+from datetime import datetime, timedelta
+
 from core import Base
 from notification_helper import send_notification
 
@@ -13,6 +15,10 @@ class TestNotification(Base):
         self.listen_event(
             self.person_notification_1, 'TEST_PERSON_NOTIFICATION_1')
         self.listen_event(
+            self.person_notification_2, 'TEST_PERSON_NOTIFICATION_2')
+        self.listen_event(
+            self.person_notification_3, 'TEST_PERSON_NOTIFICATION_3')
+        self.listen_event(
             self.presence_notification_1, 'TEST_PRESENCE_NOTIFICATION_1')
         self.listen_event(
             self.slack_notification_1, 'TEST_SLACK_NOTIFICATION_1')
@@ -26,8 +32,29 @@ class TestNotification(Base):
 
     def person_notification_1(
             self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Test a person notification."""
+        """Test a single, immediate person notification."""
         send_notification(self, 'person:Aaron', 'This is a test')
+
+    def person_notification_2(
+            self, event_name: str, data: dict, kwargs: dict) -> None:
+        """Test a single, scheduled person notification."""
+        send_notification(
+            self,
+            'person:Aaron',
+            'This is a test',
+            title='Yeehaw',
+            when=datetime.now() + timedelta(seconds=30))
+
+    def person_notification_3(
+            self, event_name: str, data: dict, kwargs: dict) -> None:
+        """Test a single, scheduled person notification that gets canceled."""
+        cancel_notification = send_notification(
+            self,
+            'person:Aaron',
+            'This is a test',
+            title='Yeehaw',
+            when=datetime.now() + timedelta(seconds=30))
+        cancel_notification()
 
     def presence_notification_1(
             self, event_name: str, data: dict, kwargs: dict) -> None:
