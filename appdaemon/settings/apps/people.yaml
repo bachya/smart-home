@@ -12,7 +12,8 @@ aaron:
       - device_tracker.aaron_iphone
       - device_tracker.aarons_iphone
     notifiers:
-      - ios_aaron_bachs_iphone
+      - mobile_app_iphone
+      - "slack:@aaron"
     presence_status_sensor: sensor.aaron_presence_status
   properties:
     push_device_id: 885F47F4-56F2-435C-A84C-84654D0A906F
@@ -30,6 +31,7 @@ britt:
       - device_tracker.britts_iphone
     notifiers:
       - ios_brittany_bachs_iphone
+      - "slack:@brittany"
     presence_status_sensor: sensor.britt_presence_status
   properties:
     push_device_id: 3CCFD32B-8C04-4A0D-94C2-6E934E8B6705
