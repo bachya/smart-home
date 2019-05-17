@@ -22,10 +22,17 @@ class Notification:
     message: str
     title: Optional[str] = None
 
+    # Cancellation method:
+    _cancel_method: Optional[Callable] = None
+
     # Scheduling properties:
     repeat: bool = False
     when: Optional[datetime] = None
     interval: Optional[int] = None
+
+    iterations: Optional[int] = None
+    _iteration_counter: int = 0
+
     blackout_start_time: Optional[datetime] = None
     blackout_end_time: Optional[datetime] = None
 
@@ -47,6 +54,13 @@ class Notification:
 
     def _send_cb(self, kwargs: dict) -> None:
         """Send a single (immediate or scheduled) notification."""
+        # If this is a repeating notification and we've exceeded our
+        # iterations, cancel right away:
+        if (self.iterations and   # type: ignore
+                self._iteration_counter == self.iterations - 1):
+            if self._cancel_method:
+                self._cancel_method()
+
         if isinstance(self.targets, str):
             self.targets = [self.targets]
 
@@ -63,13 +77,17 @@ class Notification:
             else:
                 target.payload['message'] = self.message
 
-            self._log('Sending notification')
             self._app.call_service(target.service_call, **target.payload)
+
+            if self.iterations:
+                self._iteration_counter += 1
 
     def send(self) -> Callable:
         """Send the notification."""
-        if self.when:
-            self._log('Scheduling notification')
+        if self.when and self.interval:
+            handle = self._app.run_every(
+                self._send_cb, self.when, self.interval)
+        elif self.when:
             handle = self._app.run_at(self._send_cb, self.when)
         else:
             self._send_cb({})
@@ -77,16 +95,27 @@ class Notification:
         def cancel():
             """Define a method to cancel the notification."""
             if self.when:
-                self._log('Canceling notification')
                 self._app.cancel_timer(handle)
 
+        self._cancel_method = cancel
         return cancel
 
 
 def send_notification(
-        app: Hass, targets: List[str], message: str,
-        **kwargs: dict) -> Callable:
-    """Send/schedule a notification and return its ID."""
+        app: Hass,
+        targets: List[str],
+        message: str,
+        title: str = None,
+        when: datetime = None,
+        interval: int = None,
+        iterations: int = None) -> Callable:
+    """Send/schedule a notification and return a method to cancel it."""
     notification = Notification(  # type: ignore
-        app=app, targets=targets, message=message, **kwargs)
+        app=app,
+        targets=targets,
+        message=message,
+        title=title,
+        when=when,
+        interval=interval,
+        iterations=iterations)
     return notification.send()

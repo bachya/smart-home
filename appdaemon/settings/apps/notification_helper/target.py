@@ -100,21 +100,20 @@ class SlackFactory(TargetFactory):
 
     def build(self) -> List[SlackTarget]:
         """Build notification target objects from a string representation."""
-        splits = self._target.split(':')[1].split('/')
-        num = len(splits)
+        data = self._target.split(':')
 
-        channel = None
-        mention = None
-        if num == 2:
-            channel = splits[0]
-            mention = splits[1]
-        elif num == 1:
-            if '@' in splits[0]:
-                mention = splits[0]
-            else:
-                channel = splits[0]
+        if len(data) == 1:
+            return [SlackTarget(None, None)]
 
-        return [SlackTarget(channel, mention)]
+        splits = data[1].split('/')
+
+        if len(splits) == 2:
+            return [SlackTarget(splits[0], splits[1])]
+
+        if '@' in splits[0]:
+            return [SlackTarget(None, splits[0])]
+
+        return [SlackTarget(splits[0], None)]
 
 
 def get_targets_from_string(app: Hass, target: str) -> List[Target]:
