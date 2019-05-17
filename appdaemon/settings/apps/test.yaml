@@ -2,3 +2,5 @@
 test_notification:
   module: test
   class: TestNotification
+  dependencies:
+    - presence_manager

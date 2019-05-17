@@ -57,6 +57,8 @@ class Notification:
             else:
                 target.payload['message'] = self.message
 
+            self._app.log('Sending message: {0}'.format(self))
+
             self._app.call_service(target.service_call, **target.payload)
 
 

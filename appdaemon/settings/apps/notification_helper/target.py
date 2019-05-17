@@ -67,12 +67,31 @@ class PersonFactory(TargetFactory):
 
         targets = []  # type: List[Target]
         for target in person.notifiers:
-            if 'person:' in target:
-                self._app.error('Refusing recursive name: {0}'.format(target))
-                continue
             targets += get_targets_from_string(self._app, target)
 
-        print(targets)
+        return targets
+
+
+class PresenceFactory(TargetFactory):
+    """Define a factory to build notification targets specific to presence."""
+
+    def build(self) -> List[Target]:
+        """Build notification target objects from a string representation."""
+        presence = self._target.split(':')[1]
+        presence_manager = self._app.get_app('presence_manager')
+
+        try:
+            presence_method = getattr(
+                presence_manager, 'whos_{0}'.format(presence))
+        except AttributeError:
+            self._app.error('Unknown presence target: {0}'.format(presence))
+            return []
+
+        targets = []  # type: List[Target]
+        for person in presence_method():
+            for target in person.notifiers:
+                targets += get_targets_from_string(self._app, target)
+
         return targets
 
 
@@ -102,6 +121,8 @@ def get_targets_from_string(app: Hass, target: str) -> List[Target]:
     """Return the appropriate factory for the passed target."""
     if 'person:' in target:
         factory = PersonFactory(app, target)
+    if 'presence:' in target:
+        factory = PresenceFactory(app, target)  # type: ignore
     elif 'slack:' in target:
         factory = SlackFactory(app, target)  # type: ignore
     else:
