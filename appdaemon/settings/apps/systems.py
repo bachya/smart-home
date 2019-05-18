@@ -165,7 +165,10 @@ class StartHomeKitOnZwaveReady(Base):
         """Return whether the Z-Wave network is ready."""
         zwave_devices = self.get_state('zwave')
         for attrs in zwave_devices.values():
-            if attrs['state'] != 'ready':
+            try:
+                if attrs['state'] != 'ready':
+                    return False
+            except TypeError:
                 return False
         return True
 
