@@ -24,15 +24,13 @@ class NotifyDone(Base):
     """Define a feature to notify a target when the appliancer is done."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_PROPERTIES:
-            vol.Schema({
-                vol.Required(CONF_CLEAN_THRESHOLD): float,
-                vol.Required(CONF_DRYING_THRESHOLD): float,
-                vol.Required(CONF_IOS_EMPTIED_KEY): str,
-                vol.Required(CONF_NOTIFICATION_INTERVAL): int,
-                vol.Required(CONF_RUNNING_THRESHOLD): float,
-            },
-                       extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES: vol.Schema({
+            vol.Required(CONF_CLEAN_THRESHOLD): float,
+            vol.Required(CONF_DRYING_THRESHOLD): float,
+            vol.Required(CONF_IOS_EMPTIED_KEY): str,
+            vol.Required(CONF_NOTIFICATION_INTERVAL): int,
+            vol.Required(CONF_RUNNING_THRESHOLD): float,
+        }, extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:
@@ -88,16 +86,14 @@ class NotifyDone(Base):
                 cancel()
 
 
-class WasherDryer(Base):
+class WasherDryer(Base):  # pylint: disable=too-few-public-methods
     """Define an app to represent a washer/dryer-type appliance."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS:
-            vol.Schema({
-                vol.Required(CONF_POWER): cv.entity_id,
-                vol.Required(CONF_STATUS): cv.entity_id,
-            },
-                       extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_POWER): cv.entity_id,
+            vol.Required(CONF_STATUS): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
     })
 
     class States(Enum):

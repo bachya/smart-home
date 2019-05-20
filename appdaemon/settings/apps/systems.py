@@ -22,17 +22,13 @@ class LowBatteries(Base):
     """Define a feature to notify us of low batteries."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS:
-            vol.Schema({
-                vol.Required(CONF_BATTERIES_TO_MONITOR): cv.ensure_list,
-            },
-                       extra=vol.ALLOW_EXTRA),
-        CONF_PROPERTIES:
-            vol.Schema({
-                vol.Required(CONF_BATTERY_LEVEL_THRESHOLD): int,
-                vol.Required(CONF_NOTIFICATION_INTERVAL): int,
-            },
-                       extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_BATTERIES_TO_MONITOR): cv.ensure_list,
+        }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES: vol.Schema({
+            vol.Required(CONF_BATTERY_LEVEL_THRESHOLD): int,
+            vol.Required(CONF_NOTIFICATION_INTERVAL): int,
+        }, extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:
@@ -87,17 +83,13 @@ class LeftInState(Base):
     """Define a feature to monitor whether an entity is left in a state."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS:
-            vol.Schema({
-                vol.Required(CONF_ENTITY): cv.entity_id,
-            },
-                       extra=vol.ALLOW_EXTRA),
-        CONF_PROPERTIES:
-            vol.Schema({
-                vol.Required(CONF_DURATION): int,
-                vol.Required(CONF_STATE): str,
-            },
-                       extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_ENTITY): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES: vol.Schema({
+            vol.Required(CONF_DURATION): int,
+            vol.Required(CONF_STATE): str,
+        }, extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:
@@ -139,16 +131,12 @@ class SslExpiration(Base):
     """Define a feature to notify me when the SSL cert is expiring."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS:
-            vol.Schema({
-                vol.Required(CONF_SSL_EXPIRY): cv.entity_id,
-            },
-                       extra=vol.ALLOW_EXTRA),
-        CONF_PROPERTIES:
-            vol.Schema({
-                vol.Required(CONF_EXPIRY_THRESHOLD): int,
-            },
-                       extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_SSL_EXPIRY): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES: vol.Schema({
+            vol.Required(CONF_EXPIRY_THRESHOLD): int,
+        }, extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:

@@ -24,10 +24,9 @@ class AbsentInsecure(Base):
     """Define a feature to notify us when we've left home insecure."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS:
-            vol.Schema({
-                vol.Required(CONF_STATE): cv.entity_id,
-            }, extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_STATE): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:
@@ -98,15 +97,13 @@ class GarageLeftOpen(Base):
     """Define a feature to notify us when the garage is left open."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS:
-            vol.Schema({
-                vol.Required(CONF_GARAGE_DOOR): cv.entity_id,
-            }, extra=vol.ALLOW_EXTRA),
-        CONF_PROPERTIES:
-            vol.Schema({
-                vol.Required(CONF_NOTIFICATION_INTERVAL): int,
-                vol.Required(CONF_TIME_LEFT_OPEN): int,
-            }, extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_GARAGE_DOOR): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES: vol.Schema({
+            vol.Required(CONF_NOTIFICATION_INTERVAL): int,
+            vol.Required(CONF_TIME_LEFT_OPEN): int,
+        }, extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:
@@ -163,10 +160,9 @@ class NotifyOnChange(Base):
     """Define a feature to notify us the secure status changes."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS:
-            vol.Schema({
-                vol.Required(CONF_STATE): cv.entity_id,
-            }, extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_STATE): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:
@@ -192,12 +188,11 @@ class SecurityManager(Base):
     """Define a class to represent the app."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS:
-            vol.Schema({
-                vol.Required(CONF_ALARM_CONTROL_PANEL): cv.entity_id,
-                vol.Required(CONF_GARAGE_DOOR): cv.entity_id,
-                vol.Required(CONF_OVERALL_SECURITY_STATUS): cv.entity_id,
-            }, extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_ALARM_CONTROL_PANEL): cv.entity_id,
+            vol.Required(CONF_GARAGE_DOOR): cv.entity_id,
+            vol.Required(CONF_OVERALL_SECURITY_STATUS): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
     })
 
     class AlarmStates(Enum):

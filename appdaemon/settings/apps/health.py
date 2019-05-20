@@ -19,10 +19,9 @@ class AaronAccountability(Base):
     """Define features to keep me accountable on my phone."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS:
-            vol.Schema({
-                vol.Required(CONF_AARON_ROUTER_TRACKER): cv.entity_id,
-            }, extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_AARON_ROUTER_TRACKER): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:
@@ -68,15 +67,13 @@ class NotifyBadAqi(Base):
     """Define a feature to notify us of bad air quality."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS:
-            vol.Schema({
-                vol.Required(CONF_AQI): cv.entity_id,
-                vol.Required(CONF_HVAC_STATE): cv.entity_id,
-            }, extra=vol.ALLOW_EXTRA),
-        CONF_PROPERTIES:
-            vol.Schema({
-                vol.Required(CONF_AQI_THRESHOLD): int,
-            }, extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_AQI): cv.entity_id,
+            vol.Required(CONF_HVAC_STATE): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES: vol.Schema({
+            vol.Required(CONF_AQI_THRESHOLD): int,
+        }, extra=vol.ALLOW_EXTRA),
     })
 
     @property
