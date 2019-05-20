@@ -48,12 +48,10 @@ class BadLoginNotification(Base):
     """Define a feature to notify me of unauthorized login attempts."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS:
-            vol.Schema({
-                vol.Required(CONF_BAD_LOGIN): cv.entity_id,
-                vol.Required(CONF_IP_BAN): cv.entity_id,
-            },
-                       extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_BAD_LOGIN): cv.entity_id,
+            vol.Required(CONF_IP_BAN): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:
@@ -85,11 +83,9 @@ class DetectBlackout(Base):
     """Define a feature to manage blackout awareness."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS:
-            vol.Schema({
-                vol.Required(CONF_BLACKOUT_SWITCH): cv.entity_id,
-            },
-                       extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS: vol.Schema({
+            vol.Required(CONF_BLACKOUT_SWITCH): cv.entity_id,
+        }, extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:

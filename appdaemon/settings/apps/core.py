@@ -31,10 +31,8 @@ APP_SCHEMA = vol.Schema({
     vol.Optional(CONF_DEPENDENCIES): cv.ensure_list,
     vol.Optional(CONF_APP): str,
     vol.Optional(CONF_CONSTRAINTS): vol.Schema({
-        vol.Optional(CONF_OPERATOR, default=OPERATOR_ALL):
-            vol.In(OPERATORS),
-        vol.Required(CONF_CONSTRAINTS):
-            dict
+        vol.Optional(CONF_OPERATOR, default=OPERATOR_ALL): vol.In(OPERATORS),
+        vol.Required(CONF_CONSTRAINTS): dict
     }),
     vol.Optional(CONF_ENABLED_CONFIG): vol.Schema({
         vol.Required(CONF_NAME): str,
