@@ -8,6 +8,7 @@ from const import (
     CONF_PROPERTIES)
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
+from notification import send_notification
 
 CONF_CAR = 'car'
 CONF_FUEL_THRESHOLD = 'fuel_threshold'
@@ -53,12 +54,13 @@ class NotifyLowFuel(Base):
                         self.entity_ids[CONF_CAR]))
 
                 self.registered = True
-                self.notification_manager.send(
+                send_notification(
+                    self,
+                    self.properties[CONF_NOTIFICATION_TARGET],
                     "{0} needs gas; fill 'er up!.".format(
                         self.properties[CONF_FRIENDLY_NAME]),
                     title='{0} is Low ⛽'.format(
-                        self.properties[CONF_FRIENDLY_NAME]),
-                    target=self.properties[CONF_NOTIFICATION_TARGET])
+                        self.properties[CONF_FRIENDLY_NAME]))
             else:
                 self.registered = False
         except ValueError:

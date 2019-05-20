@@ -8,6 +8,7 @@ from const import (
     CONF_ENTITY_IDS, CONF_FRIENDLY_NAME, CONF_NOTIFICATION_INTERVAL,
     CONF_PROPERTIES)
 from helpers import config_validation as cv
+from notification import send_notification
 
 CONF_CURRENT_MOISTURE = 'current_moisture'
 CONF_MOISTURE_THRESHOLD = 'moisture_threshold'
@@ -54,16 +55,16 @@ class LowMoisture(Base):
             self.log('Notifying people at home that plant is low on moisture')
 
             self._low_moisture = True
-            self.handles[
-                HANDLE_LOW_MOISTURE] = self.notification_manager.repeat(
-                    '{0} is at {1}% moisture and needs water.'.format(
-                        self.properties['friendly_name'],
-                        self.current_moisture),
-                    self.properties['notification_interval'],
-                    title='{0} is Dry 💧'.format(
-                        self.properties['friendly_name']),
-                    target='home')
+            self.handles[HANDLE_LOW_MOISTURE] = send_notification(
+                self,
+                'home',
+                '{0} is at {1}% moisture and needs water.'.format(
+                    self.properties['friendly_name'], self.current_moisture),
+                title='{0} is Dry 💧'.format(self.properties['friendly_name']),
+                when=self.datetime(),
+                interval=self.properties[CONF_NOTIFICATION_INTERVAL])
         else:
             self._low_moisture = False
             if HANDLE_LOW_MOISTURE in self.handles:
-                self.handles.pop(HANDLE_LOW_MOISTURE)()  # type: ignore
+                cancel = self.handles.pop(HANDLE_LOW_MOISTURE)
+                cancel()

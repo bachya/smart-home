@@ -4,7 +4,6 @@ notify_of_trash_pickup_automation:
   class: NotifyOfPickup
   dependencies:
     - do_not_disturb
-    - notification_manager
     - presence_manager
     - trash_manager
     - vacation_mode

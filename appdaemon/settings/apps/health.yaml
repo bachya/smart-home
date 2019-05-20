@@ -1,10 +1,18 @@
 ---
+aaron_accountability_automation:
+  module: health
+  class: AaronAccountability
+  dependencies:
+    - aaron
+    - presence_manager
+  entity_ids:
+    aaron_router_tracker: device_tracker.aarons_iphone
+
 notify_bad_aqi_automation:
   module: health
   class: NotifyBadAqi
   dependencies:
     - do_not_disturb
-    - notification_manager
     - vacation_mode
   entity_ids:
     aqi: sensor.us_air_quality_index

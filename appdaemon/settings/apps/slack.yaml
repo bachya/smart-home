@@ -4,7 +4,6 @@ slack_app_home_assistant:
   class: SlackApp
   dependencies:
     - climate_manager
-    - notification_manager
     - security_manager
   properties:
     interactive_command_event: HOME_ASSISTANT_INTERACTIVE_COMMAND

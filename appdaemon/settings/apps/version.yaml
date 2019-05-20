@@ -3,7 +3,6 @@ new_appdaemon_version_automation:
   module: version
   class: NewPortainerVersionNotification
   dependencies:
-    - notification_manager
     - presence_manager
   entity_ids:
     available: sensor.appdaemon_available
@@ -26,7 +25,6 @@ new_esphome_version_automation:
   module: version
   class: NewMultiSensorVersionNotification
   dependencies:
-    - notification_manager
     - presence_manager
   entity_ids:
     available: sensor.esphome_available
@@ -51,7 +49,6 @@ new_hass_version_automation:
   module: version
   class: NewVersionNotification
   dependencies:
-    - notification_manager
     - presence_manager
   entity_ids:
     available: sensor.hass_available
@@ -68,7 +65,6 @@ new_mosquitto_version_automation:
   module: version
   class: NewPortainerVersionNotification
   dependencies:
-    - notification_manager
     - presence_manager
   entity_ids:
     available: sensor.mosquitto_available
@@ -91,7 +87,6 @@ new_portainer_version_automation:
   module: version
   class: NewPortainerVersionNotification
   dependencies:
-    - notification_manager
     - presence_manager
   entity_ids:
     available: sensor.portainer_available
@@ -114,7 +109,6 @@ new_yi_hack_version_automation:
   module: version
   class: NewVersionNotification
   dependencies:
-    - notification_manager
     - presence_manager
   entity_ids:
     available: sensor.yi_hack_available

@@ -8,6 +8,7 @@ from const import (
     CONF_DURATION, CONF_ENTITY, CONF_ENTITY_IDS, CONF_NOTIFICATION_INTERVAL,
     CONF_PROPERTIES, CONF_STATE, TOGGLE_STATES)
 from helpers import config_validation as cv
+from notification import send_notification
 
 CONF_BATTERIES_TO_MONITOR = 'batteries_to_monitor'
 CONF_BATTERY_LEVEL_THRESHOLD = 'battery_level_threshold'
@@ -21,13 +22,17 @@ class LowBatteries(Base):
     """Define a feature to notify us of low batteries."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS: vol.Schema({
-            vol.Required(CONF_BATTERIES_TO_MONITOR): cv.ensure_list,
-        }, extra=vol.ALLOW_EXTRA),
-        CONF_PROPERTIES: vol.Schema({
-            vol.Required(CONF_BATTERY_LEVEL_THRESHOLD): int,
-            vol.Required(CONF_NOTIFICATION_INTERVAL): int,
-        }, extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS:
+            vol.Schema({
+                vol.Required(CONF_BATTERIES_TO_MONITOR): cv.ensure_list,
+            },
+                       extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES:
+            vol.Schema({
+                vol.Required(CONF_BATTERY_LEVEL_THRESHOLD): int,
+                vol.Required(CONF_NOTIFICATION_INTERVAL): int,
+            },
+                       extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:
@@ -61,17 +66,19 @@ class LowBatteries(Base):
 
             self._registered.append(name)
 
-            self.handles[HANDLE_BATTERY_LOW][
-                name] = self.notification_manager.repeat(
-                    '{0} has low batteries ({1})%. Replace them ASAP!'.format(
-                        name, value),
-                    self.properties[CONF_NOTIFICATION_INTERVAL],
-                    target='slack')
+            self.handles[HANDLE_BATTERY_LOW][name] = send_notification(
+                self,
+                'slack',
+                '{0} has low batteries ({1})%. Replace them ASAP!'.format(
+                    name, value),
+                when=self.datetime(),
+                interval=self.properties[CONF_NOTIFICATION_INTERVAL])
         else:
             try:
                 self._registered.remove(name)
                 if name in self.handles[HANDLE_BATTERY_LOW]:
-                    self.handles[HANDLE_BATTERY_LOW].pop(name)()
+                    cancel = self.handles[HANDLE_BATTERY_LOW].pop(name)
+                    cancel()
             except ValueError:
                 return
 
@@ -80,13 +87,17 @@ class LeftInState(Base):
     """Define a feature to monitor whether an entity is left in a state."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS: vol.Schema({
-            vol.Required(CONF_ENTITY): cv.entity_id,
-        }, extra=vol.ALLOW_EXTRA),
-        CONF_PROPERTIES: vol.Schema({
-            vol.Required(CONF_DURATION): int,
-            vol.Required(CONF_STATE): str,
-        }, extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS:
+            vol.Schema({
+                vol.Required(CONF_ENTITY): cv.entity_id,
+            },
+                       extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES:
+            vol.Schema({
+                vol.Required(CONF_DURATION): int,
+                vol.Required(CONF_STATE): str,
+            },
+                       extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:
@@ -128,12 +139,16 @@ class SslExpiration(Base):
     """Define a feature to notify me when the SSL cert is expiring."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS: vol.Schema({
-            vol.Required(CONF_SSL_EXPIRY): cv.entity_id,
-        }, extra=vol.ALLOW_EXTRA),
-        CONF_PROPERTIES: vol.Schema({
-            vol.Required(CONF_EXPIRY_THRESHOLD): int,
-        }, extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS:
+            vol.Schema({
+                vol.Required(CONF_SSL_EXPIRY): cv.entity_id,
+            },
+                       extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES:
+            vol.Schema({
+                vol.Required(CONF_EXPIRY_THRESHOLD): int,
+            },
+                       extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:
@@ -150,7 +165,8 @@ class SslExpiration(Base):
         if int(new) < self.properties[CONF_EXPIRY_THRESHOLD]:
             self.log('SSL certificate about to expire: {0} days'.format(new))
 
-            self.notification_manager.create_omnifocus_task(
+            send_notification(
+                self, 'slack/@aaron',
                 'SSL expires in less than {0} days'.format(new))
 
 

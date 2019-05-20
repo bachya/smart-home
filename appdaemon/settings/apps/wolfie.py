@@ -8,6 +8,7 @@ from core import APP_SCHEMA, Base
 from const import CONF_ENTITY_IDS, CONF_PROPERTIES
 from helpers import config_validation as cv
 from helpers.scheduler import run_on_days
+from notification import send_notification
 
 CONF_BIN_STATE = 'bin_state'
 CONF_CONSUMABLES = 'consumables'
@@ -56,9 +57,9 @@ class MonitorConsumables(Base):
 
             self.log('Consumable is low: {0}'.format(attribute))
 
-            self.notification_manager.create_omnifocus_task(
+            send_notification(
+                self, 'slack/@aaron',
                 'Order a new Wolfie consumable: {0}'.format(attribute))
-
             self.triggered = True
         elif self.triggered:
             self.triggered = False
@@ -101,9 +102,6 @@ class ScheduledCycle(Base):
             self.start_by_switch,
             'VACUUM_START',
             constrain_input_boolean=self.enabled_entity_id)
-        self.listen_ios_event(
-            self.response_from_push_notification,
-            self.properties['ios_emptied_key'])
         self.listen_state(
             self.all_done,
             self.app.entity_ids['status'],
@@ -181,17 +179,20 @@ class ScheduledCycle(Base):
             kwargs: dict) -> None:
         """Listen for changes in bin status."""
         if new == self.app.BinStates.full.value:
-            self.handles[HANDLE_BIN] = self.notification_manager.repeat(
+            self.handles[HANDLE_BIN] = send_notification(
+                self,
+                'home',
                 "Empty him now and you won't have to do it later!",
-                self.properties[CONF_NOTIFICATION_INTERVAL_FULL],
                 title='Wolfie Full 🤖',
-                target='home',
+                when=self.datetime(),
+                interval=self.properties[CONF_NOTIFICATION_INTERVAL_FULL],
                 data={'push': {
                     'category': 'wolfie'
                 }})
         elif new == self.app.BinStates.empty.value:
             if HANDLE_BIN in self.handles:
-                self.handles.pop(HANDLE_BIN)()  # type: ignore
+                cancel = self.handles.pop(HANDLE_BIN)
+                cancel()
 
     def create_schedule(self) -> None:
         """Create the vacuuming schedule from the on booleans."""
@@ -211,30 +212,21 @@ class ScheduledCycle(Base):
             kwargs: dict) -> None:
         """Clear the error when Wolfie is no longer stuck."""
         if HANDLE_STUCK in self.handles:
-            self.handles.pop(HANDLE_STUCK)()  # type: ignore
+            cancel = self.handles.pop(HANDLE_STUCK)
+            cancel()
 
     def errored(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Brief when Wolfie's had an error."""
-        self.handles[HANDLE_STUCK] = self.notification_manager.repeat(
+        self.handles[HANDLE_STUCK] = send_notification(
+            self,
+            'home',
             "Help him get back on track or home.",
-            self.properties['notification_interval_stuck'],
             title='Wolfie Stuck 😢',
-            target='home',
+            when=self.datetime(),
+            interval=self.properties['notification_interval_stuck']
         )
-
-    def response_from_push_notification(
-            self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Respond to iOS notification to empty vacuum."""
-        self.app.bin_state = (self.app.BinStates.empty)
-
-        target = self.notification_manager.get_target_from_push_id(
-            data['sourceDevicePermanentID'])
-        self.notification_manager.send(
-            '{0} emptied the vacuum.'.format(target.first_name),
-            title='Vacuum Emptied 🤖',
-            target='not {0}'.format(target.first_name))
 
     def schedule_changed(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,

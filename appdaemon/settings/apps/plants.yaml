@@ -4,7 +4,6 @@ fiddle_leaf_fig_low_moisture_automation:
   class: LowMoisture
   dependencies:
     - do_not_disturb
-    - notification_manager
     - presence_manager
     - vacation_mode
   entity_ids:

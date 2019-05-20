@@ -12,7 +12,6 @@ dishwasher_cycle_automation:
   dependencies:
     - dishwasher
     - do_not_disturb
-    - notification_manager
     - presence_manager
     - vacation_mode
   app: dishwasher

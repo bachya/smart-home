@@ -10,6 +10,7 @@ from const import (
     CONF_ENTITY_IDS, CONF_FRIENDLY_NAME, CONF_ICON, CONF_PROPERTIES,
     CONF_UPDATE_INTERVAL)
 from helpers import config_validation as cv
+from notification import send_notification
 
 CONF_APP_NAME = 'app_name'
 CONF_AVAILABLE = 'available'
@@ -24,11 +25,13 @@ DEFAULT_DYNAMIC_RETRIES = 3
 ENTITY_IDS_SCHEMA = vol.Schema({
     vol.Required(CONF_AVAILABLE): cv.entity_id,
     vol.Required(CONF_INSTALLED): cv.entity_id,
-}, extra=vol.ALLOW_EXTRA)
+},
+                               extra=vol.ALLOW_EXTRA)
 
 PROPERTIES_SCHEMA = vol.Schema({
     vol.Required(CONF_APP_NAME): str,
-}, extra=vol.ALLOW_EXTRA)
+},
+                               extra=vol.ALLOW_EXTRA)
 
 VERSION_APP_SCHEMA = APP_SCHEMA.extend({
     vol.Optional(CONF_ENTITY_IDS): ENTITY_IDS_SCHEMA,
@@ -36,12 +39,13 @@ VERSION_APP_SCHEMA = APP_SCHEMA.extend({
 })
 
 DYNAMIC_APP_SCHEMA = VERSION_APP_SCHEMA.extend({
-    vol.Required(CONF_PROPERTIES): PROPERTIES_SCHEMA.extend({
-        vol.Required(CONF_CREATED_ENTITY_ID): cv.entity_id,
-        vol.Required(CONF_FRIENDLY_NAME): str,
-        vol.Required(CONF_ICON): str,
-        vol.Required(CONF_UPDATE_INTERVAL): int,
-    })
+    vol.Required(CONF_PROPERTIES):
+        PROPERTIES_SCHEMA.extend({
+            vol.Required(CONF_CREATED_ENTITY_ID): cv.entity_id,
+            vol.Required(CONF_FRIENDLY_NAME): str,
+            vol.Required(CONF_ICON): str,
+            vol.Required(CONF_UPDATE_INTERVAL): int,
+        })
 })
 
 
@@ -71,11 +75,12 @@ class NewVersionNotification(Base):
                 'New {0} version detected: {1}'.format(
                     self.properties[CONF_APP_NAME], new))
 
-            self.notification_manager.send(
+            send_notification(
+                self,
+                'slack/@aaron',
                 'New {0} Version: {1}'.format(
                     self.properties[CONF_APP_NAME], new),
-                title='New Software 💿',
-                target=['Aaron', 'slack'])
+                title='New Software 💿')
 
 
 class DynamicSensor(NewVersionNotification):
@@ -109,9 +114,10 @@ class NewMultiSensorVersionNotification(DynamicSensor):
     """Detect version changes by examining multiple version sensors."""
 
     APP_SCHEMA = DYNAMIC_APP_SCHEMA.extend({
-        vol.Required(CONF_ENTITY_IDS): ENTITY_IDS_SCHEMA.extend({
-            vol.Required(CONF_VERSION_SENSORS): vol.All(cv.ensure_list),
-        })
+        vol.Required(CONF_ENTITY_IDS):
+            ENTITY_IDS_SCHEMA.extend({
+                vol.Required(CONF_VERSION_SENSORS): vol.All(cv.ensure_list),
+            })
     })
 
     @property
@@ -133,10 +139,11 @@ class NewPortainerVersionNotification(DynamicSensor):
     """Detect new versions of Portainer-defined images."""
 
     APP_SCHEMA = DYNAMIC_APP_SCHEMA.extend({
-        vol.Required(CONF_PROPERTIES): PROPERTIES_SCHEMA.extend({
-            vol.Required(CONF_ENDPOINT_ID): int,
-            vol.Required(CONF_IMAGE_NAME): str,
-        })
+        vol.Required(CONF_PROPERTIES):
+            PROPERTIES_SCHEMA.extend({
+                vol.Required(CONF_ENDPOINT_ID): int,
+                vol.Required(CONF_IMAGE_NAME): str,
+            })
     })
 
     API_URL = 'http://portainer:9000/api'
@@ -146,11 +153,13 @@ class NewPortainerVersionNotification(DynamicSensor):
             vol.Schema({
                 vol.Required(CONF_AVAILABLE): cv.entity_id,
                 vol.Required(CONF_INSTALLED): cv.entity_id,
-            }, extra=vol.ALLOW_EXTRA),
+            },
+                       extra=vol.ALLOW_EXTRA),
         CONF_PROPERTIES:
             vol.Schema({
                 vol.Required(CONF_APP_NAME): str,
-            }, extra=vol.ALLOW_EXTRA),
+            },
+                       extra=vol.ALLOW_EXTRA),
     })
 
     @property

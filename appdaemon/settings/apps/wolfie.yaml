@@ -14,7 +14,6 @@ notify_when_wolfie_consumable_low_automation:
   class: MonitorConsumables
   dependencies:
     - do_not_disturb
-    - notification_manager
     - presence_manager
     - wolfie
   app: wolfie
@@ -37,7 +36,6 @@ wolfie_scheduled_cycle_automation:
   class: ScheduledCycle
   dependencies:
     - guest_mode
-    - notification_manager
     - presence_manager
     - security_manager
     - vacation_mode

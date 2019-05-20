@@ -7,6 +7,7 @@ from typing import Tuple
 from core import Base
 from helpers import grammatical_list_join, suffix_strftime
 from helpers.scheduler import run_on_days
+from notification import send_notification
 
 
 class NotifyOfPickup(Base):
@@ -24,12 +25,13 @@ class NotifyOfPickup(Base):
     def time_to_notify(self, kwargs: dict) -> None:
         """Schedule the next pickup notification."""
         date, friendly_str = self.trash_manager.in_next_pickup_str()
-        self.notification_manager.send(
+        send_notification(
+            self,
+            'home',
             friendly_str,
             title='Trash Reminder 🗑',
             when=datetime.datetime.combine(
-                date - datetime.timedelta(days=1), datetime.time(20, 0, 0)),
-            target='home')
+                date - datetime.timedelta(days=1), datetime.time(20, 0, 0)))
 
 
 class TrashManager(Base):

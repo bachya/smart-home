@@ -10,6 +10,7 @@ from const import (
     CONF_ENTITY_IDS, CONF_FRIENDLY_NAME, CONF_NOTIFICATION_INTERVAL,
     CONF_PROPERTIES, CONF_STATE)
 from helpers import config_validation as cv
+from notification import send_notification
 
 CONF_ALARM_CONTROL_PANEL = 'alarm_control_panel'
 CONF_GARAGE_DOOR = 'garage_door'
@@ -23,25 +24,14 @@ class AbsentInsecure(Base):
     """Define a feature to notify us when we've left home insecure."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS: vol.Schema({
-            vol.Required(CONF_STATE): cv.entity_id,
-        }, extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS:
+            vol.Schema({
+                vol.Required(CONF_STATE): cv.entity_id,
+            }, extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:
         """Configure."""
-        self.listen_event(
-            self.response_from_push_notification,
-            'ios.notification_action_fired',
-            actionName='LOCK_UP_AWAY',
-            constrain_input_boolean=self.enabled_entity_id,
-            action='away')
-        self.listen_event(
-            self.response_from_push_notification,
-            'ios.notification_action_fired',
-            actionName='LOCK_UP_HOME',
-            constrain_input_boolean=self.enabled_entity_id,
-            action='home')
         self.listen_state(
             self.house_insecure,
             self.entity_ids[CONF_STATE],
@@ -56,31 +46,13 @@ class AbsentInsecure(Base):
         """Send notifications when the house has been left insecure."""
         self.log('No one home and house is insecure; notifying')
 
-        self.notification_manager.send(
+        send_notification(
+            self, ['Aaron', 'Britt'],
             "No one is home and the house isn't locked up.",
             title='Security Issue 🔐',
-            blackout_start_time=None,
-            blackout_end_time=None,
-            target=['everyone', 'slack'],
             data={'push': {
-                'category': 'security'
+                'category': 'dishwasher'
             }})
-
-    def response_from_push_notification(
-            self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Respond to 'ios.notification_action_fired' events."""
-        target = self.notification_manager.get_target_from_push_id(
-            data['sourceDevicePermanentID'])
-
-        if kwargs['action'] == 'home':
-            self.turn_on('scene.good_night')
-        elif kwargs['action'] == 'away':
-            self.turn_on('scene.depart_home')
-
-        self.notification_manager.send(
-            '{0} locked up the house.'.format(target.first_name),
-            title='Issue Resolved 🔐',
-            target=['not {0}'.format(target.first_name), 'slack'])
 
 
 class AutoDepartureLockup(Base):
@@ -126,22 +98,19 @@ class GarageLeftOpen(Base):
     """Define a feature to notify us when the garage is left open."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS: vol.Schema({
-            vol.Required(CONF_GARAGE_DOOR): cv.entity_id,
-        }, extra=vol.ALLOW_EXTRA),
-        CONF_PROPERTIES: vol.Schema({
-            vol.Required(CONF_NOTIFICATION_INTERVAL): int,
-            vol.Required(CONF_TIME_LEFT_OPEN): int,
-        }, extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS:
+            vol.Schema({
+                vol.Required(CONF_GARAGE_DOOR): cv.entity_id,
+            }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES:
+            vol.Schema({
+                vol.Required(CONF_NOTIFICATION_INTERVAL): int,
+                vol.Required(CONF_TIME_LEFT_OPEN): int,
+            }, extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:
         """Configure."""
-        self.listen_event(
-            self.response_from_push_notification,
-            'ios.notification_action_fired',
-            actionName='GARAGE_CLOSE',
-            constrain_input_boolean=self.enabled_entity_id)
         self.listen_state(
             self.closed,
             self.entity_ids[CONF_GARAGE_DOOR],
@@ -167,13 +136,12 @@ class GarageLeftOpen(Base):
         """Send notifications when the garage has been left open."""
         message = 'The garage has been left open. Want to close it?'
 
-        self.handles[HANDLE_GARAGE_OPEN] = self.notification_manager.repeat(
-            message,
-            self.properties[CONF_NOTIFICATION_INTERVAL],
+        self.handles[HANDLE_GARAGE_OPEN] = send_notification(
+            self, ['Aaron', 'Britt'],
+            'The garage has been left open. Want to close it?',
             title='Garage Open 🚗',
-            blackout_start_time=None,
-            blackout_end_time=None,
-            target=['everyone'],
+            when=self.datetime(),
+            interval=self.properties[CONF_NOTIFICATION_INTERVAL],
             data={'push': {
                 'category': 'garage'
             }})
@@ -190,26 +158,15 @@ class GarageLeftOpen(Base):
             },
             urgent=True)
 
-    def response_from_push_notification(
-            self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Respond to 'ios.notification_action_fired' events."""
-        self.security_manager.close_garage()
-
-        target = self.notification_manager.get_target_from_push_id(
-            data['sourceDevicePermanentID'])
-        self.notification_manager.send(
-            '{0} closed the garage.'.format(target.first_name),
-            title='Issue Resolved 🚗',
-            target=['not {0}'.format(target.first_name), 'slack'])
-
 
 class NotifyOnChange(Base):
     """Define a feature to notify us the secure status changes."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS: vol.Schema({
-            vol.Required(CONF_STATE): cv.entity_id,
-        }, extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS:
+            vol.Schema({
+                vol.Required(CONF_STATE): cv.entity_id,
+            }, extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:
@@ -225,23 +182,22 @@ class NotifyOnChange(Base):
         """Send a notification when the security state changes."""
         self.log('Notifying of security status change: {0}'.format(new))
 
-        self.notification_manager.send(
+        send_notification(
+            self, ['Aaron', 'Britt'],
             'The security status has changed to "{0}"'.format(new),
-            title='Security Change 🔐',
-            blackout_start_time=None,
-            blackout_end_time=None,
-            target=['everyone', 'slack'])
+            title='Security Change 🔐')
 
 
 class SecurityManager(Base):
     """Define a class to represent the app."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS: vol.Schema({
-            vol.Required(CONF_ALARM_CONTROL_PANEL): cv.entity_id,
-            vol.Required(CONF_GARAGE_DOOR): cv.entity_id,
-            vol.Required(CONF_OVERALL_SECURITY_STATUS): cv.entity_id,
-        }, extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS:
+            vol.Schema({
+                vol.Required(CONF_ALARM_CONTROL_PANEL): cv.entity_id,
+                vol.Required(CONF_GARAGE_DOOR): cv.entity_id,
+                vol.Required(CONF_OVERALL_SECURITY_STATUS): cv.entity_id,
+            }, extra=vol.ALLOW_EXTRA),
     })
 
     class AlarmStates(Enum):

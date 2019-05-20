@@ -8,6 +8,7 @@ import voluptuous as vol
 from const import CONF_NOTIFICATION_INTERVAL, CONF_ENTITY_IDS, CONF_PROPERTIES
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
+from notification import send_notification
 
 CONF_POWER = 'power'
 CONF_STATUS = 'status'
@@ -23,20 +24,19 @@ class NotifyDone(Base):
     """Define a feature to notify a target when the appliancer is done."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_PROPERTIES: vol.Schema({
-            vol.Required(CONF_CLEAN_THRESHOLD): float,
-            vol.Required(CONF_DRYING_THRESHOLD): float,
-            vol.Required(CONF_IOS_EMPTIED_KEY): str,
-            vol.Required(CONF_NOTIFICATION_INTERVAL): int,
-            vol.Required(CONF_RUNNING_THRESHOLD): float,
-        }, extra=vol.ALLOW_EXTRA),
+        CONF_PROPERTIES:
+            vol.Schema({
+                vol.Required(CONF_CLEAN_THRESHOLD): float,
+                vol.Required(CONF_DRYING_THRESHOLD): float,
+                vol.Required(CONF_IOS_EMPTIED_KEY): str,
+                vol.Required(CONF_NOTIFICATION_INTERVAL): int,
+                vol.Required(CONF_RUNNING_THRESHOLD): float,
+            },
+                       extra=vol.ALLOW_EXTRA),
     })
 
     def configure(self) -> None:
         """Configure."""
-        self.listen_ios_event(
-            self.response_from_push_notification,
-            self.properties[CONF_IOS_EMPTIED_KEY])
         self.listen_state(
             self.power_changed,
             self.app.entity_ids[CONF_POWER],
@@ -72,40 +72,32 @@ class NotifyDone(Base):
             kwargs: dict) -> None:
         """Deal with changes to the status."""
         if new == self.app.States.clean.value:
-            self.handles[HANDLE_CLEAN] = self.notification_manager.repeat(
+            self.handles[HANDLE_CLEAN] = send_notification(
+                self,
+                'home',
                 "Empty it now and you won't have to do it later!",
-                self.properties[CONF_NOTIFICATION_INTERVAL],
                 title='Dishwasher Clean 🍽',
                 when=self.datetime() + timedelta(minutes=15),
-                target='home',
+                interval=self.properties[CONF_NOTIFICATION_INTERVAL],
                 data={'push': {
                     'category': 'dishwasher'
                 }})
         elif old == self.app.States.clean.value:
             if HANDLE_CLEAN in self.handles:
-                self.handles.pop(HANDLE_CLEAN)()  # type: ignore
-
-    def response_from_push_notification(
-            self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Respond to iOS notification to empty the appliance."""
-        self.app.state = self.app.States.dirty
-
-        target = self.notification_manager.get_target_from_push_id(
-            data['sourceDevicePermanentID'])
-        self.notification_manager.send(
-            '{0} emptied the dishwasher.'.format(target.first_name),
-            title='Dishwasher Emptied 🍽',
-            target='not {0}'.format(target.first_name))
+                cancel = self.handles.pop(HANDLE_CLEAN)
+                cancel()
 
 
 class WasherDryer(Base):
     """Define an app to represent a washer/dryer-type appliance."""
 
     APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS: vol.Schema({
-            vol.Required(CONF_POWER): cv.entity_id,
-            vol.Required(CONF_STATUS): cv.entity_id,
-        }, extra=vol.ALLOW_EXTRA),
+        CONF_ENTITY_IDS:
+            vol.Schema({
+                vol.Required(CONF_POWER): cv.entity_id,
+                vol.Required(CONF_STATUS): cv.entity_id,
+            },
+                       extra=vol.ALLOW_EXTRA),
     })
 
     class States(Enum):

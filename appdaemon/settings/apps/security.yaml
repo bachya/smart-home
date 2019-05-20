@@ -4,7 +4,6 @@ auto_departure_lockup_automation:
   class: AutoDepartureLockup
   dependencies:
     - guest_mode
-    - notification_manager
     - presence_manager
     - security_manager
   mode_alterations:
@@ -19,7 +18,6 @@ auto_nighttime_lockup_automation:
   class: AutoNighttimeLockup
   dependencies:
     - guest_mode
-    - notification_manager
     - presence_manager
     - security_manager
   mode_alterations:
@@ -33,7 +31,6 @@ notify_of_garage_open_automation:
   module: security
   class: GarageLeftOpen
   dependencies:
-    - notification_manager
     - presence_manager
     - security_manager
     - slack_app_home_assistant
@@ -53,7 +50,6 @@ notify_when_absent_insecure_automation:
   dependencies:
     - do_not_disturb
     - guest_mode
-    - notification_manager
     - presence_manager
     - security_manager
   entity_ids:
@@ -70,7 +66,6 @@ notify_when_status_changes_automation:
   module: security
   class: NotifyOnChange
   dependencies:
-    - notification_manager
     - presence_manager
     - vacation_mode
   entity_ids:

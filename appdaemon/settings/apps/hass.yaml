@@ -14,7 +14,6 @@ bad_login_notifications_automation:
   module: hass
   class: BadLoginNotification
   dependencies:
-    - notification_manager
     - presence_manager
   entity_ids:
     bad_login: persistent_notification.httplogin

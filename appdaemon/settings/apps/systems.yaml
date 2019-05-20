@@ -3,7 +3,6 @@ notify_of_low_batteries_automation:
   module: systems
   class: LowBatteries
   dependencies:
-    - notification_manager
     - presence_manager
   entity_ids:
     batteries_to_monitor:
@@ -22,7 +21,6 @@ notify_media_center_left_on_automation:
   module: systems
   class: LeftInState
   dependencies:
-    - notification_manager
     - presence_manager
     - slack_app_home_assistant
   entity_ids:
@@ -39,7 +37,6 @@ notify_ps4_left_on_automation:
   module: systems
   class: LeftInState
   dependencies:
-    - notification_manager
     - presence_manager
     - slack_app_home_assistant
   entity_ids:
@@ -56,7 +53,6 @@ notify_of_ssl_expiration_automation:
   module: systems
   class: SslExpiration
   dependencies:
-    - notification_manager
     - presence_manager
   entity_ids:
     ssl_expiry: sensor.ssl_expiry

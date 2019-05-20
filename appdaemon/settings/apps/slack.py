@@ -6,6 +6,7 @@ from zlib import adler32
 from core import Base
 from helpers import (
     grammatical_list_join, random_affirmative_response, relative_search_list)
+from notification import send_notification
 
 
 def message(response_url: str, text: str, attachments: list = None) -> None:
@@ -208,18 +209,8 @@ class SlackApp(Base):
         if image_url:
             attachments.append({'title': '', 'image_url': image_url})
 
-        kwargs = {
-            'data': {
-                'attachments': attachments
-            },
-            'target': 'slack',
-        }  # type: Dict[str, Any]
-
-        if urgent:
-            kwargs['blackout_end_time'] = None
-            kwargs['blackout_start_time'] = None
-
-        self.notification_manager.send(question, **kwargs)
+        send_notification(
+            self, 'slack', question, data={'attachments': attachments})
 
     def slash_command_received(
             self, event_name: str, data: dict, kwargs: dict) -> None:

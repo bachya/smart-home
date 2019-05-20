@@ -3,7 +3,6 @@ subaru_legacy_notify_low_fuel_automation:
   module: car
   class: NotifyLowFuel
   dependencies:
-    - notification_manager
     - presence_manager
   entity_ids:
     car: device_tracker.2010_subaru_legacy
