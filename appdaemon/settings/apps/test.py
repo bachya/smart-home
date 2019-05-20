@@ -2,7 +2,7 @@
 from datetime import datetime, timedelta
 
 from core import Base
-from notification_helper import send_notification
+from notification import send_notification
 
 
 class TestNotification(Base):
