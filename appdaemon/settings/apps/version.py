@@ -25,13 +25,11 @@ DEFAULT_DYNAMIC_RETRIES = 3
 ENTITY_IDS_SCHEMA = vol.Schema({
     vol.Required(CONF_AVAILABLE): cv.entity_id,
     vol.Required(CONF_INSTALLED): cv.entity_id,
-},
-                               extra=vol.ALLOW_EXTRA)
+}, extra=vol.ALLOW_EXTRA)
 
 PROPERTIES_SCHEMA = vol.Schema({
     vol.Required(CONF_APP_NAME): str,
-},
-                               extra=vol.ALLOW_EXTRA)
+}, extra=vol.ALLOW_EXTRA)
 
 VERSION_APP_SCHEMA = APP_SCHEMA.extend({
     vol.Optional(CONF_ENTITY_IDS): ENTITY_IDS_SCHEMA,
