@@ -5,9 +5,9 @@ import voluptuous as vol
 from appdaemon.plugins.hass.hassapi import Hass  # type: ignore
 
 from const import (
-    BLACKOUT_START, BLACKOUT_END, CONF_ICON, OPERATOR_ALL, OPERATOR_ANY,
-    OPERATORS, THRESHOLD_CLOUDY)
+    CONF_ICON, OPERATOR_ALL, OPERATOR_ANY, OPERATORS, THRESHOLD_CLOUDY)
 from helpers import config_validation as cv
+from helpers.dt import in_blackout
 
 CONF_CLASS = 'class'
 CONF_MODULE = 'module'
@@ -137,16 +137,6 @@ class Base(Hass):
         """Constrain execution to whether anyone is in a state."""
         return self._constrain_presence('anyone', value)
 
-    def constrain_blackout(self, state: str) -> bool:
-        """Constrain execution based on blackout state."""
-        if state not in ['in', 'out']:
-            raise ValueError('Unknown blackout state: {0}'.format(state))
-
-        in_blackout = self.now_is_between(BLACKOUT_START, BLACKOUT_END)
-        if state == 'in':
-            return in_blackout
-        return not in_blackout
-
     def constrain_cloudy(self, value: bool) -> bool:
         """Constrain execution based whether it's cloudy or not."""
         cloud_cover = float(self.get_state(SENSOR_CLOUD_COVER))
@@ -158,6 +148,14 @@ class Base(Hass):
     def constrain_everyone(self, value: str) -> bool:
         """Constrain execution to whether everyone is in a state."""
         return self._constrain_presence('everyone', value)
+
+    @staticmethod
+    def constrain_in_blackout(state: str) -> bool:
+        """Constrain execution based on blackout state."""
+        if state is True:
+            return in_blackout()
+
+        return not in_blackout()
 
     def constrain_noone(self, value: str) -> bool:
         """Constrain execution to whether no one is in a state."""

@@ -1,9 +1,11 @@
 """Define automations for Home Assistant itself."""
 import voluptuous as vol
 
-from const import BLACKOUT_END, BLACKOUT_START, CONF_ENTITY_IDS
+from const import CONF_ENTITY_IDS
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
+from helpers.dt import (
+    DEFAULT_BLACKOUT_END, DEFAULT_BLACKOUT_START, in_blackout)
 from notification import send_notification
 
 CONF_BAD_LOGIN = 'bad_login'
@@ -90,19 +92,19 @@ class DetectBlackout(Base):
 
     def configure(self) -> None:
         """Configure."""
-        if self.now_is_between(BLACKOUT_START, BLACKOUT_END):
+        if in_blackout():
             self.turn_on(self.entity_ids[CONF_BLACKOUT_SWITCH])
         else:
             self.turn_off(self.entity_ids[CONF_BLACKOUT_SWITCH])
 
         self.run_daily(
             self.boundary_reached,
-            self.parse_time(BLACKOUT_START),
+            DEFAULT_BLACKOUT_START,
             state='on',
             constrain_input_boolean=self.enabled_entity_id)
         self.run_daily(
             self.boundary_reached,
-            self.parse_time(BLACKOUT_END),
+            DEFAULT_BLACKOUT_END,
             state='off',
             constrain_input_boolean=self.enabled_entity_id)
 

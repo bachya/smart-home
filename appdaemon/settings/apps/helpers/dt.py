@@ -1,10 +1,22 @@
 """Define date/time utilities."""
 from datetime import datetime, time, timedelta
 
+DEFAULT_BLACKOUT_START = time(22, 0)
+DEFAULT_BLACKOUT_END = time(8, 0)
+
 
 def ceil_dt(target_dt: datetime, delta: timedelta) -> datetime:
     """Round a datetime up to the nearest delta."""
     return target_dt + (datetime.min - target_dt) % delta
+
+
+def in_blackout(target: time = None) -> bool:
+    """Return whether we're in the blackout."""
+    kwargs = {}
+    if target:
+        kwargs['target'] = target
+    return time_is_between(
+        DEFAULT_BLACKOUT_START, DEFAULT_BLACKOUT_END, **kwargs)
 
 
 def relative_time_of_day(hass) -> str:

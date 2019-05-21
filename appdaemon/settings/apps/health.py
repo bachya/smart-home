@@ -3,10 +3,10 @@ from typing import Union
 
 import voluptuous as vol
 
-from const import (
-    BLACKOUT_START, CONF_ENTITY_IDS, CONF_PROPERTIES, CONF_UPDATE_INTERVAL)
+from const import CONF_ENTITY_IDS, CONF_PROPERTIES, CONF_UPDATE_INTERVAL
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
+from helpers.dt import DEFAULT_BLACKOUT_START
 from notification import send_notification
 
 CONF_AARON_ROUTER_TRACKER = 'aaron_router_tracker'
@@ -27,8 +27,7 @@ class AaronAccountability(Base):
     def configure(self) -> None:
         """Configure."""
         self.run_daily(
-            self.send_notification_when_blackout_start,
-            self.parse_time(BLACKOUT_START))
+            self.send_notification_when_blackout_start, DEFAULT_BLACKOUT_START)
 
         self.listen_state(
             self.send_notification_on_disconnect,

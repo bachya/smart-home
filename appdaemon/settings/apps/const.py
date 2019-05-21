@@ -1,7 +1,4 @@
 """Define various constants."""
-BLACKOUT_START = '22:00:00'
-BLACKOUT_END = '08:00:00'
-
 # Top level-related config keys:
 CONF_ENTITY_IDS = 'entity_ids'
 CONF_PROPERTIES = 'properties'
