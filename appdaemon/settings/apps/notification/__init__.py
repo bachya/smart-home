@@ -54,12 +54,12 @@ class Notification:
 
     def _send_cb(self, kwargs: dict) -> None:
         """Send a single (immediate or scheduled) notification."""
-        # If this is a repeating notification and we've exceeded our
-        # iterations, cancel right away:
-        if (self.iterations and   # type: ignore
-                self._iteration_counter == self.iterations - 1):
-            if self._cancel_method:
-                self._cancel_method()
+        # If this is a repeating notification, it's already been sent once, and
+        # we've exceeded our iterations, cancel right away:
+        if (self.iterations and  # type: ignore
+                self._iteration_counter == self.iterations - 1 and
+                self._cancel_method):
+            self._cancel_method()
 
         if isinstance(self.targets, str):
             self.targets = [self.targets]
