@@ -4,10 +4,10 @@ from datetime import datetime
 from typing import Callable, List, Optional, Union
 from uuid import uuid4
 
-from appdaemon.plugins.hass.hassapi import Hass  # type: ignore
 import attr
 
-from target import Target, get_targets_from_string
+from core import Base
+from notification.target import Target, get_targets_from_string
 
 
 @attr.s(slots=True, auto_attribs=True)
@@ -15,7 +15,7 @@ class Notification:
     """Define a base notification object."""
 
     # App reference:
-    _app: Hass
+    _app: Base
 
     # Raw targets, message, and optional title:
     targets: Union[str, List[str]]
@@ -102,7 +102,7 @@ class Notification:
 
 
 def send_notification(
-        app: Hass,
+        app: Base,
         targets: List[str],
         message: str,
         title: str = None,

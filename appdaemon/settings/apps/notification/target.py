@@ -2,9 +2,8 @@
 # pylint: disable=too-few-public-methods
 from typing import Dict, List
 
-from appdaemon.plugins.hass.hassapi import Hass  # type: ignore
-
 from const import CONF_PEOPLE
+from core import Base
 
 
 class Target:
@@ -32,7 +31,7 @@ class SlackTarget(Target):
 class TargetFactory:
     """Define an abstract factory."""
 
-    def __init__(self, app: Hass, target: str) -> None:
+    def __init__(self, app: Base, target: str) -> None:
         """Initialization."""
         self._app = app
         self._target = target
@@ -116,7 +115,7 @@ class SlackFactory(TargetFactory):
         return [SlackTarget(splits[0], None)]
 
 
-def get_targets_from_string(app: Hass, target: str) -> List[Target]:
+def get_targets_from_string(app: Base, target: str) -> List[Target]:
     """Return the appropriate factory for the passed target."""
     if 'person:' in target:
         factory = PersonFactory(app, target)
