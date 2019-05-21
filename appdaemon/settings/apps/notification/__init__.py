@@ -1,6 +1,6 @@
 """Define the ability to send single and repeating notifications."""
 # pylint: disable=too-few-public-methods
-from datetime import datetime, time
+from datetime import datetime
 from typing import Callable, List, Optional, Union
 from uuid import uuid4
 
@@ -32,9 +32,6 @@ class Notification:
 
     iterations: Optional[int] = None
     _iteration_counter: int = 0
-
-    blackout_start_time: Optional[time] = None
-    blackout_end_time: Optional[time] = None
 
     # "Auto-generated" properties:
     id: str = attr.Factory(lambda: uuid4().hex)
