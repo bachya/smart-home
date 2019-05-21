@@ -57,7 +57,7 @@ class Notification:
         # If this is a repeating notification, it's already been sent once, and
         # we've exceeded our iterations, cancel right away:
         if (self.iterations and  # type: ignore
-                self._iteration_counter == self.iterations - 1 and
+                self._iteration_counter == self.iterations and
                 self._cancel_method):
             self._cancel_method()
             return
