@@ -46,7 +46,7 @@ class AbsentInsecure(Base):
         self.log('No one home and house is insecure; notifying')
 
         send_notification(
-            self, ['Aaron', 'Britt'],
+            self, ['person:Aaron', 'person:Britt'],
             "No one is home and the house isn't locked up.",
             title='Security Issue 🔐',
             data={'push': {
@@ -134,7 +134,7 @@ class GarageLeftOpen(Base):
         message = 'The garage has been left open. Want to close it?'
 
         self.handles[HANDLE_GARAGE_OPEN] = send_notification(
-            self, ['Aaron', 'Britt'],
+            self, ['person:Aaron', 'person:Britt'],
             'The garage has been left open. Want to close it?',
             title='Garage Open 🚗',
             when=self.datetime(),
@@ -179,7 +179,7 @@ class NotifyOnChange(Base):
         self.log('Notifying of security status change: {0}'.format(new))
 
         send_notification(
-            self, ['Aaron', 'Britt'],
+            self, ['person:Aaron', 'person:Britt'],
             'The security status has changed to "{0}"'.format(new),
             title='Security Change 🔐')
 
