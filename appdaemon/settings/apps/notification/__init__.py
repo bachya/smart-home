@@ -60,6 +60,7 @@ class Notification:
                 self._iteration_counter == self.iterations - 1 and
                 self._cancel_method):
             self._cancel_method()
+            return
 
         if isinstance(self.targets, str):
             self.targets = [self.targets]
