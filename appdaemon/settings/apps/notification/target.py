@@ -117,11 +117,11 @@ class SlackFactory(TargetFactory):
 
 def get_targets_from_string(app: Base, target: str) -> List[Target]:
     """Return the appropriate factory for the passed target."""
-    if 'person:' in target:
+    if target.startswith('person:'):
         factory = PersonFactory(app, target)
-    elif 'presence:' in target:
+    elif target.startswith('presence:'):
         factory = PresenceFactory(app, target)  # type: ignore
-    elif 'slack:' in target:
+    elif target.startswith('slac:'):
         factory = SlackFactory(app, target)  # type: ignore
     else:
         factory = NotifierFactory(app, target)  # type: ignore
