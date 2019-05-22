@@ -181,7 +181,7 @@ class ScheduledCycle(Base):
         if new == self.app.BinStates.full.value:
             self.handles[HANDLE_BIN] = send_notification(
                 self,
-                'home',
+                'presence:home',
                 "Empty him now and you won't have to do it later!",
                 title='Wolfie Full 🤖',
                 when=self.datetime(),
@@ -221,7 +221,7 @@ class ScheduledCycle(Base):
         """Brief when Wolfie's had an error."""
         self.handles[HANDLE_STUCK] = send_notification(
             self,
-            'home',
+            'presence:home',
             "Help him get back on track or home.",
             title='Wolfie Stuck 😢',
             when=self.datetime(),

@@ -72,7 +72,7 @@ class NotifyDone(Base):
         if new == self.app.States.clean.value:
             self.handles[HANDLE_CLEAN] = send_notification(
                 self,
-                'home',
+                'presence:home',
                 "Empty it now and you won't have to do it later!",
                 title='Dishwasher Clean 🍽',
                 when=self.datetime() + timedelta(minutes=15),

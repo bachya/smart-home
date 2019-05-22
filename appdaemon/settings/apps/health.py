@@ -100,7 +100,7 @@ class NotifyBadAqi(Base):
 
             send_notification(
                 self,
-                'home',
+                'presence:home',
                 'AQI is at {0}; consider closing the humidifier vent.'.format(
                     self.current_aqi),
                 title='Poor AQI 😤')
@@ -109,7 +109,7 @@ class NotifyBadAqi(Base):
               and self.current_aqi <= self.properties[CONF_AQI_THRESHOLD]):
             send_notification(
                 self,
-                'home',
+                'presence:home',
                 'AQI is at {0}; open the humidifer vent again.'.format(
                     self.current_aqi),
                 title='Better AQI 😅')

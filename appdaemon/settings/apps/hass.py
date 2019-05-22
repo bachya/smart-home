@@ -78,7 +78,7 @@ class BadLoginNotification(Base):
             title = 'IP Ban'
 
         send_notification(
-            self, 'Aaron', new['attributes']['message'], title=title)
+            self, 'person:Aaron', new['attributes']['message'], title=title)
 
 
 class DetectBlackout(Base):

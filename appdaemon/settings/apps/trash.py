@@ -27,7 +27,7 @@ class NotifyOfPickup(Base):
         date, friendly_str = self.trash_manager.in_next_pickup_str()
         send_notification(
             self,
-            'home',
+            'presence:home',
             friendly_str,
             title='Trash Reminder 🗑',
             when=datetime.datetime.combine(

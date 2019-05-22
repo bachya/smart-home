@@ -55,7 +55,7 @@ class LowMoisture(Base):
             self._low_moisture = True
             self.handles[HANDLE_LOW_MOISTURE] = send_notification(
                 self,
-                'home',
+                'presence:home',
                 '{0} is at {1}% moisture and needs water.'.format(
                     self.properties['friendly_name'], self.current_moisture),
                 title='{0} is Dry 💧'.format(self.properties['friendly_name']),
