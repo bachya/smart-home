@@ -32,7 +32,7 @@ class Notification:
     interval: Optional[int] = None
 
     iterations: Optional[int] = None
-    _iter_count: int = 0
+    _iteration_count: int = 0
 
     # "Auto-generated" properties:
     id: str = attr.Factory(lambda: uuid4().hex)
@@ -71,7 +71,7 @@ class Notification:
 
         # If this is a repeating notification, it's already been sent once, and
         # we've exceeded our iterations, cancel right away:
-        if (self.iterations and self._iter_count == self.iterations):
+        if self.iterations and self._iteration_count == self.iterations:
             self._cancel()
             return
 
@@ -94,7 +94,7 @@ class Notification:
             self._app.call_service(target.service_call, **target.payload)
 
             if self.iterations:
-                self._iter_count += 1
+                self._iteration_count += 1
 
     def send(self) -> Callable:
         """Send the notification."""
