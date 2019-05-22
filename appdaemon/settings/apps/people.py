@@ -42,7 +42,8 @@ class Person(Base):
             self._home_state = self.presence_manager.HomeStates.away
 
         # Store a global reference to this person:
-        self.global_vars.setdefault(CONF_PEOPLE, [])
+        if CONF_PEOPLE not in self.global_vars:
+            self.global_vars[CONF_PEOPLE] = []
         self.global_vars[CONF_PEOPLE].append(self)
 
         # Listen for changes to any of the person's device trackers:
