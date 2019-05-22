@@ -10,6 +10,17 @@ def ceil_dt(target_dt: datetime, delta: timedelta) -> datetime:
     return target_dt + (datetime.min - target_dt) % delta
 
 
+def get_next_blackout_end(target: datetime) -> datetime:
+    """Get the next instance of a target datetime outside of the blackout."""
+    target_date = target.date()
+    active_time = target.time()
+
+    if active_time > DEFAULT_BLACKOUT_END:
+        target_date = target_date + timedelta(days=1)
+
+    return datetime.combine(target_date, DEFAULT_BLACKOUT_END)
+
+
 def in_blackout(target: time = None) -> bool:
     """Return whether we're in the blackout."""
     kwargs = {}
