@@ -1,6 +1,5 @@
 """Define automations for trash."""
 import datetime
-from enum import Enum
 from math import ceil
 from typing import Tuple
 
@@ -67,7 +66,3 @@ class TrashManager(Base):
                 [pickup.replace('_', ' ') for pickup in pickup_types]))
 
         return (date, response)
-
-    def when_next_pickup(self, pickup_type: Enum) -> str:
-        """Return the relative date of next pickup for a particular type."""
-        return self.get_state(self.sensors[pickup_type])  # type: ignore
