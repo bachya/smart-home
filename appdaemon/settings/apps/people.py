@@ -1,6 +1,5 @@
 """Define people."""
-from enum import Enum
-from typing import Union
+from typing import TYPE_CHECKING, Union
 
 import voluptuous as vol
 
@@ -9,6 +8,9 @@ from const import (
     CONF_PROPERTIES)
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv, most_common
+
+if TYPE_CHECKING:
+    from presence import PresenceManager
 
 CONF_PRESENCE_STATUS_SENSOR = 'presence_status_sensor'
 CONF_PUSH_DEVICE_ID = 'push_device_id'
@@ -67,12 +69,12 @@ class Person(Base):
         return self.name.title()
 
     @property
-    def home_state(self) -> Enum:
+    def home_state(self) -> 'PresenceManager.HomeStates':
         """Return the person's human-friendly home state."""
         return self._home_state
 
     @home_state.setter
-    def home_state(self, state: Enum) -> None:
+    def home_state(self, state: 'PresenceManager.HomeStates') -> None:
         """Set the home-friendly home state."""
         original_state = self._home_state
         self._home_state = state
@@ -142,7 +144,9 @@ class Person(Base):
         # Re-render the sensor:
         self._render_presence_status_sensor()
 
-    def _fire_presence_change_event(self, old: Enum, new: Enum) -> None:
+    def _fire_presence_change_event(
+            self, old: 'PresenceManager.HomeStates',
+            new: 'PresenceManager.HomeStates') -> None:
         """Fire a presence change event."""
         if new in (self.presence_manager.HomeStates.just_arrived,
                    self.presence_manager.HomeStates.home):

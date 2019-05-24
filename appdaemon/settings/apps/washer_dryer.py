@@ -105,11 +105,11 @@ class WasherDryer(Base):  # pylint: disable=too-few-public-methods
         running = 'Running'
 
     @property
-    def state(self) -> Enum:
+    def state(self) -> 'States':
         """Get the state."""
         return self.States(self.get_state(self.entity_ids[CONF_STATUS]))
 
     @state.setter
-    def state(self, value: Enum) -> None:
+    def state(self, value: 'States') -> None:
         """Set the state."""
         self.select_option(self.entity_ids[CONF_STATUS], value.value)

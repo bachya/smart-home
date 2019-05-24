@@ -259,16 +259,6 @@ class Vacuum(Base):
         }, extra=vol.ALLOW_EXTRA),
     })
 
-    @property
-    def bin_state(self) -> Enum:
-        """Define a property to get the bin state."""
-        return self.BinStates(self.get_state(self.entity_ids['bin_state']))
-
-    @bin_state.setter
-    def bin_state(self, value: Enum) -> None:
-        """Set the bin state."""
-        self.select_option(self.entity_ids['bin_state'], value.value)
-
     class BinStates(Enum):
         """Define an enum for vacuum bin states."""
 
@@ -285,6 +275,16 @@ class Vacuum(Base):
         paused = 'Paused'
         remote_control = 'Remote Control'
         returning = 'Returning'
+
+    @property
+    def bin_state(self) -> 'BinStates':
+        """Define a property to get the bin state."""
+        return self.BinStates(self.get_state(self.entity_ids['bin_state']))
+
+    @bin_state.setter
+    def bin_state(self, value: 'BinStates') -> None:
+        """Set the bin state."""
+        self.select_option(self.entity_ids['bin_state'], value.value)
 
     def start(self) -> None:
         """Start a cleaning cycle."""

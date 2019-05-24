@@ -150,7 +150,7 @@ class ClimateManager(Base):
             return 0
 
     @property
-    def mode(self) -> Enum:
+    def mode(self) -> 'Modes':
         """Return the current operating mode."""
         return self.Modes[self.get_state(
             self.entity_ids[CONF_THERMOSTAT], attribute='operation_mode')]
@@ -194,14 +194,14 @@ class ClimateManager(Base):
             entity_id=self.entity_ids[CONF_THERMOSTAT],
             temperature=str(value))
 
-    def set_fan_mode(self, value: Enum) -> None:
+    def set_fan_mode(self, value: 'FanModes') -> None:
         """Set the themostat's fan mode."""
         self.call_service(
             'climate/set_fan_mode',
             entity_id=self.entity_ids[CONF_THERMOSTAT],
             fan_mode=value.name)
 
-    def set_mode(self, value: Enum) -> None:
+    def set_mode(self, value: 'Modes') -> None:
         """Set the themostat's operating mode."""
         self.call_service(
             'climate/set_operation_mode',

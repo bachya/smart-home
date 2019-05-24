@@ -82,35 +82,35 @@ class PresenceManager(Base):
             self.fire_event(
                 'PROXIMITY_CHANGE', old=old_state.value, new=self.state.value)
 
-    def _whos_in_state(self, *states: Enum) -> list:
+    def _whos_in_state(self, *states: 'HomeStates') -> list:
         """Return a list people who are in a certain set of states."""
         return [
             person for person in self.global_vars[CONF_PEOPLE]
             if person.home_state in states
         ]
 
-    def anyone(self, *states: Enum) -> bool:
+    def anyone(self, *states: 'HomeStates') -> bool:
         """Determine whether *any* person is in one or more states."""
         if self._whos_in_state(*states):
             return True
 
         return False
 
-    def everyone(self, *states: Enum) -> bool:
+    def everyone(self, *states: 'HomeStates') -> bool:
         """Determine whether *every* person is in one or more states."""
         if self._whos_in_state(*states) == self.global_vars[CONF_PEOPLE]:
             return True
 
         return False
 
-    def noone(self, *states: Enum) -> bool:
+    def noone(self, *states: 'HomeStates') -> bool:
         """Determine whether *no* person is in one or more states."""
         if not self._whos_in_state(*states):
             return True
 
         return False
 
-    def only_one(self, *states: Enum) -> bool:
+    def only_one(self, *states: 'HomeStates') -> bool:
         """Determine whether *only one* person is in one or more states."""
         return len(self._whos_in_state(*states)) == 1
 
