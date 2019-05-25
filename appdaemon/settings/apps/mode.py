@@ -11,23 +11,23 @@ class Mode(Base):
         """Configure."""
         self._enabled_toggles_to_disable = []  # type: List[str]
         self._enabled_toggles_to_enable = []  # type: List[str]
-        self.switch = 'input_boolean.mode_{0}'.format(self.name)
+        self._switch = 'input_boolean.mode_{0}'.format(self.name)
 
-        self.listen_state(self.switch_turned_off_cb, self.switch, new='off')
-        self.listen_state(self.switch_turned_on_cb, self.switch, new='on')
+        self.listen_state(self._switch_turned_off_cb, self._switch, new='off')
+        self.listen_state(self._switch_turned_on_cb, self._switch, new='on')
 
     @property
     def state(self) -> str:
         """Return the current state of the mode switch."""
-        return self.get_state(self.switch)
+        return self.get_state(self._switch)
 
     def activate(self) -> None:
         """Activate the mode."""
-        self.turn_on(self.switch)
+        self.turn_on(self._switch)
 
     def deactivate(self) -> None:
         """Deactivate the mode."""
-        self.turn_off(self.switch)
+        self.turn_off(self._switch)
 
     def register_enabled_entity(
             self, enabled_entity_id: str, value: str) -> None:
