@@ -12,7 +12,6 @@ notify_bad_aqi_automation:
   module: health
   class: NotifyBadAqi
   dependencies:
-    - do_not_disturb
     - vacation_mode
   entity_ids:
     aqi: sensor.us_air_quality_index
@@ -20,7 +19,6 @@ notify_bad_aqi_automation:
   properties:
     aqi_threshold: 100
   mode_alterations:
-    do_not_disturb: disable
     vacation_mode: disable
   enabled_config:
     name: Bad AQI notifications

@@ -11,7 +11,6 @@ dishwasher_cycle_automation:
   class: NotifyDone
   dependencies:
     - dishwasher
-    - do_not_disturb
     - presence_manager
     - vacation_mode
   app: dishwasher
@@ -22,7 +21,6 @@ dishwasher_cycle_automation:
     notification_interval: 3600
     running_threshold: 10.0
   mode_alterations:
-    do_not_disturb: disable
     vacation_mode: disable
   enabled_config:
     name: Notifications when clean
