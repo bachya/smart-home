@@ -1,5 +1,5 @@
 """Define a mode."""
-from typing import Union
+from typing import List, Union
 
 from core import Base
 
@@ -9,8 +9,8 @@ class Mode(Base):
 
     def configure(self) -> None:
         """Configure."""
-        self._enabled_toggles_to_disable = []  # type: ignore
-        self._enabled_toggles_to_enable = []  # type: ignore
+        self._enabled_toggles_to_disable = []  # type: List[str]
+        self._enabled_toggles_to_enable = []  # type: List[str]
         self.switch = 'input_boolean.mode_{0}'.format(self.name)
 
         self.listen_state(self.switch_toggled_cb, self.switch)
