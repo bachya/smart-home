@@ -100,10 +100,8 @@ class DetectBlackout(Base):
 
     def enter_blackout_cb(self, kwargs: dict) -> None:
         """Activate blackout mode at the right time of day."""
-        self.log('Activating blackout mode')
         self.blackout_mode.activate()
 
     def exit_blackout_cb(self, kwargs: dict) -> None:
         """Deactivate blackout mode at the right time of day."""
-        self.log('Deactivating blackout mode')
         self.blackout_mode.deactivate()

@@ -23,10 +23,12 @@ class Mode(Base):
 
     def activate(self) -> None:
         """Activate the mode."""
+        self.log('Activating mode: {0}'.format(self.name))
         self.turn_on(self._switch)
 
     def deactivate(self) -> None:
         """Deactivate the mode."""
+        self.log('Deactivating mode: {0}'.format(self.name))
         self.turn_off(self._switch)
 
     def register_enabled_entity(
