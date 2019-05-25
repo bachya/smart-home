@@ -1,7 +1,16 @@
 """Define a mode."""
+from datetime import time
 from typing import List, Union
 
-from core import Base
+import voluptuous as vol
+
+from const import CONF_PROPERTIES
+from core import APP_SCHEMA, Base
+from helpers import config_validation as cv
+from helpers.dt import time_is_between
+
+CONF_BLACKOUT_END = 'blackout_end'
+CONF_BLACKOUT_START = 'blackout_start'
 
 
 class Mode(Base):
@@ -57,3 +66,30 @@ class Mode(Base):
             self.turn_on(enabled_toggle)
         for enabled_toggle in self._enabled_toggles_to_disable:
             self.turn_off(enabled_toggle)
+
+
+class BlackoutMode(Mode):
+    """Define a mode for the blackout."""
+
+    APP_SCHEMA = APP_SCHEMA.extend({
+        CONF_PROPERTIES: vol.Schema({
+            vol.Required(CONF_BLACKOUT_START): cv.time,
+            vol.Required(CONF_BLACKOUT_END): cv.time,
+        }, extra=vol.ALLOW_EXTRA),
+    })
+
+    def configure(self) -> None:
+        """Configure."""
+        super().configure()
+
+        self.blackout_start = self.parse_time(
+            self.properties[CONF_BLACKOUT_START])
+        self.blackout_end = self.parse_time(self.properties[CONF_BLACKOUT_END])
+
+    def in_blackout(self, target: time = None) -> bool:
+        """Return whether we're in the blackout."""
+        kwargs = {}
+        if target:
+            kwargs['target'] = target
+        return time_is_between(
+            self.blackout_start, self.blackout_end, **kwargs)

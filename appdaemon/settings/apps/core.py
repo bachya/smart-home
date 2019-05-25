@@ -7,7 +7,6 @@ from appdaemon.plugins.hass.hassapi import Hass  # type: ignore
 from const import (
     CONF_ICON, OPERATOR_ALL, OPERATOR_ANY, OPERATORS, THRESHOLD_CLOUDY)
 from helpers import config_validation as cv
-from helpers.dt import in_blackout
 
 CONF_CLASS = 'class'
 CONF_MODULE = 'module'
@@ -149,13 +148,12 @@ class Base(Hass):
         """Constrain execution to whether everyone is in a state."""
         return self._constrain_presence('everyone', value)
 
-    @staticmethod
-    def constrain_in_blackout(state: str) -> bool:
+    def constrain_in_blackout(self, state: str) -> bool:
         """Constrain execution based on blackout state."""
         if state is True:
-            return in_blackout()
+            return self.blackout_mode.in_blackout()
 
-        return not in_blackout()
+        return not self.blackout_mode.in_blackout()
 
     def constrain_noone(self, value: str) -> bool:
         """Constrain execution to whether no one is in a state."""

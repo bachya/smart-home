@@ -1,7 +1,10 @@
 ---
 blackout_mode:
   module: mode
-  class: Mode
+  class: BlackoutMode
+  properties:
+    blackout_start: "22:00:00"
+    blackout_end: "08:00:00"
 
 guest_mode:
   module: mode

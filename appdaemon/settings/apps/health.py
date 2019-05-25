@@ -6,7 +6,6 @@ import voluptuous as vol
 from const import CONF_ENTITY_IDS, CONF_PROPERTIES, CONF_UPDATE_INTERVAL
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
-from helpers.dt import DEFAULT_BLACKOUT_START
 from notification import send_notification
 
 CONF_AARON_ROUTER_TRACKER = 'aaron_router_tracker'
@@ -17,7 +16,6 @@ CONF_HVAC_STATE = 'hvac_state'
 
 class AaronAccountability(Base):
     """Define features to keep me accountable on my phone."""
-
     APP_SCHEMA = APP_SCHEMA.extend({
         CONF_ENTITY_IDS: vol.Schema({
             vol.Required(CONF_AARON_ROUTER_TRACKER): cv.entity_id,
@@ -27,7 +25,8 @@ class AaronAccountability(Base):
     def configure(self) -> None:
         """Configure."""
         self.run_daily(
-            self.send_notification_when_blackout_start, DEFAULT_BLACKOUT_START)
+            self.send_notification_when_blackout_start,
+            self.blackout_mode.blackout_start)
 
         self.listen_state(
             self.send_notification_on_disconnect,

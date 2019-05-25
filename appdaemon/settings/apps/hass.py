@@ -4,8 +4,6 @@ import voluptuous as vol
 from const import CONF_ENTITY_IDS
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
-from helpers.dt import (
-    DEFAULT_BLACKOUT_END, DEFAULT_BLACKOUT_START, in_blackout)
 from notification import send_notification
 
 CONF_BAD_LOGIN = 'bad_login'
@@ -84,18 +82,18 @@ class DetectBlackout(Base):
 
     def configure(self) -> None:
         """Configure."""
-        if in_blackout():
+        if self.blackout_mode.in_blackout():
             self.blackout_mode.activate()
         else:
             self.blackout_mode.deactivate()
 
         self.run_daily(
             self.enter_blackout_cb,
-            DEFAULT_BLACKOUT_START,
+            self.blackout_mode.blackout_start,
             constrain_input_boolean=self.enabled_entity_id)
         self.run_daily(
             self.exit_blackout_cb,
-            DEFAULT_BLACKOUT_END,
+            self.blackout_mode.blackout_end,
             constrain_input_boolean=self.enabled_entity_id)
 
     def enter_blackout_cb(self, kwargs: dict) -> None:

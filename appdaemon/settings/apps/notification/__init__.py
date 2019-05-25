@@ -7,7 +7,6 @@ from uuid import uuid4
 import attr
 
 from core import Base
-from helpers.dt import get_next_blackout_end, in_blackout
 from notification.target import Target, get_targets_from_string
 
 CONF_NOTIFICATION_HANDLES = 'notification_handles'
@@ -63,14 +62,6 @@ class Notification:
 
     def _send_cb(self, kwargs: dict) -> None:
         """Send a single (immediate or scheduled) notification."""
-        # If a non-urgent send is going to occur in the blackout, reschedule it
-        # to when the blackout ends:
-        if not self.urgent and in_blackout(self.when.time()):  # type: ignore
-            self._cancel()
-            self.when = get_next_blackout_end(self.when)
-            self.send()
-            return
-
         # If this is a repeating notification, it's already been sent once, and
         # we've exceeded our iterations, cancel right away:
         if self.iterations and self._iteration_count == self.iterations:

@@ -5,6 +5,7 @@ aaron_accountability_automation:
   dependencies:
     - aaron
     - presence_manager
+    - blackout_mode
   entity_ids:
     aaron_router_tracker: device_tracker.aarons_iphone
 

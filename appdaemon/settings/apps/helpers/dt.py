@@ -1,33 +1,11 @@
 """Define date/time utilities."""
 from datetime import datetime, time, timedelta
-
-DEFAULT_BLACKOUT_START = time(22, 0)
-DEFAULT_BLACKOUT_END = time(8, 0)
+from typing import Optional
 
 
 def ceil_dt(target_dt: datetime, delta: timedelta) -> datetime:
     """Round a datetime up to the nearest delta."""
     return target_dt + (datetime.min - target_dt) % delta
-
-
-def get_next_blackout_end(target: datetime) -> datetime:
-    """Get the next instance of a target datetime outside of the blackout."""
-    target_date = target.date()
-    active_time = target.time()
-
-    if active_time > DEFAULT_BLACKOUT_END:
-        target_date = target_date + timedelta(days=1)
-
-    return datetime.combine(target_date, DEFAULT_BLACKOUT_END)
-
-
-def in_blackout(target: time = None) -> bool:
-    """Return whether we're in the blackout."""
-    kwargs = {}
-    if target:
-        kwargs['target'] = target
-    return time_is_between(
-        DEFAULT_BLACKOUT_START, DEFAULT_BLACKOUT_END, **kwargs)
 
 
 def relative_time_of_day(hass) -> str:
@@ -43,6 +21,24 @@ def relative_time_of_day(hass) -> str:
         greeting = 'evening'
 
     return greeting
+
+
+def parse_time(time_str: str) -> Optional[time]:
+    """Parse a time string (00:20:00) into Time object.
+
+    Return None if invalid.
+    """
+    parts = str(time_str).split(':')
+    if len(parts) < 2:
+        return None
+    try:
+        hour = int(parts[0])
+        minute = int(parts[1])
+        second = int(parts[2]) if len(parts) > 2 else 0
+        return time(hour, minute, second)
+    except ValueError:
+        # ValueError if value cannot be converted to an int or not in range
+        return None
 
 
 def time_is_between(start: time, end: time, target: time = None) -> bool:

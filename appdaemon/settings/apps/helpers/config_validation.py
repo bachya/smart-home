@@ -1,7 +1,10 @@
 """Define voluptuous helpers."""
+from datetime import time as time_sys
 from typing import Any, Callable, Dict, Sequence, TypeVar, Union
 
 import voluptuous as vol
+
+from helpers.dt import parse_time
 
 T = TypeVar('T')  # pylint: disable=invalid-name
 
@@ -38,3 +41,19 @@ def has_at_least_one_key(*keys: str) -> Callable:
         raise vol.Invalid('must contain one of {}.'.format(', '.join(keys)))
 
     return validate
+
+
+def time(value) -> time_sys:
+    """Validate and transform a time."""
+    if isinstance(value, time_sys):
+        return value
+
+    try:
+        time_val = parse_time(value)
+    except TypeError:
+        raise vol.Invalid('Not a parseable type')
+
+    if time_val is None:
+        raise vol.Invalid('Invalid time specified: {}'.format(value))
+
+    return time_val
