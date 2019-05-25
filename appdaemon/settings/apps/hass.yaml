@@ -27,9 +27,8 @@ detect_blackout_automation:
   module: hass
   class: DetectBlackout
   dependencies:
+    - blackout_mode
     - presence_manager
-  entity_ids:
-    blackout_switch: input_boolean.in_blackout
   enabled_config:
     name: Detect in-blackout
     icon: mdi:theme-light-dark

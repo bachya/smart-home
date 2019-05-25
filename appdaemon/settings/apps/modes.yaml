@@ -1,4 +1,8 @@
 ---
+blackout_mode:
+  module: mode
+  class: Mode
+
 guest_mode:
   module: mode
   class: Mode

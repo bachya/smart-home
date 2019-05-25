@@ -82,35 +82,28 @@ class BadLoginNotification(Base):
 class DetectBlackout(Base):
     """Define a feature to manage blackout awareness."""
 
-    APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS: vol.Schema({
-            vol.Required(CONF_BLACKOUT_SWITCH): cv.entity_id,
-        }, extra=vol.ALLOW_EXTRA),
-    })
-
     def configure(self) -> None:
         """Configure."""
         if in_blackout():
-            self.turn_on(self.entity_ids[CONF_BLACKOUT_SWITCH])
+            self.blackout_mode.activate()
         else:
-            self.turn_off(self.entity_ids[CONF_BLACKOUT_SWITCH])
+            self.blackout_mode.deactivate()
 
         self.run_daily(
-            self.boundary_reached,
+            self.enter_blackout_cb,
             DEFAULT_BLACKOUT_START,
-            state='on',
             constrain_input_boolean=self.enabled_entity_id)
         self.run_daily(
-            self.boundary_reached,
+            self.exit_blackout_cb,
             DEFAULT_BLACKOUT_END,
-            state='off',
             constrain_input_boolean=self.enabled_entity_id)
 
-    def boundary_reached(self, kwargs: dict) -> None:
-        """Set the blackout sensor appropriately based on time."""
-        self.log('Setting blackout sensor: {0}'.format(kwargs['state']))
+    def enter_blackout_cb(self, kwargs: dict) -> None:
+        """Activate blackout mode at the right time of day."""
+        self.log('Activating blackout mode')
+        self.blackout_mode.activate()
 
-        if kwargs['state'] == 'on':
-            self.turn_on(self.entity_ids[CONF_BLACKOUT_SWITCH])
-        else:
-            self.turn_off(self.entity_ids[CONF_BLACKOUT_SWITCH])
+    def exit_blackout_cb(self, kwargs: dict) -> None:
+        """Deactivate blackout mode at the right time of day."""
+        self.log('Deactivating blackout mode')
+        self.blackout_mode.deactivate()
