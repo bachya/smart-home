@@ -2,15 +2,7 @@
 guest_mode:
   module: mode
   class: Mode
-  enabled_config:
-    name: Guest Mode
-    icon: mdi:hotel
-    initial: false
 
 vacation_mode:
   module: mode
   class: Mode
-  enabled_config:
-    name: Vacation Mode
-    icon: mdi:beach
-    initial: false
