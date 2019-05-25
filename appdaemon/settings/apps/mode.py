@@ -96,11 +96,11 @@ class BlackoutMode(Mode):
 
     def _enter_blackout_cb(self, kwargs: dict) -> None:
         """Activate blackout mode at the right time of day."""
-        self.blackout_mode.activate()
+        self.activate()
 
     def _exit_blackout_cb(self, kwargs: dict) -> None:
         """Deactivate blackout mode at the right time of day."""
-        self.blackout_mode.deactivate()
+        self.deactivate()
 
     def in_blackout(self, target: time = None) -> bool:
         """Return whether we're in the blackout."""
