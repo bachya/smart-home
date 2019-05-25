@@ -13,7 +13,7 @@ class Mode(Base):
         self._enabled_toggles_to_enable = []  # type: ignore
         self.switch = 'input_boolean.mode_{0}'.format(self.name)
 
-        self.listen_state(self.switch_toggled_cb, entity=self.switch)
+        self.listen_state(self.switch_toggled_cb, self.switch)
 
     @property
     def state(self) -> str:
