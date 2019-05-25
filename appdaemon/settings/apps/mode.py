@@ -23,12 +23,10 @@ class Mode(Base):
 
     def activate(self) -> None:
         """Activate the mode."""
-        self.log('Activating mode: {0}'.format(self.name))
         self.turn_on(self._switch)
 
     def deactivate(self) -> None:
         """Deactivate the mode."""
-        self.log('Deactivating mode: {0}'.format(self.name))
         self.turn_off(self._switch)
 
     def register_enabled_entity(
@@ -44,6 +42,7 @@ class Mode(Base):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Respond when the mode is turned off."""
+        self.log('Deactivating mode: {0}'.format(self.name))
         for enabled_toggle in self._enabled_toggles_to_disable:
             self.turn_on(enabled_toggle)
         for enabled_toggle in self._enabled_toggles_to_enable:
@@ -53,6 +52,7 @@ class Mode(Base):
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
         """Respond when the mode is turned on."""
+        self.log('Activating mode: {0}'.format(self.name))
         for enabled_toggle in self._enabled_toggles_to_enable:
             self.turn_on(enabled_toggle)
         for enabled_toggle in self._enabled_toggles_to_disable:
