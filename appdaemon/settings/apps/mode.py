@@ -13,7 +13,8 @@ class Mode(Base):
         self._enabled_toggles_to_enable = []  # type: List[str]
         self.switch = 'input_boolean.mode_{0}'.format(self.name)
 
-        self.listen_state(self.switch_toggled_cb, self.switch)
+        self.listen_state(self.switch_turned_off_cb, self.switch, new='off')
+        self.listen_state(self.switch_turned_on_cb, self.switch, new='on')
 
     @property
     def state(self) -> str:
@@ -37,18 +38,20 @@ class Mode(Base):
 
         location.append(enabled_entity_id)
 
-    def switch_toggled_cb(
+    def switch_turned_off_cb(
             self, entity: Union[str, dict], attribute: str, old: str, new: str,
             kwargs: dict) -> None:
-        """Make alterations when a mode enabled_toggle is toggled."""
-        if new == 'on':
-            func1 = self.turn_off
-            func2 = self.turn_on
-        else:
-            func1 = self.turn_on
-            func2 = self.turn_off
-
+        """Respond when the mode is turned off."""
         for enabled_toggle in self._enabled_toggles_to_disable:
-            func1(enabled_toggle)
+            self.turn_on(enabled_toggle)
         for enabled_toggle in self._enabled_toggles_to_enable:
-            func2(enabled_toggle)
+            self.turn_off(enabled_toggle)
+
+    def switch_turned_on_cb(
+            self, entity: Union[str, dict], attribute: str, old: str, new: str,
+            kwargs: dict) -> None:
+        """Respond when the mode is turned on."""
+        for enabled_toggle in self._enabled_toggles_to_enable:
+            self.turn_on(enabled_toggle)
+        for enabled_toggle in self._enabled_toggles_to_disable:
+            self.turn_off(enabled_toggle)
