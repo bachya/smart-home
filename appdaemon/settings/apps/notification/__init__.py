@@ -34,9 +34,11 @@ class Notification:
     iterations: Optional[int] = None
     _iteration_count: int = 0
 
+    # Message data
+    data: Optional[dict] = None
+
     # "Auto-generated" properties:
     id: str = attr.Factory(lambda: uuid4().hex)
-    data: dict = attr.Factory(dict)
 
     def __attrs_post_init__(self):
         """Perform some post-__init__ initialization."""
@@ -119,7 +121,8 @@ def send_notification(
         urgent: bool = False,
         when: datetime = None,
         interval: int = None,
-        iterations: int = None) -> Callable:
+        iterations: int = None,
+        data: dict = None) -> Callable:
     """Send/schedule a notification and return a method to cancel it."""
     notification = Notification(  # type: ignore
         app=app,
@@ -129,5 +132,6 @@ def send_notification(
         urgent=urgent,
         when=when,
         interval=interval,
-        iterations=iterations)
+        iterations=iterations,
+        data=data)
     return notification.send()
