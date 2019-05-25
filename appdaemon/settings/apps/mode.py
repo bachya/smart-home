@@ -86,6 +86,22 @@ class BlackoutMode(Mode):
             self.properties[CONF_BLACKOUT_START])
         self.blackout_end = self.parse_time(self.properties[CONF_BLACKOUT_END])
 
+        if self.in_blackout():
+            self.activate()
+        else:
+            self.deactivate()
+
+        self.run_daily(self._enter_blackout_cb, self.blackout_start)
+        self.run_daily(self._exit_blackout_cb, self.blackout_end)
+
+    def _enter_blackout_cb(self, kwargs: dict) -> None:
+        """Activate blackout mode at the right time of day."""
+        self.blackout_mode.activate()
+
+    def _exit_blackout_cb(self, kwargs: dict) -> None:
+        """Deactivate blackout mode at the right time of day."""
+        self.blackout_mode.deactivate()
+
     def in_blackout(self, target: time = None) -> bool:
         """Return whether we're in the blackout."""
         kwargs = {}

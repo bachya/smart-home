@@ -75,31 +75,3 @@ class BadLoginNotification(Base):
 
         send_notification(
             self, 'person:Aaron', new['attributes']['message'], title=title)
-
-
-class DetectBlackout(Base):
-    """Define a feature to manage blackout awareness."""
-
-    def configure(self) -> None:
-        """Configure."""
-        if self.blackout_mode.in_blackout():
-            self.blackout_mode.activate()
-        else:
-            self.blackout_mode.deactivate()
-
-        self.run_daily(
-            self.enter_blackout_cb,
-            self.blackout_mode.blackout_start,
-            constrain_input_boolean=self.enabled_entity_id)
-        self.run_daily(
-            self.exit_blackout_cb,
-            self.blackout_mode.blackout_end,
-            constrain_input_boolean=self.enabled_entity_id)
-
-    def enter_blackout_cb(self, kwargs: dict) -> None:
-        """Activate blackout mode at the right time of day."""
-        self.blackout_mode.activate()
-
-    def exit_blackout_cb(self, kwargs: dict) -> None:
-        """Deactivate blackout mode at the right time of day."""
-        self.blackout_mode.deactivate()

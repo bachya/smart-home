@@ -22,14 +22,3 @@ bad_login_notifications_automation:
     name: Bad login notifications
     icon: mdi:alert-circle
     initial: true
-
-detect_blackout_automation:
-  module: hass
-  class: DetectBlackout
-  dependencies:
-    - blackout_mode
-    - presence_manager
-  enabled_config:
-    name: Detect in-blackout
-    icon: mdi:theme-light-dark
-    initial: true
