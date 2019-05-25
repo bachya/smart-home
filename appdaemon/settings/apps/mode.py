@@ -20,19 +20,13 @@ class Mode(Base):
         """Return the current state of the mode switch."""
         return self.get_state(self.switch)
 
-    @state.setter
-    def state(self, value: str) -> None:
-        """Alter the state of the mode switch."""
-        if value not in ['on', 'off']:
-            self.error('Mode value undefined: {0}'.format(value))
-            return
+    def activate(self) -> None:
+        """Activate the mode."""
+        self.turn_on(self.switch)
 
-        if value == 'on':
-            func = self.turn_on
-        else:
-            func = self.turn_off
-
-        func(self.switch)
+    def deactivate(self) -> None:
+        """Deactivate the mode."""
+        self.turn_off(self.switch)
 
     def register_enabled_entity(
             self, enabled_entity_id: str, value: str) -> None:

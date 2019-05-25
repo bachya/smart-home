@@ -38,12 +38,10 @@ class AutoVacationMode(Base):
         """Alter Vacation Mode based on presence."""
         if (kwargs['action'] == 'on' and self.vacation_mode.state == 'off'):
             self.log('Setting vacation mode to "on"')
-
-            self.vacation_mode.state = 'on'
+            self.vacation_mode.activate()
         elif (kwargs['action'] == 'off' and self.vacation_mode.state == 'on'):
             self.log('Setting vacation mode to "off"')
-
-            self.vacation_mode.state = 'off'
+            self.vacation_mode.deactivate()
 
 
 class BadLoginNotification(Base):
