@@ -9,7 +9,7 @@ sensor:
       - sensor.fiddle_leaf_fig_temperature
       - sensor.side_yard_inside_temp
       - sensor.thermostat_thermostat_temperature
-
+      
   - platform: min_max
     name: "Average Indoor Humidity"
     type: "mean"
@@ -18,6 +18,22 @@ sensor:
       - sensor.master_bathroom_humidity
       - sensor.side_yard_humidity_in
       - sensor.thermostat_thermostat_humidity
+
+  - platform: filter
+    name: "Filtered Average Indoor Humidity"
+    entity_id: sensor.average_indoor_humidity
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 2
+      
+  - platform: filter
+    name: "Filtered Average Indoor Temperature"
+    entity_id: sensor.average_indoor_temperature
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 2
 
 switch:
   - platform: template
