@@ -25,7 +25,7 @@ sensor:
     filters:
       - filter: lowpass
         time_constant: 10
-        precision: 0
+        precision: 1
       
   - platform: filter
     name: "Filtered Average Indoor Temperature"
@@ -33,7 +33,7 @@ sensor:
     filters:
       - filter: lowpass
         time_constant: 10
-        precision: 0
+        precision: 1
 
 switch:
   - platform: template
