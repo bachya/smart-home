@@ -163,7 +163,7 @@ services:
 
   portainer:
     container_name: portainer
-    image: portainer/portainer:1.20.2
+    image: portainer/portainer:1.21.0
     ports:
       - "9000:9000/tcp"
     restart: unless-stopped
