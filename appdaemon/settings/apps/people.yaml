@@ -27,7 +27,7 @@ britt:
   entity_ids:
     device_trackers:
       - device_tracker.britt_iphone
-      - device_tracker.britts_apple_watch
+      - device_tracker.britt_iphone_ios
       - device_tracker.britts_iphone
     notifiers:
       - ios_brittany_bachs_iphone
