@@ -15,7 +15,6 @@ from homeassistant.util.dt import now
 from homeassistant.util.json import load_json, save_json
 
 _LOGGER = getLogger(__name__)
-REQUIREMENTS = ['pyden==1.0.2']
 
 ATTR_PICKUP_DATE = 'pickup_date'
 
@@ -80,8 +79,6 @@ async def async_setup_platform(
 
     async_add_devices(sensors, True)
 
-    return True
-
 
 class DenverTrashSensor(Entity):
     """Define a class representation of the sensor."""
@@ -125,9 +122,10 @@ class DenverTrashSensor(Entity):
 
 
 class PickupData:  # pylint: disable=too-few-public-methods
-    """ Define a class to deal with representations of the pickup data."""
+    """Define a class to deal with representations of the pickup data."""
 
     def __init__(self, client, pickup_type, local_tz):
+        """Initialize."""
         self._client = client
         self._local_tz = local_tz
         self._pickup_type = pickup_type

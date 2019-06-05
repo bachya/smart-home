@@ -1,4 +1,3 @@
 ---
-sensor:
-  - platform: denvertrash
+denvertrash:
     api_key: !secret google_api_key
