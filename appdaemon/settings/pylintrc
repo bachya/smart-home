@@ -6,6 +6,7 @@
 # unused-argument - Not all callback arguments are used
 disable=
   attribute-defined-outside-init,
+  bad-continuation,
   too-many-arguments,
   unnecessary-pass,
   unused-argument

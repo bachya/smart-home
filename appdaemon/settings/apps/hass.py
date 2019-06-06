@@ -6,9 +6,9 @@ from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 from notification import send_notification
 
-CONF_BAD_LOGIN = 'bad_login'
-CONF_BLACKOUT_SWITCH = 'blackout_switch'
-CONF_IP_BAN = 'ip_ban'
+CONF_BAD_LOGIN = "bad_login"
+CONF_BLACKOUT_SWITCH = "blackout_switch"
+CONF_IP_BAN = "ip_ban"
 
 
 class AutoVacationMode(Base):
@@ -18,26 +18,29 @@ class AutoVacationMode(Base):
         """Configure."""
         self.listen_event(
             self.presence_changed,
-            'PRESENCE_CHANGE',
+            "PRESENCE_CHANGE",
             new=self.presence_manager.HomeStates.extended_away.value,
             first=False,
-            action='on',
-            constrain_input_boolean=self.enabled_entity_id)
+            action="on",
+            constrain_input_boolean=self.enabled_entity_id,
+        )
         self.listen_event(
             self.presence_changed,
-            'PRESENCE_CHANGE',
+            "PRESENCE_CHANGE",
             new=self.presence_manager.HomeStates.just_arrived.value,
             first=True,
-            action='off',
-            constrain_input_boolean=self.enabled_entity_id)
+            action="off",
+            constrain_input_boolean=self.enabled_entity_id,
+        )
 
     def presence_changed(
-            self, event_name: str, data: dict, kwargs: dict) -> None:
+        self, event_name: str, data: dict, kwargs: dict
+    ) -> None:
         """Alter Vacation Mode based on presence."""
-        if (kwargs['action'] == 'on' and self.vacation_mode.state == 'off'):
+        if kwargs["action"] == "on" and self.vacation_mode.state == "off":
             self.log('Setting vacation mode to "on"')
             self.vacation_mode.activate()
-        elif (kwargs['action'] == 'off' and self.vacation_mode.state == 'on'):
+        elif kwargs["action"] == "off" and self.vacation_mode.state == "on":
             self.log('Setting vacation mode to "off"')
             self.vacation_mode.deactivate()
 
@@ -45,12 +48,17 @@ class AutoVacationMode(Base):
 class BadLoginNotification(Base):
     """Define a feature to notify me of unauthorized login attempts."""
 
-    APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS: vol.Schema({
-            vol.Required(CONF_BAD_LOGIN): cv.entity_id,
-            vol.Required(CONF_IP_BAN): cv.entity_id,
-        }, extra=vol.ALLOW_EXTRA),
-    })
+    APP_SCHEMA = APP_SCHEMA.extend(
+        {
+            CONF_ENTITY_IDS: vol.Schema(
+                {
+                    vol.Required(CONF_BAD_LOGIN): cv.entity_id,
+                    vol.Required(CONF_IP_BAN): cv.entity_id,
+                },
+                extra=vol.ALLOW_EXTRA,
+            )
+        }
+    )
 
     def configure(self) -> None:
         """Configure."""
@@ -58,20 +66,22 @@ class BadLoginNotification(Base):
             self.listen_state(
                 self.send_alert,
                 notification_type,
-                attribute='all',
-                constrain_input_boolean=self.enabled_entity_id)
+                attribute="all",
+                constrain_input_boolean=self.enabled_entity_id,
+            )
 
     def send_alert(
-            self, entity: str, attribute: str, old: str, new: dict,
-            kwargs: dict) -> None:
+        self, entity: str, attribute: str, old: str, new: dict, kwargs: dict
+    ) -> None:
         """Send a notification when there's a bad login attempt."""
         if not new:
             return
 
         if entity == self.entity_ids[CONF_BAD_LOGIN]:
-            title = 'Unauthorized Access Attempt'
+            title = "Unauthorized Access Attempt"
         else:
-            title = 'IP Ban'
+            title = "IP Ban"
 
         send_notification(
-            self, 'person:Aaron', new['attributes']['message'], title=title)
+            self, "person:Aaron", new["attributes"]["message"], title=title
+        )
