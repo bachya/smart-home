@@ -447,19 +447,20 @@ class VacationMode(BaseSwitch):
 
     def configure(self) -> None:
         """Configure."""
-        self.set_schedule(self.properties[CONF_START_TIME], self.start_cycle)
+        self.set_schedule(
+            self.properties[CONF_START_TIME],
+            self.start_cycle,
+            constrain_input_boolean=self.enabled_entity_id)
         self.set_schedule(self.properties[CONF_END_TIME], self.stop_cycle)
 
-    def set_schedule(self, time: str, handler: Callable) -> None:
+    def set_schedule(
+            self, time: str, handler: Callable, **kwargs: dict) -> None:
         """Set the appropriate schedulers based on the passed in time."""
         if time in ('sunrise', 'sunset'):
             method = getattr(self, 'run_at_{0}'.format(time))
-            method(handler, constrain_input_boolean=self.enabled_entity_id)
+            method(handler, **kwargs)
         else:
-            self.run_daily(
-                handler,
-                self.parse_time(time),
-                constrain_input_boolean=self.enabled_entity_id)
+            self.run_daily(handler, self.parse_time(time), **kwargs)
 
     def start_cycle(self, kwargs: dict) -> None:
         """Start the toggle cycle."""
