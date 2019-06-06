@@ -47,12 +47,7 @@ class AbsentInsecure(Base):
         )
 
     def house_insecure(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Send notifications when the house has been left insecure."""
         self.log("No one home and house is insecure; notifying")
@@ -114,8 +109,7 @@ class GarageLeftOpen(Base):
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             CONF_ENTITY_IDS: vol.Schema(
-                {vol.Required(CONF_GARAGE_DOOR): cv.entity_id},
-                extra=vol.ALLOW_EXTRA,
+                {vol.Required(CONF_GARAGE_DOOR): cv.entity_id}, extra=vol.ALLOW_EXTRA
             ),
             CONF_PROPERTIES: vol.Schema(
                 {
@@ -144,24 +138,14 @@ class GarageLeftOpen(Base):
         )
 
     def closed(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Cancel notification when the garage is closed."""
         if HANDLE_GARAGE_OPEN in self.handles:
             self.handles.pop(HANDLE_GARAGE_OPEN)()  # type: ignore
 
     def left_open(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Send notifications when the garage has been left open."""
         message = "The garage has been left open. Want to close it?"
@@ -209,12 +193,7 @@ class NotifyOnChange(Base):
         )
 
     def state_changed(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Send a notification when the security state changes."""
         self.log("Notifying of security status change: {0}".format(new))
@@ -260,25 +239,16 @@ class SecurityManager(Base):
     @property
     def secure(self) -> bool:
         """Return whether the house is secure or not."""
-        return (
-            self.get_state(self.entity_ids[CONF_OVERALL_SECURITY_STATUS])
-            == "Secure"
-        )
+        return self.get_state(self.entity_ids[CONF_OVERALL_SECURITY_STATUS]) == "Secure"
 
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self._security_system_change_cb,
-            self.entity_ids[CONF_ALARM_CONTROL_PANEL],
+            self._security_system_change_cb, self.entity_ids[CONF_ALARM_CONTROL_PANEL]
         )
 
     def _security_system_change_cb(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Fire events when the security system status changes."""
         if new != "unknown":
@@ -321,9 +291,7 @@ class SecurityManager(Base):
             self.log('Arming the security system: "{0}"'.format(new.name))
 
             self.call_service(
-                "alarm_control_panel/alarm_arm_{0}".format(
-                    new.value.split("_")[1]
-                ),
+                "alarm_control_panel/alarm_arm_{0}".format(new.value.split("_")[1]),
                 entity_id=self.entity_ids[CONF_ALARM_CONTROL_PANEL],
             )
         else:

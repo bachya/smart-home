@@ -64,12 +64,7 @@ class AaronAccountability(Base):
             self._send_notification()
 
     def send_notification_on_disconnect(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Send a notification when I disconnect during a blackout."""
         self._send_notification()
@@ -110,12 +105,7 @@ class NotifyBadAqi(Base):
         )
 
     def bad_aqi_detected(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Send select notifications when cooling and poor AQI."""
         if (

@@ -24,10 +24,7 @@ class TTS(Base):
         try:
             name = data["name"].title()
         except KeyError:
-            return (
-                {"status": "error", "message": 'Missing "name" parameter'},
-                502,
-            )
+            return ({"status": "error", "message": 'Missing "name" parameter'}, 502)
 
         self.log("Emergency Notification from {0}".format(name))
 
@@ -43,10 +40,7 @@ class TTS(Base):
         try:
             text = data["text"]
         except KeyError:
-            return (
-                {"status": "error", "message": 'Missing "text" parameter'},
-                502,
-            )
+            return ({"status": "error", "message": 'Missing "text" parameter'}, 502)
 
         self.log("Received TTS data: {0}".format(data))
 
@@ -57,16 +51,12 @@ class TTS(Base):
         """Calculate how long the TTS should play."""
         master_sonos_player = kwargs["master_sonos_player"]
 
-        duration = self.get_state(
-            str(master_sonos_player), attribute="media_duration"
-        )
+        duration = self.get_state(str(master_sonos_player), attribute="media_duration")
         if not duration:
             self.error("Couldn't calculate ending duration for TTS")
             return
 
-        self.run_in(
-            self._end_cb, duration, master_sonos_player=master_sonos_player
-        )
+        self.run_in(self._end_cb, duration, master_sonos_player=master_sonos_player)
 
     def _end_cb(self, kwargs: dict) -> None:
         """Restore the Sonos to its previous state after speech is done."""
@@ -88,9 +78,7 @@ class TTS(Base):
         text = kwargs["text"]
 
         self.call_service(
-            "tts/amazon_polly_say",
-            entity_id=str(master_sonos_player),
-            message=text,
+            "tts/amazon_polly_say", entity_id=str(master_sonos_player), message=text
         )
 
         self.run_in(
@@ -133,9 +121,7 @@ class TTS(Base):
             self._speak_cb,
             3.25,
             master_sonos_player=master_sonos_player,
-            text="Good {0}. {1}".format(
-                relative_time_of_day(self), final_string
-            ),
+            text="Good {0}. {1}".format(relative_time_of_day(self), final_string),
         )
 
         self._last_spoken_text = text

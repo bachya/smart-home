@@ -50,12 +50,7 @@ class NotifyLowFuel(Base):
         )
 
     def low_fuel_found(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Send a notification when my car is low on gas."""
         try:
@@ -64,9 +59,7 @@ class NotifyLowFuel(Base):
                     return
 
                 self.log(
-                    "Low fuel detected detected: {0}".format(
-                        self.entity_ids[CONF_CAR]
-                    )
+                    "Low fuel detected detected: {0}".format(self.entity_ids[CONF_CAR])
                 )
 
                 self.registered = True
@@ -76,9 +69,7 @@ class NotifyLowFuel(Base):
                     "{0} needs gas; fill 'er up!.".format(
                         self.properties[CONF_FRIENDLY_NAME]
                     ),
-                    title="{0} is Low ⛽".format(
-                        self.properties[CONF_FRIENDLY_NAME]
-                    ),
+                    title="{0} is Low ⛽".format(self.properties[CONF_FRIENDLY_NAME]),
                 )
             else:
                 self.registered = False

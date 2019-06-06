@@ -47,10 +47,7 @@ class BumpClimate(ButtonAction):
         """Bump."""
         degrees = self._args["degrees"]
 
-        if (
-            self._hass.climate_manager.mode
-            == self._hass.climate_manager.Modes.cool
-        ):
+        if self._hass.climate_manager.mode == self._hass.climate_manager.Modes.cool:
             degrees *= -1
 
         self._hass.climate_manager.bump_indoor_temp(degrees)
@@ -80,8 +77,7 @@ class DashButton(Base):
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             CONF_ENTITY_IDS: vol.Schema(
-                {vol.Required(CONF_ACTION_LIST): cv.entity_id},
-                extra=vol.ALLOW_EXTRA,
+                {vol.Required(CONF_ACTION_LIST): cv.entity_id}, extra=vol.ALLOW_EXTRA
             ),
             CONF_PROPERTIES: vol.Schema(
                 {vol.Required(CONF_FRIENDLY_NAME): str}, extra=vol.ALLOW_EXTRA
@@ -117,9 +113,7 @@ class DashButton(Base):
             button_label=self.properties[CONF_FRIENDLY_NAME],
         )
 
-    def button_pressed(
-        self, event_name: str, data: dict, kwargs: dict
-    ) -> None:
+    def button_pressed(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond when button is pressed."""
         action_name = self.get_state(self.entity_ids[CONF_ACTION_LIST])
 

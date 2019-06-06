@@ -82,9 +82,7 @@ class LowBatteries(Base):
             self.handles[HANDLE_BATTERY_LOW][name] = send_notification(
                 self,
                 "slack",
-                "{0} has low batteries ({1})%. Replace them ASAP!".format(
-                    name, value
-                ),
+                "{0} has low batteries ({1})%. Replace them ASAP!".format(name, value),
                 when=self.datetime(),
                 interval=self.properties[CONF_NOTIFICATION_INTERVAL],
             )
@@ -104,14 +102,10 @@ class LeftInState(Base):
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             CONF_ENTITY_IDS: vol.Schema(
-                {vol.Required(CONF_ENTITY): cv.entity_id},
-                extra=vol.ALLOW_EXTRA,
+                {vol.Required(CONF_ENTITY): cv.entity_id}, extra=vol.ALLOW_EXTRA
             ),
             CONF_PROPERTIES: vol.Schema(
-                {
-                    vol.Required(CONF_DURATION): int,
-                    vol.Required(CONF_STATE): str,
-                },
+                {vol.Required(CONF_DURATION): int, vol.Required(CONF_STATE): str},
                 extra=vol.ALLOW_EXTRA,
             ),
         }
@@ -128,23 +122,17 @@ class LeftInState(Base):
         )
 
     def limit_reached(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Notify when the threshold is reached."""
+
         def turn_off():
             """Turn the entity off."""
             self.turn_off(self.entity_ids[CONF_ENTITY])
 
         self.slack_app_home_assistant.ask(
             "The {0} has been left {1} for {2} minutes. Turn it off?".format(
-                self.get_state(
-                    self.entity_ids[CONF_ENTITY], attribute="friendly_name"
-                ),
+                self.get_state(self.entity_ids[CONF_ENTITY], attribute="friendly_name"),
                 self.properties[CONF_STATE],
                 int(self.properties[CONF_DURATION]) / 60,
             ),
@@ -153,9 +141,7 @@ class LeftInState(Base):
                     "callback": turn_off,
                     "response_text": "You got it; turning it off now.",
                 },
-                "No": {
-                    "response_text": "Keep devouring electricity, little guy."
-                },
+                "No": {"response_text": "Keep devouring electricity, little guy."},
             },
         )
 
@@ -166,12 +152,10 @@ class SslExpiration(Base):
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             CONF_ENTITY_IDS: vol.Schema(
-                {vol.Required(CONF_SSL_EXPIRY): cv.entity_id},
-                extra=vol.ALLOW_EXTRA,
+                {vol.Required(CONF_SSL_EXPIRY): cv.entity_id}, extra=vol.ALLOW_EXTRA
             ),
             CONF_PROPERTIES: vol.Schema(
-                {vol.Required(CONF_EXPIRY_THRESHOLD): int},
-                extra=vol.ALLOW_EXTRA,
+                {vol.Required(CONF_EXPIRY_THRESHOLD): int}, extra=vol.ALLOW_EXTRA
             ),
         }
     )
@@ -185,21 +169,14 @@ class SslExpiration(Base):
         )
 
     def ssl_expiration_approaching(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """When SSL is about to expire, make an OmniFocus todo."""
         if int(new) < self.properties[CONF_EXPIRY_THRESHOLD]:
             self.log("SSL certificate about to expire: {0} days".format(new))
 
             send_notification(
-                self,
-                "slack/@aaron",
-                "SSL expires in less than {0} days".format(new),
+                self, "slack/@aaron", "SSL expires in less than {0} days".format(new)
             )
 
 

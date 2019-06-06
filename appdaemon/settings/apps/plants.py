@@ -55,12 +55,7 @@ class LowMoisture(Base):
         return int(self.get_state(self.entity_ids["current_moisture"]))
 
     def low_moisture_detected(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Notify when the plant's moisture is low."""
         if not self._low_moisture and int(new) < int(

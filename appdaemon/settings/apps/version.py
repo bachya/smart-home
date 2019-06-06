@@ -73,17 +73,10 @@ class NewVersionNotification(Base):
         )
 
     def version_change_detected(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Notify me when there's a new app version."""
-        new_version = version.parse(
-            self.get_state(self.entity_ids[CONF_AVAILABLE])
-        )
+        new_version = version.parse(self.get_state(self.entity_ids[CONF_AVAILABLE]))
         installed_version = version.parse(
             self.get_state(self.entity_ids[CONF_INSTALLED])
         )
@@ -98,9 +91,7 @@ class NewVersionNotification(Base):
             send_notification(
                 self,
                 "slack/@aaron",
-                "New {0} Version: {1}".format(
-                    self.properties[CONF_APP_NAME], new
-                ),
+                "New {0} Version: {1}".format(self.properties[CONF_APP_NAME], new),
                 title="New Software 💿",
             )
 
@@ -113,9 +104,7 @@ class DynamicSensor(NewVersionNotification):
     def configure(self) -> None:
         """Configure."""
         self.run_every(
-            self.update_sensor,
-            self.datetime(),
-            self.properties[CONF_UPDATE_INTERVAL],
+            self.update_sensor, self.datetime(), self.properties[CONF_UPDATE_INTERVAL]
         )
 
     @property
@@ -222,9 +211,7 @@ class NewPortainerVersionNotification(DynamicSensor):
             )
         except StopIteration:
             self.error(
-                "No match for image: {0}".format(
-                    self.properties[CONF_IMAGE_NAME]
-                )
+                "No match for image: {0}".format(self.properties[CONF_IMAGE_NAME])
             )
 
         return tagged_image.split(":")[1].replace("v", "").split("-")[0]

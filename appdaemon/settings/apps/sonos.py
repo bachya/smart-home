@@ -25,9 +25,7 @@ class SonosSpeaker(Base):
     def volume(self) -> float:
         """Retrieve the audio player's volume."""
         return float(
-            self.get_state(
-                self.entity_ids["speaker"], attribute="volume_level"
-            )
+            self.get_state(self.entity_ids["speaker"], attribute="volume_level")
         )
 
     @volume.setter
@@ -96,8 +94,7 @@ class SonosManager(Base):
 
         if not entities:
             self.error(
-                "Refusing to group only one entity: {0}".format(master),
-                level="WARNING",
+                "Refusing to group only one entity: {0}".format(master), level="WARNING"
             )
             return None
 
@@ -112,11 +109,7 @@ class SonosManager(Base):
     def register_entity(self, speaker_object: SonosSpeaker) -> None:
         """Register a Sonos entity object."""
         if speaker_object in self.speakers:
-            self.log(
-                "Entity already registered; skipping: {0}".format(
-                    speaker_object
-                )
-            )
+            self.log("Entity already registered; skipping: {0}".format(speaker_object))
             return
 
         self.speakers.append(speaker_object)
@@ -146,6 +139,5 @@ class SonosManager(Base):
     def ungroup_all(self) -> None:
         """Return all speakers to "individual" status."""
         self.call_service(
-            "media_player/sonos_unjoin",
-            entity_id=[str(e) for e in self.speakers],
+            "media_player/sonos_unjoin", entity_id=[str(e) for e in self.speakers]
         )

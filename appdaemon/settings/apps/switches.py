@@ -167,8 +167,7 @@ class PresenceFailsafe(BaseSwitch):
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             CONF_ENTITY_IDS: vol.Schema(
-                {vol.Required(CONF_SWITCH): cv.entity_id},
-                extra=vol.ALLOW_EXTRA,
+                {vol.Required(CONF_SWITCH): cv.entity_id}, extra=vol.ALLOW_EXTRA
             )
         }
     )
@@ -184,12 +183,7 @@ class PresenceFailsafe(BaseSwitch):
         )
 
     def switch_activated(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Turn the switch off if no one is home."""
         self.log("No one home; not allowing switch to activate")
@@ -227,23 +221,13 @@ class SleepTimer(BaseSwitch):
         )
 
     def switch_turned_off(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Reset the sleep timer when the switch turns off."""
         self.set_value(self.entity_ids[CONF_TIMER_SLIDER], 0)
 
     def timer_changed(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Start/stop a sleep timer for this switch."""
         minutes = int(float(new))
@@ -258,9 +242,7 @@ class SleepTimer(BaseSwitch):
             self.log("Activating sleep timer: {0} minutes".format(minutes))
 
             self.toggle(state="on")
-            self.handles[HANDLE_TIMER] = self.run_in(
-                self.timer_completed, minutes * 60
-            )
+            self.handles[HANDLE_TIMER] = self.run_in(self.timer_completed, minutes * 60)
 
     def timer_completed(self, kwargs: dict) -> None:
         """Turn off a switch at the end of sleep timer."""
@@ -275,8 +257,7 @@ class ToggleAtTime(BaseSwitch):
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             CONF_ENTITY_IDS: vol.Schema(
-                {vol.Required(CONF_SWITCH): cv.entity_id},
-                extra=vol.ALLOW_EXTRA,
+                {vol.Required(CONF_SWITCH): cv.entity_id}, extra=vol.ALLOW_EXTRA
             ),
             CONF_PROPERTIES: vol.Schema(
                 {
@@ -358,12 +339,7 @@ class ToggleNumericThreshold(BaseSwitch):
         )
 
     def target_state_changed(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Toggle the switch if outside the threshold."""
         new_value = float(new)
@@ -385,8 +361,7 @@ class ToggleOnInterval(BaseSwitch):
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             CONF_ENTITY_IDS: vol.Schema(
-                {vol.Required(CONF_SWITCH): cv.entity_id},
-                extra=vol.ALLOW_EXTRA,
+                {vol.Required(CONF_SWITCH): cv.entity_id}, extra=vol.ALLOW_EXTRA
             ),
             CONF_PROPERTIES: vol.Schema(
                 {
@@ -417,8 +392,7 @@ class ToggleOnInterval(BaseSwitch):
 
         if (
             self.now_is_between(
-                self.properties[CONF_START_TIME],
-                self.properties[CONF_END_TIME],
+                self.properties[CONF_START_TIME], self.properties[CONF_END_TIME]
             )
             and self.get_state(self.enabled_entity_id) == "on"
         ):
@@ -434,8 +408,7 @@ class ToggleOnInterval(BaseSwitch):
         )
         self.handles[HANDLE_TOGGLE_OUT_WINDOW] = self.run_every(
             self.toggle_on_schedule,
-            self.datetime()
-            + timedelta(seconds=self.properties[CONF_DURATION]),
+            self.datetime() + timedelta(seconds=self.properties[CONF_DURATION]),
             self.properties[CONF_WINDOW],
             state=self.properties[CONF_STATE],
             opposite=True,
@@ -483,12 +456,7 @@ class ToggleOnState(BaseSwitch):
         )
 
     def state_changed(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Toggle the switch depending on the target entity's state."""
         if new == self.properties[CONF_TARGET_STATE]:
@@ -512,8 +480,7 @@ class TurnOnUponArrival(BaseSwitch):
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             CONF_ENTITY_IDS: vol.Schema(
-                {vol.Required(CONF_SWITCH): cv.entity_id},
-                extra=vol.ALLOW_EXTRA,
+                {vol.Required(CONF_SWITCH): cv.entity_id}, extra=vol.ALLOW_EXTRA
             )
         }
     )
@@ -528,9 +495,7 @@ class TurnOnUponArrival(BaseSwitch):
             constrain_input_boolean=self.enabled_entity_id,
         )
 
-    def someone_arrived(
-        self, event_name: str, data: dict, kwargs: dict
-    ) -> None:
+    def someone_arrived(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Turn on after dark when someone comes homes."""
         self.log("Someone came home; turning on the switch")
 
@@ -543,17 +508,12 @@ class VacationMode(BaseSwitch):
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             CONF_ENTITY_IDS: vol.Schema(
-                {vol.Required(CONF_SWITCH): cv.entity_id},
-                extra=vol.ALLOW_EXTRA,
+                {vol.Required(CONF_SWITCH): cv.entity_id}, extra=vol.ALLOW_EXTRA
             ),
             CONF_PROPERTIES: vol.Schema(
                 {
-                    vol.Required(CONF_START_TIME): vol.Any(
-                        str, vol.In(SOLAR_EVENTS)
-                    ),
-                    vol.Required(CONF_END_TIME): vol.Any(
-                        str, vol.In(SOLAR_EVENTS)
-                    ),
+                    vol.Required(CONF_START_TIME): vol.Any(str, vol.In(SOLAR_EVENTS)),
+                    vol.Required(CONF_END_TIME): vol.Any(str, vol.In(SOLAR_EVENTS)),
                 },
                 extra=vol.ALLOW_EXTRA,
             ),
@@ -569,9 +529,7 @@ class VacationMode(BaseSwitch):
         )
         self.set_schedule(self.properties[CONF_END_TIME], self.stop_cycle)
 
-    def set_schedule(
-        self, time: str, handler: Callable, **kwargs: dict
-    ) -> None:
+    def set_schedule(self, time: str, handler: Callable, **kwargs: dict) -> None:
         """Set the appropriate schedulers based on the passed in time."""
         if time in ("sunrise", "sunset"):
             method = getattr(self, "run_at_{0}".format(time))

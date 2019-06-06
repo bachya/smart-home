@@ -21,9 +21,7 @@ def message(response_url: str, text: str, attachments: list = None) -> None:
         payload["attachments"] = attachments
 
     requests.post(
-        response_url,
-        headers={"Content-Type": "application/json"},
-        json=payload,
+        response_url, headers={"Content-Type": "application/json"}, json=payload
     )
 
 
@@ -63,14 +61,10 @@ class Security(SlashCommand):
             return
 
         if self._text == "away":
-            self._hass.call_service(
-                "scene/turn_on", entity_id="scene.depart_home"
-            )
+            self._hass.call_service("scene/turn_on", entity_id="scene.depart_home")
             self.message("The house has been fully secured.")
         elif self._text == "goodnight":
-            self._hass.call_service(
-                "scene/turn_on", entity_id="scene.good_night"
-            )
+            self._hass.call_service("scene/turn_on", entity_id="scene.good_night")
             self.message("The house has been secured for the evening.")
         elif self._text == "home":
             sec_mgr = self._hass.security_manager
@@ -84,10 +78,7 @@ class Thermostat(SlashCommand):
     def execute(self) -> None:
         """Execute the response to the slash command."""
         if not self._text:
-            if (
-                self._hass.climate_manager.mode
-                == self._hass.climate_manager.Modes.eco
-            ):
+            if self._hass.climate_manager.mode == self._hass.climate_manager.Modes.eco:
                 text = "The thermostat is set to eco mode."
             else:
                 text = "The thermostat is set to `{0}` to `{1}°`.".format(
@@ -157,11 +148,7 @@ class Toggle(SlashCommand):
 class SlackApp(Base):
     """Define a class to interact with a Slack app."""
 
-    COMMAND_MAP = {
-        "security": Security,
-        "thermostat": Thermostat,
-        "toggle": Toggle,
-    }
+    COMMAND_MAP = {"security": Security, "thermostat": Thermostat, "toggle": Toggle}
 
     def configure(self) -> None:
         """Configure."""
@@ -231,13 +218,9 @@ class SlackApp(Base):
         if image_url:
             attachments.append({"title": "", "image_url": image_url})
 
-        send_notification(
-            self, "slack", question, data={"attachments": attachments}
-        )
+        send_notification(self, "slack", question, data={"attachments": attachments})
 
-    def slash_command_received(
-        self, event_name: str, data: dict, kwargs: dict
-    ) -> None:
+    def slash_command_received(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to slash commands."""
         command = data["command"][1:]
 
@@ -246,9 +229,7 @@ class SlackApp(Base):
             return
 
         self.log(
-            "Running Slack slash command: {0} {1}".format(
-                data["command"], data["text"]
-            )
+            "Running Slack slash command: {0} {1}".format(data["command"], data["text"])
         )
 
         slash_command = self.COMMAND_MAP[command](

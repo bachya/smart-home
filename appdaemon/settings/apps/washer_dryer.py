@@ -52,12 +52,7 @@ class NotifyDone(Base):
         )
 
     def power_changed(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Deal with changes to the power draw."""
         power = float(new)
@@ -84,12 +79,7 @@ class NotifyDone(Base):
             self.app.state = self.app.States.clean
 
     def status_changed(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Deal with changes to the status."""
         if new == self.app.States.clean.value:

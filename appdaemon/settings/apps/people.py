@@ -61,14 +61,10 @@ class Person(Base):
             kind = self.get_state(device_tracker, attribute="source_type")
             if kind == "router":
                 self.listen_state(
-                    self._device_tracker_changed_cb,
-                    device_tracker,
-                    old="not_home",
+                    self._device_tracker_changed_cb, device_tracker, old="not_home"
                 )
             else:
-                self.listen_state(
-                    self._device_tracker_changed_cb, device_tracker
-                )
+                self.listen_state(self._device_tracker_changed_cb, device_tracker)
 
         # Render the initial state of the presence sensor:
         self._render_presence_status_sensor()
@@ -118,12 +114,7 @@ class Person(Base):
         self._render_presence_status_sensor()
 
     def _device_tracker_changed_cb(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Respond when a device tracker changes."""
         if self._raw_state == new:
@@ -163,9 +154,7 @@ class Person(Base):
         self._render_presence_status_sensor()
 
     def _fire_presence_change_event(
-        self,
-        old: "PresenceManager.HomeStates",
-        new: "PresenceManager.HomeStates",
+        self, old: "PresenceManager.HomeStates", new: "PresenceManager.HomeStates"
     ) -> None:
         """Fire a presence change event."""
         if new in (
@@ -192,10 +181,7 @@ class Person(Base):
     def _most_common_raw_state(self) -> str:
         """Get the most common raw state from the person's device trackers."""
         return most_common(
-            [
-                self.get_tracker_state(dt)
-                for dt in self.entity_ids[CONF_DEVICE_TRACKERS]
-            ]
+            [self.get_tracker_state(dt) for dt in self.entity_ids[CONF_DEVICE_TRACKERS]]
         )
 
     def _render_presence_status_sensor(self) -> None:
@@ -218,8 +204,6 @@ class Person(Base):
             state=state,
             attributes={
                 "friendly_name": self.first_name,
-                "entity_picture": "/local/{0}-{1}.png".format(
-                    self.name, picture_state
-                ),
+                "entity_picture": "/local/{0}-{1}.png".format(self.name, picture_state),
             },
         )

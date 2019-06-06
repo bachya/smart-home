@@ -37,9 +37,7 @@ class AdjustOnProximity(Base):
             constrain_input_boolean=self.enabled_entity_id,
         )
 
-    def proximity_changed(
-        self, event_name: str, data: dict, kwargs: dict
-    ) -> None:
+    def proximity_changed(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to "PROXIMITY_CHANGE" events."""
         if (
             self.climate_manager.outside_temp < OUTSIDE_THRESHOLD_LOW
@@ -49,60 +47,45 @@ class AdjustOnProximity(Base):
             # Scenario 1: Anything -> Away (Extreme Temps)
             if (
                 data["old"] != self.presence_manager.ProximityStates.away.value
-                and data["new"]
-                == self.presence_manager.ProximityStates.away.value
+                and data["new"] == self.presence_manager.ProximityStates.away.value
             ):
                 self.log('Setting thermostat to "Away" (extreme temp)')
 
-                self.climate_manager.set_away_mode(
-                    self.climate_manager.AwayModes.away
-                )
+                self.climate_manager.set_away_mode(self.climate_manager.AwayModes.away)
 
             # Scenario 2: Away -> Anything (Extreme Temps)
             elif (
                 data["old"] == self.presence_manager.ProximityStates.away.value
-                and data["new"]
-                != self.presence_manager.ProximityStates.away.value
+                and data["new"] != self.presence_manager.ProximityStates.away.value
             ):
                 self.log('Setting thermostat to "Home" (extreme temp)')
 
-                self.climate_manager.set_away_mode(
-                    self.climate_manager.AwayModes.home
-                )
+                self.climate_manager.set_away_mode(self.climate_manager.AwayModes.home)
         else:
             # Scenario 3: Home -> Anything
             if (
                 data["old"] == self.presence_manager.ProximityStates.home.value
-                and data["new"]
-                != self.presence_manager.ProximityStates.home.value
+                and data["new"] != self.presence_manager.ProximityStates.home.value
             ):
                 self.log('Setting thermostat to "Away"')
 
-                self.climate_manager.set_away_mode(
-                    self.climate_manager.AwayModes.away
-                )
+                self.climate_manager.set_away_mode(self.climate_manager.AwayModes.away)
 
             # Scenario 4: Anything -> Nearby
             elif (
-                data["old"]
-                != self.presence_manager.ProximityStates.nearby.value
-                and data["new"]
-                == self.presence_manager.ProximityStates.nearby.value
+                data["old"] != self.presence_manager.ProximityStates.nearby.value
+                and data["new"] == self.presence_manager.ProximityStates.nearby.value
             ):
                 self.log('Setting thermostat to "Home"')
 
-                self.climate_manager.set_away_mode(
-                    self.climate_manager.AwayModes.home
-                )
+                self.climate_manager.set_away_mode(self.climate_manager.AwayModes.home)
 
     def arrived_home(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Last ditch: turn the thermostat to home when someone arrives."""
         if self.climate_manager.away_mode:
             self.log('Last ditch: setting thermostat to "Home" (arrived)')
 
-            self.climate_manager.set_away_mode(
-                self.climate_manager.AwayModes.home
-            )
+            self.climate_manager.set_away_mode(self.climate_manager.AwayModes.home)
 
 
 class ClimateManager(Base):
@@ -157,9 +140,7 @@ class ClimateManager(Base):
     def away_mode(self) -> bool:
         """Return the state of away mode."""
         return (
-            self.get_state(
-                self.entity_ids[CONF_THERMOSTAT], attribute="away_mode"
-            )
+            self.get_state(self.entity_ids[CONF_THERMOSTAT], attribute="away_mode")
             == "on"
         )
 
@@ -179,9 +160,7 @@ class ClimateManager(Base):
     def mode(self) -> "Modes":
         """Return the current operating mode."""
         return self.Modes[
-            self.get_state(
-                self.entity_ids[CONF_THERMOSTAT], attribute="operation_mode"
-            )
+            self.get_state(self.entity_ids[CONF_THERMOSTAT], attribute="operation_mode")
         ]
 
     @property
@@ -196,10 +175,7 @@ class ClimateManager(Base):
     def _climate_bump_endpoint(self, data: dict) -> Tuple[dict, int]:
         """Define an endpoint to quickly bump the climate."""
         if not data.get("amount"):
-            return (
-                {"status": "error", "message": 'Missing "amount" parameter'},
-                502,
-            )
+            return ({"status": "error", "message": 'Missing "amount" parameter'}, 502)
 
         self.bump_indoor_temp(int(data["amount"]))
 
@@ -253,22 +229,14 @@ class CycleFan(Base):
         """Configure."""
         self.register_constraint("constrain_extreme_temperature")
 
-        cycle_on_dt = ceil_dt(
-            self.datetime(), timedelta(minutes=self.CYCLE_MINUTES)
-        )
+        cycle_on_dt = ceil_dt(self.datetime(), timedelta(minutes=self.CYCLE_MINUTES))
         cycle_off_dt = cycle_on_dt + timedelta(minutes=self.CYCLE_MINUTES)
 
         self.run_every(
-            self.cycle_on,
-            cycle_on_dt,
-            60 * 60,
-            constrain_extreme_temperature=True,
+            self.cycle_on, cycle_on_dt, 60 * 60, constrain_extreme_temperature=True
         )
         self.run_every(
-            self.cycle_off,
-            cycle_off_dt,
-            60 * 60,
-            constrain_extreme_temperature=True,
+            self.cycle_off, cycle_off_dt, 60 * 60, constrain_extreme_temperature=True
         )
 
     def constrain_extreme_temperature(self, value: bool) -> bool:

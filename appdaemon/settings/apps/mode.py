@@ -38,9 +38,7 @@ class Mode(Base):
         """Deactivate the mode."""
         self.turn_off(self._switch)
 
-    def register_enabled_entity(
-        self, enabled_entity_id: str, value: str
-    ) -> None:
+    def register_enabled_entity(self, enabled_entity_id: str, value: str) -> None:
         """Record how a enable toggle should respond when in this mode."""
         location = getattr(self, "_enabled_toggles_to_{0}".format(value))
         if enabled_entity_id in location:
@@ -49,12 +47,7 @@ class Mode(Base):
         location.append(enabled_entity_id)
 
     def switch_turned_off_cb(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Respond when the mode is turned off."""
         self.log("Deactivating mode: {0}".format(self.name))
@@ -64,12 +57,7 @@ class Mode(Base):
             self.turn_off(enabled_toggle)
 
     def switch_turned_on_cb(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Respond when the mode is turned on."""
         self.log("Activating mode: {0}".format(self.name))
@@ -98,9 +86,7 @@ class BlackoutMode(Mode):
         """Configure."""
         super().configure()
 
-        self.blackout_start = self.parse_time(
-            self.properties[CONF_BLACKOUT_START]
-        )
+        self.blackout_start = self.parse_time(self.properties[CONF_BLACKOUT_START])
         self.blackout_end = self.parse_time(self.properties[CONF_BLACKOUT_END])
 
         if self.in_blackout():
@@ -124,6 +110,4 @@ class BlackoutMode(Mode):
         kwargs = {}
         if target:
             kwargs["target"] = target
-        return time_is_between(
-            self.blackout_start, self.blackout_end, **kwargs
-        )
+        return time_is_between(self.blackout_start, self.blackout_end, **kwargs)

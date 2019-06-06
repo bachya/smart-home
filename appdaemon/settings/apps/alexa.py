@@ -16,17 +16,9 @@ class Alexa(Base):
     def configure(self) -> None:
         """Configure."""
         self.appliance_state_info = {
-            "The Dishwasher": (
-                self.dishwasher,
-                "state",
-                self.dishwasher.States.dirty,
-            ),
+            "The Dishwasher": (self.dishwasher, "state", self.dishwasher.States.dirty),
             "Wolfie": (self.wolfie, "bin_state", self.wolfie.BinStates.empty),
-            "The Vacuum": (
-                self.wolfie,
-                "bin_state",
-                self.wolfie.BinStates.empty,
-            ),
+            "The Vacuum": (self.wolfie, "bin_state", self.wolfie.BinStates.empty),
         }
 
         self.register_endpoint(self._alexa_endpoint, "alexa")
@@ -38,9 +30,7 @@ class Alexa(Base):
         self.log("Received Alexa intent: {0}".format(intent))
 
         if intent is None:
-            message = "Alexa error encountered: {0}".format(
-                self.get_alexa_error(data)
-            )
+            message = "Alexa error encountered: {0}".format(self.get_alexa_error(data))
             response = {"status": "error", "message": message}
 
             self.error(message)
@@ -50,9 +40,7 @@ class Alexa(Base):
         try:
             method = camel_to_underscore(intent)
             speech, card, title = getattr(self, method)(data)
-            response = self.format_alexa_response(
-                speech=speech, card=card, title=title
-            )
+            response = self.format_alexa_response(speech=speech, card=card, title=title)
         except AttributeError as exc:
             self.error(str(exc))
             speech = "I'm sorry, the {0} app does not exist.".format(intent)
@@ -65,9 +53,7 @@ class Alexa(Base):
     def empty_appliance_intent(self, data: dict) -> Tuple[str, str, str]:
         """Define a handler for the EmptyApplianceIntent intent."""
         appliance = self.get_alexa_slot_value(data, "Appliance")
-        name, attrs = relative_search_dict(
-            self.appliance_state_info, appliance
-        )
+        name, attrs = relative_search_dict(self.appliance_state_info, appliance)
         app, state_attr, desired_state = attrs  # type: ignore
 
         setattr(app, state_attr, desired_state)
@@ -124,9 +110,7 @@ class Alexa(Base):
                     name, current_moisture
                 )
         else:
-            speech = "I couldn't find moisture information for {0}.".format(
-                plant
-            )
+            speech = "I couldn't find moisture information for {0}.".format(plant)
             title = title.format(plant)
 
         return speech, speech, title

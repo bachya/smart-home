@@ -54,12 +54,7 @@ class MonitorConsumables(Base):
             )
 
     def consumable_changed(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Create a task when a consumable is getting low."""
         if int(new) < self.properties["consumable_threshold"]:
@@ -158,9 +153,9 @@ class ScheduledCycle(Base):
         state = self.app.States(self.get_state(self.app.entity_ids["status"]))
 
         # Scenario 1: Vacuum is charging and is told to start:
-        if (
-            self.initiated_by_app and state == self.app.States.docked
-        ) and data["state"] == self.security_manager.AlarmStates.home.value:
+        if (self.initiated_by_app and state == self.app.States.docked) and data[
+            "state"
+        ] == self.security_manager.AlarmStates.home.value:
             self.log("Activating vacuum (post-security)")
 
             self.turn_on(self.app.entity_ids["vacuum"])
@@ -175,9 +170,7 @@ class ScheduledCycle(Base):
             self.call_service(
                 "vacuum/start_pause", entity_id=self.app.entity_ids["vacuum"]
             )
-            self.security_manager.set_alarm(
-                self.security_manager.AlarmStates.home
-            )
+            self.security_manager.set_alarm(self.security_manager.AlarmStates.home)
 
         # Scenario 3: Vacuum is paused when alarm is set to "Home":
         elif (
@@ -191,12 +184,7 @@ class ScheduledCycle(Base):
             )
 
     def all_done(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Re-arm security (if needed) when done."""
         self.log("Vacuuming cycle all done")
@@ -207,20 +195,13 @@ class ScheduledCycle(Base):
         ):
             self.log('Changing alarm state to "away"')
 
-            self.security_manager.set_alarm(
-                self.security_manager.AlarmStates.away
-            )
+            self.security_manager.set_alarm(self.security_manager.AlarmStates.away)
 
         self.app.bin_state = self.app.BinStates.full
         self.initiated_by_app = False
 
     def bin_state_changed(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Listen for changes in bin status."""
         if new == self.app.BinStates.full.value:
@@ -253,12 +234,7 @@ class ScheduledCycle(Base):
         )
 
     def error_cleared(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Clear the error when Wolfie is no longer stuck."""
         if HANDLE_STUCK in self.handles:
@@ -266,12 +242,7 @@ class ScheduledCycle(Base):
             cancel()
 
     def errored(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Brief when Wolfie's had an error."""
         self.handles[HANDLE_STUCK] = send_notification(
@@ -284,12 +255,7 @@ class ScheduledCycle(Base):
         )
 
     def schedule_changed(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Reload the schedule when one of the input booleans change."""
         self.create_schedule()
@@ -300,9 +266,7 @@ class ScheduledCycle(Base):
             self.app.start()
             self.initiated_by_app = True
 
-    def start_by_switch(
-        self, event_name: str, data: dict, kwargs: dict
-    ) -> None:
+    def start_by_switch(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Start cleaning via the switch."""
         if not self.initiated_by_app:
             self.app.start()
@@ -356,18 +320,11 @@ class Vacuum(Base):
         """Start a cleaning cycle."""
         self.log("Starting vacuuming cycle")
 
-        if (
-            self.security_manager.alarm_state
-            == self.security_manager.AlarmStates.away
-        ):
+        if self.security_manager.alarm_state == self.security_manager.AlarmStates.away:
             self.log('Changing alarm state to "Home"')
 
-            self.security_manager.set_alarm(
-                self.security_manager.AlarmStates.home
-            )
+            self.security_manager.set_alarm(self.security_manager.AlarmStates.home)
         else:
             self.log("Activating vacuum")
 
-            self.call_service(
-                "vacuum/start", entity_id=self.entity_ids["vacuum"]
-            )
+            self.call_service("vacuum/start", entity_id=self.entity_ids["vacuum"])

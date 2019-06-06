@@ -44,16 +44,13 @@ class TrashManager(Base):
         """Return a list of pickup types in the next pickup."""
         pickup_datetime = datetime.datetime.strptime(
             self.get_state(
-                self.entity_ids["trash_type_sensors"]["trash"],
-                attribute="pickup_date",
+                self.entity_ids["trash_type_sensors"]["trash"], attribute="pickup_date"
             ),
             "%B %d, %Y",
         )
         pickup_types = [
             pickup_type
-            for pickup_type, entity in self.entity_ids[
-                "trash_type_sensors"
-            ].items()
+            for pickup_type, entity in self.entity_ids["trash_type_sensors"].items()
             if "pickups" not in self.get_state(entity)
         ]
 

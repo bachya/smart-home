@@ -4,12 +4,7 @@ from typing import Callable, Dict, Union  # noqa, pylint: disable=unused-import
 import voluptuous as vol
 from appdaemon.plugins.hass.hassapi import Hass  # type: ignore
 
-from const import (
-    CONF_ICON,
-    OPERATOR_ALL,
-    OPERATORS,
-    THRESHOLD_CLOUDY,
-)
+from const import CONF_ICON, OPERATOR_ALL, OPERATORS, THRESHOLD_CLOUDY
 from helpers import config_validation as cv
 
 CONF_CLASS = "class"
@@ -36,9 +31,7 @@ APP_SCHEMA = vol.Schema(
         vol.Optional(CONF_APP): str,
         vol.Optional(CONF_CONSTRAINTS): vol.Schema(
             {
-                vol.Optional(CONF_OPERATOR, default=OPERATOR_ALL): vol.In(
-                    OPERATORS
-                ),
+                vol.Optional(CONF_OPERATOR, default=OPERATOR_ALL): vol.In(OPERATORS),
                 vol.Required(CONF_CONSTRAINTS): dict,
             }
         ),
@@ -135,9 +128,7 @@ class Base(Hass):
             method(callback, *args, **{name: value}, **kwargs)
         return handles
 
-    def _constrain_presence(
-        self, method: str, value: Union[str, None]
-    ) -> bool:
+    def _constrain_presence(self, method: str, value: Union[str, None]) -> bool:
         """Constrain presence in a generic fashion."""
         if not value:
             return True
@@ -191,20 +182,14 @@ class Base(Hass):
             constrain_input_boolean=self.enabled_entity_id,
         )
 
-    def listen_event(
-        self, callback, event=None, auto_constraints=False, **kwargs
-    ):
+    def listen_event(self, callback, event=None, auto_constraints=False, **kwargs):
         """Wrap AppDaemon's event listener with the constraint mechanism."""
         if not auto_constraints:
             return super().listen_event(callback, event, **kwargs)
 
-        return self._attach_constraints(
-            super().listen_event, callback, event, **kwargs
-        )
+        return self._attach_constraints(super().listen_event, callback, event, **kwargs)
 
-    def listen_state(
-        self, callback, entity=None, auto_constraints=False, **kwargs
-    ):
+    def listen_state(self, callback, entity=None, auto_constraints=False, **kwargs):
         """Wrap AppDaemon's state listener with the constraint mechanism."""
         if not auto_constraints:
             return super().listen_state(callback, entity, **kwargs)
@@ -218,20 +203,14 @@ class Base(Hass):
         if not auto_constraints:
             return super().run_daily(callback, start, **kwargs)
 
-        return self._attach_constraints(
-            super().run_daily, callback, start, **kwargs
-        )
+        return self._attach_constraints(super().run_daily, callback, start, **kwargs)
 
-    def run_at_sunrise(
-        self, callback, *args, auto_constraints=False, **kwargs
-    ):
+    def run_at_sunrise(self, callback, *args, auto_constraints=False, **kwargs):
         """Wrap AppDaemon's sunrise run with the constraint mechanism."""
         if not auto_constraints:
             return super().run_at_sunrise(callback, **kwargs)
 
-        return self._attach_constraints(
-            super().run_at_sunrise, callback, **kwargs
-        )
+        return self._attach_constraints(super().run_at_sunrise, callback, **kwargs)
 
     def run_at_sunset(
         self,
@@ -244,13 +223,9 @@ class Base(Hass):
         if not auto_constraints:
             return super().run_at_sunset(callback, **kwargs)
 
-        return self._attach_constraints(
-            super().run_at_sunset, callback, **kwargs
-        )
+        return self._attach_constraints(super().run_at_sunset, callback, **kwargs)
 
-    def run_every(
-        self, callback, start, interval, auto_constraints=False, **kwargs
-    ):
+    def run_every(self, callback, start, interval, auto_constraints=False, **kwargs):
         """Wrap AppDaemon's everday run with the constraint mechanism."""
         if not auto_constraints:
             return super().run_every(callback, start, interval, **kwargs)
