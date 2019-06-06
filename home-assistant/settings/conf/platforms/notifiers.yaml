@@ -2,7 +2,7 @@
 - platform: slack
   name: slack
   api_key: !secret slack_api_key
-  default_channel: '#mothership'
+  default_channel: '#mothership-general'
 
 - platform: smtp
   name: omnifocus
