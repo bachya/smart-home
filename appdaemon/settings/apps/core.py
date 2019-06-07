@@ -115,7 +115,7 @@ class Base(Hass):
     @property
     def enabled(self) -> bool:
         """Return whether the app is enabled."""
-        if not self.entity_exists(self._enabled_entity_id):
+        if not self._enabled_entity_exists():
             return True
         return self.get_state(self._enabled_entity_id) == "on"
 
@@ -143,6 +143,12 @@ class Base(Hass):
 
         return getattr(self.presence_manager, method)(
             *[self.presence_manager.HomeStates[s] for s in value.split(",")]
+        )
+
+    def _enabled_entity_exists(self) -> bool:
+        """Return True if the enabled entity exists."""
+        return self._enabled_entity_id is not None and self.entity_exists(
+            self._enabled_entity_id
         )
 
     def constrain_anyone(self, value: str) -> bool:
@@ -190,17 +196,17 @@ class Base(Hass):
     def disable(self) -> None:
         """Disable the app."""
         if not self.entity_exists(self._enabled_entity_id):
-            self.log('Cannot disable an always-on app')
+            self.log("Cannot disable an always-on app")
             return
-            
+
         self.turn_off(self._enabled_entity_id)
 
     def enable(self) -> None:
         """Enable the app."""
         if not self.entity_exists(self._enabled_entity_id):
-            self.log('Cannot enable an always-on app')
+            self.log("Cannot enable an always-on app")
             return
-    
+
         self.turn_on(self._enabled_entity_id)
 
     def listen_ios_event(self, callback: Callable, action: str) -> None:
