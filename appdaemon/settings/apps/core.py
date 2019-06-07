@@ -115,6 +115,8 @@ class Base(Hass):
     @property
     def enabled(self) -> bool:
         """Return whether the app is enabled."""
+        if not self.entity_exists(self._enabled_entity_id):
+            return True
         return self.get_state(self._enabled_entity_id) == "on"
 
     def _attach_constraints(
@@ -187,10 +189,18 @@ class Base(Hass):
 
     def disable(self) -> None:
         """Disable the app."""
+        if not self.entity_exists(self._enabled_entity_id):
+            self.log('Cannot disable an always-on app')
+            return
+            
         self.turn_off(self._enabled_entity_id)
 
     def enable(self) -> None:
         """Enable the app."""
+        if not self.entity_exists(self._enabled_entity_id):
+            self.log('Cannot enable an always-on app')
+            return
+    
         self.turn_on(self._enabled_entity_id)
 
     def listen_ios_event(self, callback: Callable, action: str) -> None:
