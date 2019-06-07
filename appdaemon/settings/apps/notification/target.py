@@ -12,7 +12,7 @@ class Target:
     def __init__(self, notify_service: str) -> None:
         """Initialize."""
         self.payload = {}  # type: Dict[str, str]
-        self.service_call = 'notify/{0}'.format(notify_service)
+        self.service_call = "notify/{0}".format(notify_service)
 
 
 class SlackTarget(Target):
@@ -20,12 +20,12 @@ class SlackTarget(Target):
 
     def __init__(self, channel: str = None, mention: str = None) -> None:
         """Initialize."""
-        super().__init__('slack')
+        super().__init__("slack")
 
         if channel:
-            self.payload['target'] = '#{0}'.format(channel)
+            self.payload["target"] = "#{0}".format(channel)
         if mention:
-            self.payload['message'] = '{0}: '.format(mention)
+            self.payload["message"] = "{0}: ".format(mention)
 
 
 class TargetFactory:
@@ -54,14 +54,14 @@ class PersonFactory(TargetFactory):
 
     def build(self) -> List[Target]:
         """Build notification target objects from a string representation."""
-        name = self._target.split('person:')[1]
+        name = self._target.split("person:")[1]
 
         try:
-            person = next((
-                p for p in self._app.global_vars[CONF_PEOPLE]
-                if p.first_name == name))
+            person = next(
+                (p for p in self._app.global_vars[CONF_PEOPLE] if p.first_name == name)
+            )
         except StopIteration:
-            self._app.error('Unknown person: {0}'.format(self._target))
+            self._app.error("Unknown person: {0}".format(self._target))
             return []
 
         targets = []  # type: List[Target]
@@ -76,14 +76,13 @@ class PresenceFactory(TargetFactory):
 
     def build(self) -> List[Target]:
         """Build notification target objects from a string representation."""
-        presence = self._target.split(':')[1]
-        presence_manager = self._app.get_app('presence_manager')
+        presence = self._target.split(":")[1]
+        presence_manager = self._app.get_app("presence_manager")
 
         try:
-            presence_method = getattr(
-                presence_manager, 'whos_{0}'.format(presence))
+            presence_method = getattr(presence_manager, "whos_{0}".format(presence))
         except AttributeError:
-            self._app.error('Unknown presence target: {0}'.format(presence))
+            self._app.error("Unknown presence target: {0}".format(presence))
             return []
 
         targets = []  # type: List[Target]
@@ -99,17 +98,17 @@ class SlackFactory(TargetFactory):
 
     def build(self) -> List[SlackTarget]:
         """Build notification target objects from a string representation."""
-        data = self._target.split(':')
+        data = self._target.split(":")
 
         if len(data) == 1:
             return [SlackTarget(None, None)]
 
-        splits = data[1].split('/')
+        splits = data[1].split("/")
 
         if len(splits) == 2:
             return [SlackTarget(splits[0], splits[1])]
 
-        if '@' in splits[0]:
+        if "@" in splits[0]:
             return [SlackTarget(None, splits[0])]
 
         return [SlackTarget(splits[0], None)]
@@ -117,11 +116,11 @@ class SlackFactory(TargetFactory):
 
 def get_targets_from_string(app: Base, target: str) -> List[Target]:
     """Return the appropriate factory for the passed target."""
-    if target.startswith('person:'):
+    if target.startswith("person:"):
         factory = PersonFactory(app, target)
-    elif target.startswith('presence:'):
+    elif target.startswith("presence:"):
         factory = PresenceFactory(app, target)  # type: ignore
-    elif target.startswith('slac:'):
+    elif target.startswith("slac:"):
         factory = SlackFactory(app, target)  # type: ignore
     else:
         factory = NotifierFactory(app, target)  # type: ignore

@@ -14,11 +14,11 @@ def relative_time_of_day(hass) -> str:
     now = hass.datetime()
 
     if now.hour < 12:
-        greeting = 'morning'
+        greeting = "morning"
     elif 12 <= now.hour < 18:
-        greeting = 'afternoon'
+        greeting = "afternoon"
     else:
-        greeting = 'evening'
+        greeting = "evening"
 
     return greeting
 
@@ -28,7 +28,7 @@ def parse_time(time_str: str) -> Optional[time]:
 
     Return None if invalid.
     """
-    parts = str(time_str).split(':')
+    parts = str(time_str).split(":")
     if len(parts) < 2:
         return None
     try:

@@ -9,7 +9,7 @@ import attr
 from core import Base  # pylint: disable=no-name-in-module
 from notification.target import Target, get_targets_from_string
 
-CONF_NOTIFICATION_HANDLES = 'notification_handles'
+CONF_NOTIFICATION_HANDLES = "notification_handles"
 
 
 @attr.s(slots=True, auto_attribs=True)
@@ -49,7 +49,7 @@ class Notification:
         # threaded on iOS; this shouldn't hurt any non-iOS notifier:
         if not self.data:
             self.data = {}
-        self.data.setdefault('push', {'thread-id': self.id})
+        self.data.setdefault("push", {"thread-id": self.id})
 
     def _cancel(self) -> None:
         """Cancel the notification."""
@@ -76,13 +76,13 @@ class Notification:
             targets += get_targets_from_string(self._app, target_str)
 
         for target in targets:
-            target.payload['data'] = self.data
+            target.payload["data"] = self.data
             if self.title:
-                target.payload['title'] = self.title
-            if target.payload.get('message'):
-                target.payload['message'] += self.message
+                target.payload["title"] = self.title
+            if target.payload.get("message"):
+                target.payload["message"] += self.message
             else:
-                target.payload['message'] = self.message
+                target.payload["message"] = self.message
 
             self._app.call_service(target.service_call, **target.payload)
 
@@ -93,8 +93,7 @@ class Notification:
         """Send the notification."""
         handle = None
         if self.when and self.interval:
-            handle = self._app.run_every(
-                self._send_cb, self.when, self.interval)
+            handle = self._app.run_every(self._send_cb, self.when, self.interval)
         elif self.when:
             handle = self._app.run_at(self._send_cb, self.when)
         else:
@@ -105,15 +104,16 @@ class Notification:
 
 
 def send_notification(
-        app: Base,
-        targets: Union[str, List[str]],
-        message: str,
-        title: str = None,
-        urgent: bool = False,
-        when: datetime = None,
-        interval: int = None,
-        iterations: int = None,
-        data: dict = None) -> Callable:
+    app: Base,
+    targets: Union[str, List[str]],
+    message: str,
+    title: str = None,
+    urgent: bool = False,
+    when: datetime = None,
+    interval: int = None,
+    iterations: int = None,
+    data: dict = None,
+) -> Callable:
     """Send/schedule a notification and return a method to cancel it."""
     notification = Notification(  # type: ignore
         app=app,
@@ -124,5 +124,6 @@ def send_notification(
         when=when,
         interval=interval,
         iterations=iterations,
-        data=data)
+        data=data,
+    )
     return notification.send()

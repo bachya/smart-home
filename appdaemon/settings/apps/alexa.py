@@ -64,11 +64,7 @@ class Alexa(Base):
         setattr(app, state_attr, desired_state)
 
         speech = random_affirmative_response()
-        return (
-            speech,
-            speech,
-            "{0} Is {1}".format(name, desired_state.name),
-        )
+        return (speech, speech, "{0} Is {1}".format(name, desired_state.name))
 
     def in_next_trash_pickup_intent(self, data: dict) -> Tuple[str, str, str]:
         """Define a handler for the InNextTrashPickupIntent intent."""
