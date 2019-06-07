@@ -374,6 +374,12 @@ class ToggleOnInterval(BaseSwitch):
         }
     )
 
+    def disable_cb(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Kill any existing handles if the app is disabled."""
+        self.stop_cycle({})
+
     def configure(self) -> None:
         """Configure."""
         self.run_daily(
@@ -414,11 +420,13 @@ class ToggleOnInterval(BaseSwitch):
 
     def stop_cycle(self, kwargs: dict) -> None:
         """Stop the toggle cycle."""
-        self.toggle(opposite_of=self.properties[CONF_STATE])
-
         for handle in (HANDLE_TOGGLE_IN_WINDOW, HANDLE_TOGGLE_OUT_WINDOW):
+            if handle not in self.handles:
+                continue
             name = self.handles.pop(handle)
             self.cancel_timer(name)
+
+        self.toggle(opposite_of=self.properties[CONF_STATE])
 
 
 class ToggleOnState(BaseSwitch):
@@ -532,7 +540,7 @@ class VacationMode(BaseSwitch):
     def disable_cb(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
-        """Kill any existing handles if the app is disabled."""
+        """Perform steps to cancel the automation if the automation is disabled."""
         self._cancel_automation()
 
     def set_schedule(self, time: str, handler: Callable, **kwargs) -> None:
