@@ -222,8 +222,8 @@ class ScheduledCycle(Base):
     def create_schedule(self) -> None:
         """Create the vacuuming schedule from the on booleans."""
         if HANDLE_SCHEDULE in self.handles:
-            for handle in self.handles.pop(HANDLE_SCHEDULE):
-                self.cancel_timer(handle)
+            cancel = self.handles.pop(HANDLE_SCHEDULE)
+            cancel()
 
         self.handles[HANDLE_SCHEDULE] = run_on_days(
             self,

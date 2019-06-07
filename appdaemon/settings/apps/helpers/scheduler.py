@@ -14,7 +14,7 @@ def run_on_days(
     **kwargs
 ) -> List[str]:
     """Run a callback on certain days (at the specified time)."""
-    handle = []
+    handles = []
     upcoming_days = []
 
     today = app.date()
@@ -32,9 +32,14 @@ def run_on_days(
 
     for day in upcoming_days:
         event = datetime.datetime.combine(day, start)
-        handle.append(app.run_every(callback, event, 604800, **kwargs))
+        handles.append(app.run_every(callback, event, 604800, **kwargs))
 
-    return handle
+    def cancel():
+        """Define a method to cancel all of the handles."""
+        for handle in handles:
+            app.cancel_timer(handle)
+
+    return cancel
 
 
 def run_on_weekdays(
