@@ -3,8 +3,8 @@ from typing import List, Union
 
 import voluptuous as vol
 
-from .core import APP_SCHEMA, Base
-from .const import (
+from core import APP_SCHEMA, Base
+from const import (
     CONF_DURATION,
     CONF_ENTITY,
     CONF_ENTITY_IDS,
@@ -12,8 +12,8 @@ from .const import (
     CONF_PROPERTIES,
     CONF_STATE,
 )
-from .helpers import config_validation as cv
-from .notification import send_notification
+from helpers import config_validation as cv
+from notification import send_notification
 
 CONF_BATTERIES_TO_MONITOR = "batteries_to_monitor"
 CONF_BATTERY_LEVEL_THRESHOLD = "battery_level_threshold"

@@ -5,10 +5,10 @@ from typing import Union
 
 import voluptuous as vol
 
-from .const import CONF_NOTIFICATION_INTERVAL, CONF_ENTITY_IDS, CONF_PROPERTIES
-from .core import APP_SCHEMA, Base
-from .helpers import config_validation as cv
-from .notification import send_notification
+from const import CONF_NOTIFICATION_INTERVAL, CONF_ENTITY_IDS, CONF_PROPERTIES
+from core import APP_SCHEMA, Base
+from helpers import config_validation as cv
+from notification import send_notification
 
 CONF_POWER = "power"
 CONF_STATUS = "status"

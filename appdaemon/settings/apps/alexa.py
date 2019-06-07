@@ -2,13 +2,13 @@
 from enum import Enum
 from typing import Tuple
 
-from .core import Base
-from .helpers import (
+from core import Base
+from helpers import (
     grammatical_list_join,
     relative_search_dict,
     random_affirmative_response,
 )
-from .helpers.string import camel_to_underscore
+from helpers.string import camel_to_underscore
 
 
 class Alexa(Base):

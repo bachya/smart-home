@@ -2,9 +2,9 @@
 # pylint: disable=too-few-public-methods
 import voluptuous as vol
 
-from .const import CONF_ENTITY_IDS, CONF_FRIENDLY_NAME, CONF_PROPERTIES
-from .core import APP_SCHEMA, Base
-from .helpers import config_validation as cv
+from const import CONF_ENTITY_IDS, CONF_FRIENDLY_NAME, CONF_PROPERTIES
+from core import APP_SCHEMA, Base
+from helpers import config_validation as cv
 
 CONF_ACTION_LIST = "action_list"
 

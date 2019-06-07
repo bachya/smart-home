@@ -3,10 +3,10 @@ import datetime
 from math import ceil
 from typing import Tuple
 
-from .core import Base
-from .helpers import grammatical_list_join, suffix_strftime
-from .helpers.scheduler import run_on_days
-from .notification import send_notification
+from core import Base
+from helpers import grammatical_list_join, suffix_strftime
+from helpers.scheduler import run_on_days
+from notification import send_notification
 
 
 class NotifyOfPickup(Base):

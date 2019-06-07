@@ -4,8 +4,8 @@ from typing import Callable, Dict, Union
 import voluptuous as vol
 from appdaemon.plugins.hass.hassapi import Hass  # pylint: disable=no-name-in-module
 
-from .const import CONF_ICON, OPERATOR_ALL, OPERATORS, THRESHOLD_CLOUDY
-from .helpers import config_validation as cv
+from const import CONF_ICON, OPERATOR_ALL, OPERATORS, THRESHOLD_CLOUDY
+from helpers import config_validation as cv
 
 CONF_CLASS = "class"
 CONF_MODULE = "module"

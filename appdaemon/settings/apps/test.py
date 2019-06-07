@@ -1,8 +1,8 @@
 """Define various test automations."""
 from datetime import datetime, timedelta
 
-from .core import Base
-from .notification import send_notification
+from core import Base
+from notification import send_notification
 
 
 class TestNotification(Base):

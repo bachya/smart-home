@@ -1,7 +1,7 @@
 """Define an app to manage our Sonos players."""
 from typing import Union
 
-from .core import Base
+from core import Base
 
 
 class SonosSpeaker(Base):

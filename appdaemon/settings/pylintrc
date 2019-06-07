@@ -3,6 +3,7 @@
 # attribute-defined-outside-init - AppDaemon doesn't give access to __init__
 # bad-continuation - Incorrect attack on black
 # import-error - 3rd party packages will be in pipenv in docker
+# no-name-in-module - AppDaemon imports are rough
 # too-many-arguments - Lots of AppDaemon callbacks have lots of arguments
 # unnecessary-pass - This can hurt readability
 # unused-argument - Not all callback arguments are used
@@ -10,6 +11,7 @@ disable=
   attribute-defined-outside-init,
   bad-continuation,
   import-error,
+  no-name-in-module,
   too-many-arguments,
   unnecessary-pass,
   unused-argument

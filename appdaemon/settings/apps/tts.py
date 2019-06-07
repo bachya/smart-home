@@ -1,8 +1,8 @@
 """Define an app for working with TTS (over Sonos)."""
 from typing import Tuple
 
-from .core import Base
-from .helpers.dt import relative_time_of_day
+from core import Base
+from helpers.dt import relative_time_of_day
 
 OPENER_FILE_URL = 'https://hass.myserver.com/local/tts_opener.mp3'
 
