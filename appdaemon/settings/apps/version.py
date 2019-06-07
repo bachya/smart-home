@@ -69,7 +69,7 @@ class NewVersionNotification(Base):
         self.listen_state(
             self.version_change_detected,
             self.entity_ids[CONF_AVAILABLE],
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
     def version_change_detected(

@@ -46,7 +46,7 @@ class LowMoisture(Base):
         self.listen_state(
             self.low_moisture_detected,
             self.entity_ids["current_moisture"],
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
     @property

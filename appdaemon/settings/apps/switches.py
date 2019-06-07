@@ -89,7 +89,7 @@ class BaseZwaveSwitch(BaseSwitch):
             "zwave.node_event",
             entity_id=self.entity_ids["zwave_device"],
             basic_level=255,
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
         self.listen_event(
@@ -97,7 +97,7 @@ class BaseZwaveSwitch(BaseSwitch):
             "zwave.node_event",
             entity_id=self.entity_ids["zwave_device"],
             basic_level=0,
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
     def double_down(self, event_name: str, data: dict, kwargs: dict) -> None:
@@ -180,7 +180,7 @@ class PresenceFailsafe(BaseSwitch):
             self.entity_ids[CONF_SWITCH],
             new="on",
             constrain_noone="just_arrived,home",
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
     def switch_activated(
@@ -212,13 +212,13 @@ class SleepTimer(BaseSwitch):
         self.listen_state(
             self.timer_changed,
             self.entity_ids[CONF_TIMER_SLIDER],
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
         self.listen_state(
             self.switch_turned_off,
             self.entity_ids[CONF_SWITCH],
             new="off",
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
     def switch_turned_off(
@@ -275,10 +275,7 @@ class ToggleAtTime(BaseSwitch):
 
     def configure(self) -> None:
         """Configure."""
-        kwargs = {
-            "state": self.properties[CONF_STATE],
-            "constrain_input_boolean": self.enabled_entity_id,
-        }
+        kwargs = {"state": self.properties[CONF_STATE], "constrain_enabled": True}
 
         if self.properties[CONF_SCHEDULE_TIME] in SOLAR_EVENTS:
             method = getattr(
@@ -336,7 +333,7 @@ class ToggleNumericThreshold(BaseSwitch):
             self.target_state_changed,
             self.entity_ids[CONF_TARGET],
             auto_constraints=True,
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
     def target_state_changed(
@@ -382,20 +379,20 @@ class ToggleOnInterval(BaseSwitch):
         self.run_daily(
             self.start_cycle,
             self.parse_time(self.properties[CONF_START_TIME]),
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
         self.run_daily(
             self.stop_cycle,
             self.parse_time(self.properties[CONF_END_TIME]),
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
         if (
             self.now_is_between(
                 self.properties[CONF_START_TIME], self.properties[CONF_END_TIME]
             )
-            and self.get_state(self.enabled_entity_id) == "on"
+            and self.enabled
         ):
             self.start_cycle({})
 
@@ -453,7 +450,7 @@ class ToggleOnState(BaseSwitch):
             self.state_changed,
             self.entity_ids[CONF_TARGET],
             auto_constraints=True,
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
     def state_changed(
@@ -493,7 +490,7 @@ class TurnOnUponArrival(BaseSwitch):
             EVENT_PRESENCE_CHANGE,
             new=self.presence_manager.HomeStates.just_arrived.value,
             auto_constraints=True,
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
     def someone_arrived(self, event_name: str, data: dict, kwargs: dict) -> None:
@@ -524,9 +521,7 @@ class VacationMode(BaseSwitch):
     def configure(self) -> None:
         """Configure."""
         self.set_schedule(
-            self.properties[CONF_START_TIME],
-            self.start_cycle,
-            constrain_input_boolean=self.enabled_entity_id,
+            self.properties[CONF_START_TIME], self.start_cycle, constrain_enabled=True
         )
         self.set_schedule(self.properties[CONF_END_TIME], self.stop_cycle)
 

@@ -50,7 +50,7 @@ class MonitorConsumables(Base):
                 self.consumable_changed,
                 self.app.entity_ids["vacuum"],
                 attribute=consumable,
-                constrain_input_boolean=self.enabled_entity_id,
+                constrain_enabled=True,
             )
 
     def consumable_changed(
@@ -108,45 +108,35 @@ class ScheduledCycle(Base):
         self.create_schedule()
 
         self.listen_event(
-            self.alarm_changed,
-            EVENT_ALARM_CHANGE,
-            constrain_input_boolean=self.enabled_entity_id,
+            self.alarm_changed, EVENT_ALARM_CHANGE, constrain_enabled=True
         )
-        self.listen_event(
-            self.start_by_switch,
-            "VACUUM_START",
-            constrain_input_boolean=self.enabled_entity_id,
-        )
+        self.listen_event(self.start_by_switch, "VACUUM_START", constrain_enabled=True)
         self.listen_state(
             self.all_done,
             self.app.entity_ids["status"],
             old=self.app.States.returning.value,
             new=self.app.States.docked.value,
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
         self.listen_state(
             self.bin_state_changed,
             self.app.entity_ids["bin_state"],
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
         self.listen_state(
             self.errored,
             self.app.entity_ids["status"],
             new=self.app.States.error.value,
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
         self.listen_state(
             self.error_cleared,
             self.app.entity_ids["status"],
             old=self.app.States.error.value,
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
         for toggle in self.properties["schedule_switches"]:
-            self.listen_state(
-                self.schedule_changed,
-                toggle,
-                constrain_input_boolean=self.enabled_entity_id,
-            )
+            self.listen_state(self.schedule_changed, toggle, constrain_enabled=True)
 
     def alarm_changed(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to 'ALARM_CHANGE' events."""
@@ -230,7 +220,7 @@ class ScheduledCycle(Base):
             self.start_by_schedule,
             self.active_days,
             self.parse_time(self.properties["schedule_time"]),
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
     def error_cleared(

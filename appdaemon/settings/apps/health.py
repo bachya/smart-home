@@ -101,7 +101,7 @@ class NotifyBadAqi(Base):
             self.bad_aqi_detected,
             self.entity_ids[CONF_HVAC_STATE],
             new="cooling",
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
     def bad_aqi_detected(

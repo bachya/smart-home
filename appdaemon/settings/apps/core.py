@@ -83,21 +83,21 @@ class Base(Hass):
 
         # Set the entity ID of the input boolean that will control whether
         # this automation is enabled or not:
-        self.enabled_entity_id = None  # type: ignore
+        self._enabled_entity_id = None  # type: ignore
         enabled_config = self.args.get("enabled_config", {})
         if enabled_config:
             if enabled_config.get("toggle_name"):
-                self.enabled_entity_id = "input_boolean.{0}".format(
+                self._enabled_entity_id = "input_boolean.{0}".format(
                     enabled_config["toggle_name"]
                 )
             else:
-                self.enabled_entity_id = "input_boolean.{0}".format(self.name)
+                self._enabled_entity_id = "input_boolean.{0}".format(self.name)
 
         # Register any "mode alterations" for this automation – for example,
         # perhaps it should be disabled when Vacation Mode is enabled:
         for mode, value in self.args.get("mode_alterations", {}).items():
             mode_app = getattr(self, mode)
-            mode_app.register_enabled_entity(self.enabled_entity_id, value)
+            mode_app.register_enabled_entity(self._enabled_entity_id, value)
 
         # Register custom constraints:
         self.register_constraint("constrain_anyone")
@@ -114,7 +114,7 @@ class Base(Hass):
     @property
     def enabled(self) -> bool:
         """Return whether the app is enabled."""
-        return self.get_state(self.enabled_entity_id) == "on"
+        return self.get_state(self._enabled_entity_id) == "on"
 
     def _attach_constraints(
         self, method: Callable, callback: Callable, *args: list, **kwargs: dict
@@ -186,11 +186,11 @@ class Base(Hass):
 
     def disable(self) -> None:
         """Disable the app."""
-        self.turn_off(self.enabled_entity_id)
+        self.turn_off(self._enabled_entity_id)
 
     def enable(self) -> None:
         """Enable the app."""
-        self.turn_on(self.enabled_entity_id)
+        self.turn_on(self._enabled_entity_id)
 
     def listen_ios_event(self, callback: Callable, action: str) -> None:
         """Register a callback for an iOS event."""
@@ -198,7 +198,7 @@ class Base(Hass):
             callback,
             "ios.notification_action_fired",
             actionName=action,
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
     def listen_event(self, callback, event=None, auto_constraints=False, **kwargs):

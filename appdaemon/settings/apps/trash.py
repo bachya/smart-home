@@ -19,7 +19,7 @@ class NotifyOfPickup(Base):
             self.time_to_notify,
             ["Sunday"],
             datetime.time(20, 0, 0),
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
             constrain_anyone="home",
         )
 

@@ -46,7 +46,7 @@ class NotifyLowFuel(Base):
             self.low_fuel_found,
             self.entity_ids[CONF_CAR],
             attribute="fuel_level",
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
     def low_fuel_found(

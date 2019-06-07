@@ -22,7 +22,7 @@ class AutoVacationMode(Base):
             new=self.presence_manager.HomeStates.extended_away.value,
             first=False,
             action="on",
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
         self.listen_event(
             self.presence_changed,
@@ -30,7 +30,7 @@ class AutoVacationMode(Base):
             new=self.presence_manager.HomeStates.just_arrived.value,
             first=True,
             action="off",
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
     def presence_changed(self, event_name: str, data: dict, kwargs: dict) -> None:
@@ -65,7 +65,7 @@ class BadLoginNotification(Base):
                 self.send_alert,
                 notification_type,
                 attribute="all",
-                constrain_input_boolean=self.enabled_entity_id,
+                constrain_enabled=True,
             )
 
     def send_alert(

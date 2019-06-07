@@ -29,12 +29,10 @@ class AdjustOnProximity(Base):
             EVENT_PRESENCE_CHANGE,
             new=self.presence_manager.HomeStates.just_arrived.value,
             first=True,
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
         self.listen_event(
-            self.proximity_changed,
-            EVENT_PROXIMITY_CHANGE,
-            constrain_input_boolean=self.enabled_entity_id,
+            self.proximity_changed, EVENT_PROXIMITY_CHANGE, constrain_enabled=True
         )
 
     def proximity_changed(self, event_name: str, data: dict, kwargs: dict) -> None:

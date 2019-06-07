@@ -41,14 +41,12 @@ class NotifyDone(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self.power_changed,
-            self.app.entity_ids[CONF_POWER],
-            constrain_input_boolean=self.enabled_entity_id,
+            self.power_changed, self.app.entity_ids[CONF_POWER], constrain_enabled=True
         )
         self.listen_state(
             self.status_changed,
             self.app.entity_ids[CONF_STATUS],
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
     def power_changed(

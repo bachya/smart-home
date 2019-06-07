@@ -44,7 +44,7 @@ class AbsentInsecure(Base):
             self.entity_ids[CONF_STATE],
             new="Open",
             duration=60 * 5,
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
             constrain_noone="just_arrived,home",
         )
 
@@ -69,9 +69,7 @@ class AutoDepartureLockup(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_event(
-            self.everyone_gone,
-            EVENT_PROXIMITY_CHANGE,
-            constrain_input_boolean=self.enabled_entity_id,
+            self.everyone_gone, EVENT_PROXIMITY_CHANGE, constrain_enabled=True
         )
 
     def everyone_gone(self, event_name: str, data: dict, kwargs: dict) -> None:
@@ -94,7 +92,7 @@ class AutoNighttimeLockup(Base):
         self.run_daily(
             self.midnight,
             time(0, 0, 0),
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
             constrain_anyone="home",
         )
 
@@ -129,14 +127,14 @@ class GarageLeftOpen(Base):
             self.closed,
             self.entity_ids[CONF_GARAGE_DOOR],
             new="closed",
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
         self.listen_state(
             self.left_open,
             self.entity_ids[CONF_GARAGE_DOOR],
             new="open",
             duration=self.properties[CONF_TIME_LEFT_OPEN],
-            constrain_input_boolean=self.enabled_entity_id,
+            constrain_enabled=True,
         )
 
     def closed(
@@ -189,9 +187,7 @@ class NotifyOnChange(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self.state_changed,
-            self.entity_ids[CONF_STATE],
-            constrain_input_boolean=self.enabled_entity_id,
+            self.state_changed, self.entity_ids[CONF_STATE], constrain_enabled=True
         )
 
     def state_changed(
