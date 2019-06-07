@@ -4,5 +4,4 @@ repos:
     rev: stable
     hooks:
       - id: black
-        files: appdaemon/settings/apps
         language_version: python3
