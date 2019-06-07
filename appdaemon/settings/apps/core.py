@@ -102,6 +102,7 @@ class Base(Hass):
         # Register custom constraints:
         self.register_constraint("constrain_anyone")
         self.register_constraint("constrain_cloudy")
+        self.register_constraint("constrain_enabled")
         self.register_constraint("constrain_everyone")
         self.register_constraint("constrain_in_blackout")
         self.register_constraint("constrain_noone")
