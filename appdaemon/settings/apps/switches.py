@@ -17,6 +17,7 @@ from const import (
     CONF_PROPERTIES,
     CONF_START_TIME,
     CONF_STATE,
+    EVENT_PRESENCE_CHANGE,
     TOGGLE_STATES,
 )
 from helpers.scheduler import run_on_days
@@ -489,7 +490,7 @@ class TurnOnUponArrival(BaseSwitch):
         """Configure."""
         self.listen_event(
             self.someone_arrived,
-            "PRESENCE_CHANGE",
+            EVENT_PRESENCE_CHANGE,
             new=self.presence_manager.HomeStates.just_arrived.value,
             auto_constraints=True,
             constrain_input_boolean=self.enabled_entity_id,

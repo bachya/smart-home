@@ -9,6 +9,7 @@ from const import (
     CONF_NOTIFIERS,
     CONF_PEOPLE,
     CONF_PROPERTIES,
+    EVENT_PRESENCE_CHANGE,
 )
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv, most_common
@@ -171,7 +172,7 @@ class Person(Base):
         first = self.presence_manager.only_one(*states)
 
         self.fire_event(
-            "PRESENCE_CHANGE",
+            EVENT_PRESENCE_CHANGE,
             person=self.first_name,
             old=old.value,
             new=new.value,

@@ -1,7 +1,7 @@
 """Define automations for Home Assistant itself."""
 import voluptuous as vol
 
-from const import CONF_ENTITY_IDS
+from const import CONF_ENTITY_IDS, EVENT_PRESENCE_CHANGE
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 from notification import send_notification
@@ -18,7 +18,7 @@ class AutoVacationMode(Base):
         """Configure."""
         self.listen_event(
             self.presence_changed,
-            "PRESENCE_CHANGE",
+            EVENT_PRESENCE_CHANGE,
             new=self.presence_manager.HomeStates.extended_away.value,
             first=False,
             action="on",
@@ -26,7 +26,7 @@ class AutoVacationMode(Base):
         )
         self.listen_event(
             self.presence_changed,
-            "PRESENCE_CHANGE",
+            EVENT_PRESENCE_CHANGE,
             new=self.presence_manager.HomeStates.just_arrived.value,
             first=True,
             action="off",

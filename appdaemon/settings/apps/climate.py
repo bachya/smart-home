@@ -5,7 +5,7 @@ from typing import Tuple
 
 import voluptuous as vol
 
-from const import CONF_ENTITY_IDS
+from const import CONF_ENTITY_IDS, EVENT_PRESENCE_CHANGE
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 from helpers.dt import ceil_dt
@@ -26,7 +26,7 @@ class AdjustOnProximity(Base):
         """Configure."""
         self.listen_event(
             self.arrived_home,
-            "PRESENCE_CHANGE",
+            EVENT_PRESENCE_CHANGE,
             new=self.presence_manager.HomeStates.just_arrived.value,
             first=True,
             constrain_input_boolean=self.enabled_entity_id,
