@@ -146,7 +146,7 @@ class Base(Hass):
         """Constrain execution to whether anyone is in a state."""
         return self._constrain_presence("anyone", value)
 
-    def constrain_enabled(self, value: str) -> bool:
+    def constrain_enabled(self, value: bool) -> bool:
         """Constrain execution to whether anyone is in a state."""
         if value:
             return self.enabled
