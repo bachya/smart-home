@@ -46,5 +46,5 @@ TOGGLE_STATES = ("closed", "off", "on", "open")
 CONF_PEOPLE = "people"
 CONF_TRIGGER_FIRST = "trigger_on_first_only"
 
-
+# Misc.:
 THRESHOLD_CLOUDY = 70.0
