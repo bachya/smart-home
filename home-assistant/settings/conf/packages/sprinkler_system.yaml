@@ -1,5 +1,5 @@
 ---
-rainmachine:
+rainmachine_custom:
   controllers:
     - ip_address: rainmachine.myserver.com
       password: !secret rainmachine_password
