@@ -111,6 +111,11 @@ class Base(Hass):
         if hasattr(self, "configure"):
             self.configure()
 
+    @property
+    def enabled(self) -> bool:
+        """Return whether the app is enabled."""
+        return self.get_state(self.enabled_entity_id) == "on"
+
     def _attach_constraints(
         self, method: Callable, callback: Callable, *args: list, **kwargs: dict
     ) -> Union[str, list]:
@@ -140,6 +145,12 @@ class Base(Hass):
     def constrain_anyone(self, value: str) -> bool:
         """Constrain execution to whether anyone is in a state."""
         return self._constrain_presence("anyone", value)
+
+    def constrain_enabled(self, value: str) -> bool:
+        """Constrain execution to whether anyone is in a state."""
+        if value:
+            return self.enabled
+        return False
 
     def constrain_cloudy(self, value: bool) -> bool:
         """Constrain execution based whether it's cloudy or not."""
@@ -172,6 +183,14 @@ class Base(Hass):
         ):
             return True
         return False
+
+    def disable(self) -> None:
+        """Disable the app."""
+        self.turn_off(self.enabled_entity_id)
+
+    def enable(self) -> None:
+        """Enable the app."""
+        self.turn_on(self.enabled_entity_id)
 
     def listen_ios_event(self, callback: Callable, action: str) -> None:
         """Register a callback for an iOS event."""
