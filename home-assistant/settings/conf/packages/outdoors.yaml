@@ -21,6 +21,14 @@ sensor:
     monitored_conditions:
       - cloud_cover
 
+  - platform: filter
+    name: "Filtered Wind Speed"
+    entity_id: sensor.side_yard_wind_speed
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 1
+
   - platform: moon
 
   - platform: season
