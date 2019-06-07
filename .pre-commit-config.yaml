@@ -1,0 +1,8 @@
+---
+repos:
+  - repo: https://github.com/python/black
+    rev: stable
+    hooks:
+      - id: black
+        files: appdaemon/settings/apps
+        language_version: python3
