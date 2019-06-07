@@ -1,9 +1,8 @@
 """Define scheduling utilities."""
 import datetime
-from typing import TYPE_CHECKING, Callable
+from typing import Callable
 
-if TYPE_CHECKING:
-    from .core import Base
+from core import Base  # pylint: disable=no-name-in-module
 
 
 def run_on_days(
