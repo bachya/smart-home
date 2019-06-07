@@ -13,6 +13,7 @@ from const import (
     CONF_PROPERTIES,
     CONF_STATE,
     EVENT_ALARM_CHANGE,
+    EVENT_PROXIMITY_CHANGE,
 )
 from helpers import config_validation as cv
 from notification import send_notification
@@ -69,7 +70,7 @@ class AutoDepartureLockup(Base):
         """Configure."""
         self.listen_event(
             self.everyone_gone,
-            "PROXIMITY_CHANGE",
+            EVENT_PROXIMITY_CHANGE,
             constrain_input_boolean=self.enabled_entity_id,
         )
 

@@ -5,7 +5,7 @@ from typing import Tuple
 
 import voluptuous as vol
 
-from const import CONF_ENTITY_IDS, EVENT_PRESENCE_CHANGE
+from const import CONF_ENTITY_IDS, EVENT_PRESENCE_CHANGE, EVENT_PROXIMITY_CHANGE
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 from helpers.dt import ceil_dt
@@ -33,7 +33,7 @@ class AdjustOnProximity(Base):
         )
         self.listen_event(
             self.proximity_changed,
-            "PROXIMITY_CHANGE",
+            EVENT_PROXIMITY_CHANGE,
             constrain_input_boolean=self.enabled_entity_id,
         )
 

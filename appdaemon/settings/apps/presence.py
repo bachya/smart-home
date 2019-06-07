@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Union
 
 from core import Base
-from const import CONF_PEOPLE
+from const import CONF_PEOPLE, EVENT_PROXIMITY_CHANGE
 
 
 class PresenceManager(Base):
@@ -94,7 +94,7 @@ class PresenceManager(Base):
 
         if self.state != old_state:
             self.fire_event(
-                "PROXIMITY_CHANGE", old=old_state.value, new=self.state.value
+                EVENT_PROXIMITY_CHANGE, old=old_state.value, new=self.state.value
             )
 
     def _whos_in_state(self, *states: "HomeStates") -> list:
