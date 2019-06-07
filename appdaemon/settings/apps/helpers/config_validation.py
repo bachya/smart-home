@@ -6,7 +6,7 @@ import voluptuous as vol
 
 from helpers.dt import parse_time
 
-T = TypeVar('T')  # pylint: disable=invalid-name
+T = TypeVar("T")  # pylint: disable=invalid-name
 
 
 def ensure_list(value: Union[T, Sequence[T]]) -> Sequence[T]:
@@ -19,10 +19,10 @@ def ensure_list(value: Union[T, Sequence[T]]) -> Sequence[T]:
 def entity_id(value: Any) -> str:
     """Validate whether a passed value is an entity ID."""
     value = str(value).lower()
-    if '.' in value:
+    if "." in value:
         return value
 
-    raise vol.Invalid('Invalid entity ID: {0}'.format(value))
+    raise vol.Invalid("Invalid entity ID: {0}".format(value))
 
 
 # Adapted from:
@@ -33,12 +33,12 @@ def has_at_least_one_key(*keys: str) -> Callable:
     def validate(obj: Dict) -> Dict:
         """Test keys exist in dict."""
         if not isinstance(obj, dict):
-            raise vol.Invalid('expected dictionary')
+            raise vol.Invalid("expected dictionary")
 
         for k in obj.keys():
             if k in keys:
                 return obj
-        raise vol.Invalid('must contain one of {}.'.format(', '.join(keys)))
+        raise vol.Invalid("must contain one of {}.".format(", ".join(keys)))
 
     return validate
 
@@ -51,9 +51,9 @@ def time(value) -> time_sys:
     try:
         time_val = parse_time(value)
     except TypeError:
-        raise vol.Invalid('Not a parseable type')
+        raise vol.Invalid("Not a parseable type")
 
     if time_val is None:
-        raise vol.Invalid('Invalid time specified: {}'.format(value))
+        raise vol.Invalid("Invalid time specified: {}".format(value))
 
     return time_val
