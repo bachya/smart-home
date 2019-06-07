@@ -5,9 +5,8 @@ from typing import Callable, Union
 
 import voluptuous as vol
 
-import helpers.config_validation as cv
-from core import APP_SCHEMA, Base
-from const import (
+from .core import APP_SCHEMA, Base
+from .const import (
     CONF_ABOVE,
     CONF_BELOW,
     CONF_DELAY,
@@ -20,7 +19,8 @@ from const import (
     EVENT_PRESENCE_CHANGE,
     TOGGLE_STATES,
 )
-from helpers.scheduler import run_on_days
+from .helpers import config_validation as cv
+from .helpers.scheduler import run_on_days
 
 CONF_RUN_ON_DAYS = "run_on_days"
 CONF_SCHEDULE_TIME = "schedule_time"
@@ -530,7 +530,7 @@ class VacationMode(BaseSwitch):
         )
         self.set_schedule(self.properties[CONF_END_TIME], self.stop_cycle)
 
-    def set_schedule(self, time: str, handler: Callable, **kwargs: dict) -> None:
+    def set_schedule(self, time: str, handler: Callable, **kwargs) -> None:
         """Set the appropriate schedulers based on the passed in time."""
         if time in ("sunrise", "sunset"):
             method = getattr(self, "run_at_{0}".format(time))

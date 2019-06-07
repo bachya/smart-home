@@ -4,11 +4,11 @@ from typing import Union
 
 import voluptuous as vol
 
-from core import APP_SCHEMA, Base
-from const import CONF_ENTITY_IDS, CONF_PROPERTIES, EVENT_ALARM_CHANGE
-from helpers import config_validation as cv
-from helpers.scheduler import run_on_days
-from notification import send_notification
+from .core import APP_SCHEMA, Base
+from .const import CONF_ENTITY_IDS, CONF_PROPERTIES, EVENT_ALARM_CHANGE
+from .helpers import config_validation as cv
+from .helpers.scheduler import run_on_days
+from .notification import send_notification
 
 CONF_BIN_STATE = "bin_state"
 CONF_CONSUMABLES = "consumables"
@@ -225,7 +225,7 @@ class ScheduledCycle(Base):
             for handle in self.handles.pop(HANDLE_SCHEDULE):
                 self.cancel_timer(handle)
 
-        self.handles[HANDLE_SCHEDULE] = run_on_days(  # type: ignore
+        self.handles[HANDLE_SCHEDULE] = run_on_days(
             self,
             self.start_by_schedule,
             self.active_days,

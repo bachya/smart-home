@@ -5,10 +5,10 @@ from typing import Tuple
 
 import voluptuous as vol
 
-from const import CONF_ENTITY_IDS, EVENT_PRESENCE_CHANGE, EVENT_PROXIMITY_CHANGE
-from core import APP_SCHEMA, Base
-from helpers import config_validation as cv
-from helpers.dt import ceil_dt
+from .const import CONF_ENTITY_IDS, EVENT_PRESENCE_CHANGE, EVENT_PROXIMITY_CHANGE
+from .core import APP_SCHEMA, Base
+from .helpers import config_validation as cv
+from .helpers.dt import ceil_dt
 
 CONF_AVG_HUMIDITY_SENSOR = "average_humidity_sensor"
 CONF_AVG_TEMP_SENSOR = "average_temperature_sensor"

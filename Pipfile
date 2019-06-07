@@ -6,5 +6,4 @@ verify_ssl = true
 "flake8" = "*"
 mypy = "*"
 pre-commit = "*"
-pydocstyle = "*"
 pylint = "*"

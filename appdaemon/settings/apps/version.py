@@ -5,16 +5,16 @@ from packaging import version  # type: ignore
 import requests
 import voluptuous as vol
 
-from core import APP_SCHEMA, Base
-from const import (
+from .core import APP_SCHEMA, Base
+from .const import (
     CONF_ENTITY_IDS,
     CONF_FRIENDLY_NAME,
     CONF_ICON,
     CONF_PROPERTIES,
     CONF_UPDATE_INTERVAL,
 )
-from helpers import config_validation as cv
-from notification import send_notification
+from .helpers import config_validation as cv
+from .notification import send_notification
 
 CONF_APP_NAME = "app_name"
 CONF_AVAILABLE = "available"

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Union
 
 import voluptuous as vol
 
-from const import (
+from .const import (
     CONF_DEVICE_TRACKERS,
     CONF_ENTITY_IDS,
     CONF_NOTIFIERS,
@@ -11,8 +11,8 @@ from const import (
     CONF_PROPERTIES,
     EVENT_PRESENCE_CHANGE,
 )
-from core import APP_SCHEMA, Base
-from helpers import config_validation as cv, most_common
+from .core import APP_SCHEMA, Base
+from .helpers import config_validation as cv, most_common
 
 if TYPE_CHECKING:
     from presence import PresenceManager
@@ -124,9 +124,9 @@ class Person(Base):
         self._raw_state = new
 
         # Cancel any old timers:
-        for handle in (HANDLE_5_MINUTE_TIMER, HANDLE_24_HOUR_TIMER):
-            if handle in self.handles:
-                handle = self.handles.pop(handle)
+        for handle_key in (HANDLE_5_MINUTE_TIMER, HANDLE_24_HOUR_TIMER):
+            if handle_key in self.handles:
+                handle = self.handles.pop(handle_key)
                 self.cancel_timer(handle)
 
         # Set the home state and schedule transition checks (Just Left -> Away,

@@ -3,13 +3,13 @@ import json
 from typing import Dict, Union
 from zlib import adler32
 
-from core import Base
-from helpers import (
+from .core import Base
+from .helpers import (
     grammatical_list_join,
     random_affirmative_response,
     relative_search_list,
 )
-from notification import send_notification
+from .notification import send_notification
 
 
 def message(response_url: str, text: str, attachments: list = None) -> None:

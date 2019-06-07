@@ -1,10 +1,10 @@
 """Define automations for various home systems."""
-from typing import Union
+from typing import List, Union
 
 import voluptuous as vol
 
-from core import APP_SCHEMA, Base
-from const import (
+from .core import APP_SCHEMA, Base
+from .const import (
     CONF_DURATION,
     CONF_ENTITY,
     CONF_ENTITY_IDS,
@@ -12,8 +12,8 @@ from const import (
     CONF_PROPERTIES,
     CONF_STATE,
 )
-from helpers import config_validation as cv
-from notification import send_notification
+from .helpers import config_validation as cv
+from .notification import send_notification
 
 CONF_BATTERIES_TO_MONITOR = "batteries_to_monitor"
 CONF_BATTERY_LEVEL_THRESHOLD = "battery_level_threshold"
@@ -44,8 +44,7 @@ class LowBatteries(Base):
 
     def configure(self) -> None:
         """Configure."""
-        self._registered = []  # type: ignore
-        self.handles[HANDLE_BATTERY_LOW] = {}
+        self._registered = []  # type: List[str]
 
         for entity in self.entity_ids[CONF_BATTERIES_TO_MONITOR]:
             self.listen_state(
@@ -71,6 +70,7 @@ class LowBatteries(Base):
         except ValueError:
             return
 
+        notification_handle = "{0}_{1}".format(HANDLE_BATTERY_LOW, name)
         if value < self.properties[CONF_BATTERY_LEVEL_THRESHOLD]:
             if name in self._registered:
                 return
@@ -79,7 +79,7 @@ class LowBatteries(Base):
 
             self._registered.append(name)
 
-            self.handles[HANDLE_BATTERY_LOW][name] = send_notification(
+            self.handles[notification_handle] = send_notification(
                 self,
                 "slack",
                 "{0} has low batteries ({1})%. Replace them ASAP!".format(name, value),
@@ -89,8 +89,8 @@ class LowBatteries(Base):
         else:
             try:
                 self._registered.remove(name)
-                if name in self.handles[HANDLE_BATTERY_LOW]:
-                    cancel = self.handles[HANDLE_BATTERY_LOW].pop(name)
+                if notification_handle in self.handles:
+                    cancel = self.handles.pop(notification_handle)
                     cancel()
             except ValueError:
                 return

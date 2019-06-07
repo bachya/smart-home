@@ -1,11 +1,11 @@
 """Define generic automation objects and logic."""
-from typing import Callable, Dict, Union  # noqa, pylint: disable=unused-import
+from typing import Callable, Dict, Union
 
 import voluptuous as vol
-from appdaemon.plugins.hass.hassapi import Hass  # type: ignore
+from appdaemon.plugins.hass.hassapi import Hass  # pylint: disable=no-name-in-module
 
-from const import CONF_ICON, OPERATOR_ALL, OPERATORS, THRESHOLD_CLOUDY
-from helpers import config_validation as cv
+from .const import CONF_ICON, OPERATOR_ALL, OPERATORS, THRESHOLD_CLOUDY
+from .helpers import config_validation as cv
 
 CONF_CLASS = "class"
 CONF_MODULE = "module"
@@ -66,7 +66,7 @@ class Base(Hass):
 
         # Define a holding place for any scheduler handles that the automation
         # wants to keep track of:
-        self.handles = {}  # type: Dict[str, str]
+        self.handles = {}  # type: Dict[str, Callable]
 
         # Define a holding place for key/value properties for this automation:
         self.properties = self.args.get("properties", {})

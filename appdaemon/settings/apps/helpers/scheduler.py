@@ -1,11 +1,11 @@
 """Define scheduling utilities."""
 import datetime
-from typing import Callable
+from typing import Callable, List
 
 
 def run_on_days(
         hass, callback: Callable[..., None], day_list: list,
-        start: datetime.time, **kwargs) -> list:
+        start: datetime.time, **kwargs) -> List[str]:
     """Run a callback on certain days (at the specified time)."""
     handle = []
     upcoming_days = []

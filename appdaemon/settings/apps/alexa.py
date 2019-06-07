@@ -1,13 +1,14 @@
 """Define an app for working with Alexa."""
+from enum import Enum
 from typing import Tuple
 
-from core import Base
-from helpers import (
+from .core import Base
+from .helpers import (
     grammatical_list_join,
     relative_search_dict,
     random_affirmative_response,
 )
-from helpers.string import camel_to_underscore
+from .helpers.string import camel_to_underscore
 
 
 class Alexa(Base):
@@ -54,7 +55,11 @@ class Alexa(Base):
         """Define a handler for the EmptyApplianceIntent intent."""
         appliance = self.get_alexa_slot_value(data, "Appliance")
         name, attrs = relative_search_dict(self.appliance_state_info, appliance)
-        app, state_attr, desired_state = attrs  # type: ignore
+
+        app: Base
+        state_attr: str
+        desired_state: Enum
+        app, state_attr, desired_state = attrs
 
         setattr(app, state_attr, desired_state)
 
@@ -63,7 +68,7 @@ class Alexa(Base):
             speech,
             speech,
             "{0} Is {1}".format(name, desired_state.name),
-        )  # type: ignore
+        )
 
     def in_next_trash_pickup_intent(self, data: dict) -> Tuple[str, str, str]:
         """Define a handler for the InNextTrashPickupIntent intent."""

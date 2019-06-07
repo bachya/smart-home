@@ -2,8 +2,8 @@
 from enum import Enum
 from typing import Union
 
-from core import Base
-from const import CONF_PEOPLE, EVENT_PROXIMITY_CHANGE
+from .core import Base
+from .const import CONF_PEOPLE, EVENT_PROXIMITY_CHANGE
 
 
 class PresenceManager(Base):

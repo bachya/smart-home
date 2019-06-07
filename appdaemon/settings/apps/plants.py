@@ -3,15 +3,15 @@ from typing import Union
 
 import voluptuous as vol
 
-from core import APP_SCHEMA, Base
-from const import (
+from .core import APP_SCHEMA, Base
+from .const import (
     CONF_ENTITY_IDS,
     CONF_FRIENDLY_NAME,
     CONF_NOTIFICATION_INTERVAL,
     CONF_PROPERTIES,
 )
-from helpers import config_validation as cv
-from notification import send_notification
+from .helpers import config_validation as cv
+from .notification import send_notification
 
 CONF_CURRENT_MOISTURE = "current_moisture"
 CONF_MOISTURE_THRESHOLD = "moisture_threshold"

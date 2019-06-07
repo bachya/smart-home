@@ -7,6 +7,5 @@ init:
 	pipenv run pre-commit install
 lint:
 	pipenv run flake8 appdaemon/settings/apps
-	pipenv run pydocstyle appdaemon/settings/apps
-	pipenv run pylint appdaemon/settings/apps
+	pipenv run pylint --rcfile appdaemon/settings/pylintrc appdaemon/settings/apps
 	pipenv run mypy --ignore-missing-imports appdaemon/settings/apps

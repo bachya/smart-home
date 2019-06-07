@@ -6,7 +6,7 @@ from uuid import uuid4
 
 import attr
 
-from core import Base
+from core import Base  # pylint: disable=no-name-in-module
 from notification.target import Target, get_targets_from_string
 
 CONF_NOTIFICATION_HANDLES = 'notification_handles'
@@ -106,7 +106,7 @@ class Notification:
 
 def send_notification(
         app: Base,
-        targets: List[str],
+        targets: Union[str, List[str]],
         message: str,
         title: str = None,
         urgent: bool = False,

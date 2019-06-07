@@ -5,8 +5,8 @@ from typing import Union
 
 import voluptuous as vol
 
-from core import APP_SCHEMA, Base
-from const import (
+from .core import APP_SCHEMA, Base
+from .const import (
     CONF_ENTITY_IDS,
     CONF_FRIENDLY_NAME,
     CONF_NOTIFICATION_INTERVAL,
@@ -15,8 +15,8 @@ from const import (
     EVENT_ALARM_CHANGE,
     EVENT_PROXIMITY_CHANGE,
 )
-from helpers import config_validation as cv
-from notification import send_notification
+from .helpers import config_validation as cv
+from .notification import send_notification
 
 CONF_ALARM_CONTROL_PANEL = "alarm_control_panel"
 CONF_GARAGE_DOOR = "garage_door"

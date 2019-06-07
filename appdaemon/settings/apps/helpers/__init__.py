@@ -1,7 +1,7 @@
 """Define generic utils."""
 import datetime
 import random
-from typing import Any, Tuple, Union
+from typing import Any, Optional, Tuple
 
 import Levenshtein
 
@@ -36,7 +36,7 @@ def random_affirmative_response(replace_hyphens: bool = True) -> str:
 
 def relative_search_dict(
         candidates: dict, target: str,
-        threshold: float = 0.3) -> Tuple[Union[None, str], Union[None, str]]:
+        threshold: float = 0.3) -> Tuple[Optional[str], Any]:
     """Return a key/value pair (or its closest neighbor) from a dict."""
     try:
         key = next(
@@ -60,7 +60,7 @@ def relative_search_dict(
 
 def relative_search_list(
         candidates: list, target: str,
-        threshold: float = 0.3) -> Union[None, str]:
+        threshold: float = 0.3) -> Optional[str]:
     """Return an item (or its closest neighbor) from a list."""
     try:
         return next((c for c in candidates if target.lower() in c.lower()))
