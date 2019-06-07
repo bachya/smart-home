@@ -1,6 +1,6 @@
 """Define scheduling utilities."""
 import datetime
-from typing import TYPE_CHECKING, Callable, List
+from typing import TYPE_CHECKING, Callable
 
 if TYPE_CHECKING:
     from .core import Base
@@ -12,7 +12,7 @@ def run_on_days(
     day_list: list,
     start: datetime.time,
     **kwargs
-) -> List[str]:
+) -> Callable:
     """Run a callback on certain days (at the specified time)."""
     handles = []
     upcoming_days = []
