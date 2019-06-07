@@ -1,5 +1,5 @@
 """Define generic automation objects and logic."""
-from typing import Callable, Dict, Union
+from typing import Callable, Dict, Optional, Union
 
 import voluptuous as vol
 from appdaemon.plugins.hass.hassapi import Hass  # pylint: disable=no-name-in-module
@@ -83,7 +83,7 @@ class Base(Hass):
 
         # Set the entity ID of the input boolean that will control whether
         # this automation is enabled or not:
-        self._enabled_entity_id = None  # type: ignore
+        self._enabled_entity_id = None  # type: Optional[str]
         enabled_config = self.args.get("enabled_config", {})
         if enabled_config:
             if enabled_config.get("toggle_name"):
