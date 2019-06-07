@@ -15,7 +15,7 @@ from .core import APP_SCHEMA, Base
 from .helpers import config_validation as cv, most_common
 
 if TYPE_CHECKING:
-    from presence import PresenceManager
+    from .presence import PresenceManager
 
 CONF_PRESENCE_STATUS_SENSOR = "presence_status_sensor"
 CONF_PUSH_DEVICE_ID = "push_device_id"
