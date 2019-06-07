@@ -46,5 +46,8 @@ TOGGLE_STATES = ("closed", "off", "on", "open")
 CONF_PEOPLE = "people"
 CONF_TRIGGER_FIRST = "trigger_on_first_only"
 
+# Events:
+EVENT_ALARM_CHANGE = "ALARM_CHANGE"
+
 # Misc.:
 THRESHOLD_CLOUDY = 70.0

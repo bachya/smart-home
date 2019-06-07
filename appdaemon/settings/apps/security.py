@@ -12,6 +12,7 @@ from const import (
     CONF_NOTIFICATION_INTERVAL,
     CONF_PROPERTIES,
     CONF_STATE,
+    EVENT_ALARM_CHANGE,
 )
 from helpers import config_validation as cv
 from notification import send_notification
@@ -252,7 +253,7 @@ class SecurityManager(Base):
     ) -> None:
         """Fire events when the security system status changes."""
         if new != "unknown":
-            self.fire_event("ALARM_CHANGE", state=new)
+            self.fire_event(EVENT_ALARM_CHANGE, state=new)
 
     def close_garage(self) -> None:
         """Close the garage."""

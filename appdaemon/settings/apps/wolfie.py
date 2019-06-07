@@ -5,7 +5,7 @@ from typing import Union
 import voluptuous as vol
 
 from core import APP_SCHEMA, Base
-from const import CONF_ENTITY_IDS, CONF_PROPERTIES
+from const import CONF_ENTITY_IDS, CONF_PROPERTIES, EVENT_ALARM_CHANGE
 from helpers import config_validation as cv
 from helpers.scheduler import run_on_days
 from notification import send_notification
@@ -109,7 +109,7 @@ class ScheduledCycle(Base):
 
         self.listen_event(
             self.alarm_changed,
-            "ALARM_CHANGE",
+            EVENT_ALARM_CHANGE,
             constrain_input_boolean=self.enabled_entity_id,
         )
         self.listen_event(
