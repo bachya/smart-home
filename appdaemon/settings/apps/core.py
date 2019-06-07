@@ -93,6 +93,10 @@ class Base(Hass):
             else:
                 self._enabled_entity_id = "input_boolean.{0}".format(self.name)
 
+        if self._enabled_entity_id:
+            super().listen_state(self.disable_cb, self._enabled_entity_id, new="off")
+            super().listen_state(self.enable_cb, self._enabled_entity_id, new="on")
+
         # Register any "mode alterations" for this automation – for example,
         # perhaps it should be disabled when Vacation Mode is enabled:
         for mode, value in self.args.get("mode_alterations", {}).items():
@@ -201,6 +205,12 @@ class Base(Hass):
 
         self.turn_off(self._enabled_entity_id)
 
+    def disable_cb(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Respond to the app being disabled."""
+        pass
+
     def enable(self) -> None:
         """Enable the app."""
         if not self.entity_exists(self._enabled_entity_id):
@@ -208,6 +218,12 @@ class Base(Hass):
             return
 
         self.turn_on(self._enabled_entity_id)
+
+    def enabled_cb(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Respond to the app being enabled."""
+        pass
 
     def listen_ios_event(self, callback: Callable, action: str) -> None:
         """Register a callback for an iOS event."""

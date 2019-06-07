@@ -518,20 +518,32 @@ class VacationMode(BaseSwitch):
         }
     )
 
+    def _cancel_automation(self) -> None:
+        """Cancel the handle (if it exists)."""
+        if HANDLE_VACATION_MODE in self.handles:
+            handle = self.handles.pop(HANDLE_VACATION_MODE)
+            self.cancel_timer(handle)
+
     def configure(self) -> None:
         """Configure."""
-        self.set_schedule(
-            self.properties[CONF_START_TIME], self.start_cycle, constrain_enabled=True
-        )
+        self.set_schedule(self.properties[CONF_START_TIME], self.start_cycle)
         self.set_schedule(self.properties[CONF_END_TIME], self.stop_cycle)
+
+    def disable_cb(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Kill any existing handles if the app is disabled."""
+        self._cancel_automation()
 
     def set_schedule(self, time: str, handler: Callable, **kwargs) -> None:
         """Set the appropriate schedulers based on the passed in time."""
         if time in ("sunrise", "sunset"):
             method = getattr(self, "run_at_{0}".format(time))
-            method(handler, **kwargs)
+            method(handler, **kwargs, constrain_enabled=True)
         else:
-            self.run_daily(handler, self.parse_time(time), **kwargs)
+            self.run_daily(
+                handler, self.parse_time(time), **kwargs, constrain_enabled=True
+            )
 
     def start_cycle(self, kwargs: dict) -> None:
         """Start the toggle cycle."""
@@ -539,11 +551,7 @@ class VacationMode(BaseSwitch):
 
     def stop_cycle(self, kwargs: dict) -> None:
         """Stop the toggle cycle."""
-        if HANDLE_VACATION_MODE not in self.handles:
-            return
-
-        handle = self.handles.pop(HANDLE_VACATION_MODE)
-        self.cancel_timer(handle)
+        self._cancel_automation()
         self.toggle(state="off")
 
     def toggle_and_run(self, kwargs: dict) -> None:
