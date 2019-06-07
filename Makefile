@@ -9,5 +9,4 @@ lint:
 	pipenv run flake8 appdaemon/settings/apps
 	pipenv run pydocstyle appdaemon/settings/apps
 	pipenv run pylint appdaemon/settings/apps
-typing:
 	pipenv run mypy --ignore-missing-imports appdaemon/settings/apps
