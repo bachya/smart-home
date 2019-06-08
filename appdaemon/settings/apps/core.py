@@ -96,8 +96,8 @@ class Base(Hass):
         # If an entity ID exists, create hooks to respond to when it is enabled or
         # disabled:
         if self._enabled_entity_id:
-            super().listen_state(self.on_disable, self._enabled_entity_id, new="off")
-            super().listen_state(self.on_enable, self._enabled_entity_id, new="on")
+            super().listen_state(self._on_disable, self._enabled_entity_id, new="off")
+            super().listen_state(self._on_enable, self._enabled_entity_id, new="on")
 
         # Register custom constraints:
         self.register_constraint("constrain_anyone")
@@ -151,6 +151,22 @@ class Base(Hass):
             self._enabled_entity_id
         )
 
+    def _on_disable(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Allow the app to respond to being disabled with extra logic."""
+        self.log("Disabling app")
+        if getattr(self, "on_disable", None):
+            self.on_disable()
+
+    def _on_enable(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Allow the app to respond to being enabled with extra logic."""
+        self.log("Enabling app")
+        if getattr(self, "on_enable", None):
+            self.on_enable()
+
     def constrain_anyone(self, value: str) -> bool:
         """Constrain execution to whether anyone is in a state."""
         return self._constrain_presence("anyone", value)
@@ -199,7 +215,6 @@ class Base(Hass):
             self.log("Cannot disable an always-on app")
             return
 
-        self.log("Disabling app")
         self.turn_off(self._enabled_entity_id)
 
     def enable(self) -> None:
@@ -208,7 +223,6 @@ class Base(Hass):
             self.log("Cannot enable an always-on app")
             return
 
-        self.log("Enabling app")
         self.turn_on(self._enabled_entity_id)
 
     def listen_ios_event(self, callback: Callable, action: str) -> None:
@@ -235,18 +249,6 @@ class Base(Hass):
         return self._attach_constraints(
             super().listen_state, callback, entity, **kwargs
         )
-
-    def on_disable(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Respond to the app being disabled."""
-        pass
-
-    def on_enable(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Respond to the app being enabled."""
-        pass
 
     def run_daily(self, callback, start, auto_constraints=False, **kwargs):
         """Wrap AppDaemon's daily run with the constraint mechanism."""
