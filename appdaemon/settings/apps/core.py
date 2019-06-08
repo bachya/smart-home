@@ -194,7 +194,11 @@ class Base(Hass):
                 key=lambda m: m["priority"],
             )
         except ValueError:
-            primary = next((m for m in self.mode_alterations if m["mode"] == mode))
+            try:
+                primary = next((m for m in self.mode_alterations if m["mode"] == mode))
+            except StopIteration:
+                return
+
             if primary["action"] == "enable":
                 primary["action"] = "disable"
             else:
