@@ -1,5 +1,6 @@
 """Define a mode."""
 from datetime import time
+from typing import Union
 
 import voluptuous as vol
 
@@ -19,10 +20,25 @@ class Mode(Base):
         """Configure."""
         self._switch = "input_boolean.mode_{0}".format(self.name)
 
+        self.listen_state(self._on_mode_switch_turn_off, self._switch, new="off")
+        self.listen_state(self._on_mode_switch_turn_on, self._switch, new="on")
+
     @property
     def state(self) -> str:
         """Return the current state of the mode switch."""
         return self.get_state(self._switch)
+
+    def _on_mode_switch_turn_off(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Deactivate the mode when the input boolean is toggled off."""
+        self.deactivate()
+
+    def _on_mode_switch_turn_on(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Deactivate the mode when the input boolean is toggled on."""
+        self.deactivate()
 
     def activate(self) -> None:
         """Activate the mode."""
