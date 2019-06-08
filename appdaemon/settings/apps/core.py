@@ -22,7 +22,6 @@ CONF_CONSTRAINTS = "constraints"
 
 CONF_ENABLED_CONFIG = "enabled_config"
 CONF_INITIAL = "initial"
-CONF_MODE_ALTERATIONS = "mode_alterations"
 CONF_NAME = "name"
 CONF_TOGGLE_NAME = "toggle_name"
 
@@ -42,7 +41,6 @@ APP_SCHEMA = vol.Schema(
                 vol.Required(CONF_CONSTRAINTS): dict,
             }
         ),
-        vol.Optional(CONF_MODE_ALTERATIONS): cv.ensure_list,
         vol.Optional(CONF_ENABLED_CONFIG): vol.Schema(
             {
                 vol.Required(CONF_NAME): str,
