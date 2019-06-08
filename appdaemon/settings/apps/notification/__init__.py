@@ -115,7 +115,7 @@ def send_notification(
     data: dict = None,
 ) -> Callable:
     """Send/schedule a notification and return a method to cancel it."""
-    notification = Notification(  # type: ignore
+    notification = Notification(
         app=app,
         targets=targets,
         message=message,

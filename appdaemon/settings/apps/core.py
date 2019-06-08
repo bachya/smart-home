@@ -148,7 +148,7 @@ class Base(Hass):
         if self.args[CONF_CONSTRAINTS].get(CONF_OPERATOR) == OPERATOR_ALL:
             return method(callback, *args, **constraints, **kwargs)
 
-        handles = []  # type: ignore
+        handles = []  # type: List[str]
         for name, value in constraints.items():
             method(callback, *args, **{name: value}, **kwargs)
         return handles

@@ -142,7 +142,8 @@ class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods
     ) -> None:
         """Cancel notification when the garage is _on_closed."""
         if HANDLE_GARAGE_OPEN in self.handles:
-            self.handles.pop(HANDLE_GARAGE_OPEN)()  # type: ignore
+            cancel = self.handles.pop(HANDLE_GARAGE_OPEN)
+            cancel()
 
     def _on_left_open(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict

@@ -1,6 +1,6 @@
 """Define automations for Slack."""
 import json
-from typing import Dict, Union
+from typing import Dict, Optional, Union
 from zlib import adler32
 
 from core import Base
@@ -110,6 +110,7 @@ class Toggle(SlashCommand):
 
         tokens = self._text.split(" ")
 
+        new_state = None  # type: Optional[str]
         if "on" in tokens:
             method_name = "turn_on"
             new_state = "on"
@@ -120,7 +121,6 @@ class Toggle(SlashCommand):
             tokens.remove("off")
         else:
             method_name = "toggle"
-            new_state = None  # type: ignore
 
         target = "_".join(tokens)
         entity_id = relative_search_list(entity_ids, target)

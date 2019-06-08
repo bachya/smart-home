@@ -1,7 +1,7 @@
 """Define automations for tracking software versions."""
 from typing import Optional, Union
 
-from packaging import version  # type: ignore
+from packaging import version
 import requests
 import voluptuous as vol
 

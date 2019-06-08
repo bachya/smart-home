@@ -1,5 +1,5 @@
 """Define an app to manage our Sonos players."""
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from core import Base
 
