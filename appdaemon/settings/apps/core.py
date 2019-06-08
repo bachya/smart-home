@@ -125,7 +125,7 @@ class Base(Hass):
         self.register_constraint("constrain_noone")
         self.register_constraint("constrain_sun")
 
-        # Run any user-specific configuration:
+        # Run any addutional configuration:
         if hasattr(self, "configure"):
             self.configure()
 
