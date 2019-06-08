@@ -43,13 +43,11 @@ class Mode(Base):
     def activate(self) -> None:
         """Activate the mode."""
         self.log("Activating mode: {0}".format(self.name))
-        self.turn_on(self._switch)
         self.fire_event(EVENT_MODE_CHANGE, name=self.name, state="on")
 
     def deactivate(self) -> None:
         """Deactivate the mode."""
         self.log("Deactivating mode: {0}".format(self.name))
-        self.turn_off(self._switch)
         self.fire_event(EVENT_MODE_CHANGE, name=self.name, state="off")
 
 
