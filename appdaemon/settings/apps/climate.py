@@ -227,15 +227,31 @@ class CycleFan(Base):
         """Configure."""
         self.register_constraint("constrain_extreme_temperature")
 
-        cycle_on_dt = ceil_dt(self.datetime(), timedelta(minutes=self.CYCLE_MINUTES))
-        cycle_off_dt = cycle_on_dt + timedelta(minutes=self.CYCLE_MINUTES)
+        _on_cycle_on_dt = ceil_dt(
+            self.datetime(), timedelta(minutes=self.CYCLE_MINUTES)
+        )
+        _on_cycle_off_dt = _on_cycle_on_dt + timedelta(minutes=self.CYCLE_MINUTES)
 
         self.run_every(
-            self.cycle_on, cycle_on_dt, 60 * 60, constrain_extreme_temperature=True
+            self._on_cycle_on,
+            _on_cycle_on_dt,
+            60 * 60,
+            constrain_extreme_temperature=True,
         )
         self.run_every(
-            self.cycle_off, cycle_off_dt, 60 * 60, constrain_extreme_temperature=True
+            self._on_cycle_off,
+            _on_cycle_off_dt,
+            60 * 60,
+            constrain_extreme_temperature=True,
         )
+
+    def _on_cycle_off(self, kwargs: dict) -> None:
+        """Turn off the whole-house fan."""
+        self.climate_manager.set_fan_mode(self.climate_manager.FanModes.auto)
+
+    def _on_cycle_on(self, kwargs: dict) -> None:
+        """Turn on the whole-house fan."""
+        self.climate_manager.set_fan_mode(self.climate_manager.FanModes.on)
 
     def constrain_extreme_temperature(self, value: bool) -> bool:
         """Constrain execution to whether the outside temp. is extreme."""
@@ -243,11 +259,3 @@ class CycleFan(Base):
             self.climate_manager.outside_temp < OUTSIDE_THRESHOLD_LOW
             or self.climate_manager.outside_temp > OUTSIDE_THRESHOLD_HIGH
         )
-
-    def cycle_off(self, kwargs: dict) -> None:
-        """Turn off the whole-house fan."""
-        self.climate_manager.set_fan_mode(self.climate_manager.FanModes.auto)
-
-    def cycle_on(self, kwargs: dict) -> None:
-        """Turn on the whole-house fan."""
-        self.climate_manager.set_fan_mode(self.climate_manager.FanModes.on)

@@ -90,14 +90,14 @@ class AutoNighttimeLockup(Base):
     def configure(self) -> None:
         """Configure."""
         self.run_daily(
-            self.midnight,
+            self._on_midnight_reached,
             time(0, 0, 0),
             constrain_enabled=True,
             constrain_anyone="home",
         )
 
-    def midnight(self, kwargs: dict) -> None:
-        """Lock up the house at midnight."""
+    def _on_midnight_reached(self, kwargs: dict) -> None:
+        """Lock up the house at _on_midnight_reached."""
         self.log('Activating "Good Night"')
 
         self.call_service("scene/turn_on", entity_id="scene.good_night")

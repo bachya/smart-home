@@ -60,7 +60,7 @@ class Notification:
         if handle:
             self._app.cancel_timer(handle)
 
-    def _send_cb(self, kwargs: dict) -> None:
+    def _on_send(self, kwargs: dict) -> None:
         """Send a single (immediate or scheduled) notification."""
         # If this is a repeating notification, it's already been sent once, and
         # we've exceeded our iterations, cancel right away:
@@ -93,11 +93,11 @@ class Notification:
         """Send the notification."""
         handle = None
         if self.when and self.interval:
-            handle = self._app.run_every(self._send_cb, self.when, self.interval)
+            handle = self._app.run_every(self._on_send, self.when, self.interval)
         elif self.when:
-            handle = self._app.run_at(self._send_cb, self.when)
+            handle = self._app.run_at(self._on_send, self.when)
         else:
-            self._send_cb({})
+            self._on_send({})
 
         self._app.global_vars[CONF_NOTIFICATION_HANDLES][self.id] = handle
         return self._cancel

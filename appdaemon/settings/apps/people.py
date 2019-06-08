@@ -97,23 +97,6 @@ class Person(Base):
         """Get the iOS device ID for push notifications."""
         return self.properties.get(CONF_PUSH_DEVICE_ID)
 
-    def _check_transition(self, kwargs: dict) -> None:
-        """Transition the user's home state (if appropriate)."""
-        current_state = kwargs["current_state"]
-
-        if not self._home_state == kwargs["current_state"]:
-            return
-
-        if current_state == self.presence_manager.HomeStates.just_arrived:
-            self.home_state = self.presence_manager.HomeStates.home
-        elif current_state == self.presence_manager.HomeStates.just_left:
-            self.home_state = self.presence_manager.HomeStates.away
-        elif current_state == self.presence_manager.HomeStates.away:
-            self.home_state = self.presence_manager.HomeStates.extended_away
-
-        # Re-render the sensor:
-        self._render_presence_status_sensor()
-
     def _fire_presence_change_event(
         self, old: "PresenceManager.HomeStates", new: "PresenceManager.HomeStates"
     ) -> None:
@@ -165,22 +148,39 @@ class Person(Base):
         if new == "home":
             self.home_state = self.presence_manager.HomeStates.just_arrived
             self.handles[HANDLE_5_MINUTE_TIMER] = self.run_in(
-                self._check_transition,
+                self._on_transition_state,
                 60 * 5,
                 current_state=self.presence_manager.HomeStates.just_arrived,
             )
         elif old == "home":
             self.home_state = self.presence_manager.HomeStates.just_left
             self.handles[HANDLE_5_MINUTE_TIMER] = self.run_in(
-                self._check_transition,
+                self._on_transition_state,
                 60 * 5,
                 current_state=self.presence_manager.HomeStates.just_left,
             )
             self.handles[HANDLE_24_HOUR_TIMER] = self.run_in(
-                self._check_transition,
+                self._on_transition_state,
                 60 * 60 * 24,
                 current_state=self.presence_manager.HomeStates.away,
             )
+
+        # Re-render the sensor:
+        self._render_presence_status_sensor()
+
+    def _on_transition_state(self, kwargs: dict) -> None:
+        """Transition the user's home state (if appropriate)."""
+        current_state = kwargs["current_state"]
+
+        if not self._home_state == kwargs["current_state"]:
+            return
+
+        if current_state == self.presence_manager.HomeStates.just_arrived:
+            self.home_state = self.presence_manager.HomeStates.home
+        elif current_state == self.presence_manager.HomeStates.just_left:
+            self.home_state = self.presence_manager.HomeStates.away
+        elif current_state == self.presence_manager.HomeStates.away:
+            self.home_state = self.presence_manager.HomeStates.extended_away
 
         # Re-render the sensor:
         self._render_presence_status_sensor()

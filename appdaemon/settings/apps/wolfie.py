@@ -253,13 +253,13 @@ class ScheduledCycle(Base):
 
         self.handles[HANDLE_SCHEDULE] = run_on_days(
             self,
-            self.start_by_schedule,
+            self._on_schedule_start,
             self.active_days,
             self.parse_time(self.properties["schedule_time"]),
             constrain_enabled=True,
         )
 
-    def start_by_schedule(self, kwargs: dict) -> None:
+    def _on_schedule_start(self, kwargs: dict) -> None:
         """Start cleaning via the schedule."""
         if not self.initiated_by_app:
             self.app.start()

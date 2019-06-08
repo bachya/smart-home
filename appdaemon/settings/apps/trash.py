@@ -9,21 +9,21 @@ from helpers.scheduler import run_on_days
 from notification import send_notification
 
 
-class NotifyOfPickup(Base):
+class NotifyOfPickup(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to notify us of low batteries."""
 
     def configure(self) -> None:
         """Configure."""
         run_on_days(
             self,
-            self.time_to_notify,
+            self._on_notify,
             ["Sunday"],
             datetime.time(20, 0, 0),
             constrain_enabled=True,
             constrain_anyone="home",
         )
 
-    def time_to_notify(self, kwargs: dict) -> None:
+    def _on_notify(self, kwargs: dict) -> None:
         """Schedule the next pickup notification."""
         date, friendly_str = self.trash_manager.in_next_pickup_str()
         send_notification(

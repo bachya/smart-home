@@ -104,7 +104,7 @@ class DynamicSensor(NewVersionNotification):
     def configure(self) -> None:
         """Configure."""
         self.run_every(
-            self.update_sensor, self.datetime(), self.properties[CONF_UPDATE_INTERVAL]
+            self._on_update, self.datetime(), self.properties[CONF_UPDATE_INTERVAL]
         )
 
     @property
@@ -112,7 +112,7 @@ class DynamicSensor(NewVersionNotification):
         """Raise if not implemented."""
         raise NotImplementedError()
 
-    def update_sensor(self, kwargs: dict) -> None:
+    def _on_update(self, kwargs: dict) -> None:
         """Update sensor value."""
         self.set_state(
             self.properties[CONF_CREATED_ENTITY_ID],

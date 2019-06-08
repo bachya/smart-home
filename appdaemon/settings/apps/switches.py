@@ -49,6 +49,13 @@ class BaseSwitch(Base):
         """Return the current state of the switch."""
         return self.get_state(self.entity_ids["switch"])
 
+    def _on_schedule_toggle(self, kwargs: dict) -> None:
+        """Turn off the switch at a certain time."""
+        if kwargs.get("opposite"):
+            self.toggle(opposite_of=kwargs["state"])
+        else:
+            self.toggle(state=kwargs["state"])
+
     def toggle(self, *, state: str = None, opposite_of: str = None) -> None:
         """Toggle the switch state."""
         if not state and not opposite_of:
@@ -70,13 +77,6 @@ class BaseSwitch(Base):
             self.log("Turning off: {0}".format(self.entity_ids["switch"]))
 
             self.turn_off(self.entity_ids["switch"])
-
-    def toggle_on_schedule(self, kwargs: dict) -> None:
-        """Turn off the switch at a certain time."""
-        if kwargs.get("opposite"):
-            self.toggle(opposite_of=kwargs["state"])
-        else:
-            self.toggle(state=kwargs["state"])
 
 
 class BaseZwaveSwitch(BaseSwitch):
@@ -237,7 +237,9 @@ class SleepTimer(BaseSwitch):
             self.log("Activating sleep timer: {0} minutes".format(minutes))
 
             self.toggle(state="on")
-            self.handles[HANDLE_TIMER] = self.run_in(self.timer_completed, minutes * 60)
+            self.handles[HANDLE_TIMER] = self.run_in(
+                self._on_timer_complete, minutes * 60
+            )
 
     def _on_switch_turned_off(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
@@ -245,7 +247,7 @@ class SleepTimer(BaseSwitch):
         """Reset the sleep timer when the switch turns off."""
         self.set_value(self.entity_ids[CONF_TIMER_SLIDER], 0)
 
-    def timer_completed(self, kwargs: dict) -> None:
+    def _on_timer_complete(self, kwargs: dict) -> None:
         """Turn off a switch at the end of sleep timer."""
         self.log("Sleep timer over; turning switch off")
 
@@ -281,12 +283,12 @@ class ToggleAtTime(BaseSwitch):
             method = getattr(
                 self, "run_at_{0}".format(self.properties[CONF_SCHEDULE_TIME])
             )
-            method(self.toggle_on_schedule, auto_constraints=True, **kwargs)
+            method(self._on_schedule_toggle, auto_constraints=True, **kwargs)
         else:
             if self.properties.get(CONF_RUN_ON_DAYS):
                 run_on_days(
                     self,
-                    self.toggle_on_schedule,
+                    self._on_schedule_toggle,
                     self.properties[CONF_RUN_ON_DAYS],
                     self.parse_time(self.properties[CONF_SCHEDULE_TIME]),
                     auto_constraints=True,
@@ -294,7 +296,7 @@ class ToggleAtTime(BaseSwitch):
                 )
             else:
                 self.run_daily(
-                    self.toggle_on_schedule,
+                    self._on_schedule_toggle,
                     self.parse_time(self.properties[CONF_SCHEDULE_TIME]),
                     auto_constraints=True,
                     **kwargs
@@ -378,18 +380,18 @@ class ToggleOnInterval(BaseSwitch):
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Kill any existing handles if the app is disabled."""
-        self.stop_cycle({})
+        self._on_stop_cycle({})
 
     def configure(self) -> None:
         """Configure."""
         self.run_daily(
-            self.start_cycle,
+            self._on_start_cycle,
             self.parse_time(self.properties[CONF_START_TIME]),
             constrain_enabled=True,
         )
 
         self.run_daily(
-            self.stop_cycle,
+            self._on_stop_cycle,
             self.parse_time(self.properties[CONF_END_TIME]),
             constrain_enabled=True,
         )
@@ -400,25 +402,25 @@ class ToggleOnInterval(BaseSwitch):
             )
             and self.enabled
         ):
-            self.start_cycle({})
+            self._on_start_cycle({})
 
-    def start_cycle(self, kwargs: dict) -> None:
+    def _on_start_cycle(self, kwargs: dict) -> None:
         """Start the toggle cycle."""
         self.handles[HANDLE_TOGGLE_IN_WINDOW] = self.run_every(
-            self.toggle_on_schedule,
+            self._on_schedule_toggle,
             self.datetime(),
             self.properties[CONF_WINDOW],
             state=self.properties[CONF_STATE],
         )
         self.handles[HANDLE_TOGGLE_OUT_WINDOW] = self.run_every(
-            self.toggle_on_schedule,
+            self._on_schedule_toggle,
             self.datetime() + timedelta(seconds=self.properties[CONF_DURATION]),
             self.properties[CONF_WINDOW],
             state=self.properties[CONF_STATE],
             opposite=True,
         )
 
-    def stop_cycle(self, kwargs: dict) -> None:
+    def _on_stop_cycle(self, kwargs: dict) -> None:
         """Stop the toggle cycle."""
         for handle in (HANDLE_TOGGLE_IN_WINDOW, HANDLE_TOGGLE_OUT_WINDOW):
             if handle not in self.handles:
@@ -468,7 +470,7 @@ class ToggleOnState(BaseSwitch):
         if new == self.properties[CONF_TARGET_STATE]:
             if self.properties.get(CONF_DELAY):
                 self.handles[HANDLE_TOGGLE_STATE] = self.run_in(
-                    self.toggle_on_schedule,
+                    self._on_schedule_toggle,
                     self.properties[CONF_DELAY],
                     state=self.properties[CONF_SWITCH_STATE],
                 )
@@ -534,8 +536,30 @@ class VacationMode(BaseSwitch):
 
     def configure(self) -> None:
         """Configure."""
-        self.set_schedule(self.properties[CONF_START_TIME], self.start_cycle)
-        self.set_schedule(self.properties[CONF_END_TIME], self.stop_cycle)
+        self.set_schedule(self.properties[CONF_START_TIME], self._on_start_cycle)
+        self.set_schedule(self.properties[CONF_END_TIME], self._on_stop_cycle)
+
+    def _on_start_cycle(self, kwargs: dict) -> None:
+        """Start the toggle cycle."""
+        self._on_toggle_and_run({"state": "on"})
+
+    def _on_stop_cycle(self, kwargs: dict) -> None:
+        """Stop the toggle cycle."""
+        self._cancel_automation()
+        self.toggle(state="off")
+
+    def _on_toggle_and_run(self, kwargs: dict) -> None:
+        """Toggle the swtich and randomize the next toggle."""
+        self.toggle(state=kwargs[CONF_STATE])
+
+        if kwargs[CONF_STATE] == "on":
+            state = "off"
+        else:
+            state = "on"
+
+        self.handles[HANDLE_VACATION_MODE] = self.run_in(
+            self._on_toggle_and_run, randint(5 * 60, 60 * 60), state=state
+        )
 
     def on_disable(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
@@ -552,25 +576,3 @@ class VacationMode(BaseSwitch):
             self.run_daily(
                 handler, self.parse_time(time), **kwargs, constrain_enabled=True
             )
-
-    def start_cycle(self, kwargs: dict) -> None:
-        """Start the toggle cycle."""
-        self.toggle_and_run({"state": "on"})
-
-    def stop_cycle(self, kwargs: dict) -> None:
-        """Stop the toggle cycle."""
-        self._cancel_automation()
-        self.toggle(state="off")
-
-    def toggle_and_run(self, kwargs: dict) -> None:
-        """Toggle the swtich and randomize the next toggle."""
-        self.toggle(state=kwargs[CONF_STATE])
-
-        if kwargs[CONF_STATE] == "on":
-            state = "off"
-        else:
-            state = "on"
-
-        self.handles[HANDLE_VACATION_MODE] = self.run_in(
-            self.toggle_and_run, randint(5 * 60, 60 * 60), state=state
-        )

@@ -182,8 +182,9 @@ class StartHomeKitOnZwaveReady(Base):
 
     def configure(self) -> None:
         """Configure."""
-        self.scan({})
+        self._on_scan({})
 
+    @property
     def network_ready(self) -> bool:
         """Return whether the Z-Wave network is ready."""
         zwave_devices = self.get_state("zwave")
@@ -195,11 +196,11 @@ class StartHomeKitOnZwaveReady(Base):
                 return False
         return True
 
-    def scan(self, kwargs: dict) -> None:
-        """Start the scanning process."""
-        if self.network_ready():
+    def _on_scan(self, kwargs: dict) -> None:
+        """Start the _on_scanning process."""
+        if self.network_ready:
             self.log("Z-Wave network is ready for HomeKit to start")
             self.call_service("homekit/start")
             return
 
-        self.run_in(self.scan, 60)
+        self.run_in(self._on_scan, 60)
