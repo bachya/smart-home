@@ -49,8 +49,12 @@ office_lights_on_at_sunset_automation:
     schedule_time: sunset
     state: "on"
   mode_alterations:
-    guest_mode: disable
-    vacation_mode: disable
+    - mode: guest_mode
+      action: disable
+      priority: 1
+    - mode: vacation_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Turn on at sunset
     icon: mdi:weather-sunset-down

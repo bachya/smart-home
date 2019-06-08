@@ -75,7 +75,9 @@ notify_when_status_changes_automation:
   entity_ids:
     state: sensor.secure_status
   mode_alterations:
-    vacation_mode: enable
+    - mode: vacation_mode
+      action: enable
+      priority: 1
   enabled_config:
     name: Notify when state changes
     icon: mdi:shield-half-full
