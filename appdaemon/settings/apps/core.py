@@ -1,10 +1,16 @@
 """Define generic automation objects and logic."""
-from typing import Callable, Dict, Optional, Union
+from typing import Callable, Dict, List, Optional, Union
 
 import voluptuous as vol
 from appdaemon.plugins.hass.hassapi import Hass  # pylint: disable=no-name-in-module
 
-from const import CONF_ICON, OPERATOR_ALL, OPERATORS, THRESHOLD_CLOUDY
+from const import (
+    CONF_ICON,
+    EVENT_MODE_CHANGE,
+    OPERATOR_ALL,
+    OPERATORS,
+    THRESHOLD_CLOUDY,
+)
 from helpers import config_validation as cv
 
 CONF_CLASS = "class"
@@ -16,6 +22,7 @@ CONF_CONSTRAINTS = "constraints"
 
 CONF_ENABLED_CONFIG = "enabled_config"
 CONF_INITIAL = "initial"
+CONF_MODE_ALTERATIONS = "mode_alterations"
 CONF_NAME = "name"
 CONF_TOGGLE_NAME = "toggle_name"
 
@@ -35,6 +42,7 @@ APP_SCHEMA = vol.Schema(
                 vol.Required(CONF_CONSTRAINTS): dict,
             }
         ),
+        vol.Optional(CONF_MODE_ALTERATIONS): cv.ensure_list,
         vol.Optional(CONF_ENABLED_CONFIG): vol.Schema(
             {
                 vol.Required(CONF_NAME): str,
@@ -71,6 +79,9 @@ class Base(Hass):
         # Define a holding place for key/value properties for this automation:
         self.properties = self.args.get("properties", {})
 
+        # Define a holding place for any mode alterations for this automation:
+        self.mode_alterations = self.args.get("mode_alterations", [])
+
         # Take every dependecy and create a reference to it:
         for app in self.args.get("dependencies", []):
             if not getattr(self, app, None):
@@ -93,9 +104,10 @@ class Base(Hass):
             else:
                 self._enabled_entity_id = "input_boolean.{0}".format(self.name)
 
-        # If an entity ID exists, create hooks to respond to when it is enabled or
-        # disabled:
-        if self._enabled_entity_id:
+        if self._enabled_entity_exists():
+            self.mode_events = []  # type: List[str]
+            self.listen_event(self._on_mode_change, EVENT_MODE_CHANGE)
+
             super().listen_state(self._on_disable, self._enabled_entity_id, new="off")
             super().listen_state(self._on_enable, self._enabled_entity_id, new="on")
 
@@ -166,6 +178,39 @@ class Base(Hass):
         self.log("Enabling app")
         if getattr(self, "on_enable", None):
             self.on_enable()
+
+    def _on_mode_change(self, event_name: str, data: dict, kwargs: dict) -> None:
+        """Compare mode changes to registered mode alterations."""
+        mode = kwargs["name"]
+
+        if kwargs["state"] == "on":
+            self.mode_events.append(mode)
+        elif mode in self.mode_events:
+            self.mode_events.remove(mode)
+
+        try:
+            primary = max(
+                (m for m in self.mode_alterations if m["mode"] in self.mode_events),
+                key=lambda m: m["priority"],
+            )
+        except ValueError:
+            primary = next((m for m in self.mode_alterations if m["mode"] == mode))
+            if primary["action"] == "enable":
+                primary["action"] = "disable"
+            else:
+                primary["action"] = "enable"
+
+        # If the primary mode alteration prescribes an action that matches the state the
+        # automation is already in, return:
+        if (self.enabled and primary["action"] == "enable") or (
+            not self.enabled and primary["action"] == "disable"
+        ):
+            return
+
+        if primary["action"] == "enable":
+            self.enable()
+        else:
+            self.disable()
 
     def constrain_anyone(self, value: str) -> bool:
         """Constrain execution to whether anyone is in a state."""
