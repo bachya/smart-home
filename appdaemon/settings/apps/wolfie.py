@@ -5,7 +5,12 @@ from typing import Union
 import voluptuous as vol
 
 from core import APP_SCHEMA, Base
-from const import CONF_ENTITY_IDS, CONF_PROPERTIES, EVENT_ALARM_CHANGE
+from const import (
+    CONF_ENTITY_IDS,
+    CONF_PROPERTIES,
+    EVENT_ALARM_CHANGE,
+    EVENT_VACUUM_START,
+)
 from helpers import config_validation as cv
 from helpers.scheduler import run_on_days
 from notification import send_notification
@@ -110,7 +115,9 @@ class ScheduledCycle(Base):
         self.listen_event(
             self.alarm_changed, EVENT_ALARM_CHANGE, constrain_enabled=True
         )
-        self.listen_event(self.start_by_switch, "VACUUM_START", constrain_enabled=True)
+        self.listen_event(
+            self.start_by_switch, EVENT_VACUUM_START, constrain_enabled=True
+        )
         self.listen_state(
             self._on_vacuum_cycle_done,
             self.app.entity_ids["status"],
