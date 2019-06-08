@@ -1,5 +1,5 @@
 """Define an app to manage our Sonos players."""
-from typing import Union
+from typing import List, Optional, Union
 
 from core import Base
 
@@ -82,21 +82,20 @@ class SonosManager(Base):
     def configure(self) -> None:
         """Configure."""
         self._last_snapshot_included_group = False
-        self.speakers = []  # type: ignore
+        self.speakers = []  # type: List[SonosSpeaker]
 
-    def group(self, entity_list: list = None) -> Union[SonosSpeaker, None]:
+    def group(self, entity_list: List[SonosSpeaker] = None) -> Optional[SonosSpeaker]:
         """Group a list of speakers together (default: all)."""
-        entities = entity_list
         if not entity_list:
             entities = [entity for entity in self.entity_ids]
+        else:
+            entities = entity_list
 
-        master = entities.pop(0)  # type: ignore
-
-        if not entities:
-            self.error(
-                "Refusing to group only one entity: {0}".format(master), level="WARNING"
-            )
+        if len(entities) == 1:
+            self.error("Refusing to group only one Sonos speaker", level="WARNING")
             return None
+
+        master = entities[0]
 
         self.call_service(
             "media_player/sonos_join",
