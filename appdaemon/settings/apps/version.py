@@ -67,12 +67,12 @@ class NewVersionNotification(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self.version_change_detected,
+            self._on_version_change,
             self.entity_ids[CONF_AVAILABLE],
             constrain_enabled=True,
         )
 
-    def version_change_detected(
+    def _on_version_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Notify me when there's a new app version."""

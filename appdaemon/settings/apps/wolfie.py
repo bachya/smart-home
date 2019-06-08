@@ -47,13 +47,13 @@ class MonitorConsumables(Base):
 
         for consumable in self.properties["consumables"]:
             self.listen_state(
-                self.consumable_changed,
+                self._on_consumable_change,
                 self.app.entity_ids["vacuum"],
                 attribute=consumable,
                 constrain_enabled=True,
             )
 
-    def consumable_changed(
+    def _on_consumable_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Create a task when a consumable is getting low."""
@@ -112,31 +112,94 @@ class ScheduledCycle(Base):
         )
         self.listen_event(self.start_by_switch, "VACUUM_START", constrain_enabled=True)
         self.listen_state(
-            self.all_done,
+            self._on_vacuum_cycle_done,
             self.app.entity_ids["status"],
             old=self.app.States.returning.value,
             new=self.app.States.docked.value,
             constrain_enabled=True,
         )
         self.listen_state(
-            self.bin_state_changed,
+            self._on_vacuum_bin_change,
             self.app.entity_ids["bin_state"],
             constrain_enabled=True,
         )
         self.listen_state(
-            self.errored,
+            self._on_error,
             self.app.entity_ids["status"],
             new=self.app.States.error.value,
             constrain_enabled=True,
         )
         self.listen_state(
-            self.error_cleared,
+            self._on_error_clear,
             self.app.entity_ids["status"],
             old=self.app.States.error.value,
             constrain_enabled=True,
         )
         for toggle in self.properties["schedule_switches"]:
-            self.listen_state(self.schedule_changed, toggle, constrain_enabled=True)
+            self.listen_state(self._on_schedule_change, toggle, constrain_enabled=True)
+
+    def _on_error(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Brief when Wolfie's had an error."""
+        self.handles[HANDLE_STUCK] = send_notification(
+            self,
+            "presence:home",
+            "Help him get back on track or home.",
+            title="Wolfie Stuck 😢",
+            when=self.datetime(),
+            interval=self.properties["notification_interval_stuck"],
+        )
+
+    def _on_error_clear(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Clear the error when Wolfie is no longer stuck."""
+        if HANDLE_STUCK in self.handles:
+            cancel = self.handles.pop(HANDLE_STUCK)
+            cancel()
+
+    def _on_schedule_change(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Reload the schedule when one of the input booleans change."""
+        self.create_schedule()
+
+    def _on_vacuum_bin_change(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Listen for changes in bin status."""
+        if new == self.app.BinStates.full.value:
+            self.handles[HANDLE_BIN] = send_notification(
+                self,
+                "presence:home",
+                "Empty him now and you won't have to do it later!",
+                title="Wolfie Full 🤖",
+                when=self.datetime(),
+                interval=self.properties[CONF_NOTIFICATION_INTERVAL_FULL],
+                data={"push": {"category": "wolfie"}},
+            )
+        elif new == self.app.BinStates.empty.value:
+            if HANDLE_BIN in self.handles:
+                cancel = self.handles.pop(HANDLE_BIN)
+                cancel()
+
+    def _on_vacuum_cycle_done(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Re-arm security (if needed) when done."""
+        self.log("Vacuuming cycle all done")
+
+        if self.presence_manager.noone(
+            self.presence_manager.HomeStates.just_arrived,
+            self.presence_manager.HomeStates.home,
+        ):
+            self.log('Changing alarm state to "away"')
+
+            self.security_manager.set_alarm(self.security_manager.AlarmStates.away)
+
+        self.app.bin_state = self.app.BinStates.full
+        self.initiated_by_app = False
 
     def alarm_changed(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to 'ALARM_CHANGE' events."""
@@ -173,42 +236,6 @@ class ScheduledCycle(Base):
                 "vacuum/start_pause", entity_id=self.app.entity_ids["vacuum"]
             )
 
-    def all_done(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Re-arm security (if needed) when done."""
-        self.log("Vacuuming cycle all done")
-
-        if self.presence_manager.noone(
-            self.presence_manager.HomeStates.just_arrived,
-            self.presence_manager.HomeStates.home,
-        ):
-            self.log('Changing alarm state to "away"')
-
-            self.security_manager.set_alarm(self.security_manager.AlarmStates.away)
-
-        self.app.bin_state = self.app.BinStates.full
-        self.initiated_by_app = False
-
-    def bin_state_changed(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Listen for changes in bin status."""
-        if new == self.app.BinStates.full.value:
-            self.handles[HANDLE_BIN] = send_notification(
-                self,
-                "presence:home",
-                "Empty him now and you won't have to do it later!",
-                title="Wolfie Full 🤖",
-                when=self.datetime(),
-                interval=self.properties[CONF_NOTIFICATION_INTERVAL_FULL],
-                data={"push": {"category": "wolfie"}},
-            )
-        elif new == self.app.BinStates.empty.value:
-            if HANDLE_BIN in self.handles:
-                cancel = self.handles.pop(HANDLE_BIN)
-                cancel()
-
     def create_schedule(self) -> None:
         """Create the vacuuming schedule from the on booleans."""
         if HANDLE_SCHEDULE in self.handles:
@@ -222,33 +249,6 @@ class ScheduledCycle(Base):
             self.parse_time(self.properties["schedule_time"]),
             constrain_enabled=True,
         )
-
-    def error_cleared(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Clear the error when Wolfie is no longer stuck."""
-        if HANDLE_STUCK in self.handles:
-            cancel = self.handles.pop(HANDLE_STUCK)
-            cancel()
-
-    def errored(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Brief when Wolfie's had an error."""
-        self.handles[HANDLE_STUCK] = send_notification(
-            self,
-            "presence:home",
-            "Help him get back on track or home.",
-            title="Wolfie Stuck 😢",
-            when=self.datetime(),
-            interval=self.properties["notification_interval_stuck"],
-        )
-
-    def schedule_changed(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Reload the schedule when one of the input booleans change."""
-        self.create_schedule()
 
     def start_by_schedule(self, kwargs: dict) -> None:
         """Start cleaning via the schedule."""

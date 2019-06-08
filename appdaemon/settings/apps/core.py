@@ -96,8 +96,8 @@ class Base(Hass):
         # If an entity ID exists, create hooks to respond to when it is enabled or
         # disabled:
         if self._enabled_entity_id:
-            super().listen_state(self.disable_cb, self._enabled_entity_id, new="off")
-            super().listen_state(self.enable_cb, self._enabled_entity_id, new="on")
+            super().listen_state(self.on_disable, self._enabled_entity_id, new="off")
+            super().listen_state(self.on_enable, self._enabled_entity_id, new="on")
 
         # Register custom constraints:
         self.register_constraint("constrain_anyone")
@@ -201,12 +201,6 @@ class Base(Hass):
 
         self.turn_off(self._enabled_entity_id)
 
-    def disable_cb(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Respond to the app being disabled."""
-        pass
-
     def enable(self) -> None:
         """Enable the app."""
         if not self.entity_exists(self._enabled_entity_id):
@@ -214,12 +208,6 @@ class Base(Hass):
             return
 
         self.turn_on(self._enabled_entity_id)
-
-    def enabled_cb(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Respond to the app being enabled."""
-        pass
 
     def listen_ios_event(self, callback: Callable, action: str) -> None:
         """Register a callback for an iOS event."""
@@ -245,6 +233,18 @@ class Base(Hass):
         return self._attach_constraints(
             super().listen_state, callback, entity, **kwargs
         )
+
+    def on_disable(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Respond to the app being disabled."""
+        pass
+
+    def on_enable(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Respond to the app being enabled."""
+        pass
 
     def run_daily(self, callback, start, auto_constraints=False, **kwargs):
         """Wrap AppDaemon's daily run with the constraint mechanism."""

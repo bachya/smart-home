@@ -21,7 +21,7 @@ from notification import send_notification
 CONF_ALARM_CONTROL_PANEL = "alarm_control_panel"
 CONF_GARAGE_DOOR = "garage_door"
 CONF_OVERALL_SECURITY_STATUS = "overall_security_status_sensor"
-CONF_TIME_LEFT_OPEN = "time_left_open"
+CONF_TIME__on_left_open = "time__on_left_open"
 
 HANDLE_GARAGE_OPEN = "garage_open"
 
@@ -40,7 +40,7 @@ class AbsentInsecure(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self.house_insecure,
+            self._on_house_insecure,
             self.entity_ids[CONF_STATE],
             new="Open",
             duration=60 * 5,
@@ -48,7 +48,7 @@ class AbsentInsecure(Base):
             constrain_noone="just_arrived,home",
         )
 
-    def house_insecure(
+    def _on_house_insecure(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Send notifications when the house has been left insecure."""
@@ -114,7 +114,7 @@ class GarageLeftOpen(Base):
             CONF_PROPERTIES: vol.Schema(
                 {
                     vol.Required(CONF_NOTIFICATION_INTERVAL): int,
-                    vol.Required(CONF_TIME_LEFT_OPEN): int,
+                    vol.Required(CONF_TIME__on_left_open): int,
                 },
                 extra=vol.ALLOW_EXTRA,
             ),
@@ -124,27 +124,27 @@ class GarageLeftOpen(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self.closed,
+            self._on_closed,
             self.entity_ids[CONF_GARAGE_DOOR],
-            new="closed",
+            new="_on_closed",
             constrain_enabled=True,
         )
         self.listen_state(
-            self.left_open,
+            self._on_left_open,
             self.entity_ids[CONF_GARAGE_DOOR],
             new="open",
-            duration=self.properties[CONF_TIME_LEFT_OPEN],
+            duration=self.properties[CONF_TIME__on_left_open],
             constrain_enabled=True,
         )
 
-    def closed(
+    def _on_closed(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
-        """Cancel notification when the garage is closed."""
+        """Cancel notification when the garage is _on_closed."""
         if HANDLE_GARAGE_OPEN in self.handles:
             self.handles.pop(HANDLE_GARAGE_OPEN)()  # type: ignore
 
-    def left_open(
+    def _on_left_open(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Send notifications when the garage has been left open."""
@@ -187,10 +187,12 @@ class NotifyOnChange(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self.state_changed, self.entity_ids[CONF_STATE], constrain_enabled=True
+            self._on_security_system_change,
+            self.entity_ids[CONF_STATE],
+            constrain_enabled=True,
         )
 
-    def state_changed(
+    def _on_security_system_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Send a notification when the security state changes."""
@@ -242,10 +244,10 @@ class SecurityManager(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self._security_system_change_cb, self.entity_ids[CONF_ALARM_CONTROL_PANEL]
+            self._on_security_system_change, self.entity_ids[CONF_ALARM_CONTROL_PANEL]
         )
 
-    def _security_system_change_cb(
+    def _on_security_system_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Fire events when the security system status changes."""

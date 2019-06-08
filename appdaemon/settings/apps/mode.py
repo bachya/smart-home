@@ -64,16 +64,16 @@ class BlackoutMode(Mode):
         else:
             self.deactivate()
 
-        self.run_daily(self._enter_blackout_cb, self.blackout_start)
-        self.run_daily(self._exit_blackout_cb, self.blackout_end)
+        self.run_daily(self._on_blackout_start, self.blackout_start)
+        self.run_daily(self._on_blackout_end, self.blackout_end)
 
-    def _enter_blackout_cb(self, kwargs: dict) -> None:
-        """Activate blackout mode at the right time of day."""
-        self.activate()
-
-    def _exit_blackout_cb(self, kwargs: dict) -> None:
+    def _on_blackout_end(self, kwargs: dict) -> None:
         """Deactivate blackout mode at the right time of day."""
         self.deactivate()
+
+    def _on_blackout_start(self, kwargs: dict) -> None:
+        """Activate blackout mode at the right time of day."""
+        self.activate()
 
     def in_blackout(self, target: time = None) -> bool:
         """Return whether we're in the blackout."""

@@ -176,14 +176,14 @@ class PresenceFailsafe(BaseSwitch):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self.switch_activated,
+            self._on_switch_activate,
             self.entity_ids[CONF_SWITCH],
             new="on",
             constrain_noone="just_arrived,home",
             constrain_enabled=True,
         )
 
-    def switch_activated(
+    def _on_switch_activate(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Turn the switch off if no one is home."""
@@ -210,24 +210,18 @@ class SleepTimer(BaseSwitch):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self.timer_changed,
-            self.entity_ids[CONF_TIMER_SLIDER],
-            constrain_enabled=True,
-        )
-        self.listen_state(
-            self.switch_turned_off,
+            self._on_switch_turned_off,
             self.entity_ids[CONF_SWITCH],
             new="off",
             constrain_enabled=True,
         )
+        self.listen_state(
+            self._on_timer_change,
+            self.entity_ids[CONF_TIMER_SLIDER],
+            constrain_enabled=True,
+        )
 
-    def switch_turned_off(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Reset the sleep timer when the switch turns off."""
-        self.set_value(self.entity_ids[CONF_TIMER_SLIDER], 0)
-
-    def timer_changed(
+    def _on_timer_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Start/stop a sleep timer for this switch."""
@@ -244,6 +238,12 @@ class SleepTimer(BaseSwitch):
 
             self.toggle(state="on")
             self.handles[HANDLE_TIMER] = self.run_in(self.timer_completed, minutes * 60)
+
+    def _on_switch_turned_off(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Reset the sleep timer when the switch turns off."""
+        self.set_value(self.entity_ids[CONF_TIMER_SLIDER], 0)
 
     def timer_completed(self, kwargs: dict) -> None:
         """Turn off a switch at the end of sleep timer."""
@@ -330,13 +330,13 @@ class ToggleNumericThreshold(BaseSwitch):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self.target_state_changed,
+            self._on_state_change,
             self.entity_ids[CONF_TARGET],
             auto_constraints=True,
             constrain_enabled=True,
         )
 
-    def target_state_changed(
+    def _on_state_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Toggle the switch if outside the threshold."""
@@ -374,7 +374,7 @@ class ToggleOnInterval(BaseSwitch):
         }
     )
 
-    def disable_cb(
+    def on_disable(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Kill any existing handles if the app is disabled."""
@@ -455,13 +455,13 @@ class ToggleOnState(BaseSwitch):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self.state_changed,
+            self._on_state_change,
             self.entity_ids[CONF_TARGET],
             auto_constraints=True,
             constrain_enabled=True,
         )
 
-    def state_changed(
+    def _on_state_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Toggle the switch depending on the target entity's state."""
@@ -537,7 +537,7 @@ class VacationMode(BaseSwitch):
         self.set_schedule(self.properties[CONF_START_TIME], self.start_cycle)
         self.set_schedule(self.properties[CONF_END_TIME], self.stop_cycle)
 
-    def disable_cb(
+    def on_disable(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Perform steps to cancel the automation if the automation is disabled."""

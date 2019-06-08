@@ -44,7 +44,7 @@ class LowMoisture(Base):
         self._low_moisture = False
 
         self.listen_state(
-            self.low_moisture_detected,
+            self._on_low_moisture,
             self.entity_ids["current_moisture"],
             constrain_enabled=True,
         )
@@ -54,7 +54,7 @@ class LowMoisture(Base):
         """Define a property to get the current moisture."""
         return int(self.get_state(self.entity_ids["current_moisture"]))
 
-    def low_moisture_detected(
+    def _on_low_moisture(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Notify when the plant's moisture is low."""

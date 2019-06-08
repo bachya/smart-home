@@ -62,13 +62,13 @@ class BadLoginNotification(Base):
         """Configure."""
         for notification_type in self.entity_ids.values():
             self.listen_state(
-                self.send_alert,
+                self._on_bad_login,
                 notification_type,
                 attribute="all",
                 constrain_enabled=True,
             )
 
-    def send_alert(
+    def _on_bad_login(
         self, entity: str, attribute: str, old: str, new: dict, kwargs: dict
     ) -> None:
         """Send a notification when there's a bad login attempt."""

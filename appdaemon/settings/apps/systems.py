@@ -48,13 +48,10 @@ class LowBatteries(Base):
 
         for entity in self.entity_ids[CONF_BATTERIES_TO_MONITOR]:
             self.listen_state(
-                self.low_battery_detected,
-                entity,
-                attribute="all",
-                constrain_enabled=True,
+                self._on_low_battery, entity, attribute="all", constrain_enabled=True
             )
 
-    def low_battery_detected(
+    def _on_low_battery(
         self,
         entity: Union[str, dict],
         attribute: str,
@@ -114,14 +111,14 @@ class LeftInState(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self.limit_reached,
+            self._on_limit,
             self.entity_ids[CONF_ENTITY],
             new=self.properties[CONF_STATE],
             duration=self.properties[CONF_DURATION],
             constrain_enabled=True,
         )
 
-    def limit_reached(
+    def _on_limit(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Notify when the threshold is reached."""
@@ -163,12 +160,12 @@ class SslExpiration(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self.ssl_expiration_approaching,
+            self._on_expiration_near,
             self.entity_ids[CONF_SSL_EXPIRY],
             constrain_enabled=True,
         )
 
-    def ssl_expiration_approaching(
+    def _on_expiration_near(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """When SSL is about to expire, make an OmniFocus todo."""

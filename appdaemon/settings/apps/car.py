@@ -43,13 +43,13 @@ class NotifyLowFuel(Base):
         self.registered = False
 
         self.listen_state(
-            self.low_fuel_found,
+            self._on_low_fuel,
             self.entity_ids[CONF_CAR],
             attribute="fuel_level",
             constrain_enabled=True,
         )
 
-    def low_fuel_found(
+    def _on_low_fuel(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Send a notification when my car is low on gas."""

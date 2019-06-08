@@ -62,10 +62,10 @@ class Person(Base):
             kind = self.get_state(device_tracker, attribute="source_type")
             if kind == "router":
                 self.listen_state(
-                    self._device_tracker_changed_cb, device_tracker, old="not_home"
+                    self._on_device_tracker_change, device_tracker, old="not_home"
                 )
             else:
-                self.listen_state(self._device_tracker_changed_cb, device_tracker)
+                self.listen_state(self._on_device_tracker_change, device_tracker)
 
         # Render the initial state of the presence sensor:
         self._render_presence_status_sensor()
@@ -97,7 +97,7 @@ class Person(Base):
         """Get the iOS device ID for push notifications."""
         return self.properties.get(CONF_PUSH_DEVICE_ID)
 
-    def _check_transition_cb(self, kwargs: dict) -> None:
+    def _check_transition(self, kwargs: dict) -> None:
         """Transition the user's home state (if appropriate)."""
         current_state = kwargs["current_state"]
 
@@ -110,46 +110,6 @@ class Person(Base):
             self.home_state = self.presence_manager.HomeStates.away
         elif current_state == self.presence_manager.HomeStates.away:
             self.home_state = self.presence_manager.HomeStates.extended_away
-
-        # Re-render the sensor:
-        self._render_presence_status_sensor()
-
-    def _device_tracker_changed_cb(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Respond when a device tracker changes."""
-        if self._raw_state == new:
-            return
-
-        self._raw_state = new
-
-        # Cancel any old timers:
-        for handle_key in (HANDLE_5_MINUTE_TIMER, HANDLE_24_HOUR_TIMER):
-            if handle_key in self.handles:
-                handle = self.handles.pop(handle_key)
-                self.cancel_timer(handle)
-
-        # Set the home state and schedule transition checks (Just Left -> Away,
-        # for example) for various points in the future:
-        if new == "home":
-            self.home_state = self.presence_manager.HomeStates.just_arrived
-            self.handles[HANDLE_5_MINUTE_TIMER] = self.run_in(
-                self._check_transition_cb,
-                60 * 5,
-                current_state=self.presence_manager.HomeStates.just_arrived,
-            )
-        elif old == "home":
-            self.home_state = self.presence_manager.HomeStates.just_left
-            self.handles[HANDLE_5_MINUTE_TIMER] = self.run_in(
-                self._check_transition_cb,
-                60 * 5,
-                current_state=self.presence_manager.HomeStates.just_left,
-            )
-            self.handles[HANDLE_24_HOUR_TIMER] = self.run_in(
-                self._check_transition_cb,
-                60 * 60 * 24,
-                current_state=self.presence_manager.HomeStates.away,
-            )
 
         # Re-render the sensor:
         self._render_presence_status_sensor()
@@ -184,6 +144,46 @@ class Person(Base):
         return most_common(
             [self.get_tracker_state(dt) for dt in self.entity_ids[CONF_DEVICE_TRACKERS]]
         )
+
+    def _on_device_tracker_change(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Respond when a device tracker changes."""
+        if self._raw_state == new:
+            return
+
+        self._raw_state = new
+
+        # Cancel any old timers:
+        for handle_key in (HANDLE_5_MINUTE_TIMER, HANDLE_24_HOUR_TIMER):
+            if handle_key in self.handles:
+                handle = self.handles.pop(handle_key)
+                self.cancel_timer(handle)
+
+        # Set the home state and schedule transition checks (Just Left -> Away,
+        # for example) for various points in the future:
+        if new == "home":
+            self.home_state = self.presence_manager.HomeStates.just_arrived
+            self.handles[HANDLE_5_MINUTE_TIMER] = self.run_in(
+                self._check_transition,
+                60 * 5,
+                current_state=self.presence_manager.HomeStates.just_arrived,
+            )
+        elif old == "home":
+            self.home_state = self.presence_manager.HomeStates.just_left
+            self.handles[HANDLE_5_MINUTE_TIMER] = self.run_in(
+                self._check_transition,
+                60 * 5,
+                current_state=self.presence_manager.HomeStates.just_left,
+            )
+            self.handles[HANDLE_24_HOUR_TIMER] = self.run_in(
+                self._check_transition,
+                60 * 60 * 24,
+                current_state=self.presence_manager.HomeStates.away,
+            )
+
+        # Re-render the sensor:
+        self._render_presence_status_sensor()
 
     def _render_presence_status_sensor(self) -> None:
         """Update the sensor in the UI."""

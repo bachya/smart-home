@@ -42,7 +42,7 @@ class PresenceManager(Base):
             self.state = self.ProximityStates.away
 
         self.listen_state(
-            self._proximity_change_cb,
+            self._on_proximity_change,
             self.PROXIMITY_SENSOR,
             attribute="all",
             duration=60,
@@ -56,7 +56,7 @@ class PresenceManager(Base):
         except ValueError:
             return 0
 
-    def _proximity_change_cb(
+    def _on_proximity_change(
         self,
         entity: Union[str, dict],
         attribute: str,

@@ -34,7 +34,7 @@ class AaronAccountability(Base):
         )
 
         self.listen_state(
-            self.send_notification_on_disconnect,
+            self._on_disconnect,
             self.entity_ids[CONF_AARON_ROUTER_TRACKER],
             new="not_home",
             constrain_in_blackout=True,
@@ -45,6 +45,12 @@ class AaronAccountability(Base):
     def router_tracker_state(self) -> str:
         """Return the state of Aaron's Unifi tracker."""
         return self.get_state(self.entity_ids[CONF_AARON_ROUTER_TRACKER])
+
+    def _on_disconnect(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Send a notification when I disconnect during a blackout."""
+        self._send_notification()
 
     def _send_notification(self) -> None:
         """Send notification to my love."""
@@ -62,12 +68,6 @@ class AaronAccountability(Base):
             and self.router_tracker_state == "not_home"
         ):
             self._send_notification()
-
-    def send_notification_on_disconnect(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Send a notification when I disconnect during a blackout."""
-        self._send_notification()
 
 
 class NotifyBadAqi(Base):
@@ -98,13 +98,13 @@ class NotifyBadAqi(Base):
         self.notification_sent = False
 
         self.listen_state(
-            self.bad_aqi_detected,
+            self._on_bad_aqi,
             self.entity_ids[CONF_HVAC_STATE],
             new="cooling",
             constrain_enabled=True,
         )
 
-    def bad_aqi_detected(
+    def _on_bad_aqi(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Send select notifications when cooling and poor AQI."""
