@@ -7,7 +7,9 @@ notify_of_trash_pickup_automation:
     - trash_manager
     - vacation_mode
   mode_alterations:
-    vacation_mode: disable
+    - mode: vacation_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Notify of pickups
     icon: mdi:delete

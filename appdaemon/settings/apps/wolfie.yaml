@@ -52,8 +52,12 @@ wolfie_scheduled_cycle_automation:
       - input_boolean.vacuum_schedule_sunday
     schedule_time: "10:00:00"
   mode_alterations:
-    guest_mode: disable
-    vacation_mode: disable
+    - mode: guest_mode
+      action: disable
+      priority: 1
+    - mode: vacation_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Automatic schedule
     icon: mdi:google-circles-group

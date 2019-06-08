@@ -12,7 +12,9 @@ basement_lights_vacation_mode_automation:
     end_time: "23:30:00"
     start_time: "sunset"
   mode_alterations:
-    vacation_mode: enable
+    - mode: vacation_mode
+      action: enable
+      priority: 1
   enabled_config:
     toggle_name: vacation_mode_lighting
     name: Simulate vacation mode

@@ -25,8 +25,12 @@ master_bedroom_lights_on_at_sunset_automation:
     schedule_time: sunset
     state: "on"
   mode_alterations:
-    guest_mode: disable
-    vacation_mode: disable
+    - mode: guest_mode
+      action: disable
+      priority: 1
+    - mode: vacation_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Turn on at sunset
     icon: mdi:weather-sunset-down
@@ -90,8 +94,12 @@ master_toilet_fan_toggle_automation:
     start_time: "10:00:00"
     window: 3600
   mode_alterations:
-    guest_mode: disable
-    vacation_mode: disable
+    - mode: guest_mode
+      action: disable
+      priority: 1
+    - mode: vacation_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: "Toggle toilet fan every 15 minutes"
     icon: mdi:fan

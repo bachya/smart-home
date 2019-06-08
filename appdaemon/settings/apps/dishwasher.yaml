@@ -21,7 +21,9 @@ dishwasher_cycle_automation:
     notification_interval: 3600
     running_threshold: 10.0
   mode_alterations:
-    vacation_mode: disable
+    - mode: vacation_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Notifications when clean
     icon: mdi:washing-machine

@@ -12,7 +12,9 @@ fiddle_leaf_fig_low_moisture_automation:
     moisture_threshold: 15
     notification_interval: 3600
   mode_alterations:
-    vacation_mode: disable
+    - mode: vacation_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Notify of low moisture
     icon: mdi:flower

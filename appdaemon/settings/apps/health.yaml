@@ -20,7 +20,9 @@ notify_bad_aqi_automation:
   properties:
     aqi_threshold: 100
   mode_alterations:
-    vacation_mode: disable
+    - mode: vacation_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Bad AQI notifications
     icon: mdi:weather-windy

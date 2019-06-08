@@ -7,7 +7,9 @@ auto_departure_lockup_automation:
     - presence_manager
     - security_manager
   mode_alterations:
-    guest_mode: disable
+    - mode: guest_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Automatic departure lock up
     icon: mdi:car-side
@@ -21,7 +23,9 @@ auto_nighttime_lockup_automation:
     - presence_manager
     - security_manager
   mode_alterations:
-    guest_mode: disable
+    - mode: guest_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Automatically lock up at night
     icon: mdi:clock
@@ -54,7 +58,9 @@ notify_when_absent_insecure_automation:
   entity_ids:
     state: sensor.secure_status
   mode_alterations:
-    guest_mode: disable
+    - mode: guest_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Absent & insecure alerts
     icon: mdi:lock-open

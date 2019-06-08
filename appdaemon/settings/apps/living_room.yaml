@@ -8,7 +8,9 @@ fireplace_failsafe_automation:
   entity_ids:
     switch: switch.fireplace
   mode_alterations:
-    guest_mode: disable
+    - mode: guest_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Disable fireplace when away
     icon: mdi:fire
@@ -27,8 +29,12 @@ christmas_lights_on_at_sunrise_automation:
     schedule_time: sunrise
     state: "on"
   mode_alterations:
-    guest_mode: disable
-    vacation_mode: disable
+    - mode: guest_mode
+      action: disable
+      priority: 1
+    - mode: vacation_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Turn on Christmas tree at sunrise
     icon: mdi:pine-tree
@@ -53,8 +59,12 @@ christmas_lights_off_at_9am_automation:
     schedule_time: "09:00:00"
     state: "off"
   mode_alterations:
-    guest_mode: disable
-    vacation_mode: disable
+    - mode: guest_mode
+      action: disable
+      priority: 1
+    - mode: vacation_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Turn on Christmas tree off at 9am (weekdays)
     icon: mdi:pine-tree
@@ -76,8 +86,12 @@ living_room_lights_on_at_sunset_automation:
     constraints:
       constrain_anyone: home,just_arrived
   mode_alterations:
-    guest_mode: disable
-    vacation_mode: disable
+    - mode: guest_mode
+      action: disable
+      priority: 1
+    - mode: vacation_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Turn on at sunset
     icon: mdi:weather-sunset-down
@@ -97,7 +111,9 @@ living_room_lights_on_upon_arrival_automation:
     constraints:
       constrain_sun: "down"
   mode_alterations:
-    guest_mode: disable
+    - mode: guest_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Turn on upon arrival
     icon: mdi:car
@@ -116,7 +132,9 @@ living_room_lights_vacation_mode_automation:
     end_time: "23:30:00"
     start_time: "sunset"
   mode_alterations:
-    vacation_mode: enable
+    - mode: vacation_mode
+      action: enable
+      priority: 1
   enabled_config:
     toggle_name: vacation_mode_lighting
     name: Simulate vacation mode
@@ -155,8 +173,12 @@ reading_lamp_cloudy_morning_automation:
     constraints:
       constrain_cloudy: true
   mode_alterations:
-    guest_mode: disable
-    vacation_mode: disable
+    - mode: guest_mode
+      action: disable
+      priority: 1
+    - mode: vacation_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Turn on with cloudy mornings
     icon: mdi:weather-cloudy

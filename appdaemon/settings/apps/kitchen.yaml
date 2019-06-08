@@ -15,8 +15,12 @@ bar_cart_on_at_sunset_automation:
     constraints:
       constrain_anyone: home,just_arrived
   mode_alterations:
-    guest_mode: disable
-    vacation_mode: disable
+    - mode: guest_mode
+      action: disable
+      priority: 1
+    - mode: vacation_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Turn on at sunset
     icon: mdi:weather-sunset-down
@@ -36,7 +40,9 @@ bar_cart_on_upon_arrival_automation:
     constraints:
       constrain_sun: "down"
   mode_alterations:
-    guest_mode: disable
+    - mode: guest_mode
+      action: disable
+      priority: 1
   enabled_config:
     name: Turn on upon arrival
     icon: mdi:car
