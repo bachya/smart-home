@@ -120,7 +120,7 @@ def get_targets_from_string(app: Base, target: str) -> List[Target]:
         factory = PersonFactory(app, target)
     elif target.startswith("presence:"):
         factory = PresenceFactory(app, target)  # type: ignore
-    elif target.startswith("slac:"):
+    elif target.startswith("slack:"):
         factory = SlackFactory(app, target)  # type: ignore
     else:
         factory = NotifierFactory(app, target)  # type: ignore
