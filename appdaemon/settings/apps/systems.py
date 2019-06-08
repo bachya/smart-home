@@ -23,7 +23,7 @@ CONF_SSL_EXPIRY = "ssl_expiry"
 HANDLE_BATTERY_LOW = "battery_low"
 
 
-class LowBatteries(Base):
+class LowBatteries(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to notify us of low batteries."""
 
     APP_SCHEMA = APP_SCHEMA.extend(
@@ -93,7 +93,7 @@ class LowBatteries(Base):
                 return
 
 
-class LeftInState(Base):
+class LeftInState(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to monitor whether an entity is left in a state."""
 
     APP_SCHEMA = APP_SCHEMA.extend(
@@ -143,7 +143,7 @@ class LeftInState(Base):
         )
 
 
-class SslExpiration(Base):
+class SslExpiration(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to notify me when the SSL cert is expiring."""
 
     APP_SCHEMA = APP_SCHEMA.extend(

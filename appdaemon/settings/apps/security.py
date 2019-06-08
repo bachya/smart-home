@@ -21,12 +21,12 @@ from notification import send_notification
 CONF_ALARM_CONTROL_PANEL = "alarm_control_panel"
 CONF_GARAGE_DOOR = "garage_door"
 CONF_OVERALL_SECURITY_STATUS = "overall_security_status_sensor"
-CONF_TIME__on_left_open = "time__on_left_open"
+CONF_TIME_LEFT_OPEN = "time_left_open"
 
 HANDLE_GARAGE_OPEN = "garage_open"
 
 
-class AbsentInsecure(Base):
+class AbsentInsecure(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to notify us when we've left home insecure."""
 
     APP_SCHEMA = APP_SCHEMA.extend(
@@ -63,7 +63,7 @@ class AbsentInsecure(Base):
         )
 
 
-class AutoDepartureLockup(Base):
+class AutoDepartureLockup(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to automatically lock up when we leave."""
 
     def configure(self) -> None:
@@ -84,7 +84,7 @@ class AutoDepartureLockup(Base):
             self.turn_on("scene.depart_home")
 
 
-class AutoNighttimeLockup(Base):
+class AutoNighttimeLockup(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to automatically lock up at night."""
 
     def configure(self) -> None:
@@ -103,7 +103,7 @@ class AutoNighttimeLockup(Base):
         self.call_service("scene/turn_on", entity_id="scene.good_night")
 
 
-class GarageLeftOpen(Base):
+class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to notify us when the garage is left open."""
 
     APP_SCHEMA = APP_SCHEMA.extend(
@@ -114,7 +114,7 @@ class GarageLeftOpen(Base):
             CONF_PROPERTIES: vol.Schema(
                 {
                     vol.Required(CONF_NOTIFICATION_INTERVAL): int,
-                    vol.Required(CONF_TIME__on_left_open): int,
+                    vol.Required(CONF_TIME_LEFT_OPEN): int,
                 },
                 extra=vol.ALLOW_EXTRA,
             ),
@@ -133,7 +133,7 @@ class GarageLeftOpen(Base):
             self._on_left_open,
             self.entity_ids[CONF_GARAGE_DOOR],
             new="open",
-            duration=self.properties[CONF_TIME__on_left_open],
+            duration=self.properties[CONF_TIME_LEFT_OPEN],
             constrain_enabled=True,
         )
 
@@ -173,7 +173,7 @@ class GarageLeftOpen(Base):
         )
 
 
-class NotifyOnChange(Base):
+class NotifyOnChange(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to notify us the secure status changes."""
 
     APP_SCHEMA = APP_SCHEMA.extend(

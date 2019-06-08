@@ -31,7 +31,7 @@ HANDLE_SCHEDULE = "schedule"
 HANDLE_STUCK = "vacuum_stuck"
 
 
-class MonitorConsumables(Base):
+class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to notify when a consumable gets low."""
 
     APP_SCHEMA = APP_SCHEMA.extend(

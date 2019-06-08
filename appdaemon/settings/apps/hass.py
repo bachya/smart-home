@@ -11,7 +11,7 @@ CONF_BLACKOUT_SWITCH = "blackout_switch"
 CONF_IP_BAN = "ip_ban"
 
 
-class AutoVacationMode(Base):
+class AutoVacationMode(Base):  # pylint: disable=too-few-public-methods
     """Define automated alterations to vacation mode."""
 
     def configure(self) -> None:
@@ -43,7 +43,7 @@ class AutoVacationMode(Base):
             self.vacation_mode.deactivate()
 
 
-class BadLoginNotification(Base):
+class BadLoginNotification(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to notify me of unauthorized login attempts."""
 
     APP_SCHEMA = APP_SCHEMA.extend(

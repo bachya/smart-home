@@ -20,7 +20,7 @@ CONF_RUNNING_THRESHOLD = "running_threshold"
 HANDLE_CLEAN = "clean"
 
 
-class NotifyDone(Base):
+class NotifyDone(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to notify a target when the appliancer is done."""
 
     APP_SCHEMA = APP_SCHEMA.extend(

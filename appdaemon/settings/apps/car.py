@@ -19,7 +19,7 @@ CONF_FUEL_THRESHOLD = "fuel_threshold"
 HANDLE_LOW_FUEL = "low_fuel"
 
 
-class NotifyLowFuel(Base):
+class NotifyLowFuel(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to notify of the vehicle's ETA to home."""
 
     APP_SCHEMA = APP_SCHEMA.extend(

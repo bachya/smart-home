@@ -59,7 +59,7 @@ DYNAMIC_APP_SCHEMA = VERSION_APP_SCHEMA.extend(
 )
 
 
-class NewVersionNotification(Base):
+class NewVersionNotification(Base):  # pylint: disable=too-few-public-methods
     """Detect new versions of apps."""
 
     APP_SCHEMA = VERSION_APP_SCHEMA

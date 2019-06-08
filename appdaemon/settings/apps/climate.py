@@ -19,7 +19,7 @@ OUTSIDE_THRESHOLD_HIGH = 75
 OUTSIDE_THRESHOLD_LOW = 35
 
 
-class AdjustOnProximity(Base):
+class AdjustOnProximity(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to adjust climate based on proximity to home."""
 
     def configure(self) -> None:
