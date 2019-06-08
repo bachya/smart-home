@@ -85,7 +85,7 @@ class BaseZwaveSwitch(BaseSwitch):
     def configure(self) -> None:
         """Configure."""
         self.listen_event(
-            self.double_up,
+            self.on_double_tap_up,
             "zwave.node_event",
             entity_id=self.entity_ids["zwave_device"],
             basic_level=255,
@@ -93,18 +93,18 @@ class BaseZwaveSwitch(BaseSwitch):
         )
 
         self.listen_event(
-            self.double_down,
+            self.on_double_tap_down,
             "zwave.node_event",
             entity_id=self.entity_ids["zwave_device"],
             basic_level=0,
             constrain_enabled=True,
         )
 
-    def double_down(self, event_name: str, data: dict, kwargs: dict) -> None:
+    def on_double_tap_down(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Stub out method signature."""
         pass
 
-    def double_up(self, event_name: str, data: dict, kwargs: dict) -> None:
+    def on_double_tap_up(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Stub out method signature."""
         pass
 
@@ -127,7 +127,7 @@ class DoubleTapTimerSwitch(BaseZwaveSwitch):
         }
     )
 
-    def double_up(self, event_name: str, data: dict, kwargs: dict) -> None:
+    def on_double_tap_up(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Turn on the target timer slider with a double up tap."""
         self.set_value(
             self.entity_ids[CONF_TIMER_SLIDER],
@@ -153,11 +153,11 @@ class DoubleTapToggleSwitch(BaseZwaveSwitch):
         }
     )
 
-    def double_down(self, event_name: str, data: dict, kwargs: dict) -> None:
+    def on_double_tap_down(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Turn off the target switch with a double down tap."""
         self.turn_off(self.entity_ids[CONF_TARGET])
 
-    def double_up(self, event_name: str, data: dict, kwargs: dict) -> None:
+    def on_double_tap_up(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Turn on the target switch with a double up tap."""
         self.turn_on(self.entity_ids[CONF_TARGET])
 
@@ -494,14 +494,14 @@ class TurnOnUponArrival(BaseSwitch):
     def configure(self) -> None:
         """Configure."""
         self.listen_event(
-            self.someone_arrived,
+            self._on_someone_arrive,
             EVENT_PRESENCE_CHANGE,
             new=self.presence_manager.HomeStates.just_arrived.value,
             auto_constraints=True,
             constrain_enabled=True,
         )
 
-    def someone_arrived(self, event_name: str, data: dict, kwargs: dict) -> None:
+    def _on_someone_arrive(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Turn on after dark when someone comes homes."""
         self.log("Someone came home; turning on the switch")
 

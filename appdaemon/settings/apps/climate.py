@@ -25,17 +25,24 @@ class AdjustOnProximity(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_event(
-            self.arrived_home,
+            self._on_arrive_home,
             EVENT_PRESENCE_CHANGE,
             new=self.presence_manager.HomeStates.just_arrived.value,
             first=True,
             constrain_enabled=True,
         )
         self.listen_event(
-            self.proximity_changed, EVENT_PROXIMITY_CHANGE, constrain_enabled=True
+            self._on_proximity_change, EVENT_PROXIMITY_CHANGE, constrain_enabled=True
         )
 
-    def proximity_changed(self, event_name: str, data: dict, kwargs: dict) -> None:
+    def _on_arrive_home(self, event_name: str, data: dict, kwargs: dict) -> None:
+        """Last ditch: turn the thermostat to home when someone arrives."""
+        if self.climate_manager.away_mode:
+            self.log('Last ditch: setting thermostat to "Home" (arrived)')
+
+            self.climate_manager.set_away_mode(self.climate_manager.AwayModes.home)
+
+    def _on_proximity_change(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to "PROXIMITY_CHANGE" events."""
         if (
             self.climate_manager.outside_temp < OUTSIDE_THRESHOLD_LOW
@@ -77,13 +84,6 @@ class AdjustOnProximity(Base):
                 self.log('Setting thermostat to "Home"')
 
                 self.climate_manager.set_away_mode(self.climate_manager.AwayModes.home)
-
-    def arrived_home(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Last ditch: turn the thermostat to home when someone arrives."""
-        if self.climate_manager.away_mode:
-            self.log('Last ditch: setting thermostat to "Home" (arrived)')
-
-            self.climate_manager.set_away_mode(self.climate_manager.AwayModes.home)
 
 
 class ClimateManager(Base):

@@ -113,10 +113,10 @@ class ScheduledCycle(Base):
         self.create_schedule()
 
         self.listen_event(
-            self.alarm_changed, EVENT_ALARM_CHANGE, constrain_enabled=True
+            self._on_security_system_change, EVENT_ALARM_CHANGE, constrain_enabled=True
         )
         self.listen_event(
-            self.start_by_switch, EVENT_VACUUM_START, constrain_enabled=True
+            self._on_switch_start, EVENT_VACUUM_START, constrain_enabled=True
         )
         self.listen_state(
             self._on_vacuum_cycle_done,
@@ -172,6 +172,43 @@ class ScheduledCycle(Base):
         """Reload the schedule when one of the input booleans change."""
         self.create_schedule()
 
+    def _on_security_system_change(
+        self, event_name: str, data: dict, kwargs: dict
+    ) -> None:
+        """Respond to 'ALARM_CHANGE' events."""
+        state = self.app.States(self.get_state(self.app.entity_ids["status"]))
+
+        # Scenario 1: Vacuum is charging and is told to start:
+        if (self.initiated_by_app and state == self.app.States.docked) and data[
+            "state"
+        ] == self.security_manager.AlarmStates.home.value:
+            self.log("Activating vacuum (post-security)")
+
+            self.turn_on(self.app.entity_ids["vacuum"])
+
+        # Scenario 2: Vacuum is running when alarm is set to "Away":
+        elif (
+            state == self.app.States.cleaning
+            and data["state"] == self.security_manager.AlarmStates.away.value
+        ):
+            self.log('Security mode is "Away"; pausing until "Home"')
+
+            self.call_service(
+                "vacuum/start_pause", entity_id=self.app.entity_ids["vacuum"]
+            )
+            self.security_manager.set_alarm(self.security_manager.AlarmStates.home)
+
+        # Scenario 3: Vacuum is paused when alarm is set to "Home":
+        elif (
+            state == self.app.States.paused
+            and data["state"] == self.security_manager.AlarmStates.home.value
+        ):
+            self.log('Alarm in "Home"; resuming')
+
+            self.call_service(
+                "vacuum/start_pause", entity_id=self.app.entity_ids["vacuum"]
+            )
+
     def _on_vacuum_bin_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
@@ -208,41 +245,6 @@ class ScheduledCycle(Base):
         self.app.bin_state = self.app.BinStates.full
         self.initiated_by_app = False
 
-    def alarm_changed(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Respond to 'ALARM_CHANGE' events."""
-        state = self.app.States(self.get_state(self.app.entity_ids["status"]))
-
-        # Scenario 1: Vacuum is charging and is told to start:
-        if (self.initiated_by_app and state == self.app.States.docked) and data[
-            "state"
-        ] == self.security_manager.AlarmStates.home.value:
-            self.log("Activating vacuum (post-security)")
-
-            self.turn_on(self.app.entity_ids["vacuum"])
-
-        # Scenario 2: Vacuum is running when alarm is set to "Away":
-        elif (
-            state == self.app.States.cleaning
-            and data["state"] == self.security_manager.AlarmStates.away.value
-        ):
-            self.log('Security mode is "Away"; pausing until "Home"')
-
-            self.call_service(
-                "vacuum/start_pause", entity_id=self.app.entity_ids["vacuum"]
-            )
-            self.security_manager.set_alarm(self.security_manager.AlarmStates.home)
-
-        # Scenario 3: Vacuum is paused when alarm is set to "Home":
-        elif (
-            state == self.app.States.paused
-            and data["state"] == self.security_manager.AlarmStates.home.value
-        ):
-            self.log('Alarm in "Home"; resuming')
-
-            self.call_service(
-                "vacuum/start_pause", entity_id=self.app.entity_ids["vacuum"]
-            )
-
     def create_schedule(self) -> None:
         """Create the vacuuming schedule from the on booleans."""
         if HANDLE_SCHEDULE in self.handles:
@@ -263,7 +265,7 @@ class ScheduledCycle(Base):
             self.app.start()
             self.initiated_by_app = True
 
-    def start_by_switch(self, event_name: str, data: dict, kwargs: dict) -> None:
+    def _on_switch_start(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Start cleaning via the switch."""
         if not self.initiated_by_app:
             self.app.start()

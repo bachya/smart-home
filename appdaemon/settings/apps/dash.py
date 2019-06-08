@@ -108,12 +108,12 @@ class DashButton(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_event(
-            self.button_pressed,
+            self._on_button_press,
             "AMAZON_DASH_PRESS",
             button_label=self.properties[CONF_FRIENDLY_NAME],
         )
 
-    def button_pressed(self, event_name: str, data: dict, kwargs: dict) -> None:
+    def _on_button_press(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond when button is pressed."""
         action_name = self.get_state(self.entity_ids[CONF_ACTION_LIST])
 

@@ -155,14 +155,14 @@ class SlackApp(Base):
         self._interactive_command_actions = {}  # type: Dict[str, dict]
 
         self.listen_event(
-            self._interactive_command_received,
+            self._on_interactive_command_received,
             self.properties["interactive_command_event"],
         )
         self.listen_event(
-            self.slash_command_received, self.properties["slash_command_event"]
+            self._on_slash_command_received, self.properties["slash_command_event"]
         )
 
-    def _interactive_command_received(
+    def _on_interactive_command_received(
         self, event_name: str, data: dict, kwargs: dict
     ) -> None:
         """Respond to an interactive command."""
@@ -185,6 +185,25 @@ class SlackApp(Base):
             message(response_url, response_text)
 
         self._interactive_command_actions = {}
+
+    def _on_slash_command_received(
+        self, event_name: str, data: dict, kwargs: dict
+    ) -> None:
+        """Respond to slash commands."""
+        command = data["command"][1:]
+
+        if command not in self.COMMAND_MAP:
+            self.error("Unknown slash command: {0}".format(command))
+            return
+
+        self.log(
+            "Running Slack slash command: {0} {1}".format(data["command"], data["text"])
+        )
+
+        slash_command = self.COMMAND_MAP[command](
+            self, data["text"], data["response_url"]
+        )
+        slash_command.execute()
 
     def ask(
         self,
@@ -219,20 +238,3 @@ class SlackApp(Base):
             attachments.append({"title": "", "image_url": image_url})
 
         send_notification(self, "slack", question, data={"attachments": attachments})
-
-    def slash_command_received(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Respond to slash commands."""
-        command = data["command"][1:]
-
-        if command not in self.COMMAND_MAP:
-            self.error("Unknown slash command: {0}".format(command))
-            return
-
-        self.log(
-            "Running Slack slash command: {0} {1}".format(data["command"], data["text"])
-        )
-
-        slash_command = self.COMMAND_MAP[command](
-            self, data["text"], data["response_url"]
-        )
-        slash_command.execute()

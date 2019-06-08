@@ -69,10 +69,10 @@ class AutoDepartureLockup(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_event(
-            self.everyone_gone, EVENT_PROXIMITY_CHANGE, constrain_enabled=True
+            self._on_everyone_gone, EVENT_PROXIMITY_CHANGE, constrain_enabled=True
         )
 
-    def everyone_gone(self, event_name: str, data: dict, kwargs: dict) -> None:
+    def _on_everyone_gone(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to 'PROXIMITY_CHANGE' events."""
         if (
             not self.security_manager.secure

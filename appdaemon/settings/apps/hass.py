@@ -17,7 +17,7 @@ class AutoVacationMode(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_event(
-            self.presence_changed,
+            self._on_presence_change,
             EVENT_PRESENCE_CHANGE,
             new=self.presence_manager.HomeStates.extended_away.value,
             first=False,
@@ -25,7 +25,7 @@ class AutoVacationMode(Base):
             constrain_enabled=True,
         )
         self.listen_event(
-            self.presence_changed,
+            self._on_presence_change,
             EVENT_PRESENCE_CHANGE,
             new=self.presence_manager.HomeStates.just_arrived.value,
             first=True,
@@ -33,7 +33,7 @@ class AutoVacationMode(Base):
             constrain_enabled=True,
         )
 
-    def presence_changed(self, event_name: str, data: dict, kwargs: dict) -> None:
+    def _on_presence_change(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Alter Vacation Mode based on presence."""
         if kwargs["action"] == "on" and self.vacation_mode.state == "off":
             self.log('Setting vacation mode to "on"')
