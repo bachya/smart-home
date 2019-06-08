@@ -199,6 +199,7 @@ class Base(Hass):
             self.log("Cannot disable an always-on app")
             return
 
+        self.log("Disabling app")
         self.turn_off(self._enabled_entity_id)
 
     def enable(self) -> None:
@@ -207,6 +208,7 @@ class Base(Hass):
             self.log("Cannot enable an always-on app")
             return
 
+        self.log("Enabling app")
         self.turn_on(self._enabled_entity_id)
 
     def listen_ios_event(self, callback: Callable, action: str) -> None:
