@@ -1,4 +1,4 @@
-"""Define generic automation objects and logic."""
+"""Define a generic object which  all apps/automations inherit from."""
 from typing import Callable, Dict, List, Optional, Union
 
 import voluptuous as vol
@@ -55,7 +55,7 @@ APP_SCHEMA = vol.Schema(
 
 
 class Base(Hass):
-    """Define a base automation object."""
+    """Define a base app/automation object."""
 
     APP_SCHEMA = APP_SCHEMA
 
@@ -70,14 +70,14 @@ class Base(Hass):
         # Define a holding place for HASS entity IDs:
         self.entity_ids = self.args.get("entity_ids", {})
 
-        # Define a holding place for any scheduler handles that the automation
-        # wants to keep track of:
+        # Define a holding place for any scheduler handles that the app wants to keep
+        # track of:
         self.handles = {}  # type: Dict[str, Callable]
 
-        # Define a holding place for key/value properties for this automation:
+        # Define a holding place for key/value properties for this app:
         self.properties = self.args.get("properties", {})
 
-        # Define a holding place for any mode alterations for this automation:
+        # Define a holding place for any mode alterations for this app:
         self.mode_alterations = self.args.get("mode_alterations", [])
 
         # Take every dependecy and create a reference to it:
@@ -86,12 +86,12 @@ class Base(Hass):
                 setattr(self, app, self.get_app(app))
 
         # Define a reference to the "manager app" – for example, a trash-
-        # related automation might carry a reference to TrashManager:
+        # related app might carry a reference to TrashManager:
         if self.args.get("app"):
             self.app = getattr(self, self.args["app"])
 
         # Set the entity ID of the input boolean that will control whether
-        # this automation is enabled or not:
+        # this app is enabled or not:
         self._enabled_entity_id = None  # type: Optional[str]
         enabled_config = self.args.get("enabled_config", {})
         if enabled_config:
@@ -103,11 +103,18 @@ class Base(Hass):
                 self._enabled_entity_id = "input_boolean.{0}".format(self.name)
 
         if self._enabled_entity_exists():
+            # Listen and track mode changes so that the app can respond as needed:
             self.mode_events = []  # type: List[str]
             self.listen_event(self._on_mode_change, EVENT_MODE_CHANGE)
 
-            super().listen_state(self._on_disable, self._enabled_entity_id, new="off")
-            super().listen_state(self._on_enable, self._enabled_entity_id, new="on")
+            # If the app has defined callbacks fror when the app is enabled or disabled,
+            # attach them to listeners:
+            if getattr(self, "on_disable", None):
+                super().listen_state(
+                    self.on_disable, self._enabled_entity_id, new="off"
+                )
+            if getattr(self, "on_enable", None):
+                super().listen_state(self._on_enable, self._enabled_entity_id, new="on")
 
         # Register custom constraints:
         self.register_constraint("constrain_anyone")
@@ -161,20 +168,6 @@ class Base(Hass):
             self._enabled_entity_id
         )
 
-    def _on_disable(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Allow the app to respond to being disabled with extra logic."""
-        if getattr(self, "on_disable", None):
-            self.on_disable()
-
-    def _on_enable(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Allow the app to respond to being enabled with extra logic."""
-        if getattr(self, "on_enable", None):
-            self.on_enable()
-
     def _on_mode_change(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Compare mode changes to registered mode alterations."""
         mode = data["name"]
@@ -201,7 +194,7 @@ class Base(Hass):
                 primary["action"] = "enable"
 
         # If the primary mode alteration prescribes an action that matches the state the
-        # automation is already in, return:
+        # app is already in, return:
         if (self.enabled and primary["action"] == "enable") or (
             not self.enabled and primary["action"] == "disable"
         ):
