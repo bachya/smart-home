@@ -173,7 +173,7 @@ class SslExpiration(Base):  # pylint: disable=too-few-public-methods
             self.log("SSL certificate about to expire: {0} days".format(new))
 
             send_notification(
-                self, "slack/@aaron", "SSL expires in less than {0} days".format(new)
+                self, "slack:@aaron", "SSL expires in less than {0} days".format(new)
             )
 
 

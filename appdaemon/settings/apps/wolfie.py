@@ -70,7 +70,7 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
 
             send_notification(
                 self,
-                "slack/@aaron",
+                "slack:@aaron",
                 "Order a new Wolfie consumable: {0}".format(attribute),
             )
             self.triggered = True

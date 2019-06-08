@@ -90,7 +90,7 @@ class NewVersionNotification(Base):  # pylint: disable=too-few-public-methods
 
             send_notification(
                 self,
-                "slack/@aaron",
+                "slack:@aaron",
                 "New {0} Version: {1}".format(self.properties[CONF_APP_NAME], new),
                 title="New Software 💿",
             )
