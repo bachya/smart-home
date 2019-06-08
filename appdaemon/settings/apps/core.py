@@ -165,7 +165,6 @@ class Base(Hass):
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Allow the app to respond to being disabled with extra logic."""
-        self.log("Disabling app")
         if getattr(self, "on_disable", None):
             self.on_disable()
 
@@ -173,7 +172,6 @@ class Base(Hass):
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Allow the app to respond to being enabled with extra logic."""
-        self.log("Enabling app")
         if getattr(self, "on_enable", None):
             self.on_enable()
 
