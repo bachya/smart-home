@@ -93,15 +93,11 @@ class Base(Hass):
             else:
                 self._enabled_entity_id = "input_boolean.{0}".format(self.name)
 
+        # If an entity ID exists, create hooks to respond to when it is enabled or
+        # disabled:
         if self._enabled_entity_id:
             super().listen_state(self.disable_cb, self._enabled_entity_id, new="off")
             super().listen_state(self.enable_cb, self._enabled_entity_id, new="on")
-
-        # Register any "mode alterations" for this automation – for example,
-        # perhaps it should be disabled when Vacation Mode is enabled:
-        for mode, value in self.args.get("mode_alterations", {}).items():
-            mode_app = getattr(self, mode)
-            mode_app.register_enabled_entity(self._enabled_entity_id, value)
 
         # Register custom constraints:
         self.register_constraint("constrain_anyone")
