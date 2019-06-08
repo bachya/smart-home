@@ -38,7 +38,7 @@ class Mode(Base):
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Deactivate the mode when the input boolean is toggled on."""
-        self.deactivate()
+        self.activate()
 
     def activate(self) -> None:
         """Activate the mode."""
