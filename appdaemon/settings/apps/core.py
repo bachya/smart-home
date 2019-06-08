@@ -181,9 +181,9 @@ class Base(Hass):
 
     def _on_mode_change(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Compare mode changes to registered mode alterations."""
-        mode = kwargs["name"]
+        mode = data["name"]
 
-        if kwargs["state"] == "on":
+        if data["state"] == "on":
             self.mode_events.append(mode)
         elif mode in self.mode_events:
             self.mode_events.remove(mode)
