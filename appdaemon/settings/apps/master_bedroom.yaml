@@ -94,6 +94,9 @@ master_toilet_fan_toggle_automation:
     start_time: "10:00:00"
     window: 3600
   mode_alterations:
+    - mode: blackout_mode
+      action: disable
+      priority: 2
     - mode: guest_mode
       action: disable
       priority: 1
