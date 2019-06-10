@@ -376,10 +376,6 @@ class ToggleOnInterval(BaseSwitch):
         }
     )
 
-    def on_disable(self) -> None:
-        """Kill any existing handles if the app is disabled."""
-        self._on_stop_cycle({})
-
     def configure(self) -> None:
         """Configure."""
         self.run_daily(
@@ -401,6 +397,10 @@ class ToggleOnInterval(BaseSwitch):
             and self.enabled
         ):
             self._on_start_cycle({})
+
+    def on_disable(self) -> None:
+        """Kill any existing handles if the app is disabled."""
+        self._on_stop_cycle({})
 
     def _on_start_cycle(self, kwargs: dict) -> None:
         """Start the toggle cycle."""
