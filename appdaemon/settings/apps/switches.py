@@ -398,7 +398,9 @@ class ToggleOnInterval(BaseSwitch):
         ):
             self._on_start_cycle({})
 
-    def on_disable(self) -> None:
+    def on_disable(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
         """Kill any existing handles if the app is disabled."""
         self._on_stop_cycle({})
 
@@ -559,7 +561,9 @@ class VacationMode(BaseSwitch):
             self._on_toggle_and_run, randint(5 * 60, 60 * 60), state=state
         )
 
-    def on_disable(self) -> None:
+    def on_disable(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
         """Perform steps to cancel the automation if the automation is disabled."""
         self._cancel_automation()
 
