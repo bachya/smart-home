@@ -7,10 +7,6 @@ master_bedroom_lights_sleep_timer_automation:
   entity_ids:
     switch: switch.master_bedroom_salt_lamp
     timer_slider: input_number.master_bedroom_salt_lamp_timer
-  enabled_config:
-    name: Enable sleep timer
-    icon: mdi:sleep
-    initial: true
 
 master_bedroom_lights_on_at_sunset_automation:
   module: switches
@@ -31,10 +27,6 @@ master_bedroom_lights_on_at_sunset_automation:
     - mode: vacation_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Turn on at sunset
-    icon: mdi:weather-sunset-down
-    initial: true
 
 master_bathroom_fan_double_tap_timer_automation:
   module: switches
@@ -46,10 +38,6 @@ master_bathroom_fan_double_tap_timer_automation:
     zwave_device: zwave.master_bathroom_fan
   properties:
     duration: 3600
-  enabled_config:
-    name: "Bathroom: double tap 10-minute timer"
-    icon: mdi:timer
-    initial: true
 
 master_bathroom_fan_sleep_timer_automation:
   module: switches
@@ -59,10 +47,6 @@ master_bathroom_fan_sleep_timer_automation:
   entity_ids:
     switch: switch.master_bathroom_fan
     timer_slider: input_number.master_bathroom_fan_timer
-  enabled_config:
-    name: "Bathroom: enable sleep timer"
-    icon: mdi:sleep
-    initial: true
 
 master_toilet_fan_double_tap_timer_automation:
   module: switches
@@ -74,10 +58,6 @@ master_toilet_fan_double_tap_timer_automation:
     zwave_device: zwave.master_toilet_fan
   properties:
     duration: 600
-  enabled_config:
-    name: "Toilet: double tap 10-minute timer"
-    icon: mdi:timer
-    initial: true
 
 master_toilet_fan_toggle_automation:
   module: switches
@@ -103,10 +83,6 @@ master_toilet_fan_toggle_automation:
     - mode: vacation_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: "Toggle toilet fan every 15 minutes"
-    icon: mdi:fan
-    initial: true
 
 master_toilet_fan_sleep_timer_automation:
   module: switches
@@ -116,7 +92,3 @@ master_toilet_fan_sleep_timer_automation:
   entity_ids:
     switch: switch.master_toilet_fan
     timer_slider: input_number.master_bathroom_toilet_fan_timer
-  enabled_config:
-    name: "Toilet: enable sleep timer"
-    icon: mdi:sleep
-    initial: true

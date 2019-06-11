@@ -11,10 +11,6 @@ fireplace_failsafe_automation:
     - mode: guest_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Disable fireplace when away
-    icon: mdi:fire
-    initial: true
 
 christmas_lights_on_at_sunrise_automation:
   module: switches
@@ -35,10 +31,6 @@ christmas_lights_on_at_sunrise_automation:
     - mode: vacation_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Turn on Christmas tree at sunrise
-    icon: mdi:pine-tree
-    initial: true
 
 christmas_lights_off_at_9am_automation:
   module: switches
@@ -65,10 +57,6 @@ christmas_lights_off_at_9am_automation:
     - mode: vacation_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Turn on Christmas tree off at 9am (weekdays)
-    icon: mdi:pine-tree
-    initial: true
 
 living_room_lights_on_at_sunset_automation:
   module: switches
@@ -92,10 +80,6 @@ living_room_lights_on_at_sunset_automation:
     - mode: vacation_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Turn on at sunset
-    icon: mdi:weather-sunset-down
-    initial: true
 
 living_room_lights_on_upon_arrival_automation:
   module: switches
@@ -114,10 +98,6 @@ living_room_lights_on_upon_arrival_automation:
     - mode: guest_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Turn on upon arrival
-    icon: mdi:car
-    initial: true
 
 living_room_lights_vacation_mode_automation:
   module: switches
@@ -135,11 +115,7 @@ living_room_lights_vacation_mode_automation:
     - mode: vacation_mode
       action: enable
       priority: 1
-  enabled_config:
-    toggle_name: vacation_mode_lighting
-    name: Simulate vacation mode
-    icon: mdi:beach
-    initial: true
+  enabled_toggle_entity_id: input_boolean.vacation_mode_lighting
 
 powder_room_fan_auto_turn_on_automation:
   module: switches
@@ -153,10 +129,6 @@ powder_room_fan_auto_turn_on_automation:
     delay: 60
     switch_state: "on"
     target_state: "off"
-  enabled_config:
-    name: Turn on if turned off
-    icon: "mdi:fan"
-    initial: true
 
 reading_lamp_cloudy_morning_automation:
   module: switches
@@ -179,7 +151,3 @@ reading_lamp_cloudy_morning_automation:
     - mode: vacation_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Turn on with cloudy mornings
-    icon: mdi:weather-cloudy
-    initial: true

@@ -7,10 +7,6 @@ office_lights_sleep_timer_automation:
   entity_ids:
     switch: switch.office_salt_lamp
     timer_slider: input_number.office_salt_lamp_timer
-  enabled_config:
-    name: Enable sleep timer
-    icon: mdi:sleep
-    initial: true
 
 office_lights_off_at_10pm_automation:
   module: switches
@@ -31,10 +27,6 @@ office_lights_off_at_10pm_automation:
     - mode: vacation_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Turn off at 10pm
-    icon: mdi:lightbulb
-    initial: true
 
 office_lights_on_at_sunset_automation:
   module: switches
@@ -55,7 +47,3 @@ office_lights_on_at_sunset_automation:
     - mode: vacation_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Turn on at sunset
-    icon: mdi:weather-sunset-down
-    initial: true

@@ -10,10 +10,6 @@ notify_of_trash_pickup_automation:
     - mode: vacation_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Notify of pickups
-    icon: mdi:delete
-    initial: true
 
 trash_manager:
   module: trash

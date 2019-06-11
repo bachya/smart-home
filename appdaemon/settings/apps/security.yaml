@@ -10,10 +10,6 @@ auto_departure_lockup_automation:
     - mode: guest_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Automatic departure lock up
-    icon: mdi:car-side
-    initial: true
 
 auto_nighttime_lockup_automation:
   module: security
@@ -26,10 +22,6 @@ auto_nighttime_lockup_automation:
     - mode: guest_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Automatically lock up at night
-    icon: mdi:clock
-    initial: true
 
 notify_of_garage_open_automation:
   module: security
@@ -43,10 +35,6 @@ notify_of_garage_open_automation:
   properties:
     notification_interval: 300
     time_left_open: 600
-  enabled_config:
-    name: Notify if garage left open
-    icon: mdi:garage
-    initial: true
 
 notify_when_absent_insecure_automation:
   module: security
@@ -61,10 +49,6 @@ notify_when_absent_insecure_automation:
     - mode: guest_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Absent & insecure alerts
-    icon: mdi:lock-open
-    initial: true
 
 notify_when_status_changes_automation:
   module: security
@@ -78,10 +62,6 @@ notify_when_status_changes_automation:
     - mode: vacation_mode
       action: enable
       priority: 1
-  enabled_config:
-    name: Notify when state changes
-    icon: mdi:shield-half-full
-    initial: false
 
 security_manager:
   module: security

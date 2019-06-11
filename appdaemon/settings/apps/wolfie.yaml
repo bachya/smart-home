@@ -23,10 +23,6 @@ notify_when_wolfie_consumable_low_automation:
       - main_brush_left
       - sensor_dirty_left
       - side_brush_left
-  enabled_config:
-    name: Low supply notifications
-    icon: mdi:google-circles-group
-    initial: true
 
 wolfie_scheduled_cycle_automation:
   module: wolfie
@@ -58,7 +54,3 @@ wolfie_scheduled_cycle_automation:
     - mode: vacation_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Automatic schedule
-    icon: mdi:google-circles-group
-    initial: true

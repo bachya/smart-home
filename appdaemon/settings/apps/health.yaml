@@ -23,7 +23,3 @@ notify_bad_aqi_automation:
     - mode: vacation_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Bad AQI notifications
-    icon: mdi:weather-windy
-    initial: true

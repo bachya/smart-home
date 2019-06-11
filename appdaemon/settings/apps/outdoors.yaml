@@ -15,10 +15,6 @@ backyard_lights_off_at_930pm_automation:
       - Thursday
     schedule_time: "21:30:00"
     state: "off"
-  enabled_config:
-    name: Turn off at 9:30pm (weekdays)
-    icon: mdi:lightbulb
-    initial: true
 
 backyard_lights_off_at_11pm_automation:
   module: switches
@@ -33,10 +29,6 @@ backyard_lights_off_at_11pm_automation:
       - Saturday
     schedule_time: "23:00:00"
     state: "off"
-  enabled_config:
-    name: Turn off at 11pm (weekends)
-    icon: mdi:lightbulb
-    initial: true
 
 backyard_lights_on_at_sunset_automation:
   module: switches
@@ -48,10 +40,6 @@ backyard_lights_on_at_sunset_automation:
   properties:
     schedule_time: sunset
     state: "on"
-  enabled_config:
-    name: Turn on at sunset
-    icon: mdi:weather-sunset-down
-    initial: true
 
 kitchen_patio_light_double_tap_backyard_lights_automation:
   module: switches
@@ -61,10 +49,6 @@ kitchen_patio_light_double_tap_backyard_lights_automation:
   entity_ids:
     zwave_device: zwave.kitchen_patio_light
     target: switch.backyard_lights
-  enabled_config:
-    name: Kitchen patio controls backyard lights
-    icon: mdi:lightbulb
-    initial: true
 
 patio_lights_off_at_11pm_automation:
   module: switches
@@ -77,10 +61,6 @@ patio_lights_off_at_11pm_automation:
   properties:
     schedule_time: "23:00:00"
     state: "off"
-  enabled_config:
-    name: Turn off at 11pm
-    icon: mdi:lightbulb
-    initial: true
 
 patio_lights_on_at_sunset_automation:
   module: switches
@@ -93,7 +73,3 @@ patio_lights_on_at_sunset_automation:
   properties:
     schedule_time: sunset
     state: "on"
-  enabled_config:
-    name: Turn on at sunset
-    icon: mdi:weather-sunset-down
-    initial: true

@@ -10,7 +10,3 @@ subaru_legacy_notify_low_fuel_automation:
     friendly_name: Aaron's car
     fuel_threshold: 10
     notification_target: "person:Aaron"
-  enabled_config:
-    name: Notify of low fuel
-    icon: mdi:gas-station
-    initial: true

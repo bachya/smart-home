@@ -5,10 +5,6 @@ adjust_climate_on_proximity_automation:
   dependencies:
     - climate_manager
     - presence_manager
-  enabled_config:
-    name: Adjust on proximity
-    icon: mdi:car-side
-    initial: true
 
 climate_manager:
   module: climate
@@ -24,7 +20,3 @@ cycle_whole_house_fan_automation:
   class: CycleFan
   dependencies:
     - climate_manager
-  enabled_config:
-    name: Cycle house fan every 15 min.
-    icon: mdi:fan
-    initial: true

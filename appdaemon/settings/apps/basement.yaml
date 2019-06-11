@@ -15,8 +15,4 @@ basement_lights_vacation_mode_automation:
     - mode: vacation_mode
       action: enable
       priority: 1
-  enabled_config:
-    toggle_name: vacation_mode_lighting
-    name: Simulate vacation mode
-    icon: mdi:beach
-    initial: true
+  enabled_toggle_entity_id: input_boolean.vacation_mode_lighting

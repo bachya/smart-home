@@ -21,10 +21,6 @@ bar_cart_on_at_sunset_automation:
     - mode: vacation_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Turn on at sunset
-    icon: mdi:weather-sunset-down
-    initial: true
 
 bar_cart_on_upon_arrival_automation:
   module: switches
@@ -43,7 +39,3 @@ bar_cart_on_upon_arrival_automation:
     - mode: guest_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Turn on upon arrival
-    icon: mdi:car
-    initial: true

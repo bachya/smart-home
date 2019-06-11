@@ -24,7 +24,3 @@ dishwasher_cycle_automation:
     - mode: vacation_mode
       action: disable
       priority: 1
-  enabled_config:
-    name: Notifications when clean
-    icon: mdi:washing-machine
-    initial: true

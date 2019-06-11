@@ -1,12 +1,11 @@
 """Define a generic object which  all apps/automations inherit from."""
-from typing import Callable, Dict, List, Optional, Union
+from typing import Callable, Dict, List, Union
 
 import voluptuous as vol
 from appdaemon.plugins.hass.hassapi import Hass  # pylint: disable=no-name-in-module
 
 from const import (
     CONF_ENTITY_IDS,
-    CONF_ICON,
     CONF_PROPERTIES,
     EVENT_MODE_CHANGE,
     OPERATOR_ALL,
@@ -23,10 +22,9 @@ CONF_APP = "app"
 CONF_CONSTRAINTS = "constraints"
 CONF_MODE_ALTERATIONS = "mode_alterations"
 
-CONF_ENABLED_CONFIG = "enabled_config"
+CONF_ENABLED_TOGGLE_ENTITY_ID = "enabled_toggle_entity_id"
 CONF_INITIAL = "initial"
 CONF_NAME = "name"
-CONF_TOGGLE_NAME = "toggle_name"
 
 CONF_OPERATOR = "operator"
 
@@ -44,14 +42,7 @@ APP_SCHEMA = vol.Schema(
                 vol.Required(CONF_CONSTRAINTS): dict,
             }
         ),
-        vol.Optional(CONF_ENABLED_CONFIG): vol.Schema(
-            {
-                vol.Required(CONF_NAME): str,
-                vol.Required(CONF_ICON): str,
-                vol.Required(CONF_INITIAL): bool,
-                vol.Optional(CONF_TOGGLE_NAME): str,
-            }
-        ),
+        vol.Optional(CONF_ENABLED_TOGGLE_ENTITY_ID): str,
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -95,15 +86,10 @@ class Base(Hass):
 
         # Set the entity ID of the input boolean that will control whether
         # this app is enabled or not:
-        self._enabled_entity_id = None  # type: Optional[str]
-        enabled_config = self.args.get(CONF_ENABLED_CONFIG, {})
-        if enabled_config:
-            if enabled_config.get(CONF_TOGGLE_NAME):
-                self._enabled_entity_id = "input_boolean.{0}".format(
-                    enabled_config[CONF_TOGGLE_NAME]
-                )
-            else:
-                self._enabled_entity_id = "input_boolean.{0}".format(self.name)
+        if self.args.get(CONF_ENABLED_TOGGLE_ENTITY_ID):
+            self._enabled_toggle_entity_id = self.args[CONF_ENABLED_TOGGLE_ENTITY_ID]
+        else:
+            self._enabled_toggle_entity_id = "input_boolean.{0}".format(self.name)
 
         if self._enabled_entity_exists():
             # Listen and track mode changes so that the app can respond as needed:
@@ -114,10 +100,12 @@ class Base(Hass):
             # attach them to listeners:
             if getattr(self, "on_disable", None):
                 super().listen_state(
-                    self.on_disable, self._enabled_entity_id, new="off"
+                    self.on_disable, self._enabled_toggle_entity_id, new="off"
                 )
             if getattr(self, "on_enable", None):
-                super().listen_state(self._on_enable, self._enabled_entity_id, new="on")
+                super().listen_state(
+                    self._on_enable, self._enabled_toggle_entity_id, new="on"
+                )
 
         # Register custom constraints:
         self.register_constraint("constrain_anyone")
@@ -137,7 +125,7 @@ class Base(Hass):
         """Return whether the app is enabled."""
         if not self._enabled_entity_exists():
             return True
-        return self.get_state(self._enabled_entity_id) == "on"
+        return self.get_state(self._enabled_toggle_entity_id) == "on"
 
     def _attach_constraints(
         self, method: Callable, callback: Callable, *args: list, **kwargs: dict
@@ -167,9 +155,7 @@ class Base(Hass):
 
     def _enabled_entity_exists(self) -> bool:
         """Return True if the enabled entity exists."""
-        return self._enabled_entity_id is not None and self.entity_exists(
-            self._enabled_entity_id
-        )
+        return self.entity_exists(self._enabled_toggle_entity_id)
 
     def _on_mode_change(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Compare mode changes to registered mode alterations."""
@@ -252,17 +238,17 @@ class Base(Hass):
 
     def disable(self) -> None:
         """Disable the app."""
-        if not self.entity_exists(self._enabled_entity_id):
+        if not self.entity_exists(self._enabled_toggle_entity_id):
             return
 
-        self.turn_off(self._enabled_entity_id)
+        self.turn_off(self._enabled_toggle_entity_id)
 
     def enable(self) -> None:
         """Enable the app."""
-        if not self.entity_exists(self._enabled_entity_id):
+        if not self.entity_exists(self._enabled_toggle_entity_id):
             return
 
-        self.turn_on(self._enabled_entity_id)
+        self.turn_on(self._enabled_toggle_entity_id)
 
     def listen_ios_event(self, callback: Callable, action: str) -> None:
         """Register a callback for an iOS event."""
