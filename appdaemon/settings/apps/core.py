@@ -5,7 +5,9 @@ import voluptuous as vol
 from appdaemon.plugins.hass.hassapi import Hass  # pylint: disable=no-name-in-module
 
 from const import (
+    CONF_ENTITY_IDS,
     CONF_ICON,
+    CONF_PROPERTIES,
     EVENT_MODE_CHANGE,
     OPERATOR_ALL,
     OPERATORS,
@@ -19,6 +21,7 @@ CONF_DEPENDENCIES = "dependencies"
 
 CONF_APP = "app"
 CONF_CONSTRAINTS = "constraints"
+CONF_MODE_ALTERATIONS = "mode_alterations"
 
 CONF_ENABLED_CONFIG = "enabled_config"
 CONF_INITIAL = "initial"
@@ -68,36 +71,36 @@ class Base(Hass):
             return
 
         # Define a holding place for HASS entity IDs:
-        self.entity_ids = self.args.get("entity_ids", {})
+        self.entity_ids = self.args.get(CONF_ENTITY_IDS, {})
 
         # Define a holding place for any scheduler handles that the app wants to keep
         # track of:
         self.handles = {}  # type: Dict[str, Callable]
 
         # Define a holding place for key/value properties for this app:
-        self.properties = self.args.get("properties", {})
+        self.properties = self.args.get(CONF_PROPERTIES, {})
 
         # Define a holding place for any mode alterations for this app:
-        self.mode_alterations = self.args.get("mode_alterations", [])
+        self.mode_alterations = self.args.get(CONF_MODE_ALTERATIONS, [])
 
         # Take every dependecy and create a reference to it:
-        for app in self.args.get("dependencies", []):
+        for app in self.args.get(CONF_DEPENDENCIES, []):
             if not getattr(self, app, None):
                 setattr(self, app, self.get_app(app))
 
         # Define a reference to the "manager app" – for example, a trash-
         # related app might carry a reference to TrashManager:
-        if self.args.get("app"):
-            self.app = getattr(self, self.args["app"])
+        if self.args.get(CONF_APP):
+            self.app = getattr(self, self.args[CONF_APP])
 
         # Set the entity ID of the input boolean that will control whether
         # this app is enabled or not:
         self._enabled_entity_id = None  # type: Optional[str]
-        enabled_config = self.args.get("enabled_config", {})
+        enabled_config = self.args.get(CONF_ENABLED_CONFIG, {})
         if enabled_config:
-            if enabled_config.get("toggle_name"):
+            if enabled_config.get(CONF_TOGGLE_NAME):
                 self._enabled_entity_id = "input_boolean.{0}".format(
-                    enabled_config["toggle_name"]
+                    enabled_config[CONF_TOGGLE_NAME]
                 )
             else:
                 self._enabled_entity_id = "input_boolean.{0}".format(self.name)
