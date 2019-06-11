@@ -104,7 +104,7 @@ class Base(Hass):
                 )
             if getattr(self, "on_enable", None):
                 super().listen_state(
-                    self._on_enable, self._enabled_toggle_entity_id, new="on"
+                    self.on_enable, self._enabled_toggle_entity_id, new="on"
                 )
 
         # Register custom constraints:
