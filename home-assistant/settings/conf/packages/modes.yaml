@@ -1,16 +1,16 @@
 ---
 input_boolean:
-  mode_blackout_mode:
+  blackout_mode:
     icon: mdi:weather-night
     initial: false
     name: Blackout Mode
 
-  mode_guest_mode:
+  guest_mode:
     icon: mdi:hotel
     initial: false
     name: Guest Mode
 
-  mode_vacation_mode:
+  vacation_mode:
     icon: mdi:beach
     initial: false
     name: Vacation Mode
