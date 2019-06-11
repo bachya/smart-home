@@ -28,8 +28,6 @@ class AaronAccountability(Base):
 
     def configure(self) -> None:
         """Configure."""
-        self.run_daily(self._on_blackout_start, self.blackout_mode.blackout_start)
-
         self.listen_state(
             self._on_disconnect,
             self.entity_ids[CONF_AARON_ROUTER_TRACKER],
@@ -42,14 +40,6 @@ class AaronAccountability(Base):
     def router_tracker_state(self) -> str:
         """Return the state of Aaron's Unifi tracker."""
         return self.get_state(self.entity_ids[CONF_AARON_ROUTER_TRACKER])
-
-    def _on_blackout_start(self, kwargs: dict) -> None:
-        """Send a notification if offline when blackout starts."""
-        if (
-            self.aaron.home_state == self.presence_manager.HomeStates.home
-            and self.router_tracker_state == "not_home"
-        ):
-            self._send_notification()
 
     def _on_disconnect(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
