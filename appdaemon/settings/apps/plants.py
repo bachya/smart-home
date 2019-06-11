@@ -54,7 +54,7 @@ class LowMoisture(Base):
         """Define a property to get the current moisture."""
         return int(self.get_state(self.entity_ids["current_moisture"]))
 
-    def _cancel_notification(self) -> None:
+    def _cancel_notification_cycle(self) -> None:
         """Cancel any active notification."""
         if HANDLE_LOW_MOISTURE in self.handles:
             cancel = self.handles.pop(HANDLE_LOW_MOISTURE)
@@ -88,14 +88,14 @@ class LowMoisture(Base):
             self._start_notification_cycle()
             self._low_moisture = True
         else:
-            self._cancel_notification()
+            self._cancel_notification_cycle()
             self._low_moisture = False
 
     def on_disable(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Stop notifications (as necessary) when the automation is disabled."""
-        self._cancel_notification()
+        self._cancel_notification_cycle()
 
     def on_enable(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
