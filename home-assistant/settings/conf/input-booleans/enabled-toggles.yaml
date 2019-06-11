@@ -5,12 +5,10 @@ adjust_climate_on_proximity_automation:
   name: Adjust on proximity
 amazon_basics_batteries_transition_to_climate_bump:
   icon: mdi:thermostat
-  initial: true
-  name: 'Amazon Basics Batteries: Climate control at night'
+  name: "Amazon Basics Batteries: Climate control at night"
 amazon_basics_batteries_transition_to_salt_lamp:
   icon: mdi:lava-lamp
-  initial: true
-  name: 'Amazon Basics Batteries: Salt lamp in morning'
+  name: "Amazon Basics Batteries: Salt lamp in morning"
 auto_departure_lockup_automation:
   icon: mdi:car-side
   initial: false
@@ -101,12 +99,10 @@ living_room_lights_on_upon_arrival_automation:
   name: Turn on upon arrival
 master_bathroom_fan_double_tap_timer_automation:
   icon: mdi:timer
-  initial: true
-  name: 'Bathroom: double tap 10-minute timer'
+  name: "Bathroom: double tap 10-minute timer"
 master_bathroom_fan_sleep_timer_automation:
   icon: mdi:sleep
-  initial: true
-  name: 'Bathroom: enable sleep timer'
+  name: "Bathroom: enable sleep timer"
 master_bedroom_lights_on_at_sunset_automation:
   icon: mdi:weather-sunset-down
   initial: true
@@ -117,12 +113,10 @@ master_bedroom_lights_sleep_timer_automation:
   name: Enable sleep timer
 master_toilet_fan_double_tap_timer_automation:
   icon: mdi:timer
-  initial: true
-  name: 'Toilet: double tap 10-minute timer'
+  name: "Toilet: double tap 10-minute timer"
 master_toilet_fan_sleep_timer_automation:
   icon: mdi:sleep
-  initial: true
-  name: 'Toilet: enable sleep timer'
+  name: "Toilet: enable sleep timer"
 master_toilet_fan_toggle_automation:
   icon: mdi:fan
   initial: true
