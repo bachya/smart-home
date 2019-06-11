@@ -220,9 +220,9 @@ class Base(Hass):
     def constrain_in_blackout(self, state: str) -> bool:
         """Constrain execution based on blackout state."""
         if state is True:
-            return self.blackout_mode.in_blackout()
+            return self.get_state("input_boolean.blackout_mode") == "on"
 
-        return not self.blackout_mode.in_blackout()
+        return self.get_state("input_boolean.blackout_mode") == "off"
 
     def constrain_noone(self, value: str) -> bool:
         """Constrain execution to whether no one is in a state."""

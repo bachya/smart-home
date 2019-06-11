@@ -1,10 +1,61 @@
 ---
 blackout_mode:
   module: mode
-  class: BlackoutMode
+  class: Mode
+
+blackout_activate_weekday_automation:
+  module: switches
+  class: ToggleAtTime
+  entity_ids:
+    switch: input_boolean.blackout_mode
   properties:
-    blackout_start: "22:00:00"
-    blackout_end: "08:00:00"
+    run_on_days:
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+    schedule_time: "21:00:00"
+    state: "on"
+
+blackout_activate_weekend_automation:
+  module: switches
+  class: ToggleAtTime
+  entity_ids:
+    switch: input_boolean.blackout_mode
+  properties:
+    run_on_days:
+      - Friday
+      - Saturday
+    schedule_time: "22:00:00"
+    state: "on"
+
+blackout_deactivate_weekday_automation:
+  module: switches
+  class: ToggleAtTime
+  entity_ids:
+    switch: input_boolean.blackout_mode
+  properties:
+    run_on_days:
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+    schedule_time: "07:00:00"
+    state: "off"
+
+blackout_deactivate_weekend_automation:
+  module: switches
+  class: ToggleAtTime
+  entity_ids:
+    switch: input_boolean.blackout_mode
+  properties:
+    run_on_days:
+      - Friday
+      - Saturday
+    schedule_time: "09:00:00"
+    state: "off"
 
 guest_mode:
   module: mode
