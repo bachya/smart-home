@@ -97,18 +97,16 @@ class Base(Hass):
             self.listen_event(self._on_mode_change, EVENT_MODE_CHANGE)
 
             # If the app has defined callbacks fror when the app is enabled or disabled,
-            # call them immediately on startup and attach them to listeners:
+            # call them immediately and attach them to listeners:
             if hasattr(self, "on_disable"):
-                if not self.enabled:
-                    self.run_in(self.on_disable, 0)
+                self.on_disable()
                 super().listen_state(
-                    self.on_disable, self._enabled_toggle_entity_id, new="off"
+                    self._on_disable, self._enabled_toggle_entity_id, new="off"
                 )
             if hasattr(self, "on_enable"):
-                if self.enabled:
-                    self.run_in(self.on_enable, 0)
+                self.on_enable()
                 super().listen_state(
-                    self.on_enable, self._enabled_toggle_entity_id, new="on"
+                    self._on_enable, self._enabled_toggle_entity_id, new="on"
                 )
 
         # Register custom constraints:
@@ -160,6 +158,18 @@ class Base(Hass):
     def _enabled_entity_exists(self) -> bool:
         """Return True if the enabled entity exists."""
         return self.entity_exists(self._enabled_toggle_entity_id)
+
+    def _on_disable(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Set a listener for when the automation is disabled."""
+        self.on_disable()
+
+    def _on_enable(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Set a listener for when the automation is enabled."""
+        self.on_enable()
 
     def _on_mode_change(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Compare mode changes to registered mode alterations."""

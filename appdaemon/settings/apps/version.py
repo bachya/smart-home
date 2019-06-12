@@ -100,9 +100,7 @@ class NewVersionNotification(Base):  # pylint: disable=too-few-public-methods
             title="New Software 💿",
         )
 
-    def on_enable(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
+    def on_enable(self) -> None:
         """Send the notification once the automation is enabled."""
         if not self._reschedule:
             return

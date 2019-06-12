@@ -91,14 +91,10 @@ class LowMoisture(Base):
             self._cancel_notification_cycle()
             self._low_moisture = False
 
-    def on_disable(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
+    def on_disable(self) -> None:
         """Stop notifications (as necessary) when the automation is disabled."""
         self._cancel_notification_cycle()
 
-    def on_enable(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
+    def on_enable(self) -> None:
         """Start notifications (as necessary) when the automation is enabled."""
         self._start_notification_cycle()
