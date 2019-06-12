@@ -118,6 +118,8 @@ class DynamicSensor(NewVersionNotification):
 
     def configure(self) -> None:
         """Configure."""
+        super().configure()
+        
         self.run_every(
             self._on_update, self.datetime(), self.properties[CONF_UPDATE_INTERVAL]
         )
