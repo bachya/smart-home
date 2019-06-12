@@ -91,7 +91,7 @@ class Base(Hass):
         else:
             self._enabled_toggle_entity_id = "input_boolean.{0}".format(self.name)
 
-        # Register custom constraints::
+        # Register custom constraints:
         self.register_constraint("constrain_anyone")
         self.register_constraint("constrain_cloudy")
         self.register_constraint("constrain_enabled")

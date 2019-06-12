@@ -64,7 +64,7 @@ class NewVersionNotification(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        self._last_new_version = False  # type: Optional[str]
+        self._last_new_version = None  # type: Optional[str]
         self._reschedule = False
 
         self.listen_state(self._on_version_change, self.entity_ids[CONF_AVAILABLE])
