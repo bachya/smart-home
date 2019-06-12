@@ -97,12 +97,16 @@ class Base(Hass):
             self.listen_event(self._on_mode_change, EVENT_MODE_CHANGE)
 
             # If the app has defined callbacks fror when the app is enabled or disabled,
-            # attach them to listeners:
-            if getattr(self, "on_disable", None):
+            # call them immediately on startup and attach them to listeners:
+            if hasattr(self, "on_disable"):
+                if not self.enabled:
+                    self.run_in(self.on_disable, 0)
                 super().listen_state(
                     self.on_disable, self._enabled_toggle_entity_id, new="off"
                 )
-            if getattr(self, "on_enable", None):
+            if hasattr(self, "on_enable"):
+                if self.enabled:
+                    self.run_in(self.on_enable, 0)
                 super().listen_state(
                     self.on_enable, self._enabled_toggle_entity_id, new="on"
                 )
