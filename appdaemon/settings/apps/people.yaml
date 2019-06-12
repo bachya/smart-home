@@ -8,9 +8,9 @@ aaron:
   entity_ids:
     device_trackers:
       - device_tracker.2010_subaru_legacy
-      - device_tracker.aaron_bachs_iphone
-      - device_tracker.aaron_iphone
-      - device_tracker.aarons_iphone
+      - device_tracker.aaron_iphone_mobile_app
+      - device_tracker.aaron_iphone_owntracks
+      - device_tracker.aarons_iphone  # UniFi
     notifiers:
       - mobile_app_iphone
     presence_status_sensor: sensor.aaron_presence_status
@@ -25,9 +25,9 @@ britt:
   priority: 10
   entity_ids:
     device_trackers:
-      - device_tracker.britt_iphone
-      - device_tracker.britt_iphone_ios
-      - device_tracker.britts_iphone
+      - device_tracker.britt_iphone_owntracks
+      - device_tracker.britts_apple_watch
+      - device_tracker.britts_iphone  # UniFi
     notifiers:
       - ios_brittany_bachs_iphone
     presence_status_sensor: sensor.britt_presence_status
