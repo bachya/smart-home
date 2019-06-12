@@ -44,7 +44,7 @@ class LowMoisture(Base):
         self._low_moisture = False
 
         self.listen_state(
-            self._on_low_moisture,
+            self._on_moisture_change,
             self.entity_ids["current_moisture"],
             constrain_enabled=True,
         )
@@ -60,20 +60,7 @@ class LowMoisture(Base):
             cancel = self.handles.pop(HANDLE_LOW_MOISTURE)
             cancel()
 
-    def _start_notification_cycle(self) -> None:
-        """Start a repeating notification."""
-        self.handles[HANDLE_LOW_MOISTURE] = send_notification(
-            self,
-            "presence:home",
-            "{0} is at {1}% moisture and needs water.".format(
-                self.properties[CONF_FRIENDLY_NAME], self.current_moisture
-            ),
-            title="{0} is Dry 💧".format(self.properties[CONF_FRIENDLY_NAME]),
-            when=self.datetime(),
-            interval=self.properties[CONF_NOTIFICATION_INTERVAL],
-        )
-
-    def _on_low_moisture(
+    def _on_moisture_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Notify when the plant's moisture is low."""
@@ -90,6 +77,19 @@ class LowMoisture(Base):
         else:
             self._cancel_notification_cycle()
             self._low_moisture = False
+
+    def _start_notification_cycle(self) -> None:
+        """Start a repeating notification."""
+        self.handles[HANDLE_LOW_MOISTURE] = send_notification(
+            self,
+            "presence:home",
+            "{0} is at {1}% moisture and needs water.".format(
+                self.properties[CONF_FRIENDLY_NAME], self.current_moisture
+            ),
+            title="{0} is Dry 💧".format(self.properties[CONF_FRIENDLY_NAME]),
+            when=self.datetime(),
+            interval=self.properties[CONF_NOTIFICATION_INTERVAL],
+        )
 
     def on_disable(self) -> None:
         """Stop notifications (as necessary) when the automation is disabled."""
