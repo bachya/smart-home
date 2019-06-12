@@ -76,13 +76,13 @@ master_toilet_fan_toggle_automation:
   mode_alterations:
     - mode: blackout_mode
       action: disable
-      priority: 2
+      priority: 1
     - mode: guest_mode
       action: disable
       priority: 1
     - mode: vacation_mode
       action: disable
-      priority: 1
+      priority: 2
 
 master_toilet_fan_sleep_timer_automation:
   module: switches
