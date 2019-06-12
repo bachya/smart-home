@@ -99,12 +99,14 @@ class Base(Hass):
             # If the app has defined callbacks fror when the app is enabled or disabled,
             # call them immediately and attach them to listeners:
             if hasattr(self, "on_disable"):
-                self.on_disable()
+                if not self.enabled:
+                    self.on_disable()
                 super().listen_state(
                     self._on_disable, self._enabled_toggle_entity_id, new="off"
                 )
             if hasattr(self, "on_enable"):
-                self.on_enable()
+                if self.enabled:
+                    self.on_enable()
                 super().listen_state(
                     self._on_enable, self._enabled_toggle_entity_id, new="on"
                 )
