@@ -24,8 +24,6 @@ CONF_IMAGE_NAME = "image_name"
 CONF_INSTALLED = "installed"
 CONF_VERSION_SENSORS = "version_sensors"
 
-DEFAULT_DYNAMIC_RETRIES = 3
-
 ENTITY_IDS_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_AVAILABLE): cv.entity_id,
@@ -66,11 +64,10 @@ class NewVersionNotification(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        self.listen_state(
-            self._on_version_change,
-            self.entity_ids[CONF_AVAILABLE],
-            constrain_enabled=True,
-        )
+        self._last_new_version = False  # type: Optional[str]
+        self._reschedule = False
+
+        self.listen_state(self._on_version_change, self.entity_ids[CONF_AVAILABLE])
 
     def _on_version_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
@@ -88,12 +85,32 @@ class NewVersionNotification(Base):  # pylint: disable=too-few-public-methods
                 )
             )
 
-            send_notification(
-                self,
-                "slack:@aaron",
-                "New {0} Version: {1}".format(self.properties[CONF_APP_NAME], new),
-                title="New Software 💿",
-            )
+            if self.enabled:
+                self._send_notification(new)
+            else:
+                self._last_new_version = new
+                self._reschedule = True
+
+    def _send_notification(self, new_version: str) -> None:
+        """Send a notification about the new version."""
+        send_notification(
+            self,
+            "slack:@aaron",
+            "New {0} Version: {1}".format(self.properties[CONF_APP_NAME], new_version),
+            title="New Software 💿",
+        )
+
+    def on_enable(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Send the notification once the automation is enabled."""
+        if not self._reschedule:
+            return
+
+        self._last_new_version = None
+        self._reschedule = False
+
+        self.send_notification(self._last_new_version)
 
 
 class DynamicSensor(NewVersionNotification):
