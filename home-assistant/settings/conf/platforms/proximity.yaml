@@ -4,9 +4,6 @@ home:
     - device_tracker.2010_subaru_legacy
     - device_tracker.aaron_iphone_mobile_app
     - device_tracker.aaron_iphone_owntracks
-    - device_tracker.aarons_iphone  # UniFi
     - device_tracker.britt_iphone_owntracks
-    - device_tracker.britts_apple_watch
-    - device_tracker.britts_iphone  # UniFi
   tolerance: 50
   unit_of_measurement: ft
