@@ -38,7 +38,7 @@ class AutoVacationMode(Base):  # pylint: disable=too-few-public-methods
         if kwargs["action"] == "on" and not self.vacation_mode.enabled:
             self.log('Setting vacation mode to "on"')
             self.vacation_mode.enable()
-        elif kwargs["action"] == "off" and self.vacation_mode.state == "on":
+        elif kwargs["action"] == "off" and self.vacation_mode.enabled:
             self.log('Setting vacation mode to "off"')
             self.vacation_mode.disable()
 
