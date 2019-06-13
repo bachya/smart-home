@@ -108,7 +108,7 @@ class NewVersionNotification(Base):  # pylint: disable=too-few-public-methods
         self._last_new_version = None
         self._reschedule = False
 
-        self.send_notification(self._last_new_version)
+        self._send_notification(self._last_new_version)
 
 
 class DynamicSensor(NewVersionNotification):
