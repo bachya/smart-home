@@ -35,12 +35,12 @@ class AutoVacationMode(Base):  # pylint: disable=too-few-public-methods
 
     def _on_presence_change(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Alter Vacation Mode based on presence."""
-        if kwargs["action"] == "on" and self.vacation_mode.state == "off":
+        if kwargs["action"] == "on" and not self.vacation_mode.enabled:
             self.log('Setting vacation mode to "on"')
-            self.vacation_mode.activate()
+            self.vacation_mode.enable()
         elif kwargs["action"] == "off" and self.vacation_mode.state == "on":
             self.log('Setting vacation mode to "off"')
-            self.vacation_mode.deactivate()
+            self.vacation_mode.disable()
 
 
 class BadLoginNotification(Base):  # pylint: disable=too-few-public-methods
