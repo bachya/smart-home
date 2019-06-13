@@ -3,14 +3,10 @@ automation:
   - alias: Update OpenUV every 30 minutes during the daytime
     trigger:
       platform: time_pattern
-      minutes: '/30'
+      minutes: "/30"
     condition:
-      condition: and
-      conditions:
-        - condition: sun
-          after: sunrise
-        - condition: sun
-          before: sunset
+      condition: template
+      value_template: "{{ states.sun.sun.attributes.elevation > 0 }}"
     action:
       service: openuv.update_data
 
