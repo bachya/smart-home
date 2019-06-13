@@ -1,6 +1,7 @@
 ---
 automation:
   - alias: Update OpenUV every 30 minutes during the daytime
+    initial_state: true
     trigger:
       platform: time_pattern
       minutes: "/30"
