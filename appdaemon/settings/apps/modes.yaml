@@ -37,11 +37,11 @@ blackout_deactivate_weekday_automation:
     switch: input_boolean.blackout_mode
   properties:
     run_on_days:
-      - Sunday
       - Monday
       - Tuesday
       - Wednesday
       - Thursday
+      - Friday
     schedule_time: "07:00:00"
     state: "off"
 
@@ -52,8 +52,8 @@ blackout_deactivate_weekend_automation:
     switch: input_boolean.blackout_mode
   properties:
     run_on_days:
-      - Friday
       - Saturday
+      - Sunday
     schedule_time: "09:00:00"
     state: "off"
 
