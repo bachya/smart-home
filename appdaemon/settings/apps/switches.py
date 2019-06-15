@@ -231,7 +231,7 @@ class SleepTimer(BaseSwitch):
             self.log("Deactivating sleep timer")
             self.toggle(state="off")
 
-            if HANDLE_TIMER in self.HANDLES:
+            if HANDLE_TIMER in self.handles:
                 cancel = self.handles.pop(HANDLE_TIMER)
                 self.cancel_timer(cancel)
         else:
