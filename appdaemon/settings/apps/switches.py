@@ -229,13 +229,13 @@ class SleepTimer(BaseSwitch):
 
         if minutes == 0:
             self.log("Deactivating sleep timer")
-
             self.toggle(state="off")
-            handle = self.handles.pop(HANDLE_TIMER)
-            self.cancel_timer(handle)
+
+            if HANDLE_TIMER in self.HANDLES:
+                cancel = self.handles.pop(HANDLE_TIMER)
+                self.cancel_timer(cancel)
         else:
             self.log("Activating sleep timer: {0} minutes".format(minutes))
-
             self.toggle(state="on")
             self.handles[HANDLE_TIMER] = self.run_in(
                 self._on_timer_complete, minutes * 60
