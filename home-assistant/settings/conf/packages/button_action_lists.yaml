@@ -1,7 +1,7 @@
 ---
 input_select:
   zwave_button_aaron_bedside_1_short:
-    name: "Aeotec Minimote (AMB Bedside): 1 (short)"
+    name: "Aeotec Nanomote (AMB Bedside): 1 (short)"
     options:
       - Activate "Good Night"
       - Arm Security System "Home"
@@ -13,7 +13,7 @@ input_select:
     icon: mdi:z-wave
 
   zwave_button_aaron_bedside_2_short:
-    name: "Aeotec Minimote (AMB Bedside): 2 (short)"
+    name: "Aeotec Nanomote (AMB Bedside): 2 (short)"
     options:
       - Activate "Good Night"
       - Arm Security System "Home"
@@ -25,7 +25,7 @@ input_select:
     icon: mdi:z-wave
 
   zwave_button_aaron_bedside_3_short:
-    name: "Aeotec Minimote (AMB Bedside): 3 (short)"
+    name: "Aeotec Nanomote (AMB Bedside): 3 (short)"
     options:
       - Activate "Good Night"
       - Arm Security System "Home"
@@ -37,7 +37,7 @@ input_select:
     icon: mdi:z-wave
 
   zwave_button_aaron_bedside_4_short:
-    name: "Aeotec Minimote (AMB Bedside): 4 (short)"
+    name: "Aeotec Nanomote (AMB Bedside): 4 (short)"
     options:
       - Activate "Good Night"
       - Arm Security System "Home"
