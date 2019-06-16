@@ -4,10 +4,14 @@ automation:
     initial_state: true
     trigger:
       platform: time_pattern
-      minutes: "/30"
+      minutes: '/30'
     condition:
-      condition: template
-      value_template: "{{ states.sun.sun.attributes.elevation > 0 }}"
+      condition: and
+      conditions:
+        - condition: sun
+          after: sunrise
+        - condition: sun
+          before: sunset
     action:
       service: openuv.update_data
 
