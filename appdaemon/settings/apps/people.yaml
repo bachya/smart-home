@@ -6,16 +6,10 @@ aaron:
     - presence_manager
   priority: 10
   entity_ids:
-    device_trackers:
-      - device_tracker.2010_subaru_legacy
-      - device_tracker.aaron_iphone_mobile_app
-      - device_tracker.aaron_iphone_owntracks
-      - device_tracker.aarons_iphone  # UniFi
+    person: person.aaron
     notifiers:
       - mobile_app_iphone
     presence_status_sensor: sensor.aaron_presence_status
-  properties:
-    push_device_id: 885F47F4-56F2-435C-A84C-84654D0A906F
 
 britt:
   module: people
@@ -24,12 +18,7 @@ britt:
     - presence_manager
   priority: 10
   entity_ids:
-    device_trackers:
-      - device_tracker.britt_iphone_owntracks
-      - device_tracker.britts_apple_watch
-      - device_tracker.britts_iphone  # UniFi
+    person: person.britt
     notifiers:
       - ios_brittany_bachs_iphone
     presence_status_sensor: sensor.britt_presence_status
-  properties:
-    push_device_id: 3CCFD32B-8C04-4A0D-94C2-6E934E8B6705

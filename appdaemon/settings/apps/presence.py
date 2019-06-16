@@ -102,7 +102,7 @@ class PresenceManager(Base):
         return [
             person
             for person in self.global_vars[CONF_PEOPLE]
-            if person.home_state in states
+            if person.non_binary_state in states
         ]
 
     def anyone(self, *states: "HomeStates") -> bool:
