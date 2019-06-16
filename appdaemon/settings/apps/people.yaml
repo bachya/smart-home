@@ -1,6 +1,6 @@
 ---
 aaron:
-  module: people
+  module: person
   class: Person
   dependencies:
     - presence_manager
@@ -12,7 +12,7 @@ aaron:
     presence_status_sensor: sensor.aaron_presence_status
 
 britt:
-  module: people
+  module: person
   class: Person
   dependencies:
     - presence_manager
