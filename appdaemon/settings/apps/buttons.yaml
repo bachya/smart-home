@@ -1,0 +1,74 @@
+---
+# amazon_dash_button_amazon_basics_batteries:
+#   module: button
+#   class: AmazonDashButton
+#   dependencies:
+#     - climate_manager
+#     - security_manager
+#   entity_ids:
+#     action_list: input_select.dash_amazon_basics_batteries
+#   properties:
+#     friendly_name: Amazon Basics Batteries
+
+# amazon_dash_button_neat:
+#   module: button
+#   class: AmazonDashButton
+#   dependencies:
+#     - climate_manager
+#     - security_manager
+#   entity_ids:
+#     action_list: input_select.dash_neat
+#   properties:
+#     friendly_name: Neat
+
+zwave_button_aaron_bedside_1_short:
+  module: button
+  class: ZWaveButton
+  dependencies:
+    - climate_manager
+    - security_manager
+  entity_ids:
+    action_list: input_select.zwave_button_aaron_bedside_1_short
+    entity: zwave.aeotec_nanomote_quad_aaron_bedside
+  properties:
+    scene_id: 1
+    scene_data: 7680
+
+zwave_button_aaron_bedside_2_short:
+  module: button
+  class: ZWaveButton
+  dependencies:
+    - climate_manager
+    - security_manager
+  entity_ids:
+    action_list: input_select.zwave_button_aaron_bedside_2_short
+    entity: zwave.aeotec_nanomote_quad_aaron_bedside
+  properties:
+    scene_id: 2
+    scene_data: 7680
+
+zwave_button_aaron_bedside_3_short:
+  module: button
+  class: ZWaveButton
+  dependencies:
+    - climate_manager
+    - security_manager
+  entity_ids:
+    action_list: input_select.zwave_button_aaron_bedside_3_short
+    entity: zwave.aeotec_nanomote_quad_aaron_bedside
+  properties:
+    scene_id: 3
+    scene_data: 7680
+
+zwave_button_aaron_bedside_4_short:
+  module: button
+  class: ZWaveButton
+  dependencies:
+    - climate_manager
+    - security_manager
+  entity_ids:
+    action_list: input_select.zwave_button_aaron_bedside_4_short
+    entity: zwave.aeotec_nanomote_quad_aaron_bedside
+  properties:
+    scene_id: 4
+    scene_data: 7680
