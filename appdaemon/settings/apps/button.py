@@ -3,7 +3,7 @@
 from typing import List, Optional, Union
 import voluptuous as vol
 
-from const import CONF_ENTITY, CONF_ENTITY_IDS, CONF_FRIENDLY_NAME, CONF_PROPERTIES
+from const import CONF_ENTITY_ID, CONF_ENTITY_IDS, CONF_FRIENDLY_NAME, CONF_PROPERTIES
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 
@@ -156,7 +156,7 @@ class ZWaveButton(Button):
         {
             CONF_ENTITY_IDS: vol.Schema(
                 {
-                    vol.Required(CONF_ENTITY): cv.entity_id,
+                    vol.Required(CONF_ENTITY_ID): cv.entity_id,
                     vol.Required(CONF_ACTION_LIST): cv.entity_id,
                 },
                 extra=vol.ALLOW_EXTRA,

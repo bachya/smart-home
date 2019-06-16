@@ -6,7 +6,7 @@ import voluptuous as vol
 from core import APP_SCHEMA, Base
 from const import (
     CONF_DURATION,
-    CONF_ENTITY,
+    CONF_ENTITY_ID,
     CONF_ENTITY_IDS,
     CONF_NOTIFICATION_INTERVAL,
     CONF_PROPERTIES,
@@ -99,7 +99,7 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             CONF_ENTITY_IDS: vol.Schema(
-                {vol.Required(CONF_ENTITY): cv.entity_id}, extra=vol.ALLOW_EXTRA
+                {vol.Required(CONF_ENTITY_ID): cv.entity_id}, extra=vol.ALLOW_EXTRA
             ),
             CONF_PROPERTIES: vol.Schema(
                 {vol.Required(CONF_DURATION): int, vol.Required(CONF_STATE): str},
@@ -112,7 +112,7 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
         """Configure."""
         self.listen_state(
             self._on_limit,
-            self.entity_ids[CONF_ENTITY],
+            self.entity_ids[CONF_ENTITY_ID],
             new=self.properties[CONF_STATE],
             duration=self.properties[CONF_DURATION],
             constrain_enabled=True,
@@ -125,11 +125,13 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
 
         def turn_off():
             """Turn the entity off."""
-            self.turn_off(self.entity_ids[CONF_ENTITY])
+            self.turn_off(self.entity_ids[CONF_ENTITY_ID])
 
         self.slack_app_home_assistant.ask(
             "The {0} has been left {1} for {2} minutes. Turn it off?".format(
-                self.get_state(self.entity_ids[CONF_ENTITY], attribute="friendly_name"),
+                self.get_state(
+                    self.entity_ids[CONF_ENTITY_ID], attribute="friendly_name"
+                ),
                 self.properties[CONF_STATE],
                 int(self.properties[CONF_DURATION]) / 60,
             ),
