@@ -189,7 +189,7 @@ class StartHomeKitOnZwaveReady(Base):
     @property
     def network_ready(self) -> bool:
         """Return whether the Z-Wave network is ready."""
-        zwave_devices = self.get_state("zwave")
+        zwave_devices = [k, v in self.get_state("zwave") if k not in self.entities["to_exclude"]
         for attrs in zwave_devices.values():
             try:
                 if attrs["state"] != "ready":
