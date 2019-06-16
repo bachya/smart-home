@@ -95,4 +95,14 @@ sensor:
         time_constant: 10
         precision: 2
 
+  # Batteries
+  - platform: template
+    sensors:
+      - aeotec_nanomote_quad_aaron_bedside_battery:
+        friendly_name: Aeotec Nanomote (AMB Bedside) Battery
+        value_template: >
+          {{ states.zwave.aeotec_nanomote_quad_aaron_bedside.attributes.battery_level }}
+        unit_of_measurement: "%"
+        device_class: battery
+
 speedtestdotnet:
