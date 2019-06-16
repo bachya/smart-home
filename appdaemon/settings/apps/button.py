@@ -8,7 +8,7 @@ from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 
 BUTTON_ACTION_BUMP_CLIMATE_2_DEGREES = "Bump Climate 2°"
-BUTTON_ACTION_GOOD_NIGHT = "Activate Good Night"
+BUTTON_ACTION_GOOD_NIGHT = 'Activate "Good Night"'
 BUTTON_ACTION_SECURITY_HOME = 'Arm Security System "Home"'
 BUTTON_ACTION_TOGGLE_ALL_SALT_LAMPS = "Toggle All Salt Lamps"
 BUTTON_ACTION_TOGGLE_CHRISTMAS_TREE = "Toggle Christmas Money"
