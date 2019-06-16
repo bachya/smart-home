@@ -28,8 +28,8 @@ zwave_button_aaron_bedside_1_short:
     - climate_manager
     - security_manager
   entity_ids:
-    action_list: input_select.zwave_button_aaron_bedside_1_short
     entity_id: zwave.aeotec_nanomote_quad_aaron_bedside
+    action_list: input_select.zwave_button_aaron_bedside_1_short
   properties:
     scene_id: 1
     scene_data: 7680
@@ -41,8 +41,8 @@ zwave_button_aaron_bedside_2_short:
     - climate_manager
     - security_manager
   entity_ids:
-    action_list: input_select.zwave_button_aaron_bedside_2_short
     entity_id: zwave.aeotec_nanomote_quad_aaron_bedside
+    action_list: input_select.zwave_button_aaron_bedside_2_short
   properties:
     scene_id: 2
     scene_data: 7680
@@ -54,8 +54,8 @@ zwave_button_aaron_bedside_3_short:
     - climate_manager
     - security_manager
   entity_ids:
-    action_list: input_select.zwave_button_aaron_bedside_3_short
     entity_id: zwave.aeotec_nanomote_quad_aaron_bedside
+    action_list: input_select.zwave_button_aaron_bedside_3_short
   properties:
     scene_id: 3
     scene_data: 7680
@@ -67,8 +67,8 @@ zwave_button_aaron_bedside_4_short:
     - climate_manager
     - security_manager
   entity_ids:
-    action_list: input_select.zwave_button_aaron_bedside_4_short
     entity_id: zwave.aeotec_nanomote_quad_aaron_bedside
+    action_list: input_select.zwave_button_aaron_bedside_4_short
   properties:
     scene_id: 4
     scene_data: 7680
