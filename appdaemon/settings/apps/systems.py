@@ -191,8 +191,8 @@ class StartHomeKitOnZwaveReady(Base):
         """Return whether the Z-Wave network is ready."""
         zwave_devices = [
             v
-            for k, v in self.get_state("zwave")
-            if k not in self.entities["to_exclude"]
+            for k, v in self.get_state("zwave").items()
+            if k not in self.entity_ids["to_exclude"]
         ]
         for attrs in zwave_devices:
             try:

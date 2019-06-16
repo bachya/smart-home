@@ -51,6 +51,6 @@ notify_of_ssl_expiration_automation:
 start_homekit_on_zwave_ready_automation:
   module: systems
   class: StartHomeKitOnZwaveReady
-  entities:
+  entity_ids:
     to_exclude:
       - zwave.aeotec_nanomote_quad_aaron_bedside
