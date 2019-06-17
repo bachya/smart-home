@@ -126,7 +126,7 @@ class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods
         self.listen_state(
             self._on_closed,
             self.entity_ids[CONF_GARAGE_DOOR],
-            new="_on_closed",
+            new="closed",
             constrain_enabled=True,
         )
         self.listen_state(
@@ -154,7 +154,7 @@ class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods
         self.handles[HANDLE_GARAGE_OPEN] = send_notification(
             self,
             ["person:Aaron", "person:Britt"],
-            "The garage has been left open. Want to close it?",
+            message,
             title="Garage Open 🚗",
             when=self.datetime(),
             interval=self.properties[CONF_NOTIFICATION_INTERVAL],
