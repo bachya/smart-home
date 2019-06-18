@@ -16,6 +16,8 @@ device_tracker:
     username: !secret unifi_username
     password: !secret unifi_password
     verify_ssl: false
+    detection_time: 60
+    consider_home: 60
 
 owntracks:
   max_gps_accuracy: 200
