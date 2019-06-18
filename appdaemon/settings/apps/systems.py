@@ -79,7 +79,7 @@ class LowBatteries(Base):  # pylint: disable=too-few-public-methods
             self.handles[notification_handle] = send_notification(
                 self,
                 "slack",
-                "{0} has low batteries ({1})%. Replace them ASAP!".format(name, value),
+                "{0} has low batteries ({1}%). Replace them ASAP!".format(name, value),
                 when=self.datetime(),
                 interval=self.properties[CONF_NOTIFICATION_INTERVAL],
             )
