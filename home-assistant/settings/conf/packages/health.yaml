@@ -4,7 +4,7 @@ automation:
     initial_state: true
     trigger:
       platform: time_pattern
-      minutes: '/30'
+      hours: "/1"
     condition:
       condition: and
       conditions:
