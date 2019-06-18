@@ -181,22 +181,37 @@ class SslExpiration(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        self.listen_state(
-            self._on_expiration_near,
-            self.entity_ids[CONF_SSL_EXPIRY],
-            constrain_enabled=True,
-        )
+        self._send_notification_func = None  # type: Optional[Callable]
+
+        self.listen_state(self._on_expiration_near, self.entity_ids[CONF_SSL_EXPIRY])
 
     def _on_expiration_near(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
-        """When SSL is about to expire, make an OmniFocus todo."""
-        if int(new) < self.properties[CONF_EXPIRY_THRESHOLD]:
-            self.log("SSL certificate about to expire: {0} days".format(new))
+        """When SSL is about to expire, send a notification."""
 
+        def _send_notification():
+            """Send the notification."""
             send_notification(
                 self, "slack:@aaron", "SSL expires in less than {0} days".format(new)
             )
+
+        if int(new) < self.properties[CONF_EXPIRY_THRESHOLD]:
+            self.log("SSL certificate about to expire: {0} days".format(new))
+
+            # If the automation is enabled when the SSL cert is near expiration, send a
+            # notification; if not, remember that we should send the notification when
+            # the automation becomes enabled:
+            if self.enabled:
+                _send_notification()
+            else:
+                self._send_notification_func = _send_notification
+
+    def on_enable(self) -> None:
+        """Send the notification once the automation is enabled (if appropriate)."""
+        if self._send_notification_func:
+            self._send_notification_func()
+            self._send_notification_func = None
 
 
 class StartHomeKitOnZwaveReady(Base):
