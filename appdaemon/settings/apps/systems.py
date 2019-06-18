@@ -1,5 +1,5 @@
 """Define automations for various home systems."""
-from typing import List, Union
+from typing import Callable, List, Optional, Union
 
 import voluptuous as vol
 
@@ -45,6 +45,7 @@ class LowBatteries(Base):  # pylint: disable=too-few-public-methods
     def configure(self) -> None:
         """Configure."""
         self._registered = []  # type: List[str]
+        self._send_notification_func = None  # type: Optional[Callable]
 
         for entity in self.entity_ids[CONF_BATTERIES_TO_MONITOR]:
             self.listen_state(
@@ -68,14 +69,9 @@ class LowBatteries(Base):  # pylint: disable=too-few-public-methods
             return
 
         notification_handle = "{0}_{1}".format(HANDLE_BATTERY_LOW, name)
-        if value < self.properties[CONF_BATTERY_LEVEL_THRESHOLD]:
-            if name in self._registered:
-                return
 
-            self.log("Low battery detected: {0}".format(name))
-
-            self._registered.append(name)
-
+        def _send_notification():
+            """Send the notification."""
             self.handles[notification_handle] = send_notification(
                 self,
                 "slack",
@@ -83,14 +79,38 @@ class LowBatteries(Base):  # pylint: disable=too-few-public-methods
                 when=self.datetime(),
                 interval=self.properties[CONF_NOTIFICATION_INTERVAL],
             )
+
+        if value < self.properties[CONF_BATTERY_LEVEL_THRESHOLD]:
+            # If we've already registered that the battery is low, don't repeatedly
+            # register it:
+            if name in self._registered:
+                return
+
+            self.log("Low battery detected: {0}".format(name))
+            self._registered.append(name)
+
+            # If the automation is enabled when a battery is low, send a notification;
+            # if not, remember that we should send the notification when the automation
+            # becomes enabled:
+            if self.enabled:
+                _send_notification()
+            else:
+                self._send_notification_func = _send_notification
         else:
             try:
                 self._registered.remove(name)
+                self._send_notification_func = None
                 if notification_handle in self.handles:
                     cancel = self.handles.pop(notification_handle)
                     cancel()
             except ValueError:
                 return
+
+    def on_enable(self) -> None:
+        """Send the notification once the automation is enabled (if appropriate)."""
+        if self._send_notification_func:
+            self._send_notification_func()
+            self._send_notification_func = None
 
 
 class LeftInState(Base):  # pylint: disable=too-few-public-methods
