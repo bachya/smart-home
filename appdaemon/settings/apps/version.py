@@ -1,5 +1,5 @@
 """Define automations for tracking software versions."""
-from typing import Optional, Union
+from typing import Callable, Optional, Union
 
 from packaging import version
 import requests
@@ -64,8 +64,7 @@ class NewVersionNotification(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        self._last_new_version = None  # type: Optional[str]
-        self._reschedule = False
+        self._send_notification_func = None  # type: Optional[Callable]
 
         self.listen_state(self._on_version_change, self.entity_ids[CONF_AVAILABLE])
 
@@ -78,6 +77,17 @@ class NewVersionNotification(Base):  # pylint: disable=too-few-public-methods
             self.get_state(self.entity_ids[CONF_INSTALLED])
         )
 
+        def _send_notification() -> None:
+            """Send a notification about the new version."""
+            send_notification(
+                self,
+                "slack:@aaron",
+                "New {0} Version: {1}".format(
+                    self.properties[CONF_APP_NAME], new_version
+                ),
+                title="New Software 💿",
+            )
+
         if new_version > installed_version:
             self.log(
                 "New {0} version detected: {1}".format(
@@ -86,29 +96,15 @@ class NewVersionNotification(Base):  # pylint: disable=too-few-public-methods
             )
 
             if self.enabled:
-                self._send_notification(new)
+                _send_notification()
             else:
-                self._last_new_version = new
-                self._reschedule = True
-
-    def _send_notification(self, new_version: str) -> None:
-        """Send a notification about the new version."""
-        send_notification(
-            self,
-            "slack:@aaron",
-            "New {0} Version: {1}".format(self.properties[CONF_APP_NAME], new_version),
-            title="New Software 💿",
-        )
+                self._send_notification_func = _send_notification
 
     def on_enable(self) -> None:
         """Send the notification once the automation is enabled."""
-        if not self._reschedule:
-            return
-
-        self._last_new_version = None
-        self._reschedule = False
-
-        self._send_notification(self._last_new_version)
+        if self._send_notification_func:
+            self._send_notification_func()
+            self._send_notification_func = None
 
 
 class DynamicSensor(NewVersionNotification):
@@ -119,7 +115,7 @@ class DynamicSensor(NewVersionNotification):
     def configure(self) -> None:
         """Configure."""
         super().configure()
-        
+
         self.run_every(
             self._on_update, self.datetime(), self.properties[CONF_UPDATE_INTERVAL]
         )
