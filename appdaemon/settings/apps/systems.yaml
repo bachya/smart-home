@@ -13,6 +13,13 @@ notify_of_low_batteries_automation:
   properties:
     battery_level_threshold: 20
     notification_interval: 900
+  mode_alterations:
+    - mode: vacation_mode
+      action: disable
+      priority: 2
+    - mode: blackout_mode
+      action: disable
+      priority: 1
 
 notify_media_center_left_on_automation:
   module: systems
@@ -47,6 +54,13 @@ notify_of_ssl_expiration_automation:
     ssl_expiry: sensor.ssl_expiry
   properties:
     expiry_threshold: 7
+  mode_alterations:
+    - mode: vacation_mode
+      action: disable
+      priority: 2
+    - mode: blackout_mode
+      action: disable
+      priority: 1
 
 start_homekit_on_zwave_ready_automation:
   module: systems

@@ -22,4 +22,7 @@ notify_bad_aqi_automation:
   mode_alterations:
     - mode: vacation_mode
       action: disable
+      priority: 2
+    - mode: blackout_mode
+      action: disable
       priority: 1

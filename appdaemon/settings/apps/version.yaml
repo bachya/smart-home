@@ -17,10 +17,10 @@ new_appdaemon_version_automation:
     update_interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
   mode_alterations:
-    - mode: blackout_mode
+    - mode: vacation_mode
       action: disable
       priority: 2
-    - mode: vacation_mode
+    - mode: blackout_mode
       action: disable
       priority: 1
 
@@ -44,10 +44,10 @@ new_esphome_version_automation:
     update_interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
   mode_alterations:
-    - mode: blackout_mode
+    - mode: vacation_mode
       action: disable
       priority: 2
-    - mode: vacation_mode
+    - mode: blackout_mode
       action: disable
       priority: 1
 
@@ -63,10 +63,10 @@ new_hass_version_automation:
     app_name: Home Assistant
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
   mode_alterations:
-    - mode: blackout_mode
+    - mode: vacation_mode
       action: disable
       priority: 2
-    - mode: vacation_mode
+    - mode: blackout_mode
       action: disable
       priority: 1
 
@@ -88,10 +88,10 @@ new_mosquitto_version_automation:
     update_interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
   mode_alterations:
-    - mode: blackout_mode
+    - mode: vacation_mode
       action: disable
       priority: 2
-    - mode: vacation_mode
+    - mode: blackout_mode
       action: disable
       priority: 1
 
@@ -113,10 +113,10 @@ new_portainer_version_automation:
     update_interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
   mode_alterations:
-    - mode: blackout_mode
+    - mode: vacation_mode
       action: disable
       priority: 2
-    - mode: vacation_mode
+    - mode: blackout_mode
       action: disable
       priority: 1
 
@@ -132,9 +132,9 @@ new_yi_hack_version_automation:
     app_name: Yi Hack
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
   mode_alterations:
-    - mode: blackout_mode
+    - mode: vacation_mode
       action: disable
       priority: 2
-    - mode: vacation_mode
+    - mode: blackout_mode
       action: disable
       priority: 1
