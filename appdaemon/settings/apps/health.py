@@ -1,5 +1,5 @@
 """Define automations for health."""
-from typing import Union
+from typing import Callable, Optional, Union
 
 import voluptuous as vol
 
@@ -75,32 +75,28 @@ class NotifyBadAqi(Base):
         }
     )
 
+    def configure(self) -> None:
+        """Configure."""
+        self._bad_notification_sent = False
+        self._good_notification_sent = False
+        self._send_notification_func = None  # type: Optional[Callable]
+
+        self.listen_state(
+            self._on_aqi_change, self.entity_ids[CONF_HVAC_STATE], new="cooling"
+        )
+
     @property
     def current_aqi(self) -> int:
         """Define a property to get the current AQI."""
         return int(self.get_state(self.entity_ids[CONF_AQI]))
 
-    def configure(self) -> None:
-        """Configure."""
-        self.notification_sent = False
-
-        self.listen_state(
-            self._on_bad_aqi,
-            self.entity_ids[CONF_HVAC_STATE],
-            new="cooling",
-            constrain_enabled=True,
-        )
-
-    def _on_bad_aqi(
+    def _on_aqi_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Send select notifications when cooling and poor AQI."""
-        if (
-            not self.notification_sent
-            and self.current_aqi > self.properties[CONF_AQI_THRESHOLD]
-        ):
-            self.log("Poor AQI; notifying anyone at home")
 
+        def _send_bad_notification():
+            """Send a notification of bad AQI."""
             send_notification(
                 self,
                 "presence:home",
@@ -109,11 +105,9 @@ class NotifyBadAqi(Base):
                 ),
                 title="Poor AQI 😤",
             )
-            self.notification_sent = True
-        elif (
-            self.notification_sent
-            and self.current_aqi <= self.properties[CONF_AQI_THRESHOLD]
-        ):
+
+        def _send_good_notification():
+            """Send a notification of good AQI."""
             send_notification(
                 self,
                 "presence:home",
@@ -122,4 +116,34 @@ class NotifyBadAqi(Base):
                 ),
                 title="Better AQI 😅",
             )
-            self.notification_sent = True
+
+        if self.current_aqi > self.properties[CONF_AQI_THRESHOLD]:
+            if self._bad_notification_sent:
+                return
+
+            self.log("Notifying anyone at home of bad AQI during cooling")
+            self._bad_notification_sent = True
+            self._good_notification_sent = False
+            notification_func = _send_bad_notification
+        else:
+            if self._good_notification_sent:
+                return
+
+            self.log("Notifying anyone at home of AQI improvement during cooling")
+            self._bad_notification_sent = False
+            self._good_notification_sent = True
+            notification_func = _send_good_notification
+
+        # If the automation is enabled when a battery is low, send a notification;
+        # if not, remember that we should send the notification when the automation
+        # becomes enabled:
+        if self.enabled:
+            notification_func()
+        else:
+            self._send_notification_func = notification_func
+
+    def on_enable(self) -> None:
+        """Send the notification once the automation is enabled (if appropriate)."""
+        if self._send_notification_func:
+            self._send_notification_func()
+            self._send_notification_func = None
