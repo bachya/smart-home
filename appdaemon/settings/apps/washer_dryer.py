@@ -40,16 +40,14 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        self.listen_state(
-            self._on_power_change,
-            self.app.entity_ids[CONF_POWER],
-            constrain_enabled=True,
-        )
-        self.listen_state(
-            self._on_status_change,
-            self.app.entity_ids[CONF_STATUS],
-            constrain_enabled=True,
-        )
+        self.listen_state(self._on_power_change, self.app.entity_ids[CONF_POWER])
+        self.listen_state(self._on_status_change, self.app.entity_ids[CONF_STATUS])
+
+    def _cancel_notification_cycle(self) -> None:
+        """Cancel any active notification."""
+        if HANDLE_CLEAN in self.handles:
+            cancel = self.handles.pop(HANDLE_CLEAN)
+            cancel()
 
     def _on_power_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
@@ -82,20 +80,31 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Deal with changes to the status."""
-        if new == self.app.States.clean.value:
-            self.handles[HANDLE_CLEAN] = send_notification(
-                self,
-                "presence:home",
-                "Empty it now and you won't have to do it later!",
-                title="Dishwasher Clean 🍽",
-                when=self.datetime() + timedelta(minutes=15),
-                interval=self.properties[CONF_NOTIFICATION_INTERVAL],
-                data={"push": {"category": "dishwasher"}},
-            )
+        if self.enabled and new == self.app.States.clean.value:
+            self._start_notification_cycle()
         elif old == self.app.States.clean.value:
-            if HANDLE_CLEAN in self.handles:
-                cancel = self.handles.pop(HANDLE_CLEAN)
-                cancel()
+            self._cancel_notification_cycle()
+
+    def _start_notification_cycle(self) -> None:
+        """Start the repeating notification sequence."""
+        self.handles[HANDLE_CLEAN] = send_notification(
+            self,
+            "presence:home",
+            "Empty it now and you won't have to do it later!",
+            title="Dishwasher Clean 🍽",
+            when=self.datetime() + timedelta(minutes=15),
+            interval=self.properties[CONF_NOTIFICATION_INTERVAL],
+            data={"push": {"category": "dishwasher"}},
+        )
+
+    def on_disable(self) -> None:
+        """Stop notifying when the automation is disabled."""
+        self._cancel_notification_cycle()
+
+    def on_enable(self) -> None:
+        """Start notifying when the automation is enabled (if appropriate)."""
+        if self.app.state == self.app.States.clean:
+            self._start_notification_cycle()
 
 
 class WasherDryer(Base):  # pylint: disable=too-few-public-methods
