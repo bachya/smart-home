@@ -1,7 +1,7 @@
 """Define automations for security."""
 from datetime import time
 from enum import Enum
-from typing import Union
+from typing import Callable, Optional, Union
 
 import voluptuous as vol
 
@@ -39,6 +39,8 @@ class AbsentInsecure(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
+        self._send_notification_func = None  # type: Optional[Callable]
+
         self.listen_state(
             self._on_house_insecure,
             self.entity_ids[CONF_STATE],
@@ -52,15 +54,32 @@ class AbsentInsecure(Base):  # pylint: disable=too-few-public-methods
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Send notifications when the house has been left insecure."""
+
+        def _send_notification() -> None:
+            """Send the notification."""
+            send_notification(
+                self,
+                ["person:Aaron", "person:Britt"],
+                "No one is home and the house isn't locked up.",
+                title="Security Issue 🔐",
+                data={"push": {"category": "dishwasher"}},
+            )
+
         self.log("No one home and house is insecure; notifying")
 
-        send_notification(
-            self,
-            ["person:Aaron", "person:Britt"],
-            "No one is home and the house isn't locked up.",
-            title="Security Issue 🔐",
-            data={"push": {"category": "dishwasher"}},
-        )
+        # If the automation is enabled when the house is insecure, send a notification;
+        # if not, remember that we should send the notification when the automation
+        # becomes enabled:
+        if self.enabled:
+            _send_notification()
+        else:
+            self._send_notification_func = _send_notification
+
+    def on_enable(self) -> None:
+        """Send the notification once the automation is enabled (if appropriate)."""
+        if self._send_notification_func:
+            self._send_notification_func()
+            self._send_notification_func = None
 
 
 class AutoDepartureLockup(Base):  # pylint: disable=too-few-public-methods
@@ -124,31 +143,38 @@ class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self._on_closed,
-            self.entity_ids[CONF_GARAGE_DOOR],
-            new="closed",
-            constrain_enabled=True,
+            self._on_closed, self.entity_ids[CONF_GARAGE_DOOR], new="closed"
         )
         self.listen_state(
             self._on_left_open,
             self.entity_ids[CONF_GARAGE_DOOR],
             new="open",
             duration=self.properties[CONF_TIME_LEFT_OPEN],
-            constrain_enabled=True,
         )
+
+    def _cancel_notification_cycle(self) -> None:
+        """Cancel any active notification."""
+        if HANDLE_GARAGE_OPEN in self.handles:
+            cancel = self.handles.pop(HANDLE_GARAGE_OPEN)
+            cancel()
 
     def _on_closed(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Cancel notification when the garage is _on_closed."""
-        if HANDLE_GARAGE_OPEN in self.handles:
-            cancel = self.handles.pop(HANDLE_GARAGE_OPEN)
-            cancel()
+        self._cancel_notification_cycle()
 
     def _on_left_open(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Send notifications when the garage has been left open."""
+        if self.enabled:
+            self._start_notification_cycle()
+        else:
+            self._cancel_notification_cycle()
+
+    def _start_notification_cycle(self) -> None:
+        """Start the notification cycle."""
         message = "The garage has been left open. Want to close it?"
 
         self.handles[HANDLE_GARAGE_OPEN] = send_notification(
@@ -173,6 +199,15 @@ class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods
             urgent=True,
         )
 
+    def on_disable(self) -> None:
+        """Stop the notification once the automation is disable."""
+        self._cancel_notification_cycle()
+
+    def on_enable(self) -> None:
+        """Send the notification once the automation is enabled."""
+        if self.get_state(self.entity_ids[CONF_GARAGE_DOOR]) == "open":
+            self._start_notification_cycle()
+
 
 class NotifyOnChange(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to notify us the secure status changes."""
@@ -187,24 +222,39 @@ class NotifyOnChange(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        self.listen_state(
-            self._on_security_system_change,
-            self.entity_ids[CONF_STATE],
-            constrain_enabled=True,
-        )
+        self._send_notification_func = None  # type: Optional[Callable]
+
+        self.listen_state(self._on_security_system_change, self.entity_ids[CONF_STATE])
 
     def _on_security_system_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Send a notification when the security state changes."""
+
+        def _send_notification() -> None:
+            """Send the notification."""
+            send_notification(
+                self,
+                ["person:Aaron", "person:Britt"],
+                'The security status has changed to "{0}"'.format(new),
+                title="Security Change 🔐",
+            )
+
         self.log("Notifying of security status change: {0}".format(new))
 
-        send_notification(
-            self,
-            ["person:Aaron", "person:Britt"],
-            'The security status has changed to "{0}"'.format(new),
-            title="Security Change 🔐",
-        )
+        # If the automation is enabled when the state changes, send a notification;
+        # if not, remember that we should send the notification when the automation
+        # becomes enabled:
+        if self.enabled:
+            _send_notification()
+        else:
+            self._send_notification_func = _send_notification
+
+    def on_enable(self) -> None:
+        """Send the notification once the automation is enabled (if appropriate)."""
+        if self._send_notification_func:
+            self._send_notification_func()
+            self._send_notification_func = None
 
 
 class SecurityManager(Base):
