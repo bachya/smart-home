@@ -128,12 +128,13 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
+        self._send_notification_func = None  # type: Optional[Callable]
+
         self.listen_state(
             self._on_limit,
             self.entity_ids[CONF_ENTITY_ID],
             new=self.properties[CONF_STATE],
             duration=self.properties[CONF_DURATION],
-            constrain_enabled=True,
         )
 
     def _on_limit(
@@ -141,26 +142,52 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
     ) -> None:
         """Notify when the threshold is reached."""
 
-        def turn_off():
+        def _turn_off() -> None:
             """Turn the entity off."""
             self.turn_off(self.entity_ids[CONF_ENTITY_ID])
 
-        self.slack_app_home_assistant.ask(
-            "The {0} has been left {1} for {2} minutes. Turn it off?".format(
+        def _send_notification() -> None:
+            """Send a notification."""
+            message = "The {0} has been left {1} for {2} minutes. Turn it off?".format(
                 self.get_state(
                     self.entity_ids[CONF_ENTITY_ID], attribute="friendly_name"
                 ),
                 self.properties[CONF_STATE],
                 int(self.properties[CONF_DURATION]) / 60,
-            ),
-            {
-                "Yes": {
-                    "callback": turn_off,
-                    "response_text": "You got it; turning it off now.",
+            )
+
+            send_notification(
+                self,
+                ["person:Aaron", "person:Britt"],
+                message,
+                title="Garage Open 🚗",
+                data={"push": {"category": "garage"}},
+            )
+
+            self.slack_app_home_assistant.ask(
+                message,
+                {
+                    "Yes": {
+                        "callback": _turn_off,
+                        "response_text": "You got it; turning it off now.",
+                    },
+                    "No": {"response_text": "Keep devouring electricity, little guy."},
                 },
-                "No": {"response_text": "Keep devouring electricity, little guy."},
-            },
-        )
+            )
+
+        # If the automation is enabled when a battery is low, send a notification;
+        # if not, remember that we should send the notification when the automation
+        # becomes enabled:
+        if self.enabled:
+            _send_notification()
+        else:
+            self._send_notification_func = _send_notification
+
+    def on_enable(self) -> None:
+        """Send the notification once the automation is enabled (if appropriate)."""
+        if self._send_notification_func:
+            self._send_notification_func()
+            self._send_notification_func = None
 
 
 class SslExpiration(Base):  # pylint: disable=too-few-public-methods

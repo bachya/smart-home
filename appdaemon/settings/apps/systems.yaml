@@ -32,6 +32,10 @@ notify_media_center_left_on_automation:
   properties:
     duration: 43200
     state: "on"
+  mode_alterations:
+    - mode: blackout_mode
+      action: disable
+      priority: 1
 
 notify_ps4_left_on_automation:
   module: systems
@@ -44,6 +48,10 @@ notify_ps4_left_on_automation:
   properties:
     duration: 43200
     state: "idle"
+  mode_alterations:
+    - mode: blackout_mode
+      action: disable
+      priority: 1
 
 notify_of_ssl_expiration_automation:
   module: systems
