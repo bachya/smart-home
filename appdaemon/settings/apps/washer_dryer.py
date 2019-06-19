@@ -40,6 +40,9 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
+        if self.app.state == self.app.States.clean:
+            self._start_notification_cycle()
+
         self.listen_state(self._on_power_change, self.app.entity_ids[CONF_POWER])
         self.listen_state(self._on_status_change, self.app.entity_ids[CONF_STATUS])
 
