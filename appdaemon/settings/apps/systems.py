@@ -48,9 +48,7 @@ class LowBatteries(Base):  # pylint: disable=too-few-public-methods
         self._send_notification_func = None  # type: Optional[Callable]
 
         for entity in self.entity_ids[CONF_BATTERIES_TO_MONITOR]:
-            self.listen_state(
-                self._on_low_battery, entity, attribute="all", constrain_enabled=True
-            )
+            self.listen_state(self._on_low_battery, entity, attribute="all")
 
     def _on_low_battery(
         self,
