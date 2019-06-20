@@ -48,9 +48,14 @@ class LowBatteries(Base):  # pylint: disable=too-few-public-methods
         self._send_notification_func = None  # type: Optional[Callable]
 
         for entity in self.entity_ids[CONF_BATTERIES_TO_MONITOR]:
-            self.listen_state(self._on_low_battery, entity, attribute="all")
+            if entity.split(".")[0] == "binary_sensor":
+                self.listen_state(
+                    self._on_battery_change, entity, new="on", attribute="all"
+                )
+            else:
+                self.listen_state(self._on_battery_change, entity, attribute="all")
 
-    def _on_low_battery(
+    def _on_battery_change(
         self,
         entity: Union[str, dict],
         attribute: str,
@@ -64,7 +69,12 @@ class LowBatteries(Base):  # pylint: disable=too-few-public-methods
         try:
             value = int(new["state"])
         except ValueError:
-            return
+            # If the sensor value can't be parsed as an integer, it is either a binary
+            # battery sensor or the sensor is unavailable. The former should continue
+            # on; the latter should stop immediately:
+            if new["state"] != "on":
+                return
+            value = 0
 
         notification_handle = "{0}_{1}".format(HANDLE_BATTERY_LOW, name)
 
