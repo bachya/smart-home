@@ -12,6 +12,15 @@ remote:
     host: harmony-hub-2.phil.iot
     activity: 37549209
 
+sensor:
+  - platform: template
+    sensors:
+      basement_temperature:
+        value_template: >
+          {{ states.alarm_control_panel.simplisafe.attributes.temperature }}
+        device_class: temperature
+        unit_of_measurement: "°F"
+
 shell_command:
   turn_off_media_center: 'ssh bachya@media-center.phil.lan sudo /sbin/poweroff'
 
