@@ -5,11 +5,14 @@ sensor:
     type: "mean"
     round_digits: 1
     entity_ids:
-      - sensor.master_bathroom_temperature
       - sensor.fiddle_leaf_fig_temperature
+      - sensor.guest_bedroom_sensor_temperature
+      - sensor.kitchen_sensor_temperature
+      - sensor.master_bathroom_temperature
       - sensor.side_yard_inside_temp
       - sensor.thermostat_thermostat_temperature
-      
+      - sensor.upstairs_hallway_sensor_temperature
+
   - platform: min_max
     name: "Average Indoor Humidity"
     type: "mean"
@@ -26,7 +29,7 @@ sensor:
       - filter: lowpass
         time_constant: 10
         precision: 1
-      
+
   - platform: filter
     name: "Filtered Average Indoor Temperature"
     entity_id: sensor.average_indoor_temperature
