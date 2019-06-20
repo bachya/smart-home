@@ -86,7 +86,7 @@ services:
 
   mosquitto:
     container_name: mosquitto
-    image: eclipse-mosquitto:1.6.2
+    image: eclipse-mosquitto:1.6.3
     ports:
       - "1883:1883/tcp"
     restart: unless-stopped
