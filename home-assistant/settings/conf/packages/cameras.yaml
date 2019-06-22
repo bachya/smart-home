@@ -5,9 +5,27 @@ binary_sensor:
     device_class: motion
     state_topic: "home/garage-camera/motion"
 
+  - platform: template
+    sensors:
+      garage_person_detected:
+        value_template: >
+          {{ states.image_processing.google_coral_garage_camera_person.state|int > 0 }}
+        device_class: occupancy
+        friendly_name: Person Detected
+      guest_bedroom_person_detected:
+        value_template: >
+          {{ states.image_processing.google_coral_guest_bedroom_camera_person.state|int > 0 }}
+        device_class: occupancy
+        friendly_name: Person Detected
+      kitchen_person_detected:
+        value_template: >
+          {{ states.image_processing.google_coral_kitchen_camera_person.state|int > 0 }}
+        device_class: occupancy
+        friendly_name: Person Detected
+
 camera:
   - platform: ffmpeg
-    name: Garage
+    name: Garage Camera
     input: -rtsp_transport tcp -i rtsp://garage-camera.myserver.com:8554/unicast
 
   - platform: ffmpeg
@@ -19,6 +37,18 @@ camera:
     input: -rtsp_transport tcp -i rtsp://yi-camera-guest-bedroom.phil.iot/ch0_0.h264
 
   - platform: nest
+
+image_processing:
+  - platform: google_coral
+    ip_address: slytherin.phil.lan
+    port: 5000
+    confidence: 30
+    target_object: person
+    source:
+      - entity_id: camera.front_door_camera
+      - entity_id: camera.garage_camera
+      - entity_id: camera.guest_bedroom_camera
+      - entity_id: camera.kitchen_camera
 
 sensor:
   - platform: mqtt
