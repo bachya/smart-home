@@ -185,13 +185,13 @@ class Base(Hass):
     def _on_state_change_disable(
         self, event_name: str, data: dict, kwargs: dict
     ) -> None:
-        """Disable the automation based upon prioritized events."""
+        """Disable the automation based upon a state change event."""
         self.disable()
 
     def _on_state_change_enable(
         self, event_name: str, data: dict, kwargs: dict
     ) -> None:
-        """Enable the automation based upon prioritized events."""
+        """Enable the automation based upon a state change event."""
         self.enable()
 
     def constrain_anyone(self, value: str) -> bool:
