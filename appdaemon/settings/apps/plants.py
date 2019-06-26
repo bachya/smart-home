@@ -52,7 +52,10 @@ class LowMoisture(Base):
     @property
     def current_moisture(self) -> int:
         """Define a property to get the current moisture."""
-        return int(self.get_state(self.entity_ids[CONF_CURRENT_MOISTURE]))
+        try:
+            return int(self.get_state(self.entity_ids[CONF_CURRENT_MOISTURE]))
+        except ValueError:
+            return "Unknown"
 
     def _cancel_notification_cycle(self) -> None:
         """Cancel any active notification."""
@@ -97,5 +100,8 @@ class LowMoisture(Base):
 
     def on_enable(self) -> None:
         """Start notifications (as necessary) when the automation is enabled."""
-        if self.current_moisture < self.properties[CONF_MOISTURE_THRESHOLD]:
-            self._start_notification_cycle()
+        try:
+            if self.current_moisture < self.properties[CONF_MOISTURE_THRESHOLD]:
+                self._start_notification_cycle()
+        except TypeError:
+            self.error("Can't parse non-integer moisture level")
