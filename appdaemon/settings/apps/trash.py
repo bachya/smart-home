@@ -8,6 +8,9 @@ from helpers import grammatical_list_join, suffix_strftime
 from helpers.scheduler import run_on_days
 from notification import send_notification
 
+CONF_NEXT_PICKUP_SENSOR = "next_pickup_sensor"
+CONF_TRASH_TYPE_SENSORS = "trash_type_sensors"
+
 
 class NotifyOfPickup(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to notify us of low batteries."""
@@ -43,15 +46,12 @@ class TrashManager(Base):
     def in_next_pickup(self) -> Tuple[datetime.datetime, list]:
         """Return a list of pickup types in the next pickup."""
         pickup_datetime = datetime.datetime.strptime(
-            self.get_state(
-                self.entity_ids["trash_type_sensors"]["trash"], attribute="pickup_date"
-            ),
-            "%B %d, %Y",
+            self.get_state(self.entity_ids[CONF_NEXT_PICKUP_SENSOR]), "%Y-%m-%d"
         )
         pickup_types = [
             pickup_type
-            for pickup_type, entity in self.entity_ids["trash_type_sensors"].items()
-            if "pickups" not in self.get_state(entity)
+            for pickup_type, sensor in self.entity_ids[CONF_TRASH_TYPE_SENSORS].items()
+            if self.get_state(sensor) == "on"
         ]
 
         return (pickup_datetime, pickup_types)

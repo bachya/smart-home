@@ -1,9 +1,0 @@
-{
-  "domain": "denvertrash",
-  "name": "Denver Trash",
-  "requirements": [
-    "pyden==1.0.2"
-  ],
-  "dependencies": [],
-  "codeowners": []
-}
