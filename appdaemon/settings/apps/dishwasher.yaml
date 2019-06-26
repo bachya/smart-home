@@ -20,10 +20,24 @@ dishwasher_cycle_automation:
     ios_emptied_key: DISHWASHER_EMPTIED
     notification_interval: 3600
     running_threshold: 10.0
-  mode_alterations:
-    - mode: vacation_mode
-      action: disable
-      priority: 2
-    - mode: blackout_mode
-      action: disable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "off"

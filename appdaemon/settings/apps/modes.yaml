@@ -17,6 +17,17 @@ blackout_activate_weekday_automation:
       - Thursday
     schedule_time: "21:00:00"
     state: "on"
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
 
 blackout_activate_weekend_automation:
   module: switches
@@ -29,6 +40,17 @@ blackout_activate_weekend_automation:
       - Saturday
     schedule_time: "22:00:00"
     state: "on"
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
 
 blackout_deactivate_weekday_automation:
   module: switches
@@ -44,6 +66,17 @@ blackout_deactivate_weekday_automation:
       - Friday
     schedule_time: "07:00:00"
     state: "off"
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
 
 blackout_deactivate_weekend_automation:
   module: switches
@@ -56,6 +89,17 @@ blackout_deactivate_weekend_automation:
       - Sunday
     schedule_time: "09:00:00"
     state: "off"
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
 
 guest_mode:
   module: mode

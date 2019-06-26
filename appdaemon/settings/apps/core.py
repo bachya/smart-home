@@ -6,27 +6,27 @@ from appdaemon.plugins.hass.hassapi import Hass  # pylint: disable=no-name-in-mo
 
 from const import (
     CONF_ENTITY_IDS,
+    CONF_EVENT,
+    CONF_EVENT_DATA,
     CONF_PROPERTIES,
-    EVENT_MODE_CHANGE,
     OPERATOR_ALL,
     OPERATORS,
     THRESHOLD_CLOUDY,
 )
 from helpers import config_validation as cv
 
-CONF_CLASS = "class"
-CONF_MODULE = "module"
-CONF_DEPENDENCIES = "dependencies"
-
 CONF_APP = "app"
+CONF_CLASS = "class"
 CONF_CONSTRAINTS = "constraints"
-CONF_MODE_ALTERATIONS = "mode_alterations"
-
+CONF_DEPENDENCIES = "dependencies"
+CONF_DISABLE = "disable"
+CONF_ENABLE = "enable"
 CONF_ENABLED_TOGGLE_ENTITY_ID = "enabled_toggle_entity_id"
 CONF_INITIAL = "initial"
+CONF_MODULE = "module"
 CONF_NAME = "name"
-
 CONF_OPERATOR = "operator"
+CONF_STATE_CHANGES = "state_changes"
 
 SENSOR_CLOUD_COVER = "sensor.dark_sky_cloud_coverage"
 
@@ -72,7 +72,7 @@ class Base(Hass):
         self.properties = self.args.get(CONF_PROPERTIES, {})
 
         # Define a holding place for any mode alterations for this app:
-        self.mode_alterations = self.args.get(CONF_MODE_ALTERATIONS, [])
+        self.state_changes = self.args.get(CONF_STATE_CHANGES, [])
 
         # Take every dependecy and create a reference to it:
         for app in self.args.get(CONF_DEPENDENCIES, []):
@@ -107,8 +107,18 @@ class Base(Hass):
         # Set up connections to the automation being disabled/enabled:
         if self._enabled_entity_exists():
             # Listen and track mode changes so that the app can respond as needed:
-            self.mode_events = []  # type: List[str]
-            self.listen_event(self._on_mode_change, EVENT_MODE_CHANGE)
+            self.state_change_events = []  # type: List[str]
+            for state_change in self.state_changes:
+                self.listen_event(
+                    self._on_state_change_disable,
+                    state_change[CONF_DISABLE][CONF_EVENT],
+                    **state_change[CONF_DISABLE][CONF_EVENT_DATA],
+                )
+                self.listen_event(
+                    self._on_state_change_enable,
+                    state_change[CONF_ENABLE][CONF_EVENT],
+                    **state_change[CONF_ENABLE][CONF_EVENT_DATA],
+                )
 
             # If the app has defined callbacks fror when the app is enabled or disabled,
             # attach them to listeners. Note that we utilize `_on_*` here
@@ -172,42 +182,17 @@ class Base(Hass):
         """Set a listener for when the automation is enabled."""
         self.on_enable()
 
-    def _on_mode_change(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Compare mode changes to registered mode alterations."""
-        mode = data["name"]
+    def _on_state_change_disable(
+        self, event_name: str, data: dict, kwargs: dict
+    ) -> None:
+        """Disable the automation based upon prioritized events."""
+        self.disable()
 
-        if data["state"] == "on":
-            self.mode_events.append(mode)
-        elif mode in self.mode_events:
-            self.mode_events.remove(mode)
-
-        try:
-            primary = max(
-                (m for m in self.mode_alterations if m["mode"] in self.mode_events),
-                key=lambda m: m["priority"],
-            )
-        except ValueError:
-            try:
-                primary = next((m for m in self.mode_alterations if m["mode"] == mode))
-            except StopIteration:
-                return
-
-            if primary["action"] == "enable":
-                primary["action"] = "disable"
-            else:
-                primary["action"] = "enable"
-
-        # If the primary mode alteration prescribes an action that matches the state the
-        # app is already in, return:
-        if (self.enabled and primary["action"] == "enable") or (
-            not self.enabled and primary["action"] == "disable"
-        ):
-            return
-
-        if primary["action"] == "enable":
-            self.enable()
-        else:
-            self.disable()
+    def _on_state_change_enable(
+        self, event_name: str, data: dict, kwargs: dict
+    ) -> None:
+        """Enable the automation based upon prioritized events."""
+        self.enable()
 
     def constrain_anyone(self, value: str) -> bool:
         """Constrain execution to whether anyone is in a state."""
@@ -309,7 +294,7 @@ class Base(Hass):
         callback: Callable[..., None],
         *args: list,
         auto_constraints=False,
-        **kwargs: dict
+        **kwargs: dict,
     ):
         """Wrap AppDaemon's `run_at_sunset` with the constraint mechanism."""
         if not auto_constraints:

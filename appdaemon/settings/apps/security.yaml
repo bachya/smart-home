@@ -6,10 +6,17 @@ auto_departure_lockup_automation:
     - guest_mode
     - presence_manager
     - security_manager
-  mode_alterations:
-    - mode: guest_mode
-      action: disable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "off"
 
 auto_nighttime_lockup_automation:
   module: security
@@ -18,10 +25,17 @@ auto_nighttime_lockup_automation:
     - guest_mode
     - presence_manager
     - security_manager
-  mode_alterations:
-    - mode: guest_mode
-      action: disable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "off"
 
 notify_of_garage_open_automation:
   module: security
@@ -45,10 +59,17 @@ notify_when_absent_insecure_automation:
     - security_manager
   entity_ids:
     state: sensor.secure_status
-  mode_alterations:
-    - mode: guest_mode
-      action: disable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "off"
 
 notify_when_status_changes_automation:
   module: security
@@ -58,10 +79,17 @@ notify_when_status_changes_automation:
     - vacation_mode
   entity_ids:
     state: sensor.secure_status
-  mode_alterations:
-    - mode: vacation_mode
-      action: enable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
 
 security_manager:
   module: security

@@ -19,10 +19,24 @@ notify_bad_aqi_automation:
     hvac_state: sensor.thermostat_thermostat_hvac_state
   properties:
     aqi_threshold: 100
-  mode_alterations:
-    - mode: vacation_mode
-      action: disable
-      priority: 2
-    - mode: blackout_mode
-      action: disable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "off"

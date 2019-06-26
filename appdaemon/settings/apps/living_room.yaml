@@ -7,10 +7,17 @@ fireplace_failsafe_automation:
     - presence_manager
   entity_ids:
     switch: switch.fireplace
-  mode_alterations:
-    - mode: guest_mode
-      action: disable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "off"
 
 christmas_lights_on_at_sunrise_automation:
   module: switches
@@ -24,13 +31,27 @@ christmas_lights_on_at_sunrise_automation:
   properties:
     schedule_time: sunrise
     state: "on"
-  mode_alterations:
-    - mode: guest_mode
-      action: disable
-      priority: 1
-    - mode: vacation_mode
-      action: disable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
 
 christmas_lights_off_at_9am_automation:
   module: switches
@@ -50,13 +71,27 @@ christmas_lights_off_at_9am_automation:
       - Friday
     schedule_time: "09:00:00"
     state: "off"
-  mode_alterations:
-    - mode: guest_mode
-      action: disable
-      priority: 1
-    - mode: vacation_mode
-      action: disable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
 
 living_room_lights_on_at_sunset_automation:
   module: switches
@@ -73,13 +108,27 @@ living_room_lights_on_at_sunset_automation:
   constraints:
     constraints:
       constrain_anyone: home,just_arrived
-  mode_alterations:
-    - mode: guest_mode
-      action: disable
-      priority: 1
-    - mode: vacation_mode
-      action: disable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
 
 living_room_lights_on_upon_arrival_automation:
   module: switches
@@ -94,10 +143,17 @@ living_room_lights_on_upon_arrival_automation:
   constraints:
     constraints:
       constrain_sun: "down"
-  mode_alterations:
-    - mode: guest_mode
-      action: disable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "off"
 
 living_room_lights_vacation_mode_automation:
   module: switches
@@ -111,11 +167,18 @@ living_room_lights_vacation_mode_automation:
   properties:
     end_time: "23:30:00"
     start_time: "sunset"
-  mode_alterations:
-    - mode: vacation_mode
-      action: enable
-      priority: 1
   enabled_toggle_entity_id: input_boolean.vacation_mode_lighting
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
 
 powder_room_fan_auto_turn_on_automation:
   module: switches
@@ -144,10 +207,24 @@ reading_lamp_cloudy_morning_automation:
   constraints:
     constraints:
       constrain_cloudy: true
-  mode_alterations:
-    - mode: guest_mode
-      action: disable
-      priority: 1
-    - mode: vacation_mode
-      action: disable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"

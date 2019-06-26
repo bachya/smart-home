@@ -47,10 +47,24 @@ wolfie_scheduled_cycle_automation:
       - input_boolean.vacuum_schedule_saturday
       - input_boolean.vacuum_schedule_sunday
     schedule_time: "10:00:00"
-  mode_alterations:
-    - mode: guest_mode
-      action: disable
-      priority: 1
-    - mode: vacation_mode
-      action: disable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"

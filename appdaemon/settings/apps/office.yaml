@@ -20,13 +20,27 @@ office_lights_off_at_10pm_automation:
   properties:
     schedule_time: "22:00:00"
     state: "off"
-  mode_alterations:
-    - mode: guest_mode
-      action: disable
-      priority: 1
-    - mode: vacation_mode
-      action: disable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
 
 office_lights_on_at_sunset_automation:
   module: switches
@@ -40,10 +54,24 @@ office_lights_on_at_sunset_automation:
   properties:
     schedule_time: sunset
     state: "on"
-  mode_alterations:
-    - mode: guest_mode
-      action: disable
-      priority: 1
-    - mode: vacation_mode
-      action: disable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"

@@ -11,10 +11,24 @@ fiddle_leaf_fig_low_moisture_automation:
     friendly_name: Fred
     moisture_threshold: 15
     notification_interval: 3600
-  mode_alterations:
-    - mode: vacation_mode
-      action: disable
-      priority: 2
-    - mode: blackout_mode
-      action: disable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "off"

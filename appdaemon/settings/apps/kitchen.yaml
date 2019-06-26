@@ -14,13 +14,27 @@ bar_cart_on_at_sunset_automation:
   constraints:
     constraints:
       constrain_anyone: home,just_arrived
-  mode_alterations:
-    - mode: guest_mode
-      action: disable
-      priority: 1
-    - mode: vacation_mode
-      action: disable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
 
 bar_cart_on_upon_arrival_automation:
   module: switches
@@ -35,7 +49,24 @@ bar_cart_on_upon_arrival_automation:
   constraints:
     constraints:
       constrain_sun: "down"
-  mode_alterations:
-    - mode: guest_mode
-      action: disable
-      priority: 1
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"

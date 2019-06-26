@@ -14,9 +14,3 @@ climate_manager:
     average_temperature_sensor: sensor.average_indoor_temperature
     outside_temp: sensor.dark_sky_temperature
     thermostat: climate.thermostat
-
-cycle_whole_house_fan_automation:
-  module: climate
-  class: CycleFan
-  dependencies:
-    - climate_manager
