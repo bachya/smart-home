@@ -287,8 +287,8 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
                 camera[CONF_PRESENCE_DETECTOR_ENTITY_ID],
                 new="on",
                 attribute="all",
-                CONF_CAMERA_ENTITY_ID=camera[CONF_CAMERA_ENTITY_ID],
                 constrain_enabled=True,
+                camera_entity_id=camera[CONF_CAMERA_ENTITY_ID],
             )
             self.listen_state(
                 self._on_long_detection,
@@ -296,8 +296,8 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
                 new="on",
                 attribute="all",
                 duration=self.properties[CONF_WINDOW_SECONDS],
-                CONF_CAMERA_ENTITY_ID=camera[CONF_CAMERA_ENTITY_ID],
                 constrain_enabled=True,
+                camera_entity_id=camera[CONF_CAMERA_ENTITY_ID],
             )
 
     def _on_detection(
