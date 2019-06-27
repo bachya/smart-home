@@ -265,6 +265,11 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
+        if self.presence_manager.noone(self.presence_manager.HomeStates.home):
+            self.enable()
+        else:
+            self.disable()
+
         self.hits = 0
 
         self.run_every(
