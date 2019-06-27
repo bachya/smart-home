@@ -76,7 +76,6 @@ notify_when_status_changes_automation:
   class: NotifyOnChange
   dependencies:
     - presence_manager
-    - vacation_mode
   entity_ids:
     state: sensor.secure_status
   state_changes:
