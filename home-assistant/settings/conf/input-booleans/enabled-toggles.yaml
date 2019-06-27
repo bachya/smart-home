@@ -131,7 +131,6 @@ master_toilet_fan_sleep_timer_automation:
   name: "Toilet: enable sleep timer"
 master_toilet_fan_toggle_automation:
   icon: mdi:fan
-  initial: true
   name: Toggle toilet fan every 15 minutes
 notification_automation_manage_home_notifications:
   icon: mdi:car
