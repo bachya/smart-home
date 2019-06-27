@@ -175,7 +175,6 @@ notify_when_absent_insecure_automation:
   name: Absent & insecure alerts
 notify_when_person_on_camera:
   icon: mdi:cctv
-  initial: true
   name: Strange person detected
 notify_when_status_changes_automation:
   icon: mdi:shield-half-full

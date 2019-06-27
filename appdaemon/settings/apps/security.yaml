@@ -96,10 +96,13 @@ notify_when_person_on_camera:
   dependencies:
     - presence_manager
   entity_ids:
-    camera_presence_detectors:
-      - binary_sensor.garage_person_detected
-      - binary_sensor.guest_bedroom_person_detected
-      - binary_sensor.kitchen_person_detected
+    cameras:
+      - camera_entity_id: camera.garage_camera
+        presence_detector_entity_id: binary_sensor.garage_person_detected
+      - camera_entity_id: camera.kitchen_camera
+        presence_detector_entity_id: binary_sensor.kitchen_person_detected
+      - camera_entity_id: camera.guest_bedroom_camera
+        presence_detector_entity_id: binary_sensor.guest_bedroom_person_detected
   properties:
     hit_threshold: 5
     window_seconds: 30
