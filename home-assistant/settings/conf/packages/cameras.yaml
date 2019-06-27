@@ -11,17 +11,17 @@ binary_sensor:
         value_template: >
           {{ states.image_processing.google_coral_garage_camera_person.state|int > 0 }}
         device_class: occupancy
-        friendly_name: Person Detected
+        friendly_name: Garage Camera
       guest_bedroom_person_detected:
         value_template: >
           {{ states.image_processing.google_coral_guest_bedroom_camera_person.state|int > 0 }}
         device_class: occupancy
-        friendly_name: Person Detected
+        friendly_name: Guest Bedroom Camera
       kitchen_person_detected:
         value_template: >
           {{ states.image_processing.google_coral_kitchen_camera_person.state|int > 0 }}
         device_class: occupancy
-        friendly_name: Person Detected
+        friendly_name: Kitchen Camera
 
 camera:
   - platform: ffmpeg

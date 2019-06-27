@@ -19,9 +19,12 @@ from helpers import config_validation as cv
 from notification import send_notification
 
 CONF_ALARM_CONTROL_PANEL = "alarm_control_panel"
+CONF_CAMERA_PRESENCE_DETECTORS = "camera_presence_detectors"
 CONF_GARAGE_DOOR = "garage_door"
+CONF_HIT_THRESHOLD = "hit_threshold"
 CONF_OVERALL_SECURITY_STATUS = "overall_security_status_sensor"
 CONF_TIME_LEFT_OPEN = "time_left_open"
+CONF_WINDOW_SECONDS = "window_seconds"
 
 HANDLE_GARAGE_OPEN = "garage_open"
 
@@ -255,6 +258,67 @@ class NotifyOnChange(Base):  # pylint: disable=too-few-public-methods
         if self._send_notification_func:
             self._send_notification_func()
             self._send_notification_func = None
+
+
+class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
+    """Define a feature to react when a person is detected on one or more cameras."""
+
+    def configure(self) -> None:
+        """Configure."""
+        self.hits = 0
+
+        self.run_every(
+            self._on_window_expiration,
+            self.datetime(),
+            self.properties[CONF_WINDOW_SECONDS],
+            constrain_enabled=True,
+        )
+
+        for detector in self.entity_ids[CONF_CAMERA_PRESENCE_DETECTORS]:
+            self.listen_state(
+                self._on_detection,
+                detector,
+                new="on",
+                attribute="all",
+                constrain_enabled=True,
+            )
+            self.listen_state(
+                self._on_long_detection,
+                detector,
+                new="on",
+                attribute="all",
+                duration=self.properties[CONF_WINDOW_SECONDS],
+                constrain_enabled=True,
+            )
+
+    def _on_detection(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Respond to any hit, no matter the duration."""
+        self.hits += 1
+        if self.hits >= self.properties[CONF_HIT_THRESHOLD]:
+            self._send_and_reset(new["attributes"]["friendly_name"])
+
+    def _on_long_detection(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Respond to a longer hit (i.e., one that has lasted for the window)."""
+        self._send_and_reset(new["attributes"]["friendly_name"])
+
+    def _on_window_expiration(self, kwargs: dict) -> None:
+        """When the window expires, reset the hit count."""
+        self.hits = 0
+
+    def _send_and_reset(self, camera_name: str) -> None:
+        """Send a notification and reset."""
+        self.log("Person detected on {0} while no one was home".format(camera_name))
+        send_notification(
+            self,
+            ["person:Aaron", "person:Britt"],
+            "A possible person was detected on the {0}.".format(camera_name),
+            title="Security Issue 🔐",
+        )
+        self.hits = 0
 
 
 class SecurityManager(Base):

@@ -90,6 +90,29 @@ notify_when_status_changes_automation:
           name: vacation_mode
           state: "on"
 
+notify_when_person_on_camera:
+  module: security
+  class: PersonDetectedOnCamera
+  dependencies:
+    - presence_manager
+  entity_ids:
+    camera_presence_detectors:
+      - binary_sensor.garage_person_detected
+      - binary_sensor.guest_bedroom_person_detected
+      - binary_sensor.kitchen_person_detected
+  properties:
+    hit_threshold: 5
+    window_seconds: 30
+  state_changes:
+    - disable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          new: home
+      enable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          old: home
+
 security_manager:
   module: security
   class: SecurityManager
