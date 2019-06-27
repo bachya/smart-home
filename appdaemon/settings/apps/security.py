@@ -272,7 +272,7 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
         else:
             self.disable()
 
-        self.hits = 0
+        self._hits = 0
 
         self.run_every(
             self._on_window_expiration,
@@ -304,19 +304,21 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Respond to any hit, no matter the duration."""
-        self.hits += 1
-        if self.hits >= self.properties[CONF_HIT_THRESHOLD]:
+        self._hits += 1
+        if self._hits >= self.properties[CONF_HIT_THRESHOLD]:
             self._send_and_reset(kwargs[CONF_CAMERA_ENTITY_ID])
 
     def _on_long_detection(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Respond to a longer hit (i.e., one that has lasted for the window)."""
-        self._send_and_reset(kwargs[CONF_CAMERA_ENTITY_ID])
+        self._hits += 10
+        if self._hits >= self.properties[CONF_HIT_THRESHOLD]:
+            self._send_and_reset(kwargs[CONF_CAMERA_ENTITY_ID])
 
     def _on_window_expiration(self, kwargs: dict) -> None:
         """When the window expires, reset the hit count."""
-        self.hits = 0
+        self._hits = 0
 
     def _send_and_reset(self, camera_entity_id: str) -> None:
         """Send a notification and reset."""
@@ -337,7 +339,7 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
                 "entity_id": camera_entity_id,
             },
         )
-        self.hits = 0
+        self._hits = 0
 
 
 class SecurityManager(Base):
