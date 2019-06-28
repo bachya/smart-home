@@ -104,7 +104,7 @@ notify_when_person_on_camera:
       - camera_entity_id: camera.guest_bedroom_camera
         presence_detector_entity_id: binary_sensor.guest_bedroom_person_detected
   properties:
-    hit_threshold: 10
+    hit_threshold: 5
     window_seconds: 60
   state_changes:
     - disable:

@@ -290,29 +290,12 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
                 constrain_enabled=True,
                 camera_entity_id=camera[CONF_CAMERA_ENTITY_ID],
             )
-            self.listen_state(
-                self._on_long_detection,
-                camera[CONF_PRESENCE_DETECTOR_ENTITY_ID],
-                new="on",
-                attribute="all",
-                duration=self.properties[CONF_WINDOW_SECONDS],
-                constrain_enabled=True,
-                camera_entity_id=camera[CONF_CAMERA_ENTITY_ID],
-            )
 
     def _on_detection(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Respond to any hit, no matter the duration."""
         self._hits += 1
-        if self._hits >= self.properties[CONF_HIT_THRESHOLD]:
-            self._send_and_reset(kwargs[CONF_CAMERA_ENTITY_ID])
-
-    def _on_long_detection(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Respond to a longer hit (i.e., one that has lasted for the window)."""
-        self._hits += self.properties[CONF_HIT_THRESHOLD]
         if self._hits >= self.properties[CONF_HIT_THRESHOLD]:
             self._send_and_reset(kwargs[CONF_CAMERA_ENTITY_ID])
 
