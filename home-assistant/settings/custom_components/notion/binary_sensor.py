@@ -4,6 +4,8 @@ import logging
 from homeassistant.components.binary_sensor import BinarySensorDevice
 
 from . import (
+    ATTR_BRIDGE_MODE,
+    ATTR_BRIDGE_NAME,
     BINARY_SENSOR_TYPES,
     SENSOR_BATTERY,
     SENSOR_DOOR,
@@ -71,8 +73,11 @@ class NotionBinarySensor(NotionEntity, BinarySensorDevice):
     async def async_update(self):
         """Fetch new state data for the sensor."""
         try:
-            new_data = next(
+            new_task_data = next(
                 (t for t in self._notion.tasks if t["id"] == self._task["id"])
+            )
+            new_sensor_data = next(
+                (s for s in self._notion.sensors if s["id"] == self._task["sensor_id"])
             )
         except StopIteration:
             _LOGGER.error(
@@ -82,4 +87,17 @@ class NotionBinarySensor(NotionEntity, BinarySensorDevice):
             )
             return
 
-        self._state = new_data["status"]["value"]
+        self._sensor = new_sensor_data
+        self._task = new_task_data
+
+        self._bridge = next(
+            (b for b in self._notion.bridges if b["id"] == self._sensor["bridge"]["id"])
+        )
+
+        self._state = self._task["status"]["value"]
+        self._attrs.update(
+            {
+                ATTR_BRIDGE_MODE: self._bridge["mode"],
+                ATTR_BRIDGE_NAME: self._bridge["name"],
+            }
+        )

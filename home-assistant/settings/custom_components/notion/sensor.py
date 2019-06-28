@@ -1,7 +1,13 @@
 """Support for Notion sensors."""
 import logging
 
-from . import SENSOR_TEMPERATURE, SENSOR_TYPES, NotionEntity
+from . import (
+    ATTR_BRIDGE_MODE,
+    ATTR_BRIDGE_NAME,
+    SENSOR_TEMPERATURE,
+    SENSOR_TYPES,
+    NotionEntity,
+)
 from .const import DATA_CLIENT, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
@@ -50,8 +56,11 @@ class NotionSensor(NotionEntity):
     async def async_update(self):
         """Fetch new state data for the sensor."""
         try:
-            new_data = next(
+            new_task_data = next(
                 (t for t in self._notion.tasks if t["id"] == self._task["id"])
+            )
+            new_sensor_data = next(
+                (s for s in self._notion.sensors if s["id"] == self._task["sensor_id"])
             )
         except StopIteration:
             _LOGGER.error(
@@ -61,11 +70,25 @@ class NotionSensor(NotionEntity):
             )
             return
 
+        self._sensor = new_sensor_data
+        self._task = new_task_data
+
+        self._bridge = next(
+            (b for b in self._notion.bridges if b["id"] == self._sensor["bridge"]["id"])
+        )
+
         if self._task["task_type"] == SENSOR_TEMPERATURE:
-            self._state = round(float(new_data["status"]["value"]), 1)
+            self._state = round(float(self._task["status"]["value"]), 1)
         else:
             _LOGGER.error(
                 "Unknown task type: %s: %s",
                 self._sensor["name"],
                 self._task["task_type"],
             )
+
+        self._attrs.update(
+            {
+                ATTR_BRIDGE_MODE: self._bridge["mode"],
+                ATTR_BRIDGE_NAME: self._bridge["name"],
+            }
+        )
