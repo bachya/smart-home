@@ -1,4 +1,5 @@
 """Define automations for Home Assistant itself."""
+from typing import Callable, Optional
 import voluptuous as vol
 
 from const import CONF_ENTITY_IDS, EVENT_PRESENCE_CHANGE
@@ -60,6 +61,8 @@ class BadLoginNotification(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
+        self._send_notification_func = None  # type: Optional[Callable]
+
         for notification_type in self.entity_ids.values():
             self.listen_state(
                 self._on_bad_login,
@@ -80,6 +83,22 @@ class BadLoginNotification(Base):  # pylint: disable=too-few-public-methods
         else:
             title = "IP Ban"
 
-        send_notification(
-            self, "person:Aaron", new["attributes"]["message"], title=title
-        )
+        def _send_notification() -> None:
+            """Send a notification about the attempt."""
+            send_notification(
+                self, "person:Aaron", new["attributes"]["message"], title=title
+            )
+
+        # If the automation is enabled when a new version is detected, send a
+        # notification; if not, remember that we should send the notification when
+        # the automation becomes enabled:
+        if self.enabled:
+            _send_notification()
+        else:
+            self._send_notification_func = _send_notification
+
+    def on_enable(self) -> None:
+        """Send the notification once the automation is enabled."""
+        if self._send_notification_func:
+            self._send_notification_func()
+            self._send_notification_func = None

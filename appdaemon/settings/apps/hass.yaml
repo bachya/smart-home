@@ -14,3 +14,14 @@ bad_login_notifications_automation:
   entity_ids:
     bad_login: persistent_notification.httplogin
     ip_ban: persistent_notification.ipban
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "off"
