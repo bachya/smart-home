@@ -312,7 +312,7 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Respond to a longer hit (i.e., one that has lasted for the window)."""
-        self._hits += 10
+        self._hits += self.properties[CONF_HIT_THRESHOLD]
         if self._hits >= self.properties[CONF_HIT_THRESHOLD]:
             self._send_and_reset(kwargs[CONF_CAMERA_ENTITY_ID])
 
