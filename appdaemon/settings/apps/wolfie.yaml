@@ -23,6 +23,27 @@ notify_when_wolfie_consumable_low_automation:
       - main_brush_left
       - sensor_dirty_left
       - side_brush_left
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
 
 wolfie_scheduled_cycle_automation:
   module: wolfie
