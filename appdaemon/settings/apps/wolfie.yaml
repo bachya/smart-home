@@ -44,6 +44,14 @@ notify_when_wolfie_consumable_low_automation:
         event_data:
           name: vacation_mode
           state: "off"
+    - disable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          new: home
+      enable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          old: home
 
 wolfie_scheduled_cycle_automation:
   module: wolfie

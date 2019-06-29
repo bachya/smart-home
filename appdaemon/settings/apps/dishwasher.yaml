@@ -41,3 +41,11 @@ dishwasher_cycle_automation:
         event_data:
           name: blackout_mode
           state: "off"
+    - disable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          new: home
+      enable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          old: home

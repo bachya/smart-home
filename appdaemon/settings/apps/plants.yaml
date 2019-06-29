@@ -32,3 +32,11 @@ fiddle_leaf_fig_low_moisture_automation:
         event_data:
           name: blackout_mode
           state: "off"
+    - disable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          new: home
+      enable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          old: home

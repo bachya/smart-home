@@ -17,6 +17,14 @@ notify_of_trash_pickup_automation:
         event_data:
           name: vacation_mode
           state: "off"
+    - disable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          new: home
+      enable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          old: home
 
 trash_manager:
   module: trash

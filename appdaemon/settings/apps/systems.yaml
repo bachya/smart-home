@@ -37,6 +37,14 @@ notify_of_low_batteries_automation:
         event_data:
           name: blackout_mode
           state: "off"
+    - disable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          new: home
+      enable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          old: home
 
 notify_media_center_left_on_automation:
   module: systems
@@ -134,6 +142,14 @@ notify_of_ssl_expiration_automation:
         event_data:
           name: blackout_mode
           state: "off"
+    - disable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          new: home
+      enable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          old: home
 
 start_homekit_on_zwave_ready_automation:
   module: systems
