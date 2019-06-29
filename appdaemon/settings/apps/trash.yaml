@@ -20,11 +20,11 @@ notify_of_trash_pickup_automation:
     - disable:
         event: PROXIMITY_CHANGE
         event_data:
-          new: home
+          old: home
       enable:
         event: PROXIMITY_CHANGE
         event_data:
-          old: home
+          new: home
 
 trash_manager:
   module: trash

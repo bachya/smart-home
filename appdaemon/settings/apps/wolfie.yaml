@@ -47,11 +47,11 @@ notify_when_wolfie_consumable_low_automation:
     - disable:
         event: PROXIMITY_CHANGE
         event_data:
-          new: home
+          old: home
       enable:
         event: PROXIMITY_CHANGE
         event_data:
-          old: home
+          new: home
 
 wolfie_scheduled_cycle_automation:
   module: wolfie
@@ -100,8 +100,8 @@ wolfie_scheduled_cycle_automation:
     - disable:
         event: PROXIMITY_CHANGE
         event_data:
-          new: home
+          old: home
       enable:
         event: PROXIMITY_CHANGE
         event_data:
-          old: home
+          new: home

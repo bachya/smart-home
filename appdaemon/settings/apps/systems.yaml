@@ -40,11 +40,11 @@ notify_of_low_batteries_automation:
     - disable:
         event: PROXIMITY_CHANGE
         event_data:
-          new: home
+          old: home
       enable:
         event: PROXIMITY_CHANGE
         event_data:
-          old: home
+          new: home
 
 notify_media_center_left_on_automation:
   module: systems
@@ -145,11 +145,11 @@ notify_of_ssl_expiration_automation:
     - disable:
         event: PROXIMITY_CHANGE
         event_data:
-          new: home
+          old: home
       enable:
         event: PROXIMITY_CHANGE
         event_data:
-          old: home
+          new: home
 
 start_homekit_on_zwave_ready_automation:
   module: systems

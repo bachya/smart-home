@@ -44,8 +44,8 @@ dishwasher_cycle_automation:
     - disable:
         event: PROXIMITY_CHANGE
         event_data:
-          new: home
+          old: home
       enable:
         event: PROXIMITY_CHANGE
         event_data:
-          old: home
+          new: home
