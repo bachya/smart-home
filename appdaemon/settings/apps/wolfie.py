@@ -67,7 +67,6 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
                 return
 
             self.log("Consumable is low: {0}".format(attribute))
-
             send_notification(
                 self,
                 "slack:@aaron",
@@ -183,7 +182,6 @@ class ScheduledCycle(Base):
             "state"
         ] == self.security_manager.AlarmStates.home.value:
             self.log("Activating vacuum (post-security)")
-
             self.turn_on(self.app.entity_ids["vacuum"])
 
         # Scenario 2: Vacuum is running when alarm is set to "Away":
@@ -192,7 +190,6 @@ class ScheduledCycle(Base):
             and data["state"] == self.security_manager.AlarmStates.away.value
         ):
             self.log('Security mode is "Away"; pausing until "Home"')
-
             self.call_service(
                 "vacuum/start_pause", entity_id=self.app.entity_ids["vacuum"]
             )
@@ -204,7 +201,6 @@ class ScheduledCycle(Base):
             and data["state"] == self.security_manager.AlarmStates.home.value
         ):
             self.log('Alarm in "Home"; resuming')
-
             self.call_service(
                 "vacuum/start_pause", entity_id=self.app.entity_ids["vacuum"]
             )
@@ -233,13 +229,11 @@ class ScheduledCycle(Base):
     ) -> None:
         """Re-arm security (if needed) when done."""
         self.log("Vacuuming cycle all done")
-
         if self.presence_manager.noone(
             self.presence_manager.HomeStates.just_arrived,
             self.presence_manager.HomeStates.home,
         ):
             self.log('Changing alarm state to "away"')
-
             self.security_manager.set_alarm(self.security_manager.AlarmStates.away)
 
         self.app.bin_state = self.app.BinStates.full
@@ -318,12 +312,9 @@ class Vacuum(Base):
     def start(self) -> None:
         """Start a cleaning cycle."""
         self.log("Starting vacuuming cycle")
-
         if self.security_manager.alarm_state == self.security_manager.AlarmStates.away:
             self.log('Changing alarm state to "Home"')
-
             self.security_manager.set_alarm(self.security_manager.AlarmStates.home)
         else:
             self.log("Activating vacuum")
-
             self.call_service("vacuum/start", entity_id=self.entity_ids["vacuum"])
