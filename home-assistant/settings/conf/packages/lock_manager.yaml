@@ -1,0 +1,208 @@
+---
+input_boolean:
+  code_1_front_door:
+    name: Front Door
+  code_1_garage_fire_door:
+    name: Garage Fire Door
+  code_2_front_door:
+    name: Front Door
+  code_2_garage_fire_door:
+    name: Garage Fire Door
+  code_3_front_door:
+    name: Front Door
+  code_3_garage_fire_door:
+    name: Garage Fire Door
+  code_4_front_door:
+    name: Front Door
+  code_4_garage_fire_door:
+    name: Garage Fire Door
+  code_5_front_door:
+    name: Front Door
+  code_5_garage_fire_door:
+    name: Garage Fire Door
+  code_6_front_door:
+    name: Front Door
+  code_6_garage_fire_door:
+    name: Garage Fire Door
+
+input_datetime:
+  code_1_start:
+    name: Start
+    has_date: true
+    has_time: true
+  code_1_end:
+    name: End
+    has_date: true
+    has_time: true
+  code_2_start:
+    name: Start
+    has_date: true
+    has_time: true
+  code_2_end:
+    name: End
+    has_date: true
+    has_time: true
+  code_3_start:
+    name: Start
+    has_date: true
+    has_time: true
+  code_3_end:
+    name: End
+    has_date: true
+    has_time: true
+  code_4_start:
+    name: Start
+    has_date: true
+    has_time: true
+  code_4_end:
+    name: End
+    has_date: true
+    has_time: true
+  code_5_start:
+    name: Start
+    has_date: true
+    has_time: true
+  code_5_end:
+    name: End
+    has_date: true
+    has_time: true
+  code_6_start:
+    name: Start
+    has_date: true
+    has_time: true
+  code_6_end:
+    name: End
+    has_date: true
+    has_time: true
+
+input_select:
+  code_1_type:
+    name: Type
+    options:
+      - Always
+      - Scheduled
+      - One-Time
+  code_2_type:
+    name: Type
+    options:
+      - Always
+      - Scheduled
+      - One-Time
+  code_3_type:
+    name: Type
+    options:
+      - Always
+      - Scheduled
+      - One-Time
+  code_4_type:
+    name: Type
+    options:
+      - Always
+      - Scheduled
+      - One-Time
+  code_5_type:
+    name: Type
+    options:
+      - Always
+      - Scheduled
+      - One-Time
+  code_6_type:
+    name: Type
+    options:
+      - Always
+      - Scheduled
+      - One-Time
+
+input_text:
+  code_1_name:
+    name: Name
+  code_1_code:
+    name: Code
+    pattern: "[0-9]{5}"
+  code_2_name:
+    name: Name
+  code_2_code:
+    name: Code
+    pattern: "[0-9]{5}"
+  code_3_name:
+    name: Name
+  code_3_code:
+    name: Code
+    pattern: "[0-9]{5}"
+  code_4_name:
+    name: Name
+  code_4_code:
+    name: Code
+    pattern: "[0-9]{5}"
+  code_5_name:
+    name: Name
+  code_5_code:
+    name: Code
+    pattern: "[0-9]{5}"
+  code_6_name:
+    name: Name
+  code_6_code:
+    name: Code
+    pattern: "[0-9]{6}"
+
+script:
+  code_1_execute:
+    sequence:
+      - event: LOCK_CONFIG_CHANGE
+        event_data:
+          code_id: 1
+  eode_1_reset:
+    sequence:
+      - event: LOCK_CONFIG_RESET
+        event_data:
+          code_id: 1
+  code_2_execute:
+    sequence:
+      - event: LOCK_CONFIG_CHANGE
+        event_data:
+          code_id: 2
+  eode_2_reset:
+    sequence:
+      - event: LOCK_CONFIG_RESET
+        event_data:
+          code_id: 2
+  code_3_execute:
+    sequence:
+      - event: LOCK_CONFIG_CHANGE
+        event_data:
+          code_id: 3
+  eode_3_reset:
+    sequence:
+      - event: LOCK_CONFIG_RESET
+        event_data:
+          code_id: 3
+  code_4_execute:
+    sequence:
+      - event: LOCK_CONFIG_CHANGE
+        event_data:
+          code_id: 4
+  eode_4_reset:
+    sequence:
+      - event: LOCK_CONFIG_RESET
+        event_data:
+          code_id: 4
+  code_5_execute:
+    sequence:
+      - event: LOCK_CONFIG_CHANGE
+        event_data:
+          code_id: 5
+  eode_5_reset:
+    sequence:
+      - event: LOCK_CONFIG_RESET
+        event_data:
+          code_id: 5
+  code_6_execute:
+    sequence:
+      - event: LOCK_CONFIG_CHANGE
+        event_data:
+          code_id: 6
+  eode_6_reset:
+    sequence:
+      - event: LOCK_CONFIG_RESET
+        event_data:
+          code_id: 6
