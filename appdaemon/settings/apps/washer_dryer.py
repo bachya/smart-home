@@ -90,6 +90,11 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
 
     def _start_notification_cycle(self) -> None:
         """Start the repeating notification sequence."""
+        # If the dishwasher was clean and a new cycle ran, we could get multiple
+        # notification cycles, so before we start a new one, cancel any existing
+        # one:
+        self._cancel_notification_cycle()
+        
         self.handles[HANDLE_CLEAN] = send_notification(
             self,
             "presence:home",
