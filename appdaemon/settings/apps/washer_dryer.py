@@ -62,21 +62,18 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
             and power >= self.properties[CONF_RUNNING_THRESHOLD]
         ):
             self.log('Setting dishwasher to "Running"')
-
             self.app.state = self.app.States.running
         elif (
             self.app.state == self.app.States.running
             and power <= self.properties[CONF_DRYING_THRESHOLD]
         ):
             self.log('Setting dishwasher to "Drying"')
-
             self.app.state = self.app.States.drying
         elif (
             self.app.state == self.app.States.drying
             and power == self.properties[CONF_CLEAN_THRESHOLD]
         ):
             self.log('Setting dishwasher to "Clean"')
-
             self.app.state = self.app.States.clean
 
     def _on_status_change(
@@ -90,11 +87,6 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
 
     def _start_notification_cycle(self) -> None:
         """Start the repeating notification sequence."""
-        # If the dishwasher was clean and a new cycle ran, we could get multiple
-        # notification cycles, so before we start a new one, cancel any existing
-        # one:
-        self._cancel_notification_cycle()
-        
         self.handles[HANDLE_CLEAN] = send_notification(
             self,
             "presence:home",
