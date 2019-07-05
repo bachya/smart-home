@@ -1,20 +1,18 @@
 """Support for Notion."""
 import asyncio
-from datetime import timedelta
 import logging
 
 import voluptuous as vol
 
 from homeassistant.config_entries import SOURCE_IMPORT
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    CONF_PASSWORD,
-    CONF_SCAN_INTERVAL,
-    CONF_USERNAME,
-)
+from homeassistant.const import ATTR_ATTRIBUTION, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import callback
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import aiohttp_client, config_validation as cv
+from homeassistant.helpers import (
+    aiohttp_client,
+    config_validation as cv,
+    device_registry as dr,
+)
 from homeassistant.helpers.dispatcher import (
     async_dispatcher_connect,
     async_dispatcher_send,
@@ -27,8 +25,6 @@ from .const import DATA_CLIENT, DEFAULT_SCAN_INTERVAL, DOMAIN, TOPIC_DATA_UPDATE
 
 _LOGGER = logging.getLogger(__name__)
 
-ATTR_BRIDGE_MODE = "bridge_mode"
-ATTR_BRIDGE_NAME = "bridge_name"
 ATTR_SYSTEM_MODE = "system_mode"
 ATTR_SYSTEM_NAME = "system_name"
 
@@ -68,9 +64,6 @@ CONFIG_SCHEMA = vol.Schema(
             {
                 vol.Required(CONF_USERNAME): cv.string,
                 vol.Required(CONF_PASSWORD): cv.string,
-                vol.Optional(
-                    CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
-                ): cv.time_period,
             }
         )
     },
@@ -109,7 +102,7 @@ async def async_setup(hass, config):
 async def async_setup_entry(hass, config_entry):
     """Set up Notion as a config entry."""
     from aionotion import async_get_client
-    from aionotion.errors import NotionError
+    from aionotion.errors import InvalidCredentialsError, NotionError
 
     session = aiohttp_client.async_get_clientsession(hass)
 
@@ -117,12 +110,15 @@ async def async_setup_entry(hass, config_entry):
         client = await async_get_client(
             config_entry.data[CONF_USERNAME], config_entry.data[CONF_PASSWORD], session
         )
+    except InvalidCredentialsError:
+        _LOGGER.error("Invalid username and/or password")
+        return
     except NotionError as err:
         _LOGGER.error("Config entry failed: %s", err)
         raise ConfigEntryNotReady
 
-    notion = Notion(client)
-    await notion.async_update(initialize=True)
+    notion = Notion(hass, client, config_entry.entry_id)
+    await notion.async_update()
     hass.data[DOMAIN][DATA_CLIENT][config_entry.entry_id] = notion
 
     for component in ("binary_sensor", "sensor"):
@@ -137,7 +133,7 @@ async def async_setup_entry(hass, config_entry):
         async_dispatcher_send(hass, TOPIC_DATA_UPDATE)
 
     hass.data[DOMAIN][DATA_LISTENER][config_entry.entry_id] = async_track_time_interval(
-        hass, refresh, timedelta(seconds=config_entry.data[CONF_SCAN_INTERVAL])
+        hass, refresh, DEFAULT_SCAN_INTERVAL
     )
 
     return True
@@ -155,18 +151,32 @@ async def async_unload_entry(hass, config_entry):
     return True
 
 
+async def register_new_bridge(hass, bridge, config_entry_id):
+    """Register a new bridge."""
+    device_registry = await dr.async_get_registry(hass)
+    device_registry.async_get_or_create(
+        config_entry_id=config_entry_id,
+        identifiers={(DOMAIN, bridge["hardware_id"])},
+        manufacturer="Silicon Labs",
+        model=bridge["hardware_revision"],
+        name=bridge["name"] or bridge["id"],
+        sw_version=bridge["firmware_version"]["wifi"],
+    )
+
+
 class Notion:
     """Define a class to handle the Notion API."""
 
-    def __init__(self, client):
+    def __init__(self, hass, client, config_entry_id):
         """Initialize."""
         self._client = client
-        self.bridges = []
-        self.sensors = []
-        self.systems = []
-        self.tasks = []
+        self._config_entry_id = config_entry_id
+        self._hass = hass
+        self.bridges = {}
+        self.sensors = {}
+        self.tasks = {}
 
-    async def async_update(self, *, initialize=False):
+    async def async_update(self):
         """Get the latest Notion data."""
         from aionotion.errors import NotionError
 
@@ -175,8 +185,6 @@ class Notion:
             "sensors": self._client.sensor.async_all(),
             "tasks": self._client.task.async_all(),
         }
-        if initialize:
-            tasks["systems"] = self._client.system.async_all()
 
         results = await asyncio.gather(*tasks.values(), return_exceptions=True)
         for attr, result in zip(tasks, results):
@@ -184,36 +192,38 @@ class Notion:
                 _LOGGER.error("There was an error while updating %s: %s", attr, result)
                 continue
 
-            setattr(self, attr, result)
+            holding_pen = getattr(self, attr)
+            for item in result:
+                if attr == "bridges" and item["id"] not in holding_pen:
+                    # If a new bridge is discovered, register it:
+                    self._hass.async_create_task(
+                        register_new_bridge(self._hass, item, self._config_entry_id)
+                    )
+                holding_pen[item["id"]] = item
 
 
 class NotionEntity(Entity):
     """Define a base Notion entity."""
 
-    def __init__(self, notion, task, sensor, bridge, system, name, device_class):
+    def __init__(
+        self, notion, task_id, sensor_id, bridge_id, system_id, name, device_class
+    ):
         """Initialize the entity."""
         self._async_unsub_dispatcher_connect = None
-        self._bridge = bridge
+        self._attrs = {ATTR_ATTRIBUTION: DEFAULT_ATTRIBUTION}
+        self._bridge_id = bridge_id
         self._device_class = device_class
         self._name = name
         self._notion = notion
-        self._sensor = sensor
+        self._sensor_id = sensor_id
         self._state = None
-        self._system = system
-        self._task = task
-
-        self._attrs = {
-            ATTR_ATTRIBUTION: DEFAULT_ATTRIBUTION,
-            ATTR_BRIDGE_MODE: self._bridge["mode"],
-            ATTR_BRIDGE_NAME: self._bridge["name"],
-            ATTR_SYSTEM_MODE: self._system["mode"],
-            ATTR_SYSTEM_NAME: self._system["name"],
-        }
+        self._system_id = system_id
+        self._task_id = task_id
 
     @property
     def available(self):
         """Return True if entity is available."""
-        return self._task["id"] in [t["id"] for t in self._notion.tasks]
+        return any(self._task_id == task_id for task_id in list(self._notion.tasks))
 
     @property
     def device_class(self):
@@ -228,19 +238,24 @@ class NotionEntity(Entity):
     @property
     def device_info(self):
         """Return device registry information for this entity."""
+        bridge = self._notion.bridges[self._bridge_id]
+        sensor = self._notion.sensors[self._sensor_id]
+
         return {
-            "identifiers": {(DOMAIN, self._sensor["hardware_id"])},
-            "manufacturer": "Notion",
-            "model": self._sensor["hardware_revision"],
-            "name": self._sensor["name"],
-            "sw_version": self._sensor["firmware_version"],
-            "via_device": (DOMAIN, self._bridge["hardware_id"]),
+            "identifiers": {(DOMAIN, sensor["hardware_id"])},
+            "manufacturer": "Silicon Labs",
+            "model": sensor["hardware_revision"],
+            "name": sensor["name"],
+            "sw_version": sensor["firmware_version"],
+            "via_device": (DOMAIN, bridge["hardware_id"]),
         }
 
     @property
     def name(self):
         """Return the name of the sensor."""
-        return "{0}: {1}".format(self._sensor["name"], self._name)
+        return "{0}: {1}".format(
+            self._notion.sensors[self._sensor_id]["name"], self._name
+        )
 
     @property
     def should_poll(self):
@@ -250,14 +265,37 @@ class NotionEntity(Entity):
     @property
     def unique_id(self):
         """Return a unique, unchanging string that represents this sensor."""
-        return self._task["id"]
+        return self._task_id
+
+    async def _update_bridge_id(self):
+        """Update the entity's bridge ID if it has changed.
+
+        Sensors can move to other bridges based on signal strength, etc.
+        """
+        sensor = self._notion.sensors[self._sensor_id]
+        if self._bridge_id != sensor["bridge"]["id"]:
+            self._bridge_id = sensor["bridge"]["id"]
+            device_registry = await dr.async_get_registry(self.hass)
+
+            this_device = device_registry.async_get_device(
+                {DOMAIN: sensor["hardware_id"]}
+            )
+
+            bridge = self._notion.bridges[self._bridge_id]
+            bridge_device = device_registry.async_get_device(
+                {DOMAIN: bridge["hardware_id"]}, set()
+            )
+            device_registry.async_update_device(
+                this_device.id, via_device_id=bridge_device.id
+            )
 
     async def async_added_to_hass(self):
         """Register callbacks."""
 
         @callback
         def update():
-            """Update the state."""
+            """Update the entity."""
+            self.hass.async_create_task(self._update_bridge_id())
             self.async_schedule_update_ha_state(True)
 
         self._async_unsub_dispatcher_connect = async_dispatcher_connect(

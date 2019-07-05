@@ -2,11 +2,11 @@
 import voluptuous as vol
 
 from homeassistant import config_entries
-from homeassistant.const import CONF_PASSWORD, CONF_SCAN_INTERVAL, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import callback
 from homeassistant.helpers import aiohttp_client
 
-from .const import DEFAULT_SCAN_INTERVAL, DOMAIN
+from .const import DOMAIN
 
 
 @callback
@@ -31,7 +31,7 @@ class NotionFlowHandler(config_entries.ConfigFlow):
         )
 
         return self.async_show_form(
-            step_id="user", data_schema=data_schema, errors=errors if errors else {}
+            step_id="user", data_schema=data_schema, errors=errors or {}
         )
 
     async def async_step_import(self, import_config):
@@ -57,9 +57,5 @@ class NotionFlowHandler(config_entries.ConfigFlow):
             )
         except NotionError:
             return await self._show_form({"base": "invalid_credentials"})
-
-        # Timedeltas are easily serializable, so store the seconds instead:
-        scan_interval = user_input.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
-        user_input[CONF_SCAN_INTERVAL] = scan_interval.seconds
 
         return self.async_create_entry(title=user_input[CONF_USERNAME], data=user_input)
