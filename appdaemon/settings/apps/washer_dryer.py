@@ -87,6 +87,9 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
 
     def _start_notification_cycle(self) -> None:
         """Start the repeating notification sequence."""
+        # In case there was already a notification cycle going, cancel it:
+        self._cancel_notification_cycle()
+
         self.handles[HANDLE_CLEAN] = send_notification(
             self,
             "presence:home",
