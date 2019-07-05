@@ -11,7 +11,7 @@ sensor:
       - sensor.kitchen_sensor_temperature
       - sensor.master_bathroom_temperature
       - sensor.side_yard_inside_temp
-      - sensor.thermostat_thermostat_temperature
+      - sensor.thermostat_temperature
       - sensor.upstairs_hallway_sensor_temperature
 
   - platform: min_max
@@ -21,7 +21,7 @@ sensor:
     entity_ids:
       - sensor.master_bathroom_humidity
       - sensor.side_yard_humidity_in
-      - sensor.thermostat_thermostat_humidity
+      - sensor.thermostat_humidity
 
   - platform: filter
     name: "Filtered Average Indoor Humidity"

@@ -83,15 +83,6 @@ sensor.speedtest_download:
   icon: mdi:cloud-download
 sensor.speedtest_upload:
   icon: mdi:cloud-upload
-sensor.thermostat_thermostat_humidity:
-  friendly_name: Indoor Humidity
-  icon: mdi:water-percent
-sensor.thermostat_thermostat_hvac_state:
-  friendly_name: Indoor HVAC State
-  icon: mdi:fan
-sensor.thermostat_thermostat_temperature:
-  friendly_name: Indoor Temperature
-  icon: mdi:thermometer
 switch.backyard_lights:
   icon: mdi:lightbulb
 switch.bar_cart:
