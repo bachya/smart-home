@@ -10,9 +10,9 @@ climate_manager:
   module: climate
   class: ClimateManager
   entity_ids:
-    average_humidity_sensor: sensor.average_indoor_humidity
-    average_temperature_sensor: sensor.average_indoor_temperature
-    outdoor_temperature: sensor.dark_sky_temperature
+    humidity_sensor: sensor.average_indoor_humidity
+    indoor_temperature_sensor: sensor.average_indoor_temperature
+    outdoor_temperature_sensor: sensor.dark_sky_temperature
     thermostat: climate.thermostat
   properties:
     eco_high_threshold: 75

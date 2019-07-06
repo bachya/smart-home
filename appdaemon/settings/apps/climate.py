@@ -11,13 +11,13 @@ from const import (
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 
-CONF_AVG_HUMIDITY_SENSOR = "average_humidity_sensor"
-CONF_AVG_TEMP_SENSOR = "average_temperature_sensor"
-CONF_ECO_HIGH = "eco_high_threshold"
-CONF_ECO_LOW = "eco_low_threshold"
-CONF_OUTDOOR_HIGH = "outdoor_high_threshold"
-CONF_OUTDOOR_LOW = "outdoor_low_threshold"
-CONF_OUTDOOR_TEMPERATURE = "outdoor_temperature"
+CONF_ECO_HIGH_THRESHOLD = "eco_high_threshold"
+CONF_ECO_LOW_THRESHOLD = "eco_low_threshold"
+CONF_HUMIDITY_SENSOR = "humidity_sensor"
+CONF_INDOOR_TEMPERATURE_SENSOR = "indoor_temperature_sensor"
+CONF_OUTDOOR_HIGH_THRESHOLD = "outdoor_high_threshold"
+CONF_OUTDOOR_LOW_THRESHOLD = "outdoor_low_threshold"
+CONF_OUTDOOR_TEMPERATURE_SENSOR = "outdoor_temperature_sensor"
 CONF_THERMOSTAT = "thermostat"
 
 FAN_MODE_AUTO_LOW = "Auto Low"
@@ -93,18 +93,18 @@ class ClimateManager(Base):
         {
             CONF_ENTITY_IDS: vol.Schema(
                 {
-                    vol.Required(CONF_AVG_HUMIDITY_SENSOR): cv.entity_id,
-                    vol.Required(CONF_AVG_TEMP_SENSOR): cv.entity_id,
-                    vol.Required(CONF_OUTDOOR_TEMPERATURE): cv.entity_id,
+                    vol.Required(CONF_HUMIDITY_SENSOR): cv.entity_id,
+                    vol.Required(CONF_INDOOR_TEMPERATURE_SENSOR): cv.entity_id,
+                    vol.Required(CONF_OUTDOOR_TEMPERATURE_SENSOR): cv.entity_id,
                     vol.Required(CONF_THERMOSTAT): cv.entity_id,
                 }
             ),
             CONF_PROPERTIES: vol.Schema(
                 {
-                    vol.Required(CONF_ECO_HIGH): int,
-                    vol.Required(CONF_ECO_LOW): int,
-                    vol.Required(CONF_OUTDOOR_HIGH): int,
-                    vol.Required(CONF_OUTDOOR_LOW): int,
+                    vol.Required(CONF_ECO_HIGH_THRESHOLD): int,
+                    vol.Required(CONF_ECO_LOW_THRESHOLD): int,
+                    vol.Required(CONF_OUTDOOR_HIGH_THRESHOLD): int,
+                    vol.Required(CONF_OUTDOOR_LOW_THRESHOLD): int,
                 }
             ),
         }
@@ -117,16 +117,6 @@ class ClimateManager(Base):
         self._last_temperature = None
 
     @property
-    def average_indoor_humidity(self) -> float:
-        """Return the average indoor humidity based on a list of sensors."""
-        return float(self.get_state(self.entity_ids[CONF_AVG_HUMIDITY_SENSOR]))
-
-    @property
-    def average_indoor_temperature(self) -> float:
-        """Return the average indoor temperature based on a list of sensors."""
-        return float(self.get_state(self.entity_ids[CONF_AVG_TEMP_SENSOR]))
-
-    @property
     def away_mode(self) -> bool:
         """Return the state of away mode."""
         return self._away
@@ -135,6 +125,16 @@ class ClimateManager(Base):
     def fan_mode(self) -> str:
         """Return the current fan mode."""
         return self.get_state(self.entity_ids[CONF_THERMOSTAT], attribute="fan_mode")
+
+    @property
+    def indoor_humidity(self) -> float:
+        """Return the average indoor humidity based on a list of sensors."""
+        return float(self.get_state(self.entity_ids[CONF_HUMIDITY_SENSOR]))
+
+    @property
+    def indoor_temperature(self) -> float:
+        """Return the average indoor temperature based on a list of sensors."""
+        return float(self.get_state(self.entity_ids[CONF_INDOOR_TEMPERATURE_SENSOR]))
 
     @property
     def operation_mode(self) -> str:
@@ -146,15 +146,17 @@ class ClimateManager(Base):
     @property
     def outdoor_temperature(self) -> float:
         """Define a property to get the current outdoor temperature."""
-        return float(self.get_state(self.entity_ids[CONF_OUTDOOR_TEMPERATURE]))
+        return float(self.get_state(self.entity_ids[CONF_OUTDOOR_TEMPERATURE_SENSOR]))
 
     @property
     def outdoor_temperature_extreme(self) -> float:
         """Return whether the outside temperature is at extreme limits."""
-        outdoor_temp = float(self.get_state(self.entity_ids[CONF_OUTDOOR_TEMPERATURE]))
+        outdoor_temp = float(
+            self.get_state(self.entity_ids[CONF_OUTDOOR_TEMPERATURE_SENSOR])
+        )
         return (
-            outdoor_temp < self.properties[CONF_OUTDOOR_LOW]
-            or outdoor_temp > self.properties[CONF_OUTDOOR_HIGH]
+            outdoor_temp < self.properties[CONF_OUTDOOR_LOW_THRESHOLD]
+            or outdoor_temp > self.properties[CONF_OUTDOOR_HIGH_THRESHOLD]
         )
 
     @property
@@ -174,14 +176,14 @@ class ClimateManager(Base):
     ) -> None:
         """React when the temperature goes above or below its eco thresholds."""
         new_temp = float(new)
-        if new_temp > self.properties[CONF_ECO_HIGH]:
+        if new_temp > self.properties[CONF_ECO_HIGH_THRESHOLD]:
             self.log('Above eco mode limits; turning thermostat to "cool"')
             self.set_mode_cool()
-            self.set_temperature(self.properties[CONF_ECO_HIGH] - 1)
-        elif new_temp < self.properties[CONF_ECO_LOW]:
+            self.set_temperature(self.properties[CONF_ECO_HIGH_THRESHOLD] - 1)
+        elif new_temp < self.properties[CONF_ECO_LOW_THRESHOLD]:
             self.log('Below eco mode limits; turning thermostat to "heat"')
             self.set_mode_heat()
-            self.set_temperature(self.properties[CONF_ECO_LOW] + 1)
+            self.set_temperature(self.properties[CONF_ECO_LOW_THRESHOLD] + 1)
         elif self.operation_mode != OPERATION_MODE_OFF:
             self.log('Within eco mode limits; turning thermostat to "off"')
             self.set_mode_off()
@@ -229,7 +231,7 @@ class ClimateManager(Base):
 
         self.set_mode_off()
         self.handles[HANDLE_ECO_MODE] = self.listen_state(
-            self._on_eco_temp_change, self.entity_ids[CONF_AVG_TEMP_SENSOR]
+            self._on_eco_temp_change, self.entity_ids[CONF_INDOOR_TEMPERATURE_SENSOR]
         )
 
     def set_fan_auto_low(self) -> None:

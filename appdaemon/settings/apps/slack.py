@@ -85,7 +85,7 @@ class Thermostat(SlashCommand):
 
             self.message(
                 "{0} The current indoor temperature is `{1}°`.".format(
-                    text, self._hass.climate_manager.average_indoor_temperature
+                    text, self._hass.climate_manager.indoor_temperature
                 )
             )
             return
