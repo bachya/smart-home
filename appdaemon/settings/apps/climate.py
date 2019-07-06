@@ -128,12 +128,12 @@ class ClimateManager(Base):
 
     @property
     def indoor_humidity(self) -> float:
-        """Return the average indoor humidity based on a list of sensors."""
+        """Return the average indoor humidity."""
         return float(self.get_state(self.entity_ids[CONF_HUMIDITY_SENSOR]))
 
     @property
     def indoor_temperature(self) -> float:
-        """Return the average indoor temperature based on a list of sensors."""
+        """Return the average indoor temperature."""
         return float(self.get_state(self.entity_ids[CONF_INDOOR_TEMPERATURE_SENSOR]))
 
     @property
