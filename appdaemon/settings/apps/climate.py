@@ -269,6 +269,16 @@ class ClimateManager(Base):
         """Set the thermostat temperature."""
         if temperature == self.target_temperature:
             return
+            
+        # If the thermostat is off and the temperature is adjusted,
+        # make a guess as to which operation mode should be used:
+        if self.operation_mode == OPERATION_MODE_OFF:
+            if temperature > self.average_indoor_temperature:
+                self.set_mode_heat()
+            elif temperature < self.average_indoor_temperature:
+                self.set_mode_cool()
+            else:
+                self.set_mode_auto()
 
         self.call_service(
             "climate/set_temperature",
