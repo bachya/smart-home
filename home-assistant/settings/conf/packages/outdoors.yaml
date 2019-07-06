@@ -65,7 +65,7 @@ sensor:
       outdoor_brightness_lux_log:
         friendly_name: "Side Yard: Brightness (Perception)"
         value_template: >
-          {{ (states.sensor.outdoor_brightness_lux.state|log(10)/5)|round * 100 }}
+          {{ (states.sensor.outdoor_brightness_lux.state|log(10)/5)|round(2) * 100 }}
         unit_of_measurement: "%"
         device_class: illuminance
       sunrise:
