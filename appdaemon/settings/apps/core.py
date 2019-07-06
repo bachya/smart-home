@@ -107,7 +107,6 @@ class Base(Hass):
         # Set up connections to the automation being disabled/enabled:
         if self._enabled_entity_exists():
             # Listen and track mode changes so that the app can respond as needed:
-            self.state_change_events = []  # type: List[str]
             for state_change in self.state_changes:
                 self.listen_event(
                     self._on_state_change_disable,
