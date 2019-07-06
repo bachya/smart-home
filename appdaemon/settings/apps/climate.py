@@ -2,7 +2,12 @@
 from typing import Union
 import voluptuous as vol
 
-from const import CONF_ENTITY_IDS, EVENT_PRESENCE_CHANGE, EVENT_PROXIMITY_CHANGE
+from const import (
+    CONF_ENTITY_IDS,
+    CONF_PROPERTIES,
+    EVENT_PRESENCE_CHANGE,
+    EVENT_PROXIMITY_CHANGE,
+)
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 
@@ -92,9 +97,16 @@ class ClimateManager(Base):
                     vol.Required(CONF_AVG_TEMP_SENSOR): cv.entity_id,
                     vol.Required(CONF_OUTDOOR_TEMPERATURE): cv.entity_id,
                     vol.Required(CONF_THERMOSTAT): cv.entity_id,
-                },
-                extra=vol.ALLOW_EXTRA,
-            )
+                }
+            ),
+            CONF_PROPERTIES: vol.Schema(
+                {
+                    vol.Required(CONF_ECO_HIGH): int,
+                    vol.Required(CONF_ECO_LOW): int,
+                    vol.Required(CONF_OUTDOOR_HIGH): int,
+                    vol.Required(CONF_OUTDOOR_LOW): int,
+                }
+            ),
         }
     )
 
@@ -269,7 +281,7 @@ class ClimateManager(Base):
         """Set the thermostat temperature."""
         if temperature == self.target_temperature:
             return
-            
+
         # If the thermostat is off and the temperature is adjusted,
         # make a guess as to which operation mode should be used:
         if self.operation_mode == OPERATION_MODE_OFF:
