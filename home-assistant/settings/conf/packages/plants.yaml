@@ -1,5 +1,12 @@
 ---
 sensor:
+  - platform: filter
+    name: "Filtered Fiddle Leaf Fig Brightness (%)"
+    entity_id: sensor.fiddle_leaf_fig_light_intensity_log
+    filters:
+      - filter: range
+        upper_bound: 100
+
   - platform: mqtt
     name: Fiddle Leaf Fig Moisture
     state_topic: "miflora/Fred"

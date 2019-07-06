@@ -29,6 +29,13 @@ sensor:
         time_constant: 10
         precision: 1
 
+  - platform: filter
+    name: "Filtered Outdoor Brightness (%)"
+    entity_id: sensor.outdoor_brightness_lux_log
+    filters:
+      - filter: range
+        upper_bound: 100
+
   - platform: moon
 
   - platform: season
