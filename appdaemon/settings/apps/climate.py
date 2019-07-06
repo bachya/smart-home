@@ -145,7 +145,7 @@ class ClimateManager(Base):
 
     @property
     def outdoor_temperature(self) -> float:
-        """Define a property to get the current outdoor temperature."""
+        """Return the outdoor temperature."""
         return float(self.get_state(self.entity_ids[CONF_OUTDOOR_TEMPERATURE_SENSOR]))
 
     @property
