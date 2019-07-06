@@ -62,6 +62,12 @@ sensor:
           {{ (float(states.sensor.side_yard_solar_rad.state) / 0.0079)|round }}
         unit_of_measurement: lx
         device_class: illuminance
+      outdoor_brightness_lux_log:
+        friendly_name: "Side Yard: Brightness (Perception)"
+        value_template: >
+          {{ states.sensor.outdoor_brightness_lux.state|log(10)/5 }}
+        unit_of_measurement: "%"
+        device_class: illuminance
       sunrise:
         friendly_name: Next Sunrise
         value_template: >
