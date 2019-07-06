@@ -21,7 +21,7 @@ sensor:
       living_room_brightness_lux_log:
         friendly_name: "Living Room: Brightness (Perception)"
         value_template: >
-          {{ states.sensor.fiddle_leaf_fig_light_intensity.state|log(10)/5 }}
+          {{ (states.sensor.fiddle_leaf_fig_light_intensity.state|log(10)/5)|round * 100 }}
         unit_of_measurement: "%"
         device_class: illuminance
       front_door_lock_battery:
