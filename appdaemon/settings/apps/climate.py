@@ -151,12 +151,9 @@ class ClimateManager(Base):
     @property
     def outdoor_temperature_extreme(self) -> float:
         """Return whether the outside temperature is at extreme limits."""
-        outdoor_temp = float(
-            self.get_state(self.entity_ids[CONF_OUTDOOR_TEMPERATURE_SENSOR])
-        )
         return (
-            outdoor_temp < self.properties[CONF_OUTDOOR_LOW_THRESHOLD]
-            or outdoor_temp > self.properties[CONF_OUTDOOR_HIGH_THRESHOLD]
+            self.outdoor_temperature < self.properties[CONF_OUTDOOR_LOW_THRESHOLD]
+            or self.outdoor_temperature > self.properties[CONF_OUTDOOR_HIGH_THRESHOLD]
         )
 
     @property
