@@ -38,20 +38,3 @@ sensor:
       - filter: lowpass
         time_constant: 10
         precision: 1
-
-switch:
-  - platform: template
-    switches:
-      climate_away_mode:
-        friendly_name: Climate Away Mode
-        value_template: >
-          {{ states.climate.thermostat.attributes.away_mode == 'on'}}
-        icon_template: mdi:arrow-left-drop-circle
-        turn_on:
-          service: nest.set_mode
-          data:
-            home_mode: away
-        turn_off:
-          service: nest.set_mode
-          data:
-            home_mode: home

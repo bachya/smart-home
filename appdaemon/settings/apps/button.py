@@ -3,6 +3,7 @@
 from typing import List, Optional, Union
 import voluptuous as vol
 
+from climate import OPERATION_MODE_HEAT
 from const import CONF_ENTITY_ID, CONF_ENTITY_IDS, CONF_FRIENDLY_NAME, CONF_PROPERTIES
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
@@ -57,10 +58,10 @@ class BumpClimate:
 
     def run(self) -> None:
         """Bump."""
-        if self._app.climate_manager.mode == self._app.climate_manager.Modes.heat:
-            self._app.climate_manager.bump_indoor_temp(self._degrees)
+        if self._app.climate_manager.operation_mode == OPERATION_MODE_HEAT:
+            self._app.climate_manager.bump_temperature(self._degrees)
         else:
-            self._app.climate_manager.bump_indoor_temp(self._degrees * -1)
+            self._app.climate_manager.bump_temperature(self._degrees * -1)
 
 
 class ToggleEntity:

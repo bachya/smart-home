@@ -78,13 +78,10 @@ class Thermostat(SlashCommand):
     def execute(self) -> None:
         """Execute the response to the slash command."""
         if not self._text:
-            if self._hass.climate_manager.mode == self._hass.climate_manager.Modes.eco:
-                text = "The thermostat is set to eco mode."
-            else:
-                text = "The thermostat is set to `{0}` to `{1}°`.".format(
-                    self._hass.climate_manager.mode.name,
-                    self._hass.climate_manager.indoor_temp,
-                )
+            text = "The thermostat is set to `{0}` to `{1}°`.".format(
+                self._hass.climate_manager.operation_mode,
+                self._hass.climate_manager.target_temperature,
+            )
 
             self.message(
                 "{0} The current indoor temperature is `{1}°`.".format(
@@ -93,7 +90,7 @@ class Thermostat(SlashCommand):
             )
             return
 
-        self._hass.climate_manager.set_indoor_temp(int(self._text))
+        self._hass.climate_manager.set_temperature(int(self._text))
         self.message("I've set the thermostat to `{0}°`.".format(self._text))
 
 

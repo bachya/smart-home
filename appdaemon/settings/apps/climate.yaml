@@ -12,5 +12,10 @@ climate_manager:
   entity_ids:
     average_humidity_sensor: sensor.average_indoor_humidity
     average_temperature_sensor: sensor.average_indoor_temperature
-    outside_temp: sensor.dark_sky_temperature
+    outdoor_temperature: sensor.dark_sky_temperature
     thermostat: climate.thermostat
+  properties:
+    eco_high_threshold: 75
+    eco_low_threshold: 60
+    outdoor_high_threshold: 80
+    outdoor_low_threshold: 45

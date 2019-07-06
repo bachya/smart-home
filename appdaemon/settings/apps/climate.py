@@ -1,22 +1,30 @@
 """Define automations for climate control."""
-from datetime import timedelta
-from enum import Enum
-from typing import Tuple
-
+from typing import Union
 import voluptuous as vol
 
 from const import CONF_ENTITY_IDS, EVENT_PRESENCE_CHANGE, EVENT_PROXIMITY_CHANGE
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
-from helpers.dt import ceil_dt
 
 CONF_AVG_HUMIDITY_SENSOR = "average_humidity_sensor"
 CONF_AVG_TEMP_SENSOR = "average_temperature_sensor"
-CONF_OUTSIDE_TEMP = "outside_temp"
+CONF_ECO_HIGH = "eco_high_threshold"
+CONF_ECO_LOW = "eco_low_threshold"
+CONF_OUTDOOR_HIGH = "outdoor_high_threshold"
+CONF_OUTDOOR_LOW = "outdoor_low_threshold"
+CONF_OUTDOOR_TEMPERATURE = "outdoor_temperature"
 CONF_THERMOSTAT = "thermostat"
 
-OUTSIDE_THRESHOLD_HIGH = 75
-OUTSIDE_THRESHOLD_LOW = 35
+FAN_MODE_AUTO_LOW = "Auto Low"
+FAN_MODE_CIRCULATE = "Circulate"
+FAN_MODE_ON_LOW = "On Low"
+
+HANDLE_ECO_MODE = "eco_mode"
+
+OPERATION_MODE_AUTO = "auto"
+OPERATION_MODE_COOL = "cool"
+OPERATION_MODE_HEAT = "heat"
+OPERATION_MODE_OFF = "off"
 
 
 class AdjustOnProximity(Base):  # pylint: disable=too-few-public-methods
@@ -39,51 +47,38 @@ class AdjustOnProximity(Base):  # pylint: disable=too-few-public-methods
         """Last ditch: turn the thermostat to home when someone arrives."""
         if self.climate_manager.away_mode:
             self.log('Last ditch: setting thermostat to "Home" (arrived)')
-
-            self.climate_manager.set_away_mode(self.climate_manager.AwayModes.home)
+            self.climate_manager.set_home()
 
     def _on_proximity_change(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to "PROXIMITY_CHANGE" events."""
-        if (
-            self.climate_manager.outside_temp < OUTSIDE_THRESHOLD_LOW
-            or self.climate_manager.outside_temp > OUTSIDE_THRESHOLD_HIGH
-        ):
-
+        if self.climate_manager.outdoor_temperature_extreme:
             # Scenario 1: Anything -> Away (Extreme Temps)
             if (
                 data["old"] != self.presence_manager.ProximityStates.away.value
                 and data["new"] == self.presence_manager.ProximityStates.away.value
             ):
-                self.log('Setting thermostat to "Away" (extreme temp)')
-
-                self.climate_manager.set_away_mode(self.climate_manager.AwayModes.away)
+                self.climate_manager.set_away()
 
             # Scenario 2: Away -> Anything (Extreme Temps)
             elif (
                 data["old"] == self.presence_manager.ProximityStates.away.value
                 and data["new"] != self.presence_manager.ProximityStates.away.value
             ):
-                self.log('Setting thermostat to "Home" (extreme temp)')
-
-                self.climate_manager.set_away_mode(self.climate_manager.AwayModes.home)
+                self.climate_manager.set_home()
         else:
             # Scenario 3: Home -> Anything
             if (
                 data["old"] == self.presence_manager.ProximityStates.home.value
                 and data["new"] != self.presence_manager.ProximityStates.home.value
             ):
-                self.log('Setting thermostat to "Away"')
-
-                self.climate_manager.set_away_mode(self.climate_manager.AwayModes.away)
+                self.climate_manager.set_away()
 
             # Scenario 4: Anything -> Nearby
             elif (
                 data["old"] != self.presence_manager.ProximityStates.nearby.value
                 and data["new"] == self.presence_manager.ProximityStates.nearby.value
             ):
-                self.log('Setting thermostat to "Home"')
-
-                self.climate_manager.set_away_mode(self.climate_manager.AwayModes.home)
+                self.climate_manager.set_home()
 
 
 class ClimateManager(Base):
@@ -95,7 +90,7 @@ class ClimateManager(Base):
                 {
                     vol.Required(CONF_AVG_HUMIDITY_SENSOR): cv.entity_id,
                     vol.Required(CONF_AVG_TEMP_SENSOR): cv.entity_id,
-                    vol.Required(CONF_OUTSIDE_TEMP): cv.entity_id,
+                    vol.Required(CONF_OUTDOOR_TEMPERATURE): cv.entity_id,
                     vol.Required(CONF_THERMOSTAT): cv.entity_id,
                 },
                 extra=vol.ALLOW_EXTRA,
@@ -103,26 +98,11 @@ class ClimateManager(Base):
         }
     )
 
-    class AwayModes(Enum):
-        """Define an enum for thermostat away modes."""
-
-        away = 1
-        home = 2
-
-    class FanModes(Enum):
-        """Define an enum for thermostat fan modes."""
-
-        auto = 1
-        on = 2
-
-    class Modes(Enum):
-        """Define an enum for thermostat modes."""
-
-        auto = 1
-        cool = 2
-        eco = 3
-        heat = 4
-        off = 5
+    def configure(self) -> None:
+        """Configure."""
+        self._away = False
+        self._last_operation_mode = None
+        self._last_temperature = None
 
     @property
     def average_indoor_humidity(self) -> float:
@@ -137,13 +117,36 @@ class ClimateManager(Base):
     @property
     def away_mode(self) -> bool:
         """Return the state of away mode."""
-        return (
-            self.get_state(self.entity_ids[CONF_THERMOSTAT], attribute="away_mode")
-            == "on"
+        return self._away
+
+    @property
+    def fan_mode(self) -> str:
+        """Return the current fan mode."""
+        return self.get_state(self.entity_ids[CONF_THERMOSTAT], attribute="fan_mode")
+
+    @property
+    def operation_mode(self) -> str:
+        """Return the current operating mode."""
+        return self.get_state(
+            self.entity_ids[CONF_THERMOSTAT], attribute="operation_mode"
         )
 
     @property
-    def indoor_temp(self) -> int:
+    def outdoor_temperature(self) -> float:
+        """Define a property to get the current outdoor temperature."""
+        return float(self.get_state(self.entity_ids[CONF_OUTDOOR_TEMPERATURE]))
+
+    @property
+    def outdoor_temperature_extreme(self) -> float:
+        """Return whether the outside temperature is at extreme limits."""
+        outdoor_temp = float(self.get_state(self.entity_ids[CONF_OUTDOOR_TEMPERATURE]))
+        return (
+            outdoor_temp < self.properties[CONF_OUTDOOR_LOW]
+            or outdoor_temp > self.properties[CONF_OUTDOOR_HIGH]
+        )
+
+    @property
+    def target_temperature(self) -> int:
         """Return the temperature the thermostat is currently set to."""
         try:
             return int(
@@ -154,108 +157,121 @@ class ClimateManager(Base):
         except TypeError:
             return 0
 
-    @property
-    def mode(self) -> "Modes":
-        """Return the current operating mode."""
-        return self.Modes[
-            self.get_state(self.entity_ids[CONF_THERMOSTAT], attribute="operation_mode")
-        ]
+    def _on_eco_temp_change(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """React when the temperature goes above or below its eco thresholds."""
+        new_temp = float(new)
+        if new_temp > self.properties[CONF_ECO_HIGH]:
+            self.log('Above eco mode limits; turning thermostat to "cool"')
+            self.set_mode_cool()
+            self.set_temperature(self.properties[CONF_ECO_HIGH] - 1)
+        elif new_temp < self.properties[CONF_ECO_LOW]:
+            self.log('Below eco mode limits; turning thermostat to "heat"')
+            self.set_mode_heat()
+            self.set_temperature(self.properties[CONF_ECO_LOW] + 1)
+        elif self.operation_mode != OPERATION_MODE_OFF:
+            self.log('Within eco mode limits; turning thermostat to "off"')
+            self.set_mode_off()
 
-    @property
-    def outside_temp(self) -> float:
-        """Define a property to get the current outdoor temperature."""
-        return float(self.get_state(self.entity_ids[CONF_OUTSIDE_TEMP]))
-
-    def configure(self) -> None:
-        """Configure."""
-        self.register_endpoint(self._climate_bump_endpoint, "climate_bump")
-
-    def _climate_bump_endpoint(self, data: dict) -> Tuple[dict, int]:
-        """Define an endpoint to quickly bump the climate."""
-        if not data.get("amount"):
-            return ({"status": "error", "message": 'Missing "amount" parameter'}, 502)
-
-        self.bump_indoor_temp(int(data["amount"]))
-
-        return (
-            {
-                "status": "ok",
-                "message": "Bumping temperature {0}°".format(data["amount"]),
-            },
-            200,
-        )
-
-    def bump_indoor_temp(self, value: int) -> None:
-        """Bump the current temperature."""
-        self.set_indoor_temp(self.indoor_temp + value)
-
-    def set_away_mode(self, value: "AwayModes") -> None:
-        """Set the state of away mode."""
-        self.call_service("nest/set_away_mode", away_mode=value.name)
-
-    def set_indoor_temp(self, value: int) -> None:
-        """Set the thermostat temperature."""
-        self.call_service(
-            "climate/set_temperature",
-            entity_id=self.entity_ids[CONF_THERMOSTAT],
-            temperature=str(value),
-        )
-
-    def set_fan_mode(self, value: "FanModes") -> None:
+    def _set_fan_mode(self, fan_mode: str) -> None:
         """Set the themostat's fan mode."""
+        if fan_mode == self.fan_mode:
+            return
+
+        self.log('Setting fan mode to "{0}"'.format(fan_mode.title()))
         self.call_service(
             "climate/set_fan_mode",
             entity_id=self.entity_ids[CONF_THERMOSTAT],
-            fan_mode=value.name,
+            fan_mode=fan_mode,
         )
 
-    def set_mode(self, value: "Modes") -> None:
-        """Set the themostat's operating mode."""
+    def _set_operation_mode(self, operation_mode: str) -> None:
+        """Set the themostat's operation mode."""
+        if operation_mode == self.operation_mode:
+            return
+
+        self.log('Setting operation mode to "{0}"'.format(operation_mode.title()))
         self.call_service(
             "climate/set_operation_mode",
             entity_id=self.entity_ids[CONF_THERMOSTAT],
-            operation_mode=value.name,
+            operation_mode=operation_mode,
         )
 
+    def bump_temperature(self, value: int) -> None:
+        """Bump the current temperature."""
+        if self.operation_mode == OPERATION_MODE_COOL:
+            value *= -1
+        self.set_temperature(self.target_temperature + value)
 
-class CycleFan(Base):
-    """Define a feature to cycle the whole-house fan."""
+    def set_away(self) -> None:
+        """Set the thermostat to away."""
+        if self._away:
+            return
 
-    CYCLE_MINUTES = 15
+        self.log('Setting thermostat to "Away" mode')
 
-    def configure(self) -> None:
-        """Configure."""
-        self.register_constraint("constrain_extreme_temperature")
+        self._away = True
+        self._last_operation_mode = self.operation_mode
+        self._last_temperature = self.target_temperature
 
-        _on_cycle_on_dt = ceil_dt(
-            self.datetime(), timedelta(minutes=self.CYCLE_MINUTES)
-        )
-        _on_cycle_off_dt = _on_cycle_on_dt + timedelta(minutes=self.CYCLE_MINUTES)
-
-        self.run_every(
-            self._on_cycle_on,
-            _on_cycle_on_dt,
-            60 * 60,
-            constrain_extreme_temperature=True,
-        )
-        self.run_every(
-            self._on_cycle_off,
-            _on_cycle_off_dt,
-            60 * 60,
-            constrain_extreme_temperature=True,
+        self.set_mode_off()
+        self.handles[HANDLE_ECO_MODE] = self.listen_state(
+            self._on_eco_temp_change, self.entity_ids[CONF_AVG_TEMP_SENSOR]
         )
 
-    def _on_cycle_off(self, kwargs: dict) -> None:
-        """Turn off the whole-house fan."""
-        self.climate_manager.set_fan_mode(self.climate_manager.FanModes.auto)
+    def set_fan_auto_low(self) -> None:
+        """Set the fan mode to auto_low."""
+        self._set_fan_mode(FAN_MODE_AUTO_LOW)
 
-    def _on_cycle_on(self, kwargs: dict) -> None:
-        """Turn on the whole-house fan."""
-        self.climate_manager.set_fan_mode(self.climate_manager.FanModes.on)
+    def set_fan_circulate(self) -> None:
+        """Set the fan mode to circulate."""
+        self._set_fan_mode(FAN_MODE_CIRCULATE)
 
-    def constrain_extreme_temperature(self, value: bool) -> bool:
-        """Constrain execution to whether the outside temp. is extreme."""
-        return (
-            self.climate_manager.outside_temp < OUTSIDE_THRESHOLD_LOW
-            or self.climate_manager.outside_temp > OUTSIDE_THRESHOLD_HIGH
+    def set_fan_on_low(self) -> None:
+        """Set the fan mode to on_low."""
+        self._set_fan_mode(FAN_MODE_ON_LOW)
+
+    def set_home(self) -> None:
+        """Set the thermostat to home."""
+        if not self._away:
+            return
+
+        self.log('Setting thermostat to "Home" mode')
+        self._away = False
+
+        handle = self.handles.pop(HANDLE_ECO_MODE)
+        self.cancel_listen_state(handle)
+
+        # If the thermostat isn't doing anything, set it to the previous settings
+        # (before away mode); otherwise, let it keep doing its thing:
+        if self.operation_mode == OPERATION_MODE_OFF:
+            self._set_operation_mode(self._last_operation_mode)
+            self.set_temperature(self._last_temperature)
+
+    def set_mode_auto(self) -> None:
+        """Set the operation mode to auto."""
+        self._set_operation_mode(OPERATION_MODE_AUTO)
+
+    def set_mode_cool(self) -> None:
+        """Set the operation mode to cool."""
+        self._set_operation_mode(OPERATION_MODE_COOL)
+
+    def set_mode_heat(self) -> None:
+        """Set the operation mode to heat."""
+        self._set_operation_mode(OPERATION_MODE_HEAT)
+
+    def set_mode_off(self) -> None:
+        """Set the operation mode to off."""
+        self._set_operation_mode(OPERATION_MODE_OFF)
+
+    def set_temperature(self, temperature: int) -> None:
+        """Set the thermostat temperature."""
+        if temperature == self.target_temperature:
+            return
+
+        self.call_service(
+            "climate/set_temperature",
+            entity_id=self.entity_ids[CONF_THERMOSTAT],
+            temperature=str(temperature),
         )
