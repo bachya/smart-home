@@ -12,6 +12,8 @@ climate_manager:
   entity_ids:
     humidity_sensor: sensor.average_indoor_humidity
     indoor_temperature_sensor: sensor.average_indoor_temperature
+    outdoor_brightness_sensor: sensor.outdoor_brightness_lux
+    outdoor_brightness_percent_sensor: sensor.filtered_outdoor_brightness
     outdoor_temperature_sensor: sensor.dark_sky_temperature
     thermostat: climate.thermostat
   properties:

@@ -15,6 +15,8 @@ CONF_ECO_HIGH_THRESHOLD = "eco_high_threshold"
 CONF_ECO_LOW_THRESHOLD = "eco_low_threshold"
 CONF_HUMIDITY_SENSOR = "humidity_sensor"
 CONF_INDOOR_TEMPERATURE_SENSOR = "indoor_temperature_sensor"
+CONF_BRIGHTNESS_SENSOR = "sensor.outdoor_brightness_sensor"
+CONF_BRIGHTNESS_PERCENT_SENSOR = "sensor.outdoor_brightness_percent_sensor"
 CONF_OUTDOOR_HIGH_THRESHOLD = "outdoor_high_threshold"
 CONF_OUTDOOR_LOW_THRESHOLD = "outdoor_low_threshold"
 CONF_OUTDOOR_TEMPERATURE_SENSOR = "outdoor_temperature_sensor"
@@ -142,6 +144,16 @@ class ClimateManager(Base):
         return self.get_state(
             self.entity_ids[CONF_THERMOSTAT], attribute="operation_mode"
         )
+
+    @property
+    def outdoor_brightness(self) -> int:
+        """Return the outdoor brightness in lux."""
+        return int(self.get_state(self.entity_ids[CONF_BRIGHTNESS_SENSOR]))
+
+    @property
+    def outdoor_brightness_percentage(self) -> int:
+        """Return the human-perception of brightness percentage."""
+        return int(self.get_state(self.entity_ids[CONF_BRIGHTNESS_PERCENT_SENSOR]))
 
     @property
     def outdoor_temperature(self) -> float:
