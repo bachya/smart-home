@@ -39,3 +39,12 @@ sensor:
     device_class: battery
     unit_of_measurement: "%"
     force_update: true
+
+  - platform: template
+    sensors:
+      fiddle_leaf_fig_light_intensity_log:
+        friendly_name: "Living Room: Brightness (Perception)"
+        value_template: >
+          {{ (states.sensor.fiddle_leaf_fig_light_intensity.state|log(10)/5)|round * 100 }}
+        unit_of_measurement: "%"
+        device_class: illuminance
