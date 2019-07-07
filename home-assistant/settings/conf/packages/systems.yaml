@@ -124,6 +124,7 @@ switch:
   - platform: command_line
     switches:
       pi_hole_switch:
+        friendly_name: Pi-hole
         command_on: !secret pi_hole_on_command
         command_off: !secret pi_hole_off_command
         command_state: "curl -X GET 'http://gryffindor.phil.lan:8080/admin/api.php?status'"
