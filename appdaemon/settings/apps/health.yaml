@@ -13,10 +13,10 @@ notify_bad_aqi_automation:
   module: health
   class: NotifyBadAqi
   dependencies:
+    - climate_manager
     - vacation_mode
   entity_ids:
     aqi: sensor.us_air_quality_index
-    hvac_state: sensor.thermostat_thermostat_hvac_state
   properties:
     aqi_threshold: 100
   state_changes:

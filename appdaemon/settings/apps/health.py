@@ -3,15 +3,15 @@ from typing import Callable, Optional, Union
 
 import voluptuous as vol
 
+from climate import OPERATION_MODE_COOL
 from const import CONF_ENTITY_IDS, CONF_PROPERTIES
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 from notification import send_notification
 
 CONF_AARON_ROUTER_TRACKER = "aaron_router_tracker"
-CONF_AQI = "aqi"
+CONF_AQI_SENSOR = "aqi"
 CONF_AQI_THRESHOLD = "aqi_threshold"
-CONF_HVAC_STATE = "hvac_state"
 
 
 class AaronAccountability(Base):
@@ -63,11 +63,7 @@ class NotifyBadAqi(Base):
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             CONF_ENTITY_IDS: vol.Schema(
-                {
-                    vol.Required(CONF_AQI): cv.entity_id,
-                    vol.Required(CONF_HVAC_STATE): cv.entity_id,
-                },
-                extra=vol.ALLOW_EXTRA,
+                {vol.Required(CONF_AQI_SENSOR): cv.entity_id}, extra=vol.ALLOW_EXTRA
             ),
             CONF_PROPERTIES: vol.Schema(
                 {vol.Required(CONF_AQI_THRESHOLD): int}, extra=vol.ALLOW_EXTRA
@@ -81,19 +77,15 @@ class NotifyBadAqi(Base):
         self._good_notification_sent = False
         self._send_notification_func = None  # type: Optional[Callable]
 
-        self.listen_state(
-            self._on_aqi_change, self.entity_ids[CONF_HVAC_STATE], new="cooling"
-        )
-
-    @property
-    def current_aqi(self) -> int:
-        """Define a property to get the current AQI."""
-        return int(self.get_state(self.entity_ids[CONF_AQI]))
+        self.listen_state(self._on_aqi_change, self.entity_ids[CONF_AQI_SENSOR])
 
     def _on_aqi_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Send select notifications when cooling and poor AQI."""
+
+        if self.climate_manager.operation_mode != OPERATION_MODE_COOL:
+            return
 
         def _send_bad_notification():
             """Send a notification of bad AQI."""
