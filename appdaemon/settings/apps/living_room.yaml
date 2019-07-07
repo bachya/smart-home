@@ -206,7 +206,7 @@ reading_lamp_cloudy_morning_automation:
     state: "on"
   constraints:
     constraints:
-      constrain_cloudy: true
+      constrain_dark_outside: true
   state_changes:
     - disable:
         event: MODE_CHANGE

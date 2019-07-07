@@ -11,7 +11,6 @@ from const import (
     CONF_PROPERTIES,
     OPERATOR_ALL,
     OPERATORS,
-    THRESHOLD_CLOUDY,
 )
 from helpers import config_validation as cv
 
@@ -28,7 +27,9 @@ CONF_NAME = "name"
 CONF_OPERATOR = "operator"
 CONF_STATE_CHANGES = "state_changes"
 
-SENSOR_CLOUD_COVER = "sensor.dark_sky_cloud_coverage"
+DEFAULT_OUTDOOR_BRIGHTNESS_THRESHOLD = 80
+
+OUTDOOR_BRIGHTNESS_SENSOR = "sensor.filtered_outdoor_brightness"
 
 APP_SCHEMA = vol.Schema(
     {
@@ -93,7 +94,7 @@ class Base(Hass):
 
         # Register custom constraints:
         self.register_constraint("constrain_anyone")
-        self.register_constraint("constrain_cloudy")
+        self.register_constraint("constrain_dark_outside")
         self.register_constraint("constrain_enabled")
         self.register_constraint("constrain_everyone")
         self.register_constraint("constrain_in_blackout")
@@ -197,19 +198,19 @@ class Base(Hass):
         """Constrain execution to whether anyone is in a state."""
         return self._constrain_presence("anyone", value)
 
+    def constrain_dark_outside(self, value: bool) -> bool:
+        """Constrain execution based whether it's dark outside or not."""
+        brightness = float(self.get_state(OUTDOOR_BRIGHTNESS_SENSOR))
+        if (value and brightness <= OUTDOOR_BRIGHTNESS_SENSOR) or (
+            not value and brightness > OUTDOOR_BRIGHTNESS_SENSOR
+        ):
+            return True
+        return False
+
     def constrain_enabled(self, value: bool) -> bool:
         """Constrain execution to whether anyone is in a state."""
         if value:
             return self.enabled
-        return False
-
-    def constrain_cloudy(self, value: bool) -> bool:
-        """Constrain execution based whether it's cloudy or not."""
-        cloud_cover = float(self.get_state(SENSOR_CLOUD_COVER))
-        if (value and cloud_cover >= THRESHOLD_CLOUDY) or (
-            not value and cloud_cover < THRESHOLD_CLOUDY
-        ):
-            return True
         return False
 
     def constrain_everyone(self, value: str) -> bool:

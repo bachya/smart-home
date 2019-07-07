@@ -21,10 +21,6 @@ CONF_END_TIME = "end_time"
 CONF_START_TIME = "start_time"
 CONF_UPDATE_INTERVAL = "update_interval"
 
-# Constraint-related config keys:
-CONF_CONSTRAIN_CLOUDY = "constrain_cloudy"
-CONF_CONSTRAIN_SUN = "constrain_sun"
-
 # Notification-related config keys:
 CONF_NOTIFIERS = "notifiers"
 CONF_NOTIFICATION_INTERVAL = "notification_interval"
@@ -54,6 +50,3 @@ EVENT_MODE_CHANGE = "MODE_CHANGE"
 EVENT_PRESENCE_CHANGE = "PRESENCE_CHANGE"
 EVENT_PROXIMITY_CHANGE = "PROXIMITY_CHANGE"
 EVENT_VACUUM_START = "VACUUM_START"
-
-# Misc.:
-THRESHOLD_CLOUDY = 70.0
