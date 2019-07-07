@@ -21,6 +21,8 @@ CONF_OUTDOOR_HIGH_THRESHOLD = "outdoor_high_threshold"
 CONF_OUTDOOR_LOW_THRESHOLD = "outdoor_low_threshold"
 CONF_OUTDOOR_TEMPERATURE_SENSOR = "outdoor_temperature_sensor"
 CONF_THERMOSTAT = "thermostat"
+CONF_OUTDOOR_BRIGHTNESS_SENSOR = "outdoor_brightness_sensor"
+CONF_OUTDOOR_BRIGHTNESS_PERCENT_SENSOR = "outdoor_brightness_percent_sensor"
 
 FAN_MODE_AUTO_LOW = "Auto Low"
 FAN_MODE_CIRCULATE = "Circulate"
@@ -98,6 +100,8 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
                     vol.Required(CONF_HUMIDITY_SENSOR): cv.entity_id,
                     vol.Required(CONF_INDOOR_TEMPERATURE_SENSOR): cv.entity_id,
                     vol.Required(CONF_OUTDOOR_TEMPERATURE_SENSOR): cv.entity_id,
+                    vol.Required(CONF_OUTDOOR_BRIGHTNESS_SENSOR): cv.entity_id,
+                    vol.Required(CONF_OUTDOOR_BRIGHTNESS_PERCENT_SENSOR): cv.entity_id,
                     vol.Required(CONF_THERMOSTAT): cv.entity_id,
                 }
             ),
