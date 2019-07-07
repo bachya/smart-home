@@ -95,6 +95,18 @@ sensor:
         time_constant: 10
         precision: 2
 
+  - platform: pi_hole
+    host: gryffindor.phil.lan:8080
+    monitored_conditions:
+      - ads_blocked_today
+      - ads_percentage_today
+      - dns_queries_today
+      - domains_being_blocked
+      - queries_cached
+      - queries_forwarded
+      - unique_clients
+      - unique_domains
+
   # Batteries
   - platform: template
     sensors:
@@ -106,3 +118,13 @@ sensor:
         device_class: battery
 
 speedtestdotnet:
+
+switch:
+  # Pi-hole
+  - platform: command_line
+    switches:
+      pi_hole_switch:
+        command_on: !secret pi_hole_on_command
+        command_off: !secret pi_hole_off_command
+        command_state: "curl -X GET 'http://gryffindor.phil.lan:8080/admin/api.php?status'"
+        value_template: "{{ value_json.status == 'enabled' }}"
