@@ -88,7 +88,7 @@ class AdjustOnProximity(Base):  # pylint: disable=too-few-public-methods
                 self.climate_manager.set_home()
 
 
-class ClimateManager(Base):
+class ClimateManager(Base):  # pylint: disable=too-many-public-methods
     """Define an app to represent climate control."""
 
     APP_SCHEMA = APP_SCHEMA.extend(
