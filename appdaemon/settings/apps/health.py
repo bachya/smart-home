@@ -87,13 +87,15 @@ class NotifyBadAqi(Base):
         if self.climate_manager.operation_mode != OPERATION_MODE_COOL:
             return
 
+        current_aqi = int(new)
+
         def _send_bad_notification():
             """Send a notification of bad AQI."""
             send_notification(
                 self,
                 "presence:home",
                 "AQI is at {0}; consider closing the humidifier vent.".format(
-                    self.current_aqi
+                    current_aqi
                 ),
                 title="Poor AQI 😤",
             )
@@ -103,13 +105,11 @@ class NotifyBadAqi(Base):
             send_notification(
                 self,
                 "presence:home",
-                "AQI is at {0}; open the humidifer vent again.".format(
-                    self.current_aqi
-                ),
+                "AQI is at {0}; open the humidifer vent again.".format(current_aqi),
                 title="Better AQI 😅",
             )
 
-        if self.current_aqi > self.properties[CONF_AQI_THRESHOLD]:
+        if current_aqi > self.properties[CONF_AQI_THRESHOLD]:
             if self._bad_notification_sent:
                 return
 
