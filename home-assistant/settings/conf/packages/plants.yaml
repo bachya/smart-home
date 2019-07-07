@@ -52,7 +52,7 @@ sensor:
       fiddle_leaf_fig_light_intensity_log:
         friendly_name: "Living Room: Brightness (Perception)"
         value_template: >
-          {% if states('states.sensor.fiddle_leaf_fig_light_intensity.state') != 'unknown' %}
+          {% if states('sensor.fiddle_leaf_fig_light_intensity') != 'unknown' %}
             {{ (states.sensor.fiddle_leaf_fig_light_intensity.state|int|log(10)/5)|round(2) * 100 }}
           {% endif %}
         unit_of_measurement: "%"
