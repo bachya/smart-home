@@ -201,8 +201,8 @@ class Base(Hass):
     def constrain_dark_outside(self, value: bool) -> bool:
         """Constrain execution based whether it's dark outside or not."""
         brightness = float(self.get_state(OUTDOOR_BRIGHTNESS_SENSOR))
-        if (value and brightness <= OUTDOOR_BRIGHTNESS_SENSOR) or (
-            not value and brightness > OUTDOOR_BRIGHTNESS_SENSOR
+        if (value and brightness <= DEFAULT_OUTDOOR_BRIGHTNESS_THRESHOLD) or (
+            not value and brightness > DEFAULT_OUTDOOR_BRIGHTNESS_THRESHOLD
         ):
             return True
         return False
