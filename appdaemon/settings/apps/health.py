@@ -74,7 +74,7 @@ class NotifyBadAqi(Base):
     def configure(self) -> None:
         """Configure."""
         self._bad_notification_sent = False
-        self._good_notification_sent = False
+        self._good_notification_sent = True
         self._send_notification_func = None  # type: Optional[Callable]
 
         self.listen_state(self._on_aqi_change, self.entity_ids[CONF_AQI_SENSOR])
