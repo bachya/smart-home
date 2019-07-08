@@ -9,7 +9,7 @@ apple_tv:
 remote:
   - platform: harmony
     name: Basement TV
-    host: harmony-hub-2.phil.iot
+    host: 172.16.11.36
     activity: 37549209
 
 shell_command:
