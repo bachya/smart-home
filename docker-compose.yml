@@ -135,7 +135,6 @@ services:
     volumes:
       - ./nginx/settings/fail2ban/filter.d/nginx-4xx.conf:/etc/fail2ban/filter.d/nginx-4xx.conf
       - ./nginx/settings/fail2ban/filter.d/nginx-noproxy.conf:/etc/fail2ban/filter.d/nginx-noproxy.conf
-      - ./nginx/settings/fail2ban/filter.d/nginx-noscript.conf:/etc/fail2ban/filter.d/nginx-noscript.conf
       - ./nginx/settings/fail2ban/filter.d/nginx-req-limit.conf:/etc/fail2ban/filter.d/nginx-req-limit.conf
       - ./nginx/settings/fail2ban/jail.d/nginx.conf:/etc/fail2ban/jail.d/nginx.conf
       - ./nginx/settings/fail2ban/jail.local:/etc/fail2ban/jail.local
