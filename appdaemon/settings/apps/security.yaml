@@ -108,6 +108,16 @@ notify_when_person_on_camera:
     window_seconds: 60
   state_changes:
     - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "off"
+    - disable:
         event: PROXIMITY_CHANGE
         event_data:
           new: home
