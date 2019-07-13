@@ -8,16 +8,19 @@ binary_sensor:
   - platform: template
     sensors:
       garage_person_detected:
+        entity_id: image_processing.google_coral_garage_camera_person
         value_template: >
           {{ states.image_processing.google_coral_garage_camera_person.state|int > 0 }}
         device_class: occupancy
         friendly_name: Garage Camera
       guest_bedroom_person_detected:
+        entity_id: image_processing.google_coral_guest_bedroom_camera_person
         value_template: >
           {{ states.image_processing.google_coral_guest_bedroom_camera_person.state|int > 0 }}
         device_class: occupancy
         friendly_name: Guest Bedroom Camera
       kitchen_person_detected:
+        entity_id: image_processing.google_coral_kitchen_camera_person
         value_template: >
           {{ states.image_processing.google_coral_kitchen_camera_person.state|int > 0 }}
         device_class: occupancy
