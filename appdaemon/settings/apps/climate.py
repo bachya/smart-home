@@ -189,11 +189,17 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
     ) -> None:
         """React when the temperature goes above or below its eco thresholds."""
         new_temp = float(new)
-        if new_temp > self.properties[CONF_ECO_HIGH_THRESHOLD]:
+        if (
+            new_temp > self.properties[CONF_ECO_HIGH_THRESHOLD]
+            and self.operation_mode != OPERATION_MODE_COOL
+        ):
             self.log('Above eco mode limits; turning thermostat to "cool"')
             self.set_mode_cool()
             self.set_temperature(self.properties[CONF_ECO_HIGH_THRESHOLD] - 1)
-        elif new_temp < self.properties[CONF_ECO_LOW_THRESHOLD]:
+        elif (
+            new_temp < self.properties[CONF_ECO_LOW_THRESHOLD]
+            and self.operation_mode != OPERATION_MODE_HEAT
+        ):
             self.log('Below eco mode limits; turning thermostat to "heat"')
             self.set_mode_heat()
             self.set_temperature(self.properties[CONF_ECO_LOW_THRESHOLD] + 1)
