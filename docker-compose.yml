@@ -10,16 +10,12 @@ networks:
 services:
 
   appdaemon:
-    build:
-      context: ./appdaemon/docker
-      args:
-        VERSION: 3.0.5
     container_name: appdaemon
     depends_on:
       - hass
     environment:
       EXTRA_CMD: -D INFO
-    image: bachya/appdaemon
+    image: acockburn/appdaemon:3.0.5
     restart: unless-stopped
     volumes:
       - /etc/localtime:/etc/localtime:ro
