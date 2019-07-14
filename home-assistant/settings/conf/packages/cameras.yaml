@@ -45,7 +45,7 @@ image_processing:
   - platform: google_coral
     ip_address: slytherin.phil.lan
     port: 5000
-    confidence: 30
+    confidence: 35
     target_object: person
     source:
       - entity_id: camera.front_door_camera
