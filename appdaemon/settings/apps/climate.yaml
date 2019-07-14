@@ -19,5 +19,5 @@ climate_manager:
   properties:
     eco_high_threshold: 75
     eco_low_threshold: 60
-    outdoor_high_threshold: 80
-    outdoor_low_threshold: 45
+    outdoor_high_threshold: 85
+    outdoor_low_threshold: 40
