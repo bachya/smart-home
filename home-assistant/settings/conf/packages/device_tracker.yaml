@@ -12,7 +12,7 @@ device_tracker:
       - TILE
 
   - platform: unifi
-    host: unifi.phil.lan
+    host: cloud-key.phil.lan
     username: !secret unifi_username
     password: !secret unifi_password
     verify_ssl: false
