@@ -13,7 +13,7 @@ remote:
     activity: 22580039
 
 roku:
-  - host: 172.16.11.38
+  - host: roku-1.phil.iot
 
 sensor:
   - platform: template
