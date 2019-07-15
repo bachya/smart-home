@@ -1,6 +1,6 @@
 ---
 wolfie:
-  module: wolfie
+  module: robot_vacuum
   class: Vacuum
   dependencies:
     - security_manager
@@ -10,7 +10,7 @@ wolfie:
     vacuum: vacuum.xiaomi_vacuum_cleaner
 
 notify_when_wolfie_consumable_low_automation:
-  module: wolfie
+  module: robot_vacuum
   class: MonitorConsumables
   dependencies:
     - presence_manager
@@ -54,7 +54,7 @@ notify_when_wolfie_consumable_low_automation:
           new: home
 
 wolfie_scheduled_cycle_automation:
-  module: wolfie
+  module: robot_vacuum
   class: ScheduledCycle
   dependencies:
     - guest_mode
