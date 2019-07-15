@@ -1,6 +1,6 @@
 """Define automations for robot vacuums."""
 from enum import Enum
-from typing import Union
+from typing import Callable, Optional, Union
 
 import voluptuous as vol
 
@@ -48,7 +48,8 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        self.triggered = False
+        self._send_notification_func = None  # type: Optional[Callable]
+        self._triggered = False
 
         for consumable in self.properties["consumables"]:
             self.listen_state(
@@ -62,19 +63,35 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Create a task when a consumable is getting low."""
-        if int(new) < self.properties["consumable_threshold"]:
-            if self.triggered:
-                return
 
-            self.log("Consumable is low: {0}".format(attribute))
+        def _send_notification() -> None:
+            """Send the notification."""
             send_notification(
                 self,
                 "slack:@aaron",
                 "Order a new Wolfie consumable: {0}".format(attribute),
             )
-            self.triggered = True
-        elif self.triggered:
-            self.triggered = False
+
+        if int(new) < self.properties["consumable_threshold"]:
+            if self._triggered:
+                return
+
+            self.log("Consumable is low: {0}".format(attribute))
+
+            if self.enabled:
+                _send_notification()
+            else:
+                self._send_notification_func = _send_notification
+
+            self._triggered = True
+        elif self._triggered:
+            self._triggered = False
+
+    def on_enable(self) -> None:
+        """Send the notification once the automation is enabled (if appropriate)."""
+        if self._send_notification_func:
+            self._send_notification_func()
+            self._send_notification_func = None
 
 
 class ScheduledCycle(Base):
