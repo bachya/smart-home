@@ -51,10 +51,10 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
         self._send_notification_func = None  # type: Optional[Callable]
         self._triggered = False
 
-        for consumable in self.properties["consumables"]:
+        for consumable in self.properties[CONF_CONSUMABLES]:
             self.listen_state(
                 self._on_consumable_change,
-                self.app.entity_ids["vacuum"],
+                self.app.entity_ids[CONF_VACUUM],
                 attribute=consumable,
                 constrain_enabled=True,
             )
@@ -72,7 +72,7 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
                 "Order a new Wolfie consumable: {0}".format(attribute),
             )
 
-        if int(new) < self.properties["consumable_threshold"]:
+        if int(new) < self.properties[CONF_CONSUMABLE_THRESHOLD]:
             if self._triggered:
                 return
 
@@ -126,7 +126,7 @@ class ScheduledCycle(Base):
     def configure(self) -> None:
         """Configure."""
         self.initiated_by_app = False
-        self.create_schedule()
+        self._create_schedule()
 
         self.listen_event(
             self._on_security_system_change, EVENT_ALARM_CHANGE, constrain_enabled=True
@@ -136,43 +136,65 @@ class ScheduledCycle(Base):
         )
         self.listen_state(
             self._on_vacuum_cycle_done,
-            self.app.entity_ids["status"],
+            self.app.entity_ids[CONF_STATUS],
             old=self.app.States.returning.value,
             new=self.app.States.docked.value,
             constrain_enabled=True,
         )
         self.listen_state(
             self._on_vacuum_bin_change,
-            self.app.entity_ids["bin_state"],
+            self.app.entity_ids[CONF_BIN_STATE],
             constrain_enabled=True,
         )
         self.listen_state(
             self._on_error,
-            self.app.entity_ids["status"],
+            self.app.entity_ids[CONF_STATUS],
             new=self.app.States.error.value,
             constrain_enabled=True,
         )
         self.listen_state(
             self._on_error_clear,
-            self.app.entity_ids["status"],
+            self.app.entity_ids[CONF_STATUS],
             old=self.app.States.error.value,
             constrain_enabled=True,
         )
-        for toggle in self.properties["schedule_switches"]:
+        for toggle in self.properties[CONF_SCHEDULE_SWITCHES]:
             self.listen_state(self._on_schedule_change, toggle, constrain_enabled=True)
+
+    def _cancel_notification_cycle(self, handle: str) -> None:
+        """Cancel a notification cycle."""
+        if handle in self.handles:
+            cancel = self.handles.pop(handle)
+            cancel()
+
+    def _cancel_error_notification_cycle(self) -> None:
+        """Cancel the error notification cycle."""
+        self._cancel_notification_cycle(HANDLE_STUCK)
+
+    def _cancel_full_notification_cycle(self) -> None:
+        """Cancel the full bin notification cycle."""
+        self._cancel_notification_cycle(HANDLE_BIN)
+
+    def _create_schedule(self) -> None:
+        """Create the vacuuming schedule from the on booleans."""
+        if HANDLE_SCHEDULE in self.handles:
+            cancel = self.handles.pop(HANDLE_SCHEDULE)
+            cancel()
+
+        self.handles[HANDLE_SCHEDULE] = run_on_days(
+            self,
+            self._on_schedule_start,
+            self.active_days,
+            self.parse_time(self.properties["schedule_time"]),
+            constrain_enabled=True,
+        )
 
     def _on_error(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Brief when Wolfie's had an error."""
-        self.handles[HANDLE_STUCK] = send_notification(
-            self,
-            "presence:home",
-            "Help him get back on track or home.",
-            title="Wolfie Stuck 😢",
-            when=self.datetime(),
-            interval=self.properties["notification_interval_stuck"],
-        )
+        if self.enabled:
+            self._start_error_notification_cycle()
 
     def _on_error_clear(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
@@ -186,20 +208,20 @@ class ScheduledCycle(Base):
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Reload the schedule when one of the input booleans change."""
-        self.create_schedule()
+        self._create_schedule()
 
     def _on_security_system_change(
         self, event_name: str, data: dict, kwargs: dict
     ) -> None:
         """Respond to 'ALARM_CHANGE' events."""
-        state = self.app.States(self.get_state(self.app.entity_ids["status"]))
+        state = self.app.States(self.get_state(self.app.entity_ids[CONF_STATUS]))
 
         # Scenario 1: Vacuum is charging and is told to start:
         if (self.initiated_by_app and state == self.app.States.docked) and data[
             "state"
         ] == self.security_manager.AlarmStates.home.value:
             self.log("Activating vacuum (post-security)")
-            self.turn_on(self.app.entity_ids["vacuum"])
+            self.turn_on(self.app.entity_ids[CONF_VACUUM])
 
         # Scenario 2: Vacuum is running when alarm is set to "Away":
         elif (
@@ -208,7 +230,7 @@ class ScheduledCycle(Base):
         ):
             self.log('Security mode is "Away"; pausing until "Home"')
             self.call_service(
-                "vacuum/start_pause", entity_id=self.app.entity_ids["vacuum"]
+                "vacuum/start_pause", entity_id=self.app.entity_ids[CONF_VACUUM]
             )
             self.security_manager.set_alarm(self.security_manager.AlarmStates.home)
 
@@ -219,23 +241,15 @@ class ScheduledCycle(Base):
         ):
             self.log('Alarm in "Home"; resuming')
             self.call_service(
-                "vacuum/start_pause", entity_id=self.app.entity_ids["vacuum"]
+                "vacuum/start_pause", entity_id=self.app.entity_ids[CONF_VACUUM]
             )
 
     def _on_vacuum_bin_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Listen for changes in bin status."""
-        if new == self.app.BinStates.full.value:
-            self.handles[HANDLE_BIN] = send_notification(
-                self,
-                "presence:home",
-                "Empty him now and you won't have to do it later!",
-                title="Wolfie Full 🤖",
-                when=self.datetime(),
-                interval=self.properties[CONF_NOTIFICATION_INTERVAL_FULL],
-                data={"push": {"category": "wolfie"}},
-            )
+        if self.enabled and new == self.app.BinStates.full.value:
+            self._start_full_notification_cycle()
         elif new == self.app.BinStates.empty.value:
             if HANDLE_BIN in self.handles:
                 cancel = self.handles.pop(HANDLE_BIN)
@@ -256,20 +270,6 @@ class ScheduledCycle(Base):
         self.app.bin_state = self.app.BinStates.full
         self.initiated_by_app = False
 
-    def create_schedule(self) -> None:
-        """Create the vacuuming schedule from the on booleans."""
-        if HANDLE_SCHEDULE in self.handles:
-            cancel = self.handles.pop(HANDLE_SCHEDULE)
-            cancel()
-
-        self.handles[HANDLE_SCHEDULE] = run_on_days(
-            self,
-            self._on_schedule_start,
-            self.active_days,
-            self.parse_time(self.properties["schedule_time"]),
-            constrain_enabled=True,
-        )
-
     def _on_schedule_start(self, kwargs: dict) -> None:
         """Start cleaning via the schedule."""
         if not self.initiated_by_app:
@@ -281,6 +281,47 @@ class ScheduledCycle(Base):
         if not self.initiated_by_app:
             self.app.start()
             self.initiated_by_app = True
+
+    def _start_notification_cycle(self, title: str, message: str, interval: int) -> str:
+        """Start a repeating notification sequence."""
+        return send_notification(
+            self,
+            "presence:home",
+            message,
+            title=title,
+            when=self.datetime(),
+            interval=interval,
+            data={"push": {"category": "dishwasher"}},
+        )
+
+    def _start_error_notification_cycle(self) -> None:
+        """Start a repeating notification when the vacuum has errored."""
+        self._cancel_error_notification_cycle()
+        self.handles[HANDLE_STUCK] = self._start_notification_cycle(
+            "Wolfie Stuck 😢",
+            "Help him get back on track or home.",
+            self.properties[CONF_NOTIFICATION_INTERVAL_STUCK],
+        )
+
+    def _start_full_notification_cycle(self) -> None:
+        """Start a repeating notification when the vacuum is full."""
+        self._cancel_full_notification_cycle()
+        self.handles[HANDLE_BIN] = send_notification(
+            "Wolfie Full 🤖" "Empty him now and you won't have to do it later!",
+            self.properties[CONF_NOTIFICATION_INTERVAL_FULL],
+        )
+
+    def on_disable(self) -> None:
+        """Stop notifying when the automation is disabled."""
+        self._cancel_error_notification_cycle()
+        self._cancel_full_notification_cycle()
+
+    def on_enable(self) -> None:
+        """Start notifying when the automation is enabled (if appropriate)."""
+        if self.app.state == self.app.States.error:
+            self._start_error_notification_cycle()
+        elif self.app.bin_state == self.app.BinStates.full:
+            self._start_full_notification_cycle()
 
 
 class Vacuum(Base):
@@ -319,12 +360,17 @@ class Vacuum(Base):
     @property
     def bin_state(self) -> "BinStates":
         """Define a property to get the bin state."""
-        return self.BinStates(self.get_state(self.entity_ids["bin_state"]))
+        return self.BinStates(self.get_state(self.entity_ids[CONF_BIN_STATE]))
 
     @bin_state.setter
     def bin_state(self, value: "BinStates") -> None:
         """Set the bin state."""
-        self.select_option(self.entity_ids["bin_state"], value.value)
+        self.select_option(self.entity_ids[CONF_BIN_STATE], value.value)
+
+    @property
+    def state(self) -> "States":
+        """Define a property to get the state."""
+        return self.States(self.get_state(self.entity_ids[CONF_STATUS]))
 
     def start(self) -> None:
         """Start a cleaning cycle."""
@@ -334,4 +380,4 @@ class Vacuum(Base):
             self.security_manager.set_alarm(self.security_manager.AlarmStates.home)
         else:
             self.log("Activating vacuum")
-            self.call_service("vacuum/start", entity_id=self.entity_ids["vacuum"])
+            self.call_service("vacuum/start", entity_id=self.entity_ids[CONF_VACUUM])
