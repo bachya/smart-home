@@ -51,7 +51,6 @@ notify_media_center_left_on_automation:
   class: LeftInState
   dependencies:
     - presence_manager
-    - slack_app_home_assistant
   entity_ids:
     entity_id: switch.media_center
   properties:
@@ -111,7 +110,6 @@ notify_ps4_left_on_automation:
   class: LeftInState
   dependencies:
     - presence_manager
-    - slack_app_home_assistant
   entity_ids:
     entity_id: media_player.playstation_4
   properties:
