@@ -80,6 +80,16 @@ wolfie_scheduled_cycle_automation:
     - disable:
         event: MODE_CHANGE
         event_data:
+          name: blackout_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
           name: guest_mode
           state: "on"
       enable:
@@ -97,11 +107,3 @@ wolfie_scheduled_cycle_automation:
         event_data:
           name: vacation_mode
           state: "off"
-    - disable:
-        event: PROXIMITY_CHANGE
-        event_data:
-          old: home
-      enable:
-        event: PROXIMITY_CHANGE
-        event_data:
-          new: home
