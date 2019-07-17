@@ -56,6 +56,9 @@ notify_media_center_left_on_automation:
     entity_id: switch.media_center
   properties:
     duration: 43200
+    notification_target:
+      - "person:Aaron"
+      - "person:Britt"
     state: "on"
   state_changes:
     - disable:
@@ -89,6 +92,9 @@ notify_ps4_left_on_automation:
     entity_id: media_player.playstation_4
   properties:
     duration: 43200
+    notification_target:
+      - "person:Aaron"
+      - "person:Britt"
     state: "idle"
   state_changes:
     - disable:

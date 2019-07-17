@@ -9,6 +9,7 @@ from const import (
     CONF_ENTITY_ID,
     CONF_ENTITY_IDS,
     CONF_NOTIFICATION_INTERVAL,
+    CONF_NOTIFICATION_TARGET,
     CONF_PROPERTIES,
     CONF_STATE,
 )
@@ -158,7 +159,7 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
 
         def _send_notification() -> None:
             """Send a notification."""
-            message = "The {0} has been left {1} for {2} minutes. Turn it off?".format(
+            message = "The {0} has been left {1} for {2} minutes".format(
                 self.get_state(
                     self.entity_ids[CONF_ENTITY_ID], attribute="friendly_name"
                 ),
@@ -166,24 +167,7 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
                 int(self.properties[CONF_DURATION]) / 60,
             )
 
-            send_notification(
-                self,
-                ["person:Aaron", "person:Britt"],
-                message,
-                title="Garage Open 🚗",
-                data={"push": {"category": "garage"}},
-            )
-
-            self.slack_app_home_assistant.ask(
-                message,
-                {
-                    "Yes": {
-                        "callback": _turn_off,
-                        "response_text": "You got it; turning it off now.",
-                    },
-                    "No": {"response_text": "Keep devouring electricity, little guy."},
-                },
-            )
+            send_notification(self, self.properties[CONF_NOTIFICATION_TARGET], message)
 
         # If the automation is enabled when a battery is low, send a notification;
         # if not, remember that we should send the notification when the automation
