@@ -82,6 +82,30 @@ notify_media_center_left_on_automation:
           name: blackout_mode
           state: "off"
 
+notify_pi_hole_turned_off_automation:
+  module: systems
+  class: LeftInState
+  dependencies:
+    - presence_manager
+  entity_ids:
+    entity_id: switch.pi_hole_switch
+  properties:
+    duration: 300
+    notification_target:
+      - "slack:@aaron"
+    state: "off"
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "off"
+
 notify_ps4_left_on_automation:
   module: systems
   class: LeftInState
