@@ -145,7 +145,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
     @property
     def hvac_mode(self) -> str:
         """Return the current operating mode."""
-        return self.get_state(self.entity_ids[CONF_THERMOSTAT], attribute="hvac_mode")
+        return self.get_state(self.entity_ids[CONF_THERMOSTAT])
 
     @property
     def outdoor_brightness(self) -> int:
