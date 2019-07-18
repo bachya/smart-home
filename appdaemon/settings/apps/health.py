@@ -3,7 +3,7 @@ from typing import Callable, Optional, Union
 
 import voluptuous as vol
 
-from climate import OPERATION_MODE_COOL
+from climate import HVAC_MODE_COOL
 from const import CONF_ENTITY_IDS, CONF_PROPERTIES
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
@@ -84,7 +84,7 @@ class NotifyBadAqi(Base):
     ) -> None:
         """Send select notifications when cooling and poor AQI."""
 
-        if self.climate_manager.operation_mode != OPERATION_MODE_COOL:
+        if self.climate_manager.hvac_mode != HVAC_MODE_COOL:
             return
 
         current_aqi = int(new)

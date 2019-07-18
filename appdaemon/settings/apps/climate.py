@@ -30,10 +30,10 @@ FAN_MODE_ON_LOW = "On Low"
 
 HANDLE_ECO_MODE = "eco_mode"
 
-OPERATION_MODE_AUTO = "auto"
-OPERATION_MODE_COOL = "cool"
-OPERATION_MODE_HEAT = "heat"
-OPERATION_MODE_OFF = "off"
+HVAC_MODE_AUTO = "auto"
+HVAC_MODE_COOL = "cool"
+HVAC_MODE_HEAT = "heat"
+HVAC_MODE_OFF = "off"
 
 
 class AdjustOnProximity(Base):  # pylint: disable=too-few-public-methods
@@ -119,7 +119,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
     def configure(self) -> None:
         """Configure."""
         self._away = False
-        self._last_operation_mode = None
+        self._last_hvac_mode = None
         self._last_temperature = None
 
     @property
@@ -143,11 +143,9 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         return float(self.get_state(self.entity_ids[CONF_INDOOR_TEMPERATURE_SENSOR]))
 
     @property
-    def operation_mode(self) -> str:
+    def hvac_mode(self) -> str:
         """Return the current operating mode."""
-        return self.get_state(
-            self.entity_ids[CONF_THERMOSTAT], attribute="operation_mode"
-        )
+        return self.get_state(self.entity_ids[CONF_THERMOSTAT], attribute="hvac_mode")
 
     @property
     def outdoor_brightness(self) -> int:
@@ -191,19 +189,19 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         new_temp = float(new)
         if (
             new_temp > self.properties[CONF_ECO_HIGH_THRESHOLD]
-            and self.operation_mode != OPERATION_MODE_COOL
+            and self.hvac_mode != HVAC_MODE_COOL
         ):
             self.log('Above eco mode limits; turning thermostat to "cool"')
             self.set_mode_cool()
             self.set_temperature(self.properties[CONF_ECO_HIGH_THRESHOLD] - 1)
         elif (
             new_temp < self.properties[CONF_ECO_LOW_THRESHOLD]
-            and self.operation_mode != OPERATION_MODE_HEAT
+            and self.hvac_mode != HVAC_MODE_HEAT
         ):
             self.log('Below eco mode limits; turning thermostat to "heat"')
             self.set_mode_heat()
             self.set_temperature(self.properties[CONF_ECO_LOW_THRESHOLD] + 1)
-        elif self.operation_mode != OPERATION_MODE_OFF:
+        elif self.hvac_mode != HVAC_MODE_OFF:
             self.log('Within eco mode limits; turning thermostat to "off"')
             self.set_mode_off()
 
@@ -219,21 +217,21 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             fan_mode=fan_mode,
         )
 
-    def _set_operation_mode(self, operation_mode: str) -> None:
+    def _set_hvac_mode(self, hvac_mode: str) -> None:
         """Set the themostat's operation mode."""
-        if operation_mode == self.operation_mode:
+        if hvac_mode == self.hvac_mode:
             return
 
-        self.log('Setting operation mode to "{0}"'.format(operation_mode.title()))
+        self.log('Setting operation mode to "{0}"'.format(hvac_mode.title()))
         self.call_service(
-            "climate/set_operation_mode",
+            "climate/set_hvac_mode",
             entity_id=self.entity_ids[CONF_THERMOSTAT],
-            operation_mode=operation_mode,
+            hvac_mode=hvac_mode,
         )
 
     def bump_temperature(self, value: int) -> None:
         """Bump the current temperature."""
-        if self.operation_mode == OPERATION_MODE_COOL:
+        if self.hvac_mode == HVAC_MODE_COOL:
             value *= -1
         self.set_temperature(self.target_temperature + value)
 
@@ -245,7 +243,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         self.log('Setting thermostat to "Away" mode')
 
         self._away = True
-        self._last_operation_mode = self.operation_mode
+        self._last_hvac_mode = self.hvac_mode
         self._last_temperature = self.target_temperature
 
         self.set_mode_off()
@@ -278,25 +276,25 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
         # If the thermostat isn't doing anything, set it to the previous settings
         # (before away mode); otherwise, let it keep doing its thing:
-        if self.operation_mode == OPERATION_MODE_OFF:
-            self._set_operation_mode(self._last_operation_mode)
+        if self.hvac_mode == HVAC_MODE_OFF:
+            self._set_hvac_mode(self._last_hvac_mode)
             self.set_temperature(self._last_temperature)
 
     def set_mode_auto(self) -> None:
         """Set the operation mode to auto."""
-        self._set_operation_mode(OPERATION_MODE_AUTO)
+        self._set_hvac_mode(HVAC_MODE_AUTO)
 
     def set_mode_cool(self) -> None:
         """Set the operation mode to cool."""
-        self._set_operation_mode(OPERATION_MODE_COOL)
+        self._set_hvac_mode(HVAC_MODE_COOL)
 
     def set_mode_heat(self) -> None:
         """Set the operation mode to heat."""
-        self._set_operation_mode(OPERATION_MODE_HEAT)
+        self._set_hvac_mode(HVAC_MODE_HEAT)
 
     def set_mode_off(self) -> None:
         """Set the operation mode to off."""
-        self._set_operation_mode(OPERATION_MODE_OFF)
+        self._set_hvac_mode(HVAC_MODE_OFF)
 
     def set_temperature(self, temperature: int) -> None:
         """Set the thermostat temperature."""
@@ -305,7 +303,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
         # If the thermostat is off and the temperature is adjusted,
         # make a guess as to which operation mode should be used:
-        if self.operation_mode == OPERATION_MODE_OFF:
+        if self.hvac_mode == HVAC_MODE_OFF:
             if temperature > self.average_indoor_temperature:
                 self.set_mode_heat()
             elif temperature < self.average_indoor_temperature:

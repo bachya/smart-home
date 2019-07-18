@@ -79,7 +79,7 @@ class Thermostat(SlashCommand):
         """Execute the response to the slash command."""
         if not self._text:
             text = "The thermostat is set to `{0}` to `{1}°`.".format(
-                self._hass.climate_manager.operation_mode,
+                self._hass.climate_manager.hvac_mode,
                 self._hass.climate_manager.target_temperature,
             )
 
