@@ -31,7 +31,7 @@ sensor:
 
   - platform: filter
     name: "Filtered Outdoor Brightness (%)"
-    entity_id: sensor.outdoor_brightness_lux_log
+    entity_id: sensor.side_yard_solar_rad_log
     filters:
       - filter: range
         upper_bound: 100
@@ -63,13 +63,7 @@ sensor:
         value_template: >
           {{ states.sensor.moon.state | replace('_', ' ') | title }}
         icon_template: mdi:weather-night
-      outdoor_brightness_lux:
-        friendly_name: "Side Yard: Brightness"
-        value_template: >
-          {{ (float(states.sensor.side_yard_solar_rad.state) / 0.0079)|round }}
-        unit_of_measurement: lx
-        device_class: illuminance
-      outdoor_brightness_lux_log:
+      side_yard_solar_rad_log:
         friendly_name: "Side Yard: Brightness (Perception)"
         value_template: >
           {{ (states.sensor.outdoor_brightness_lux.state|int|log(10)/5)|round(2) * 100 }}
