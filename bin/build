@@ -1,0 +1,49 @@
+#!/bin/bash
+set -euxo pipefail
+
+REPO_PATH="$( dirname $( cd "$(dirname "$0")" ; pwd -P ) )"
+
+function copy_config_data() {
+  volume_name=$1
+  relative_settings_path=$2
+
+  docker volume create $volume_name
+
+  docker run --rm \
+    -v `pwd`$relative_settings_path:/src \
+    -v $volume_name:/data \
+    -w /src \
+    busybox \
+    cp -a . /data
+}
+
+# Update AppDaemon configs:
+copy_config_data "hub_appdaemon-config" "$REPO_PATH/appdaemon/settings"
+
+# Update amazon-dash configs:
+copy_config_data "hub_amazon-dash-config" "$REPO_PATH/amazon-dash/settings"
+sudo chown -R root:root /var/lib/docker/volumes/hub_amazon-dash-config/_data/
+
+# Update Glances configs:
+copy_config_data "hub_glances-config" "$REPO_PATH/glances/settings"
+
+# Update Home Assistant configs:
+copy_config_data "hub_hass-config" "$REPO_PATH/home-assistant/settings"
+
+# Update Mosquitto configs:
+copy_config_data "hub_mosquitto-config" "$REPO_PATH/mosquitto/settings"
+
+# Re-build the containers if necessary:
+docker-compose build
+
+# Restart the containers:
+docker-compose down --remove-orphans
+docker container prune -f
+docker image prune -f
+docker-compose up -d
+docker network prune -f
+docker volume prune -f
+
+# Restart AppDaemon (just in case it hasn't gotten its data yet - bug):
+sleep 10
+docker-compose restart appdaemon
