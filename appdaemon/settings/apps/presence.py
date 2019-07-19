@@ -88,7 +88,7 @@ class PresenceManager(Base):
             self.state = self.ProximityStates.edge
         elif (
             self.state != self.ProximityStates.away
-            and new_proximity > self.NEARBY_THRESHOLD
+            and new_proximity > self.EDGE_THRESHOLD
         ):
             self.state = self.ProximityStates.away
 
