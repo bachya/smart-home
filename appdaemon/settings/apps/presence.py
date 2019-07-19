@@ -5,6 +5,11 @@ from typing import Union
 from core import Base
 from const import CONF_PEOPLE, EVENT_PROXIMITY_CHANGE
 
+CONF_EDGE_THRESHOLD = "edge_threshold_feet"
+CONF_HOME_THRESHOLD = "home_threshold_feet"
+CONF_NEARBY_THRESHOLD = "nearby_threshold_feet"
+CONF_PROXIMITY_SENSOR = "proximity_sensor"
+
 
 class PresenceManager(Base):
     """Define a class to represent a presence manager."""
@@ -26,24 +31,22 @@ class PresenceManager(Base):
         home = "home"
         nearby = "nearby"
 
-    PROXIMITY_SENSOR = "proximity.home"
-
-    HOME_THRESHOLD = 0
-    NEARBY_THRESHOLD = 15840
-    EDGE_THRESHOLD = 31680
-
     def configure(self) -> None:
         """Configure."""
-        if self.proximity == self.HOME_THRESHOLD:
+        if self.proximity == self.properties[CONF_HOME_THRESHOLD]:
             self.state = self.ProximityStates.home
-        elif self.HOME_THRESHOLD < self.proximity <= self.NEARBY_THRESHOLD:
+        elif (
+            self.properties[CONF_HOME_THRESHOLD]
+            < self.proximity
+            <= self.properties[CONF_NEARBY_THRESHOLD]
+        ):
             self.state = self.ProximityStates.nearby
         else:
             self.state = self.ProximityStates.away
 
         self.listen_state(
             self._on_proximity_change,
-            self.PROXIMITY_SENSOR,
+            self.entity_ids[CONF_PROXIMITY_SENSOR],
             attribute="all",
             duration=60,
         )
@@ -52,7 +55,7 @@ class PresenceManager(Base):
     def proximity(self) -> int:
         """Return the current proximity."""
         try:
-            return int(self.get_state(self.PROXIMITY_SENSOR))
+            return int(self.get_state(self.entity_ids[CONF_PROXIMITY_SENSOR]))
         except ValueError:
             return 0
 
@@ -73,22 +76,26 @@ class PresenceManager(Base):
 
         if (
             self.state != self.ProximityStates.home
-            and new_proximity == self.HOME_THRESHOLD
+            and new_proximity == self.properties[CONF_HOME_THRESHOLD]
         ):
             self.state = self.ProximityStates.home
         elif (
             self.state != self.ProximityStates.nearby
-            and self.HOME_THRESHOLD < new_proximity <= self.NEARBY_THRESHOLD
+            and self.properties[CONF_HOME_THRESHOLD]
+            < new_proximity
+            <= self.properties[CONF_NEARBY_THRESHOLD]
         ):
             self.state = self.ProximityStates.nearby
         elif (
             self.state != self.ProximityStates.edge
-            and self.NEARBY_THRESHOLD < new_proximity <= self.EDGE_THRESHOLD
+            and self.properties[CONF_NEARBY_THRESHOLD]
+            < new_proximity
+            <= self.properties[CONF_EDGE_THRESHOLD]
         ):
             self.state = self.ProximityStates.edge
         elif (
             self.state != self.ProximityStates.away
-            and new_proximity > self.EDGE_THRESHOLD
+            and new_proximity > self.properties[CONF_EDGE_THRESHOLD]
         ):
             self.state = self.ProximityStates.away
 

@@ -2,3 +2,9 @@
 presence_manager:
   module: presence
   class: PresenceManager
+  entity_ids:
+    proximity_sensor: proximity.home
+  properties:
+    edge_threshold_feet: 31680
+    home_threshold_feet: 0
+    nearby_threshold_feet: 15840
