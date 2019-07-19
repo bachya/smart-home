@@ -22,9 +22,11 @@ CONF_START_TIME = "start_time"
 CONF_UPDATE_INTERVAL = "update_interval"
 
 # Notification-related config keys:
-CONF_NOTIFIERS = "notifiers"
+CONF_MESSAGE = "message"
 CONF_NOTIFICATION_INTERVAL = "notification_interval"
 CONF_NOTIFICATION_TARGET = "notification_target"
+CONF_NOTIFIERS = "notifiers"
+CONF_TITLE = "title"
 
 # Comparison-related config keys:
 CONF_ABOVE = "above"

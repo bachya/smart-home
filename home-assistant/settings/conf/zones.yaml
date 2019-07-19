@@ -1,0 +1,6 @@
+---
+- name: Lightning Strike Alert Zone
+  latitude: !secret base_latitude
+  longitude: !secret base_longitude
+  radius: 32186
+  passive: true

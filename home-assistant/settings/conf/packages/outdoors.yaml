@@ -3,6 +3,21 @@ ambient_station:
   api_key: !secret pws_api_key
   app_key: !secret pws_app_key
 
+automation:
+  - alias: "Lightning Alert"
+    trigger:
+      platform: geo_location
+      source: wwlln
+      zone: zone.lightning_strike_alert_zone
+      event: enter
+    action:
+      - event: TRIGGER_MESSAGE
+        event_data_template:
+          title: "Lightning Strike"
+          message: "You may want to go inside."
+          notification_target:
+            - "presence:home"
+
 group:
   outdoor_lights:
     entities:
