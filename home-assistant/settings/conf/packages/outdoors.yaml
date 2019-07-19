@@ -80,6 +80,7 @@ sensor:
         icon_template: mdi:weather-night
       side_yard_solar_rad_log:
         friendly_name: "Side Yard: Brightness (Perception)"
+        entity_id: sensor.side_yard_solar_rad
         value_template: >
           {{ (
             states("sensor.side_yard_solar_rad") | int | log(10)/5
