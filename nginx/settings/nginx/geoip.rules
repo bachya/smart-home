@@ -15,4 +15,5 @@ map $geoip2_data_country_code $allowed_country {
 geo $lan_ip {
   default no;
   172.16.10.0/24 yes;
+  172.16.11.0/24 yes;
 }
