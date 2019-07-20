@@ -200,7 +200,6 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             current_temperature > self.properties[CONF_ECO_HIGH_THRESHOLD]
             and self.hvac_mode != HVAC_MODE_COOL
         ):
-
             self.log('Eco Mode: setting to "cool" ({0}°)'.format(self._eco_cool_target))
 
             self.set_mode_cool()
@@ -209,7 +208,6 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             current_temperature < self.properties[CONF_ECO_LOW_THRESHOLD]
             and self.hvac_mode != HVAC_MODE_HEAT
         ):
-
             self.log('Eco Mode: setting to "heat" ({0}°)'.format(self._eco_heat_target))
 
             self.set_mode_heat()
