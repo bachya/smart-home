@@ -11,18 +11,19 @@ from const import (
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 
+CONF_BRIGHTNESS_PERCENT_SENSOR = "sensor.outdoor_brightness_percent_sensor"
+CONF_BRIGHTNESS_SENSOR = "sensor.outdoor_brightness_sensor"
+CONF_ECO_DELTA = "eco_delta_degrees"
 CONF_ECO_HIGH_THRESHOLD = "eco_high_threshold"
 CONF_ECO_LOW_THRESHOLD = "eco_low_threshold"
 CONF_HUMIDITY_SENSOR = "humidity_sensor"
 CONF_INDOOR_TEMPERATURE_SENSOR = "indoor_temperature_sensor"
-CONF_BRIGHTNESS_SENSOR = "sensor.outdoor_brightness_sensor"
-CONF_BRIGHTNESS_PERCENT_SENSOR = "sensor.outdoor_brightness_percent_sensor"
+CONF_OUTDOOR_BRIGHTNESS_PERCENT_SENSOR = "outdoor_brightness_percent_sensor"
+CONF_OUTDOOR_BRIGHTNESS_SENSOR = "outdoor_brightness_sensor"
 CONF_OUTDOOR_HIGH_THRESHOLD = "outdoor_high_threshold"
 CONF_OUTDOOR_LOW_THRESHOLD = "outdoor_low_threshold"
 CONF_OUTDOOR_TEMPERATURE_SENSOR = "outdoor_temperature_sensor"
 CONF_THERMOSTAT = "thermostat"
-CONF_OUTDOOR_BRIGHTNESS_SENSOR = "outdoor_brightness_sensor"
-CONF_OUTDOOR_BRIGHTNESS_PERCENT_SENSOR = "outdoor_brightness_percent_sensor"
 
 FAN_MODE_AUTO_LOW = "Auto Low"
 FAN_MODE_CIRCULATE = "Circulate"
@@ -122,6 +123,13 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         self._last_hvac_mode = None
         self._last_temperature = None
 
+        self._eco_cool_target = (
+            self.properties[CONF_ECO_HIGH_THRESHOLD] - self.properties[CONF_ECO_DELTA]
+        )
+        self._eco_heat_target = (
+            self.properties[CONF_ECO_HIGH_THRESHOLD] + self.properties[CONF_ECO_DELTA]
+        )
+
     @property
     def away_mode(self) -> bool:
         """Return the state of away mode."""
@@ -186,22 +194,30 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """React when the temperature goes above or below its eco thresholds."""
-        new_temp = float(new)
+        current_temperature = float(new)
+
         if (
-            new_temp > self.properties[CONF_ECO_HIGH_THRESHOLD]
+            current_temperature > self.properties[CONF_ECO_HIGH_THRESHOLD]
             and self.hvac_mode != HVAC_MODE_COOL
         ):
-            self.log('Above eco mode limits; turning thermostat to "cool"')
+
+            self.log('Eco Mode: setting to "cool" ({0}°)'.format(self._eco_cool_target))
+
             self.set_mode_cool()
-            self.set_temperature(self.properties[CONF_ECO_HIGH_THRESHOLD] - 1)
+            self.set_temperature(self._eco_cool_target)
         elif (
-            new_temp < self.properties[CONF_ECO_LOW_THRESHOLD]
+            current_temperature < self.properties[CONF_ECO_LOW_THRESHOLD]
             and self.hvac_mode != HVAC_MODE_HEAT
         ):
-            self.log('Below eco mode limits; turning thermostat to "heat"')
+
+            self.log('Eco Mode: setting to "heat" ({0}°)'.format(self._eco_heat_target))
+
             self.set_mode_heat()
-            self.set_temperature(self.properties[CONF_ECO_LOW_THRESHOLD] + 1)
-        elif self.hvac_mode != HVAC_MODE_OFF:
+            self.set_temperature(self._eco_heat_target)
+        elif (
+            self._eco_heat_target <= current_temperature <= self._eco_cool_target
+            and self.hvac_mode != HVAC_MODE_OFF
+        ):
             self.log('Within eco mode limits; turning thermostat to "off"')
             self.set_mode_off()
 
@@ -247,6 +263,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         self._last_temperature = self.target_temperature
 
         self.set_mode_off()
+
         self.handles[HANDLE_ECO_MODE] = self.listen_state(
             self._on_eco_temp_change, self.entity_ids[CONF_INDOOR_TEMPERATURE_SENSOR]
         )
