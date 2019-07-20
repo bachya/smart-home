@@ -304,9 +304,9 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         # If the thermostat is off and the temperature is adjusted,
         # make a guess as to which operation mode should be used:
         if self.hvac_mode == HVAC_MODE_OFF:
-            if temperature > self.average_indoor_temperature:
+            if temperature > self.indoor_temperature:
                 self.set_mode_heat()
-            elif temperature < self.average_indoor_temperature:
+            elif temperature < self.indoor_temperature:
                 self.set_mode_cool()
             else:
                 self.set_mode_auto()
