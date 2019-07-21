@@ -1,4 +1,0 @@
----
-send_notification:
-  module: send_notification
-  class: SendNotification

@@ -1,27 +1,38 @@
 ---
-sensor:
-  - platform: min_max
-    name: "Average Indoor Temperature"
-    type: "mean"
-    round_digits: 1
-    entity_ids:
-      - sensor.basement_sensor_temperature
-      - sensor.fiddle_leaf_fig_temperature
-      - sensor.guest_bedroom_sensor_temperature
-      - sensor.kitchen_sensor_temperature
-      - sensor.master_bathroom_temperature
-      - sensor.side_yard_inside_temp
-      - sensor.thermostat_temperature
-      - sensor.upstairs_hallway_sensor_temperature
+ambient_station:
+  api_key: !secret pws_api_key
+  app_key: !secret pws_app_key
 
-  - platform: min_max
-    name: "Average Indoor Humidity"
-    type: "mean"
-    round_digits: 1
-    entity_ids:
-      - sensor.master_bathroom_humidity
-      - sensor.side_yard_humidity_in
-      - sensor.thermostat_humidity
+automation:
+  - alias: "Lightning Alert"
+    trigger:
+      platform: geo_location
+      source: wwlln
+      zone: zone.lightning_strike_alert_zone
+      event: enter
+    action:
+      - event: LIGHTNING_DETECTED
+
+sensor:
+  - platform: darksky
+    api_key: !secret dark_sky_api_key
+    monitored_conditions:
+      - cloud_cover
+
+  - platform: filter
+    name: "Filtered Wind Speed"
+    entity_id: sensor.side_yard_wind_speed
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 1
+
+  - platform: filter
+    name: "Filtered Outdoor Brightness (%)"
+    entity_id: sensor.side_yard_solar_rad_log
+    filters:
+      - filter: range
+        upper_bound: 100
 
   - platform: filter
     name: "Filtered Average Indoor Humidity"
@@ -38,3 +49,84 @@ sensor:
       - filter: lowpass
         time_constant: 10
         precision: 1
+
+  - platform: min_max
+    name: "Average Indoor Humidity"
+    type: "mean"
+    round_digits: 1
+    entity_ids:
+      - sensor.master_bathroom_humidity
+      - sensor.side_yard_humidity_in
+      - sensor.thermostat_humidity
+
+  - platform: moon
+
+  - platform: season
+
+  - platform: template
+    sensors:
+      dark_sky_temperature:
+        value_template: "{{ state_attr('weather.weather', 'temperature') }}"
+        icon_template: mdi:thermometer
+      friendly_season:
+        friendly_name: Season
+        value_template: "{{ states('sensor.season') | title }}"
+        icon_template: >
+          {% if states("sensor.season") == 'spring' %}
+            mdi:flower
+          {% elif states("sensor.season") == 'summer' %}
+            mdi:sunglasses
+          {% elif states("sensor.season") == 'autumn' %}
+            mdi:leaf
+          {% elif states("sensor.season") == 'winter' %}
+            mdi:snowflake
+          {% endif %}
+      moon_phase:
+        friendly_name: Moon Phase
+        value_template: >
+          {{ states("sensor.moon") | replace('_', ' ') | title }}
+        icon_template: mdi:weather-night
+      side_yard_solar_rad_log:
+        friendly_name: "Side Yard: Brightness (Perception)"
+        entity_id: sensor.side_yard_solar_rad
+        value_template: >
+          {{ (
+            states("sensor.side_yard_solar_rad") | int | log(10)/5
+          )| round(2) * 100 }}
+        unit_of_measurement: "%"
+        device_class: illuminance
+      sunrise:
+        friendly_name: Next Sunrise
+        value_template: >
+          {{ as_timestamp(
+            state_attr("sun.sun", "next_rising")
+          ) | timestamp_custom(' %I:%M %p') | replace(' 0', '') }}
+        icon_template: mdi:weather-sunset-up
+      sunset:
+        friendly_name: Next Sunset
+        value_template: >
+          {{ as_timestamp(
+            state_attr("sun.sun", "next_setting")
+          ) | timestamp_custom(' %I:%M %p') | replace(' 0', '') }}
+        icon_template: mdi:weather-sunset-down
+
+  - platform: min_max
+    name: "Average Indoor Temperature"
+    type: "mean"
+    round_digits: 1
+    entity_ids:
+      - sensor.basement_sensor_temperature
+      - sensor.fiddle_leaf_fig_temperature
+      - sensor.guest_bedroom_sensor_temperature
+      - sensor.kitchen_sensor_temperature
+      - sensor.master_bathroom_temperature
+      - sensor.side_yard_inside_temp
+      - sensor.thermostat_temperature
+      - sensor.upstairs_hallway_sensor_temperature
+
+sun:
+
+weather:
+  - platform: darksky
+    api_key: !secret dark_sky_api_key
+    name: Weather
