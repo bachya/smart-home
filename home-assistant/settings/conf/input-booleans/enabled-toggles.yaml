@@ -95,6 +95,9 @@ kitchen_patio_light_double_tap_backyard_lights_automation:
   icon: mdi:lightbulb
   initial: true
   name: Kitchen patio controls backyard lights
+lightning_detected_automation:
+  icon: mdi:flash
+  name: Notify when lightning detected
 living_room_lights_on_at_sunset_automation:
   icon: mdi:weather-sunset-down
   initial: true
