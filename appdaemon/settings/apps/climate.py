@@ -1,28 +1,35 @@
 """Define automations for climate control."""
-from typing import Union
+from typing import Callable, Optional, Union
 import voluptuous as vol
 
+from core import APP_SCHEMA, Base
+from helpers import config_validation as cv
+from notification import send_notification
 from const import (
     CONF_ENTITY_IDS,
     CONF_PROPERTIES,
     EVENT_PRESENCE_CHANGE,
     EVENT_PROXIMITY_CHANGE,
 )
-from core import APP_SCHEMA, Base
-from helpers import config_validation as cv
+
+CONF_AQI_SENSOR = "aqi"
+CONF_AQI_THRESHOLD = "aqi_threshold"
 
 CONF_BRIGHTNESS_PERCENT_SENSOR = "sensor.outdoor_brightness_percent_sensor"
 CONF_BRIGHTNESS_SENSOR = "sensor.outdoor_brightness_sensor"
+
 CONF_ECO_DELTA = "eco_delta_degrees"
 CONF_ECO_HIGH_THRESHOLD = "eco_high_threshold"
 CONF_ECO_LOW_THRESHOLD = "eco_low_threshold"
+
 CONF_HUMIDITY_SENSOR = "humidity_sensor"
 CONF_INDOOR_TEMPERATURE_SENSOR = "indoor_temperature_sensor"
 CONF_OUTDOOR_BRIGHTNESS_PERCENT_SENSOR = "outdoor_brightness_percent_sensor"
 CONF_OUTDOOR_BRIGHTNESS_SENSOR = "outdoor_brightness_sensor"
+CONF_OUTDOOR_TEMPERATURE_SENSOR = "outdoor_temperature_sensor"
+
 CONF_OUTDOOR_HIGH_THRESHOLD = "outdoor_high_threshold"
 CONF_OUTDOOR_LOW_THRESHOLD = "outdoor_low_threshold"
-CONF_OUTDOOR_TEMPERATURE_SENSOR = "outdoor_temperature_sensor"
 CONF_THERMOSTAT = "thermostat"
 
 FAN_MODE_AUTO_LOW = "Auto Low"

@@ -16,12 +16,64 @@ from const import (
 from helpers import config_validation as cv
 from notification import send_notification
 
+CONF_AARON_ROUTER_TRACKER = "aaron_router_tracker"
+
 CONF_BATTERIES_TO_MONITOR = "batteries_to_monitor"
 CONF_BATTERY_LEVEL_THRESHOLD = "battery_level_threshold"
+
 CONF_EXPIRY_THRESHOLD = "expiry_threshold"
 CONF_SSL_EXPIRY = "ssl_expiry"
 
+CONF_PI_HOLE_ACTIVE_SENSOR = "pi_hole_active_sensor"
+CONF_PI_HOLE_API_KEY = "pi_hole_api_key"
+CONF_PI_HOLE_HOSTS = "pi_hole_hosts"
+CONF_PI_HOLE_OFF_EVENT = "pi_hole_off_event"
+CONF_PI_HOLE_ON_EVENT = "pi_hole_on_event"
+
 HANDLE_BATTERY_LOW = "battery_low"
+
+
+class AaronAccountability(Base):
+    """Define features to keep me accountable on my phone."""
+
+    APP_SCHEMA = APP_SCHEMA.extend(
+        {
+            CONF_ENTITY_IDS: vol.Schema(
+                {vol.Required(CONF_AARON_ROUTER_TRACKER): cv.entity_id},
+                extra=vol.ALLOW_EXTRA,
+            )
+        }
+    )
+
+    def configure(self) -> None:
+        """Configure."""
+        self.listen_state(
+            self._on_disconnect,
+            self.entity_ids[CONF_AARON_ROUTER_TRACKER],
+            new="not_home",
+            constrain_in_blackout=True,
+            constrain_anyone="home",
+        )
+
+    @property
+    def router_tracker_state(self) -> str:
+        """Return the state of Aaron's Unifi tracker."""
+        return self.get_state(self.entity_ids[CONF_AARON_ROUTER_TRACKER])
+
+    def _on_disconnect(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Send a notification when I disconnect during a blackout."""
+        self._send_notification()
+
+    def _send_notification(self) -> None:
+        """Send notification to my love."""
+        send_notification(
+            self,
+            "ios_brittany_bachs_iphone",
+            "His phone shouldn't be off wifi during the night.",
+            title="Check on Aaron",
+        )
 
 
 class LowBatteries(Base):  # pylint: disable=too-few-public-methods

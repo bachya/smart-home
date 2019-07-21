@@ -1,4 +1,14 @@
 ---
+aaron_accountability_automation:
+  module: health
+  class: AaronAccountability
+  dependencies:
+    - aaron
+    - presence_manager
+    - blackout_mode
+  entity_ids:
+    aaron_router_tracker: device_tracker.aarons_iphone
+
 notify_of_low_batteries_automation:
   module: systems
   class: LowBatteries
