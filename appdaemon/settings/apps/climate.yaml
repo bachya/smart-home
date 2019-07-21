@@ -22,3 +22,43 @@ climate_manager:
     eco_low_threshold: 60
     outdoor_high_threshold: 85
     outdoor_low_threshold: 40
+
+notify_bad_aqi_automation:
+  module: health
+  class: NotifyBadAqi
+  dependencies:
+    - climate_manager
+    - vacation_mode
+  entity_ids:
+    aqi: sensor.us_air_quality_index
+  properties:
+    aqi_threshold: 100
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "off"
+    - disable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          old: home
+      enable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          new: home
