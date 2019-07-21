@@ -28,6 +28,35 @@ lightning_detected_automation:
   class: LightningDetected
   properties:
     notification_window_seconds: 600
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "off"
+    - disable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          old: home
+      enable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          new: home
 
 notify_bad_aqi_automation:
   module: climate
