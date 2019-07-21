@@ -5,12 +5,12 @@ REPO_PATH="$( dirname $( cd "$(dirname "$0")" ; pwd -P ) )"
 
 function copy_config_data() {
   volume_name=$1
-  relative_settings_path=$2
+  settings_path=$2
 
   docker volume create $volume_name
 
   docker run --rm \
-    -v `pwd`$relative_settings_path:/src \
+    -v $settings_path:/src \
     -v $volume_name:/data \
     -w /src \
     busybox \
