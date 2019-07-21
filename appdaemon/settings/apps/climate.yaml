@@ -23,8 +23,14 @@ climate_manager:
     outdoor_high_threshold: 85
     outdoor_low_threshold: 40
 
+lightning_detected_automation:
+  module: climate
+  class: LightningDetected
+  properties:
+    notification_window_seconds: 600
+
 notify_bad_aqi_automation:
-  module: health
+  module: climate
   class: NotifyBadAqi
   dependencies:
     - climate_manager

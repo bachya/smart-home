@@ -1,6 +1,6 @@
 ---
 aaron_accountability_automation:
-  module: health
+  module: systems
   class: AaronAccountability
   dependencies:
     - aaron

@@ -12,6 +12,8 @@ automation:
       event: enter
     action:
       - event: LIGHTNING_DETECTED
+        event_data:
+          distance: "{{ trigger.to_state.state }}"
 
 sensor:
   - platform: darksky

@@ -32,6 +32,10 @@ CONF_OUTDOOR_HIGH_THRESHOLD = "outdoor_high_threshold"
 CONF_OUTDOOR_LOW_THRESHOLD = "outdoor_low_threshold"
 CONF_THERMOSTAT = "thermostat"
 
+EVENT_LIGHTNING_DETECTED = "LIGHTNING_DETECTED"
+CONF_DISTANCE = "distance"
+CONF_LIGHTNING_WINDOW = "notification_window_seconds"
+
 FAN_MODE_AUTO_LOW = "Auto Low"
 FAN_MODE_CIRCULATE = "Circulate"
 FAN_MODE_ON_LOW = "On Low"
@@ -336,6 +340,39 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             entity_id=self.entity_ids[CONF_THERMOSTAT],
             temperature=str(temperature),
         )
+
+
+class LightningDetected(Base):  # pylint: disable=too-few-public-methods
+    """Define a feature to notify when lightning is detected."""
+
+    def configure(self) -> None:
+        """Configure."""
+        self._active = False
+
+        self.listen_event(
+            self._on_lightning_detected,
+            EVENT_LIGHTNING_DETECTED,
+            constrain_enabled=True,
+        )
+
+    def _on_lightning_detected(self, event_name: str, data: dict, kwargs: dict) -> None:
+        """Respond to "LIGHTNING_DETECTED" events."""
+        if self._active:
+            return
+
+        send_notification(
+            self,
+            "presence:home",
+            "Lightning detected {0} miles away.".format(data[CONF_DISTANCE]),
+            title="Lightning Detected ⚡️",
+        )
+
+        self._active = True
+        self.run_in(self._on_reset, self.properties[CONF_LIGHTNING_WINDOW])
+
+    def _on_reset(self, kwargs: dict) -> None:
+        """Reset the notification window."""
+        self._active = False
 
 
 class NotifyBadAqi(Base):
