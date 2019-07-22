@@ -119,6 +119,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             ),
             CONF_PROPERTIES: vol.Schema(
                 {
+                    vol.Required(CONF_ECO_DELTA): int,
                     vol.Required(CONF_ECO_HIGH_THRESHOLD): int,
                     vol.Required(CONF_ECO_LOW_THRESHOLD): int,
                     vol.Required(CONF_OUTDOOR_HIGH_THRESHOLD): int,
