@@ -101,10 +101,6 @@ class Base(Hass):
         self.register_constraint("constrain_noone")
         self.register_constraint("constrain_sun")
 
-        # Run any initial configuration:
-        if hasattr(self, "configure"):
-            self.configure()
-
         # Set up connections to the automation being disabled/enabled:
         if self._enabled_entity_exists():
             # Listen and track mode changes so that the app can respond as needed:
@@ -132,6 +128,10 @@ class Base(Hass):
                 super().listen_state(
                     self._on_enable, self._enabled_toggle_entity_id, new="on"
                 )
+
+        # Run any initial configuration:
+        if hasattr(self, "configure"):
+            self.configure()
 
     @property
     def enabled(self) -> bool:
