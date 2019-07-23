@@ -139,7 +139,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             self.properties[CONF_ECO_HIGH_THRESHOLD] - self.properties[CONF_ECO_DELTA]
         )
         self._eco_heat_target = (
-            self.properties[CONF_ECO_HIGH_THRESHOLD] + self.properties[CONF_ECO_DELTA]
+            self.properties[CONF_ECO_LOW_THRESHOLD] + self.properties[CONF_ECO_DELTA]
         )
 
     @property
