@@ -306,8 +306,9 @@ class ScheduledCycle(Base):
     def _start_full_notification_cycle(self) -> None:
         """Start a repeating notification when the vacuum is full."""
         self._cancel_full_notification_cycle()
-        self.handles[HANDLE_BIN] = send_notification(
-            "Wolfie Full 🤖" "Empty him now and you won't have to do it later!",
+        self.handles[HANDLE_BIN] = self._start_notification_cycle(
+            "Wolfie Full 🤖",
+            "Empty him now and you won't have to do it later!",
             self.properties[CONF_NOTIFICATION_INTERVAL_FULL],
         )
 
