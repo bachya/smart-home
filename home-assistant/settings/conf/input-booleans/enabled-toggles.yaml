@@ -219,13 +219,13 @@ vacation_mode_lighting:
   name: Vacation mode lighting
 wolfie_notify_when_consumable_low_automation:
   icon: mdi:robot-vacuum
-  name: Low supply notifications
+  name: Notify when consumable low
 wolfie_notify_when_cycle_complete_automation:
   icon: mdi:robot-vacuum
-  name: Low supply notifications
+  name: Notify when full
 wolfie_notify_when_stuck_automation:
   icon: mdi:robot-vacuum
-  name: Low supply notifications
+  name: Notify when stuck
 wolfie_scheduled_cycle_automation:
   icon: mdi:google-circles-group
   initial: true
