@@ -365,7 +365,7 @@ class LightningDetected(Base):  # pylint: disable=too-few-public-methods
             self,
             "presence:home",
             "Lightning detected {0} miles away.".format(data[CONF_DISTANCE]),
-            title="Lightning Detected ⚡️",
+            title="Lightning Detected",
         )
 
         self._active = True
