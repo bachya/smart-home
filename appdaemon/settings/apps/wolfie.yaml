@@ -9,7 +9,7 @@ wolfie:
     status: sensor.vacuum_status
     vacuum: vacuum.xiaomi_vacuum_cleaner
 
-notify_when_wolfie_consumable_low_automation:
+wolfie_notify_when_consumable_low_automation:
   module: robot_vacuum
   class: MonitorConsumables
   dependencies:
@@ -53,20 +53,94 @@ notify_when_wolfie_consumable_low_automation:
         event_data:
           new: home
 
+wolfie_notify_when_cycle_complete_automation:
+  module: robot_vacuum
+  class: NotifyWhenRunComplete
+  dependencies:
+    - presence_manager
+    - wolfie
+  app: wolfie
+  properties:
+    notification_interval: 3600
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
+    - disable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          old: home
+      enable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          new: home
+
+wolfie_notify_when_stuck_automation:
+  module: robot_vacuum
+  class: NotifyWhenStuck
+  dependencies:
+    - presence_manager
+    - wolfie
+  app: wolfie
+  properties:
+    notification_interval: 300
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
+    - disable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          old: home
+      enable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          new: home
+
 wolfie_scheduled_cycle_automation:
   module: robot_vacuum
   class: ScheduledCycle
   dependencies:
-    - guest_mode
     - presence_manager
     - security_manager
-    - vacation_mode
     - wolfie
   app: wolfie
   properties:
     ios_emptied_key: WOLFIE_EMPTIED
-    notification_interval_full: 3600
-    notification_interval_stuck: 300
     schedule_switches:
       - input_boolean.vacuum_schedule_monday
       - input_boolean.vacuum_schedule_tuesday

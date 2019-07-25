@@ -19,16 +19,15 @@ CONF_BIN_STATE = "bin_state"
 CONF_CONSUMABLES = "consumables"
 CONF_CONSUMABLE_THRESHOLD = "consumable_threshold"
 CONF_IOS_EMPTIED_KEY = "ios_emptied_key"
-CONF_NOTIFICATION_INTERVAL_FULL = "notification_interval_full"
-CONF_NOTIFICATION_INTERVAL_STUCK = "notification_interval_stuck"
+CONF_NOTIFICATION_INTERVAL = "notification_interval"
 CONF_SCHEDULE_SWITCHES = "schedule_switches"
 CONF_SCHEDULE_TIME = "schedule_time"
 CONF_STATUS = "status"
 CONF_VACUUM = "vacuum"
 
-HANDLE_BIN = "vacuum_bin"
+HANDLE_BIN_FULL = "bin_full"
 HANDLE_SCHEDULE = "schedule"
-HANDLE_STUCK = "vacuum_stuck"
+HANDLE_STUCK = "stuck"
 
 
 class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
@@ -94,6 +93,122 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
             self._send_notification_func = None
 
 
+class NotifyWhenRunComplete(Base):
+    """Define a feature to notify when the vacuum cycle is complete."""
+
+    APP_SCHEMA = APP_SCHEMA.extend(
+        {
+            CONF_PROPERTIES: vol.Schema(
+                {vol.Required(CONF_NOTIFICATION_INTERVAL): int}, extra=vol.ALLOW_EXTRA
+            )
+        }
+    )
+
+    def configure(self) -> None:
+        """Configure."""
+        if self.enabled and self.app.bin_state == self.app.BinStates.full:
+            self._start_notification_cycle()
+
+        self.listen_state(
+            self._on_vacuum_bin_change, self.app.entity_ids[CONF_BIN_STATE]
+        )
+
+    def _cancel_notification_cycle(self) -> None:
+        """Cancel any active notification."""
+        if HANDLE_BIN_FULL in self.handles:
+            cancel = self.handles.pop(HANDLE_BIN_FULL)
+            cancel()
+
+    def _on_vacuum_bin_change(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Deal with changes to the bin."""
+        if self.enabled and new == self.app.BinStates.full.value:
+            self._start_notification_cycle()
+        elif old == self.app.BinStates.full.value:
+            self._cancel_notification_cycle()
+
+    def _start_notification_cycle(self) -> None:
+        """Start a repeating notification sequence."""
+        self._cancel_notification_cycle()
+
+        self.handles[HANDLE_BIN_FULL] = send_notification(
+            self,
+            "presence:home",
+            "Empty him now and you won't have to do it later!",
+            title="Wolfie Full 🤖",
+            when=self.datetime(),
+            interval=self.properties[CONF_NOTIFICATION_INTERVAL],
+            data={"push": {"category": "dishwasher"}},
+        )
+
+    def on_disable(self) -> None:
+        """Stop notifying when the automation is disabled."""
+        self._cancel_notification_cycle()
+
+    def on_enable(self) -> None:
+        """Start notifying when the automation is enabled (if appropriate)."""
+        if self.app.bin_state == self.app.BinStates.full:
+            self._start_notification_cycle()
+
+
+class NotifyWhenStuck(Base):
+    """Define a feature to notify when the vacuum is stuck."""
+
+    APP_SCHEMA = APP_SCHEMA.extend(
+        {
+            CONF_PROPERTIES: vol.Schema(
+                {vol.Required(CONF_NOTIFICATION_INTERVAL): int}, extra=vol.ALLOW_EXTRA
+            )
+        }
+    )
+
+    def configure(self) -> None:
+        """Configure."""
+        if self.enabled and self.app.bin_state == self.app.BinStates.full:
+            self._start_notification_cycle()
+
+        self.listen_state(self._on_error_change, self.app.entity_ids[CONF_STATUS])
+
+    def _cancel_notification_cycle(self) -> None:
+        """Cancel any active notification."""
+        if HANDLE_STUCK in self.handles:
+            cancel = self.handles.pop(HANDLE_STUCK)
+            cancel()
+
+    def _on_error_change(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Notify when the vacuum is an error state."""
+        if self.enabled and new == self.app.States.error.value:
+            self._start_notification_cycle()
+        elif old == self.app.States.error.value:
+            self._cancel_notification_cycle()
+
+    def _start_notification_cycle(self) -> None:
+        """Start a repeating notification sequence."""
+        self._cancel_notification_cycle()
+
+        self.handles[HANDLE_BIN_FULL] = send_notification(
+            self,
+            "presence:home",
+            "Help him get back on track or home.",
+            title="Wolfie Stuck 😢",
+            when=self.datetime(),
+            interval=self.properties[CONF_NOTIFICATION_INTERVAL],
+            data={"push": {"category": "dishwasher"}},
+        )
+
+    def on_disable(self) -> None:
+        """Stop notifying when the automation is disabled."""
+        self._cancel_notification_cycle()
+
+    def on_enable(self) -> None:
+        """Start notifying when the automation is enabled (if appropriate)."""
+        if self.app.state == self.app.States.error:
+            self._start_notification_cycle()
+
+
 class ScheduledCycle(Base):
     """Define a feature to run the vacuum on a schedule."""
 
@@ -102,8 +217,6 @@ class ScheduledCycle(Base):
             CONF_PROPERTIES: vol.Schema(
                 {
                     vol.Required(CONF_IOS_EMPTIED_KEY): str,
-                    vol.Required(CONF_NOTIFICATION_INTERVAL_FULL): int,
-                    vol.Required(CONF_NOTIFICATION_INTERVAL_STUCK): int,
                     vol.Required(CONF_SCHEDULE_SWITCHES): cv.ensure_list,
                     vol.Required(CONF_SCHEDULE_TIME): str,
                 },
@@ -141,39 +254,9 @@ class ScheduledCycle(Base):
             new=self.app.States.docked.value,
             constrain_enabled=True,
         )
-        self.listen_state(
-            self._on_vacuum_bin_change,
-            self.app.entity_ids[CONF_BIN_STATE],
-            constrain_enabled=True,
-        )
-        self.listen_state(
-            self._on_error,
-            self.app.entity_ids[CONF_STATUS],
-            new=self.app.States.error.value,
-            constrain_enabled=True,
-        )
-        self.listen_state(
-            self._on_error_clear,
-            self.app.entity_ids[CONF_STATUS],
-            old=self.app.States.error.value,
-            constrain_enabled=True,
-        )
+
         for toggle in self.properties[CONF_SCHEDULE_SWITCHES]:
             self.listen_state(self._on_schedule_change, toggle, constrain_enabled=True)
-
-    def _cancel_notification_cycle(self, handle: str) -> None:
-        """Cancel a notification cycle."""
-        if handle in self.handles:
-            cancel = self.handles.pop(handle)
-            cancel()
-
-    def _cancel_error_notification_cycle(self) -> None:
-        """Cancel the error notification cycle."""
-        self._cancel_notification_cycle(HANDLE_STUCK)
-
-    def _cancel_full_notification_cycle(self) -> None:
-        """Cancel the full bin notification cycle."""
-        self._cancel_notification_cycle(HANDLE_BIN)
 
     def _create_schedule(self) -> None:
         """Create the vacuuming schedule from the on booleans."""
@@ -188,21 +271,6 @@ class ScheduledCycle(Base):
             self.parse_time(self.properties["schedule_time"]),
             constrain_enabled=True,
         )
-
-    def _on_error(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Brief when Wolfie's had an error."""
-        if self.enabled:
-            self._start_error_notification_cycle()
-
-    def _on_error_clear(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Clear the error when Wolfie is no longer stuck."""
-        if HANDLE_STUCK in self.handles:
-            cancel = self.handles.pop(HANDLE_STUCK)
-            cancel()
 
     def _on_schedule_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
@@ -244,17 +312,6 @@ class ScheduledCycle(Base):
                 "vacuum/start_pause", entity_id=self.app.entity_ids[CONF_VACUUM]
             )
 
-    def _on_vacuum_bin_change(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Listen for changes in bin status."""
-        if self.enabled and new == self.app.BinStates.full.value:
-            self._start_full_notification_cycle()
-        elif new == self.app.BinStates.empty.value:
-            if HANDLE_BIN in self.handles:
-                cancel = self.handles.pop(HANDLE_BIN)
-                cancel()
-
     def _on_vacuum_cycle_done(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
@@ -281,48 +338,6 @@ class ScheduledCycle(Base):
         if not self.initiated_by_app:
             self.app.start()
             self.initiated_by_app = True
-
-    def _start_notification_cycle(self, title: str, message: str, interval: int) -> str:
-        """Start a repeating notification sequence."""
-        return send_notification(
-            self,
-            "presence:home",
-            message,
-            title=title,
-            when=self.datetime(),
-            interval=interval,
-            data={"push": {"category": "dishwasher"}},
-        )
-
-    def _start_error_notification_cycle(self) -> None:
-        """Start a repeating notification when the vacuum has errored."""
-        self._cancel_error_notification_cycle()
-        self.handles[HANDLE_STUCK] = self._start_notification_cycle(
-            "Wolfie Stuck 😢",
-            "Help him get back on track or home.",
-            self.properties[CONF_NOTIFICATION_INTERVAL_STUCK],
-        )
-
-    def _start_full_notification_cycle(self) -> None:
-        """Start a repeating notification when the vacuum is full."""
-        self._cancel_full_notification_cycle()
-        self.handles[HANDLE_BIN] = self._start_notification_cycle(
-            "Wolfie Full 🤖",
-            "Empty him now and you won't have to do it later!",
-            self.properties[CONF_NOTIFICATION_INTERVAL_FULL],
-        )
-
-    def on_disable(self) -> None:
-        """Stop notifying when the automation is disabled."""
-        self._cancel_error_notification_cycle()
-        self._cancel_full_notification_cycle()
-
-    def on_enable(self) -> None:
-        """Start notifying when the automation is enabled (if appropriate)."""
-        if self.app.state == self.app.States.error:
-            self._start_error_notification_cycle()
-        elif self.app.bin_state == self.app.BinStates.full:
-            self._start_full_notification_cycle()
 
 
 class Vacuum(Base):
