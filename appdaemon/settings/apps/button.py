@@ -58,10 +58,7 @@ class BumpClimate:
 
     def run(self) -> None:
         """Bump."""
-        if self._app.climate_manager.hvac_mode == HVAC_MODE_HEAT:
-            self._app.climate_manager.bump_temperature(self._degrees)
-        else:
-            self._app.climate_manager.bump_temperature(self._degrees * -1)
+        self._app.climate_manager.bump_temperature(self._degrees)
 
 
 class ToggleEntity:
