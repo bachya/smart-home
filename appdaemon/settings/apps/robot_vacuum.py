@@ -165,7 +165,7 @@ class NotifyWhenStuck(Base):
 
     def configure(self) -> None:
         """Configure."""
-        if self.enabled and self.app.bin_state == self.app.BinStates.full:
+        if self.enabled and self.app.state == self.app.States.error:
             self._start_notification_cycle()
 
         self.listen_state(self._on_error_change, self.app.entity_ids[CONF_STATUS])
