@@ -17,7 +17,6 @@ climate_manager:
     outdoor_temperature_sensor: sensor.dark_sky_temperature
     thermostat: climate.thermostat
   properties:
-    eco_delta_degrees: 3
     eco_high_threshold: 75
     eco_low_threshold: 60
     outdoor_high_threshold: 85

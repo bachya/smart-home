@@ -18,7 +18,6 @@ CONF_AQI_THRESHOLD = "aqi_threshold"
 CONF_BRIGHTNESS_PERCENT_SENSOR = "sensor.outdoor_brightness_percent_sensor"
 CONF_BRIGHTNESS_SENSOR = "sensor.outdoor_brightness_sensor"
 
-CONF_ECO_DELTA = "eco_delta_degrees"
 CONF_ECO_HIGH_THRESHOLD = "eco_high_threshold"
 CONF_ECO_LOW_THRESHOLD = "eco_low_threshold"
 
@@ -119,7 +118,6 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             ),
             CONF_PROPERTIES: vol.Schema(
                 {
-                    vol.Required(CONF_ECO_DELTA): int,
                     vol.Required(CONF_ECO_HIGH_THRESHOLD): int,
                     vol.Required(CONF_ECO_LOW_THRESHOLD): int,
                     vol.Required(CONF_OUTDOOR_HIGH_THRESHOLD): int,
@@ -134,13 +132,6 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         self._away = False
         self._last_hvac_mode = None
         self._last_temperature = None
-
-        self._eco_cool_target = (
-            self.properties[CONF_ECO_HIGH_THRESHOLD] - self.properties[CONF_ECO_DELTA]
-        )
-        self._eco_heat_target = (
-            self.properties[CONF_ECO_LOW_THRESHOLD] + self.properties[CONF_ECO_DELTA]
-        )
 
     @property
     def away_mode(self) -> bool:
@@ -212,18 +203,28 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             current_temperature > self.properties[CONF_ECO_HIGH_THRESHOLD]
             and self.hvac_mode != HVAC_MODE_COOL
         ):
-            self.log('Eco Mode: setting to "cool" ({0}°)'.format(self._eco_cool_target))
+            self.log(
+                'Eco Mode: setting to "cool" ({0}°)'.format(
+                    self.properties[CONF_ECO_HIGH_THRESHOLD]
+                )
+            )
             self.set_mode_cool()
-            self.set_temperature(self._eco_cool_target)
+            self.set_temperature(self.properties[CONF_ECO_HIGH_THRESHOLD])
         elif (
             current_temperature < self.properties[CONF_ECO_LOW_THRESHOLD]
             and self.hvac_mode != HVAC_MODE_HEAT
         ):
-            self.log('Eco Mode: setting to "heat" ({0}°)'.format(self._eco_heat_target))
+            self.log(
+                'Eco Mode: setting to "heat" ({0}°)'.format(
+                    self.properties[CONF_ECO_LOW_THRESHOLD]
+                )
+            )
             self.set_mode_heat()
-            self.set_temperature(self._eco_heat_target)
+            self.set_temperature(self.properties[CONF_ECO_LOW_THRESHOLD])
         elif (
-            self._eco_heat_target <= current_temperature <= self._eco_cool_target
+            self.properties[CONF_ECO_LOW_THRESHOLD]
+            <= current_temperature
+            <= self.properties[CONF_ECO_HIGH_THRESHOLD]
             and self.hvac_mode != HVAC_MODE_OFF
         ):
             self.log('Within eco mode limits; turning thermostat to "off"')
