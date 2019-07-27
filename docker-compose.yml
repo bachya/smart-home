@@ -58,7 +58,7 @@ services:
     devices:
       - "/dev/zigbee:/dev/zigbee"
       - "/dev/zwave:/dev/zwave"
-    image: homeassistant/home-assistant:0.96.3
+    image: homeassistant/home-assistant:0.96.5
     network_mode: "host"
     restart: unless-stopped
     volumes:
