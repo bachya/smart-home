@@ -1,0 +1,3 @@
+---
+usb_path: /dev/zigbee
+database_path: /config/zigbee.db

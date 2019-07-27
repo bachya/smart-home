@@ -29,5 +29,6 @@ proximity: !include conf/platforms/proximity.yaml
 tts: !include conf/platforms/tts.yaml
 wemo: !include conf/platforms/wemo.yaml
 wwlln: !include conf/platforms/wwlln.yaml
+zha: !include conf/platforms/zha.yaml
 zone: !include conf/zones.yaml
 zwave: !include conf/platforms/zwave.yaml
