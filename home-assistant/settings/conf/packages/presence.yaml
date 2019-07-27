@@ -1,0 +1,23 @@
+---
+input_number:
+  edge_radius:
+    name: Edge Radius
+    min: 6
+    max: 10
+    step: 1
+    unit_of_measurement: miles
+    icon: mdi:radius-outline
+  home_radius:
+    name: Home Radius
+    min: 0
+    max: 1
+    step: 1
+    unit_of_measurement: miles
+    icon: mdi:radius-outline
+  nearby_radius:
+    name: Nearby Radius
+    min: 2
+    max: 6
+    step: 1
+    unit_of_measurement: miles
+    icon: mdi:radius-outline

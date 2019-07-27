@@ -5,10 +5,14 @@ from typing import Union
 from core import Base
 from const import CONF_PEOPLE, EVENT_PROXIMITY_CHANGE
 
-CONF_EDGE_THRESHOLD = "edge_threshold_feet"
-CONF_HOME_THRESHOLD = "home_threshold_feet"
-CONF_NEARBY_THRESHOLD = "nearby_threshold_feet"
+CONF_EDGE_THRESHOLD = "edge_threshold"
+CONF_HOME_THRESHOLD = "home_threshold"
+CONF_NEARBY_THRESHOLD = "nearby_threshold"
 CONF_PROXIMITY_SENSOR = "proximity_sensor"
+
+DEFAULT_EDGE_THRESHOLD = 3 * 5280
+DEFAULT_HOME_THRESHOLD = 0 * 5280
+DEFAULT_NEARBY_THRESHOLD = 7 * 5280
 
 
 class PresenceManager(Base):
@@ -33,13 +37,9 @@ class PresenceManager(Base):
 
     def configure(self) -> None:
         """Configure."""
-        if self.proximity == self.properties[CONF_HOME_THRESHOLD]:
+        if self.proximity == self.home_threshold:
             self.state = self.ProximityStates.home
-        elif (
-            self.properties[CONF_HOME_THRESHOLD]
-            < self.proximity
-            <= self.properties[CONF_NEARBY_THRESHOLD]
-        ):
+        elif self.home_threshold < self.proximity <= self.nearby_threshold:
             self.state = self.ProximityStates.nearby
         else:
             self.state = self.ProximityStates.away
@@ -50,6 +50,30 @@ class PresenceManager(Base):
             attribute="all",
             duration=60,
         )
+
+    @property
+    def edge_threshold(self) -> int:
+        """Return the number of feet away from home when "edge" starts."""
+        try:
+            return int(self.get_state(self.entity_ids[CONF_EDGE_THRESHOLD])) * 5280
+        except TypeError:
+            return DEFAULT_EDGE_THRESHOLD
+
+    @property
+    def home_threshold(self) -> int:
+        """Return the number of feet away from home when "home" starts."""
+        try:
+            return int(self.get_state(self.entity_ids[CONF_HOME_THRESHOLD])) * 5280
+        except TypeError:
+            return DEFAULT_EDGE_THRESHOLD
+
+    @property
+    def nearby_threshold(self) -> int:
+        """Return the number of feet away from home when "nearby" starts."""
+        try:
+            return int(self.get_state(self.entity_ids[CONF_NEARBY_THRESHOLD])) * 5280
+        except TypeError:
+            return DEFAULT_EDGE_THRESHOLD
 
     @property
     def proximity(self) -> int:
@@ -76,26 +100,22 @@ class PresenceManager(Base):
 
         if (
             self.state != self.ProximityStates.home
-            and new_proximity == self.properties[CONF_HOME_THRESHOLD]
+            and new_proximity == self.home_threshold
         ):
             self.state = self.ProximityStates.home
         elif (
             self.state != self.ProximityStates.nearby
-            and self.properties[CONF_HOME_THRESHOLD]
-            < new_proximity
-            <= self.properties[CONF_NEARBY_THRESHOLD]
+            and self.home_threshold < new_proximity <= self.nearby_threshold
         ):
             self.state = self.ProximityStates.nearby
         elif (
             self.state != self.ProximityStates.edge
-            and self.properties[CONF_NEARBY_THRESHOLD]
-            < new_proximity
-            <= self.properties[CONF_EDGE_THRESHOLD]
+            and self.nearby_threshold < new_proximity <= self.edge_threshold
         ):
             self.state = self.ProximityStates.edge
         elif (
             self.state != self.ProximityStates.away
-            and new_proximity > self.properties[CONF_EDGE_THRESHOLD]
+            and new_proximity > self.edge_threshold
         ):
             self.state = self.ProximityStates.away
 
