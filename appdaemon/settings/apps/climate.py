@@ -12,39 +12,37 @@ from const import (
     EVENT_PROXIMITY_CHANGE,
 )
 
-CONF_AQI_SENSOR = "aqi"
-CONF_AQI_THRESHOLD = "aqi_threshold"
-
-CONF_BRIGHTNESS_PERCENT_SENSOR = "sensor.outdoor_brightness_percent_sensor"
-CONF_BRIGHTNESS_SENSOR = "sensor.outdoor_brightness_sensor"
-
-CONF_ECO_HIGH_THRESHOLD = "eco_high_threshold"
-CONF_ECO_LOW_THRESHOLD = "eco_low_threshold"
-
-CONF_HUMIDITY_SENSOR = "humidity_sensor"
-CONF_INDOOR_TEMPERATURE_SENSOR = "indoor_temperature_sensor"
-CONF_OUTDOOR_BRIGHTNESS_PERCENT_SENSOR = "outdoor_brightness_percent_sensor"
-CONF_OUTDOOR_BRIGHTNESS_SENSOR = "outdoor_brightness_sensor"
-CONF_OUTDOOR_TEMPERATURE_SENSOR = "outdoor_temperature_sensor"
-
-CONF_OUTDOOR_HIGH_THRESHOLD = "outdoor_high_threshold"
-CONF_OUTDOOR_LOW_THRESHOLD = "outdoor_low_threshold"
 CONF_THERMOSTAT = "thermostat"
-
-EVENT_LIGHTNING_DETECTED = "LIGHTNING_DETECTED"
-CONF_DISTANCE = "distance"
-CONF_LIGHTNING_WINDOW = "notification_window_seconds"
-
 FAN_MODE_AUTO_LOW = "Auto Low"
 FAN_MODE_CIRCULATE = "Circulate"
 FAN_MODE_ON_LOW = "On Low"
-
-HANDLE_ECO_MODE = "eco_mode"
-
 HVAC_MODE_AUTO = "auto"
 HVAC_MODE_COOL = "cool"
 HVAC_MODE_HEAT = "heat"
 HVAC_MODE_OFF = "off"
+
+CONF_ECO_HIGH_THRESHOLD = "eco_high_threshold"
+CONF_ECO_LOW_THRESHOLD = "eco_low_threshold"
+HANDLE_ECO_MODE = "eco_mode"
+
+CONF_AQI_SENSOR = "aqi"
+CONF_AQI_THRESHOLD = "aqi_threshold"
+
+CONF_HUMIDITY_SENSOR = "humidity_sensor"
+CONF_INDOOR_TEMPERATURE_SENSOR = "indoor_temperature_sensor"
+
+CONF_BRIGHTNESS_PERCENT_SENSOR = "sensor.outdoor_brightness_percent_sensor"
+CONF_BRIGHTNESS_SENSOR = "sensor.outdoor_brightness_sensor"
+CONF_OUTDOOR_BRIGHTNESS_PERCENT_SENSOR = "outdoor_brightness_percent_sensor"
+CONF_OUTDOOR_BRIGHTNESS_SENSOR = "outdoor_brightness_sensor"
+
+CONF_OUTDOOR_HIGH_THRESHOLD = "outdoor_high_threshold"
+CONF_OUTDOOR_LOW_THRESHOLD = "outdoor_low_threshold"
+CONF_OUTDOOR_TEMPERATURE_SENSOR = "outdoor_temperature_sensor"
+
+EVENT_LIGHTNING_DETECTED = "LIGHTNING_DETECTED"
+CONF_DISTANCE = "distance"
+CONF_LIGHTNING_WINDOW = "notification_window_seconds"
 
 
 class AdjustOnProximity(Base):  # pylint: disable=too-few-public-methods
@@ -108,22 +106,18 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         {
             CONF_ENTITY_IDS: vol.Schema(
                 {
+                    vol.Required(CONF_ECO_HIGH_THRESHOLD): cv.entity_id,
+                    vol.Required(CONF_ECO_LOW_THRESHOLD): cv.entity_id,
                     vol.Required(CONF_HUMIDITY_SENSOR): cv.entity_id,
                     vol.Required(CONF_INDOOR_TEMPERATURE_SENSOR): cv.entity_id,
-                    vol.Required(CONF_OUTDOOR_TEMPERATURE_SENSOR): cv.entity_id,
-                    vol.Required(CONF_OUTDOOR_BRIGHTNESS_SENSOR): cv.entity_id,
                     vol.Required(CONF_OUTDOOR_BRIGHTNESS_PERCENT_SENSOR): cv.entity_id,
+                    vol.Required(CONF_OUTDOOR_BRIGHTNESS_SENSOR): cv.entity_id,
+                    vol.Required(CONF_OUTDOOR_HIGH_THRESHOLD): cv.entity_id,
+                    vol.Required(CONF_OUTDOOR_LOW_THRESHOLD): cv.entity_id,
+                    vol.Required(CONF_OUTDOOR_TEMPERATURE_SENSOR): cv.entity_id,
                     vol.Required(CONF_THERMOSTAT): cv.entity_id,
                 }
-            ),
-            CONF_PROPERTIES: vol.Schema(
-                {
-                    vol.Required(CONF_ECO_HIGH_THRESHOLD): int,
-                    vol.Required(CONF_ECO_LOW_THRESHOLD): int,
-                    vol.Required(CONF_OUTDOOR_HIGH_THRESHOLD): int,
-                    vol.Required(CONF_OUTDOOR_LOW_THRESHOLD): int,
-                }
-            ),
+            )
         }
     )
 
@@ -137,6 +131,16 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
     def away_mode(self) -> bool:
         """Return the state of away mode."""
         return self._away
+
+    @property
+    def eco_high_temperature(self) -> int:
+        """Return the upper limit of eco mode."""
+        return self.get_state(self.entity_ids[CONF_ECO_HIGH_THRESHOLD])
+
+    @property
+    def eco_low_temperature(self) -> int:
+        """Return the lower limit of eco mode."""
+        return self.get_state(self.entity_ids[CONF_ECO_LOW_THRESHOLD])
 
     @property
     def fan_mode(self) -> str:
@@ -169,6 +173,16 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         return int(self.get_state(self.entity_ids[CONF_BRIGHTNESS_PERCENT_SENSOR]))
 
     @property
+    def outdoor_high_temperature(self) -> float:
+        """Return the upper limit of "extreme" outdoor temperatures."""
+        return self.get_state(self.entity_ids[CONF_OUTDOOR_HIGH_THRESHOLD])
+
+    @property
+    def outdoor_low_temperature(self) -> float:
+        """Return the lower limit of "extreme" outdoor temperatures."""
+        return self.get_state(self.entity_ids[CONF_OUTDOOR_LOW_THRESHOLD])
+
+    @property
     def outdoor_temperature(self) -> float:
         """Return the outdoor temperature."""
         return float(self.get_state(self.entity_ids[CONF_OUTDOOR_TEMPERATURE_SENSOR]))
@@ -177,8 +191,8 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
     def outdoor_temperature_extreme(self) -> float:
         """Return whether the outside temperature is at extreme limits."""
         return (
-            self.outdoor_temperature < self.properties[CONF_OUTDOOR_LOW_THRESHOLD]
-            or self.outdoor_temperature > self.properties[CONF_OUTDOOR_HIGH_THRESHOLD]
+            self.outdoor_temperature < self.outdoor_low_temperature
+            or self.outdoor_temperature > self.outdoor_high_temperature
         )
 
     @property
@@ -200,31 +214,25 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         current_temperature = float(new)
 
         if (
-            current_temperature > self.properties[CONF_ECO_HIGH_THRESHOLD]
+            current_temperature > self.eco_high_temperature
             and self.hvac_mode != HVAC_MODE_COOL
         ):
             self.log(
-                'Eco Mode: setting to "cool" ({0}°)'.format(
-                    self.properties[CONF_ECO_HIGH_THRESHOLD]
-                )
+                'Eco Mode: setting to "cool" ({0}°)'.format(self.eco_high_temperature)
             )
             self.set_mode_cool()
-            self.set_temperature(self.properties[CONF_ECO_HIGH_THRESHOLD])
+            self.set_temperature(self.eco_high_temperature)
         elif (
-            current_temperature < self.properties[CONF_ECO_LOW_THRESHOLD]
+            current_temperature < self.eco_low_temperature
             and self.hvac_mode != HVAC_MODE_HEAT
         ):
             self.log(
-                'Eco Mode: setting to "heat" ({0}°)'.format(
-                    self.properties[CONF_ECO_LOW_THRESHOLD]
-                )
+                'Eco Mode: setting to "heat" ({0}°)'.format(self.eco_low_temperature)
             )
             self.set_mode_heat()
-            self.set_temperature(self.properties[CONF_ECO_LOW_THRESHOLD])
+            self.set_temperature(self.eco_low_temperature)
         elif (
-            self.properties[CONF_ECO_LOW_THRESHOLD]
-            <= current_temperature
-            <= self.properties[CONF_ECO_HIGH_THRESHOLD]
+            self.eco_low_temperature <= current_temperature <= self.eco_high_temperature
             and self.hvac_mode != HVAC_MODE_OFF
         ):
             self.log('Within eco mode limits; turning thermostat to "off"')

@@ -10,17 +10,16 @@ climate_manager:
   module: climate
   class: ClimateManager
   entity_ids:
+    eco_high_threshold: input_number.thermostat_eco_high_threshold
+    eco_low_threshold: input_number.thermostat_eco_low_threshold
     humidity_sensor: sensor.average_indoor_humidity
     indoor_temperature_sensor: sensor.average_indoor_temperature
-    outdoor_brightness_sensor: sensor.side_yard_solar_rad
     outdoor_brightness_percent_sensor: sensor.filtered_outdoor_brightness
+    outdoor_brightness_sensor: sensor.side_yard_solar_rad
+    outdoor_high_threshold: input_number.outdoor_extreme_high_threshold
+    outdoor_low_threshold: input_number.outdoor_extreme_high_threshold
     outdoor_temperature_sensor: sensor.dark_sky_temperature
     thermostat: climate.thermostat
-  properties:
-    eco_high_threshold: 75
-    eco_low_threshold: 60
-    outdoor_high_threshold: 85
-    outdoor_low_threshold: 40
 
 lightning_detected_automation:
   module: climate
