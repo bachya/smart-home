@@ -152,10 +152,10 @@ class Base(Hass):
         if self.args[CONF_CONSTRAINTS].get(CONF_OPERATOR) == OPERATOR_ALL:
             return method(callback, *args, **constraints, **kwargs)
 
-        handles = []  # type: List[str]
-        for name, value in constraints.items():
+        return [
             method(callback, *args, **{name: value}, **kwargs)
-        return handles
+            for name, value in constraints.items()
+        ]
 
     def _constrain_presence(self, method: str, value: Union[str, None]) -> bool:
         """Constrain presence in a generic fashion."""
