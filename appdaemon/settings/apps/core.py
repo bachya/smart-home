@@ -1,5 +1,5 @@
 """Define a generic object which  all apps/automations inherit from."""
-from typing import Callable, Dict, List, Union
+from typing import Callable, Dict, Union
 
 import voluptuous as vol
 from appdaemon.plugins.hass.hassapi import Hass  # pylint: disable=no-name-in-module
