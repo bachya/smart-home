@@ -12,7 +12,7 @@ automation:
       event: enter
     action:
       - event: LIGHTNING_DETECTED
-        event_data:
+        event_data_template:
           distance: "{{ trigger.to_state.state }}"
 
 input_number:
