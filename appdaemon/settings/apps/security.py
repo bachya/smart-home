@@ -238,14 +238,13 @@ class NotifyOnChange(Base):  # pylint: disable=too-few-public-methods
 
         def _send_notification() -> None:
             """Send the notification."""
+            self.log("Notifying of security status change: {0}".format(new))
             send_notification(
                 self,
                 ["person:Aaron", "person:Britt"],
                 'The security status has changed to "{0}"'.format(new),
                 title="Security Change 🔐",
             )
-
-        self.log("Notifying of security status change: {0}".format(new))
 
         # If the automation is enabled when the state changes, send a notification;
         # if not, remember that we should send the notification when the automation
