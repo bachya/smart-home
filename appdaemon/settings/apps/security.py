@@ -238,7 +238,6 @@ class NotifyOnChange(Base):  # pylint: disable=too-few-public-methods
 
         def _send_notification() -> None:
             """Send the notification."""
-            self.log("Notifying of security status change: {0}".format(new))
             send_notification(
                 self,
                 ["person:Aaron", "person:Britt"],
