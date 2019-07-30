@@ -10,6 +10,16 @@ notify_of_trash_pickup_automation:
     - disable:
         event: MODE_CHANGE
         event_data:
+          name: blackout_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
           name: vacation_mode
           state: "on"
       enable:
