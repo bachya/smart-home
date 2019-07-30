@@ -65,7 +65,7 @@ class PresenceManager(Base):
         try:
             return int(self.get_state(self.entity_ids[CONF_HOME_THRESHOLD])) * 5280
         except TypeError:
-            return DEFAULT_EDGE_THRESHOLD
+            return DEFAULT_HOME_THRESHOLD
 
     @property
     def nearby_threshold(self) -> int:
@@ -73,7 +73,7 @@ class PresenceManager(Base):
         try:
             return int(self.get_state(self.entity_ids[CONF_NEARBY_THRESHOLD])) * 5280
         except TypeError:
-            return DEFAULT_EDGE_THRESHOLD
+            return DEFAULT_NEARBY_THRESHOLD
 
     @property
     def proximity(self) -> int:
