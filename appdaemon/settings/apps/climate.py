@@ -1,4 +1,5 @@
 """Define automations for climate control."""
+from threading import Lock
 from typing import Callable, Optional, Union
 import voluptuous as vol
 
@@ -358,6 +359,7 @@ class LightningDetected(Base):  # pylint: disable=too-few-public-methods
     def configure(self) -> None:
         """Configure."""
         self._active = False
+        self._lock = Lock()
 
         self.listen_event(
             self._on_lightning_detected,
@@ -367,18 +369,19 @@ class LightningDetected(Base):  # pylint: disable=too-few-public-methods
 
     def _on_lightning_detected(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to "LIGHTNING_DETECTED" events."""
-        if self._active:
-            return
+        with self._lock:
+            if self._active:
+                return
 
-        send_notification(
-            self,
-            "presence:home",
-            "Lightning detected {0} miles away.".format(data[CONF_DISTANCE]),
-            title="Lightning Detected ⚡️",
-        )
+            send_notification(
+                self,
+                "presence:home",
+                "Lightning detected {0} miles away.".format(data[CONF_DISTANCE]),
+                title="Lightning Detected ⚡️",
+            )
 
-        self._active = True
-        self.run_in(self._on_reset, self.properties[CONF_LIGHTNING_WINDOW])
+            self._active = True
+            self.run_in(self._on_reset, self.properties[CONF_LIGHTNING_WINDOW])
 
     def _on_reset(self, kwargs: dict) -> None:
         """Reset the notification window."""
