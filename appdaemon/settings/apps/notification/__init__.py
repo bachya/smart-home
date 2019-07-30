@@ -62,8 +62,8 @@ class Notification:
 
     def _on_send(self, kwargs: dict) -> None:
         """Send a single (immediate or scheduled) notification."""
-        # If this is a repeating notification, it's already been sent once, and
-        # we've exceeded our iterations, cancel right away:
+        # If this is a repeating notification and we've exceeded our iterations,
+        # cancel right away:
         if self.iterations and self._iteration_count == self.iterations:
             self._cancel()
             return
