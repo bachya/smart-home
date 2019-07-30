@@ -76,7 +76,7 @@ class Notification:
             targets += get_targets_from_string(self._app, target_str)
 
         self._app.log(
-            "Sending notification to {0}: {1}".format(targets, self.message)
+            "Sending notification to {0}: {1}".format(self.targets, self.message)
         )
 
         for target in targets:
