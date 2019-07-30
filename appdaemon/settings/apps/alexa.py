@@ -8,7 +8,7 @@ from helpers import (
     relative_search_dict,
     random_affirmative_response,
 )
-from helpers.string import camel_to_underscore
+from util.string import camel_to_underscore
 
 
 class Alexa(Base):
