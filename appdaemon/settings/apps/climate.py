@@ -176,12 +176,12 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
     @property
     def outdoor_high_temperature(self) -> float:
         """Return the upper limit of "extreme" outdoor temperatures."""
-        return self.get_state(self.entity_ids[CONF_OUTDOOR_HIGH_THRESHOLD])
+        return float(self.get_state(self.entity_ids[CONF_OUTDOOR_HIGH_THRESHOLD]))
 
     @property
     def outdoor_low_temperature(self) -> float:
         """Return the lower limit of "extreme" outdoor temperatures."""
-        return self.get_state(self.entity_ids[CONF_OUTDOOR_LOW_THRESHOLD])
+        return float(self.get_state(self.entity_ids[CONF_OUTDOOR_LOW_THRESHOLD]))
 
     @property
     def outdoor_temperature(self) -> float:
