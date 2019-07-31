@@ -3,6 +3,7 @@ input_select:
   zwave_button_aaron_bedside_1_short:
     name: "Aeotec Nanomote (AMB Bedside): 1 (short)"
     options:
+      - "<none>"
       - Activate "Good Night"
       - Arm Security System "Home"
       - Bump Climate 2°
@@ -15,6 +16,7 @@ input_select:
   zwave_button_aaron_bedside_1_long:
     name: "Aeotec Nanomote (AMB Bedside): 1 (long)"
     options:
+      - "<none>"
       - Activate "Good Night"
       - Arm Security System "Home"
       - Bump Climate 2°
@@ -27,6 +29,7 @@ input_select:
   zwave_button_aaron_bedside_2_short:
     name: "Aeotec Nanomote (AMB Bedside): 2 (short)"
     options:
+      - "<none>"
       - Activate "Good Night"
       - Arm Security System "Home"
       - Bump Climate 2°
@@ -39,6 +42,7 @@ input_select:
   zwave_button_aaron_bedside_2_long:
     name: "Aeotec Nanomote (AMB Bedside): 2 (long)"
     options:
+      - "<none>"
       - Activate "Good Night"
       - Arm Security System "Home"
       - Bump Climate 2°

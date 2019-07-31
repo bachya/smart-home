@@ -7,6 +7,8 @@ from const import CONF_ENTITY_ID, CONF_ENTITY_IDS, CONF_FRIENDLY_NAME, CONF_PROP
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 
+BUTTON_ACTION_NO_ACTION = "<none>"
+
 BUTTON_ACTION_BUMP_CLIMATE_2_DEGREES = "Bump Climate 2°"
 BUTTON_ACTION_GOOD_NIGHT = 'Activate "Good Night"'
 BUTTON_ACTION_SECURITY_HOME = 'Arm Security System "Home"'
@@ -112,6 +114,10 @@ class Button(Base):
     def _on_button_press(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond when button is pressed."""
         action_name = self.get_state(self.entity_ids[CONF_ACTION_LIST])
+
+        if action_name == BUTTON_ACTION_NO_ACTION:
+            return
+
         if action_name == BUTTON_ACTION_BUMP_CLIMATE_2_DEGREES:
             action = BumpClimate(self, 2)
         elif action_name == BUTTON_ACTION_GOOD_NIGHT:
