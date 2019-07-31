@@ -32,6 +32,19 @@ class ActivateScene:
         self._app.turn_on("scene.{0}".format(self._scene))
 
 
+class BumpClimate:
+    """Define an action that bumps the climate X° in the correct direction."""
+
+    def __init__(self, app: Base, degrees: int) -> None:
+        """Build the action."""
+        self._app = app
+        self._degrees = degrees
+
+    def run(self) -> None:
+        """Bump."""
+        self._app.climate_manager.bump_temperature(self._degrees)
+
+
 class SetSecuritySystem:
     """Define an action that sets the security system."""
 
@@ -45,19 +58,6 @@ class SetSecuritySystem:
         self._app.security_manager.set_alarm(
             self._app.security_manager.AlarmStates[self._state]
         )
-
-
-class BumpClimate:
-    """Define an action that bumps the climate X° in the correct direction."""
-
-    def __init__(self, app: Base, degrees: int) -> None:
-        """Build the action."""
-        self._app = app
-        self._degrees = degrees
-
-    def run(self) -> None:
-        """Bump."""
-        self._app.climate_manager.bump_temperature(self._degrees)
 
 
 class ToggleEntity:
