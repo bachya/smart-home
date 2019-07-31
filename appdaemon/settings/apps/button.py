@@ -3,7 +3,6 @@
 from typing import List, Optional, Union
 import voluptuous as vol
 
-from climate import HVAC_MODE_HEAT
 from const import CONF_ENTITY_ID, CONF_ENTITY_IDS, CONF_FRIENDLY_NAME, CONF_PROPERTIES
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
