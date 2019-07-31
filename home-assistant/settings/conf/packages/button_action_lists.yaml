@@ -8,6 +8,7 @@ input_select:
       - Bump Climate 2°
       - Toggle All Salt Lamps
       - Toggle Christmas Tree
+      - Toggle Climate
       - Toggle Living Room Lights
     initial: Toggle All Salt Lamps
     icon: mdi:z-wave
@@ -20,6 +21,7 @@ input_select:
       - Bump Climate 2°
       - Toggle All Salt Lamps
       - Toggle Christmas Tree
+      - Toggle Climate
       - Toggle Living Room Lights
     initial: Bump Climate 2°
     icon: mdi:z-wave
@@ -32,6 +34,7 @@ input_select:
       - Bump Climate 2°
       - Toggle All Salt Lamps
       - Toggle Christmas Tree
+      - Toggle Climate
       - Toggle Living Room Lights
     initial: Activate "Good Night"
     icon: mdi:z-wave
@@ -44,6 +47,7 @@ input_select:
       - Bump Climate 2°
       - Toggle All Salt Lamps
       - Toggle Christmas Tree
+      - Toggle Climate
       - Toggle Living Room Lights
     initial: Toggle Living Room Lights
     icon: mdi:z-wave
