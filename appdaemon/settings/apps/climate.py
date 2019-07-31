@@ -256,6 +256,8 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         if hvac_mode == self.hvac_mode:
             return
 
+        self._last_hvac_mode = self.hvac_mode
+
         self.log('Setting operation mode to "{0}"'.format(hvac_mode.title()))
         self.call_service(
             "climate/set_hvac_mode",
@@ -265,7 +267,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
     def bump_temperature(self, value: int) -> None:
         """Bump the current temperature."""
-        if self.hvac_mode == HVAC_MODE_COOL:
+        if HVAC_MODE_COOL in (self.hvac_mode, self._last_hvac_mode):
             value *= -1
         self.set_temperature(self.target_temperature + value)
 
@@ -277,9 +279,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         self.log('Setting thermostat to "Away" mode')
 
         self._away = True
-        self._last_hvac_mode = self.hvac_mode
         self._last_temperature = self.target_temperature
-
         self.set_mode_off()
 
         self.handles[HANDLE_ECO_MODE] = self.listen_state(
