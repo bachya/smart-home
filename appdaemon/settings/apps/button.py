@@ -13,6 +13,7 @@ BUTTON_ACTION_SECURITY_HOME = 'Arm Security System "Home"'
 BUTTON_ACTION_TOGGLE_ALL_SALT_LAMPS = "Toggle All Salt Lamps"
 BUTTON_ACTION_TOGGLE_CHRISTMAS_TREE = "Toggle Christmas Money"
 BUTTON_ACTION_TOGGLE_LIVING_ROOM_LIGHTS = "Toggle Living Room Lights"
+BUTTON_ACTION_TOGGLE_CLIMATE = "Toggle Climate"
 
 CONF_ACTION_LIST = "action_list"
 CONF_SCENE_DATA = "scene_data"
@@ -58,6 +59,18 @@ class SetSecuritySystem:
         self._app.security_manager.set_alarm(
             self._app.security_manager.AlarmStates[self._state]
         )
+
+
+class ToggleClimate:
+    """Define an action that toggles the thermostat between off and its prev. state."""
+
+    def __init__(self, app: Base) -> None:
+        """Build the action."""
+        self._app = app
+
+    def run(self) -> None:
+        """Toggle."""
+        self._app.climate_manager.toggle()
 
 
 class ToggleEntity:
@@ -113,6 +126,8 @@ class Button(Base):
             )
         elif action_name == BUTTON_ACTION_TOGGLE_CHRISTMAS_TREE:
             action = ToggleEntity(self, "switch.christmas_tree")
+        elif action_name == BUTTON_ACTION_TOGGLE_CLIMATE:
+            action = ToggleClimate(self)
         elif action_name == BUTTON_ACTION_TOGGLE_LIVING_ROOM_LIGHTS:
             action = ToggleEntity(self, "group.living_room_lights")
         else:

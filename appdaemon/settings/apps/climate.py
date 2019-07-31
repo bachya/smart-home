@@ -251,6 +251,11 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             fan_mode=fan_mode,
         )
 
+    def _restore_previous_state(self) -> None:
+        """Restore the thermostat to its previous state."""
+        self._set_hvac_mode(self._last_hvac_mode)
+        self.set_temperature(self._last_temperature)
+
     def _set_hvac_mode(self, hvac_mode: str) -> None:
         """Set the themostat's operation mode."""
         if hvac_mode == self.hvac_mode:
@@ -279,7 +284,6 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         self.log('Setting thermostat to "Away" mode')
 
         self._away = True
-        self._last_temperature = self.target_temperature
         self.set_mode_off()
 
         self.handles[HANDLE_ECO_MODE] = self.listen_state(
@@ -312,8 +316,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         # If the thermostat isn't doing anything, set it to the previous settings
         # (before away mode); otherwise, let it keep doing its thing:
         if self.hvac_mode == HVAC_MODE_OFF:
-            self._set_hvac_mode(self._last_hvac_mode)
-            self.set_temperature(self._last_temperature)
+            self._restore_previous_state()
 
     def set_mode_auto(self) -> None:
         """Set the operation mode to auto."""
@@ -329,12 +332,15 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
     def set_mode_off(self) -> None:
         """Set the operation mode to off."""
+        self._last_temperature = self.target_temperature
         self._set_hvac_mode(HVAC_MODE_OFF)
 
     def set_temperature(self, temperature: int) -> None:
         """Set the thermostat temperature."""
         if temperature == self.target_temperature:
             return
+
+        self._last_temperature = self.target_temperature
 
         # If the thermostat is off and the temperature is adjusted,
         # make a guess as to which operation mode should be used:
@@ -351,6 +357,13 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             entity_id=self.entity_ids[CONF_THERMOSTAT],
             temperature=str(temperature),
         )
+
+    def toggle(self) -> None:
+        """Toggle the thermostat between off and its previous HVAC state/temp."""
+        if self.hvac_mode == HVAC_MODE_OFF:
+            self._restore_previous_state()
+        else:
+            self.set_mode_off()
 
 
 class LightningDetected(Base):  # pylint: disable=too-few-public-methods
