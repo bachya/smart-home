@@ -25,7 +25,7 @@ lightning_detected_automation:
   module: climate
   class: LightningDetected
   properties:
-    notification_window_seconds: 600
+    notification_window_seconds: 1200
   state_changes:
     - disable:
         event: MODE_CHANGE
