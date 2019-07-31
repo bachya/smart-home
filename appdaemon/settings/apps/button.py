@@ -99,12 +99,12 @@ class Button(Base):
     def _on_button_press(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond when button is pressed."""
         action_name = self.get_state(self.entity_ids[CONF_ACTION_LIST])
-        if action_name == BUTTON_ACTION_GOOD_NIGHT:
+        if action_name == BUTTON_ACTION_BUMP_CLIMATE_2_DEGREES:
+            action = BumpClimate(self, 2)
+        elif action_name == BUTTON_ACTION_GOOD_NIGHT:
             action = ActivateScene(self, "good_night")
         elif action_name == BUTTON_ACTION_SECURITY_HOME:
             action = SetSecuritySystem(self, "home")
-        elif action_name == BUTTON_ACTION_BUMP_CLIMATE_2_DEGREES:
-            action = BumpClimate(self, 2)
         elif action_name == BUTTON_ACTION_TOGGLE_ALL_SALT_LAMPS:
             action = ToggleEntity(
                 self,
