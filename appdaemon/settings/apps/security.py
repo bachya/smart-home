@@ -1,6 +1,7 @@
 """Define automations for security."""
 from datetime import time
 from enum import Enum
+from threading import Lock
 from typing import Callable, Optional, Union
 
 import voluptuous as vol
@@ -265,19 +266,13 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
+        self._hits = 0
+        self._lock = Lock()
+
         if self.presence_manager.noone(self.presence_manager.HomeStates.home):
             self.enable()
         else:
             self.disable()
-
-        self._hits = 0
-
-        self.run_every(
-            self._on_window_expiration,
-            self.datetime(),
-            self.properties[CONF_WINDOW_SECONDS],
-            constrain_enabled=True,
-        )
 
         for camera in self.entity_ids[CONF_CAMERAS]:
             self.listen_state(
@@ -289,13 +284,21 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
                 camera_entity_id=camera[CONF_CAMERA_ENTITY_ID],
             )
 
+        self.run_every(
+            self._on_window_expiration,
+            self.datetime(),
+            self.properties[CONF_WINDOW_SECONDS],
+            constrain_enabled=True,
+        )
+
     def _on_detection(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Respond to any hit, no matter the duration."""
-        self._hits += 1
-        if self._hits >= self.properties[CONF_HIT_THRESHOLD]:
-            self._send_and_reset(kwargs[CONF_CAMERA_ENTITY_ID])
+        with self._lock:
+            self._hits += 1
+            if self._hits >= self.properties[CONF_HIT_THRESHOLD]:
+                self._send_and_reset(kwargs[CONF_CAMERA_ENTITY_ID])
 
     def _on_window_expiration(self, kwargs: dict) -> None:
         """When the window expires, reset the hit count."""
