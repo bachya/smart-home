@@ -34,6 +34,19 @@ zwave_button_aaron_bedside_1_short:
     scene_id: 1
     scene_data: 7680
 
+zwave_button_aaron_bedside_1_long:
+  module: button
+  class: ZWaveButton
+  dependencies:
+    - climate_manager
+    - security_manager
+  entity_ids:
+    entity_id: zwave.aeotec_nanomote_quad_aaron_bedside
+    action_list: input_select.zwave_button_aaron_bedside_1_long
+  properties:
+    scene_id: 1
+    scene_data: 7800
+
 zwave_button_aaron_bedside_2_short:
   module: button
   class: ZWaveButton
@@ -46,6 +59,19 @@ zwave_button_aaron_bedside_2_short:
   properties:
     scene_id: 2
     scene_data: 7680
+
+zwave_button_aaron_bedside_2_long:
+  module: button
+  class: ZWaveButton
+  dependencies:
+    - climate_manager
+    - security_manager
+  entity_ids:
+    entity_id: zwave.aeotec_nanomote_quad_aaron_bedside
+    action_list: input_select.zwave_button_aaron_bedside_2_long
+  properties:
+    scene_id: 2
+    scene_data: 7800
 
 zwave_button_aaron_bedside_3_short:
   module: button
@@ -60,6 +86,19 @@ zwave_button_aaron_bedside_3_short:
     scene_id: 3
     scene_data: 7680
 
+zwave_button_aaron_bedside_3_long:
+  module: button
+  class: ZWaveButton
+  dependencies:
+    - climate_manager
+    - security_manager
+  entity_ids:
+    entity_id: zwave.aeotec_nanomote_quad_aaron_bedside
+    action_list: input_select.zwave_button_aaron_bedside_3_long
+  properties:
+    scene_id: 3
+    scene_data: 7800
+
 zwave_button_aaron_bedside_4_short:
   module: button
   class: ZWaveButton
@@ -72,3 +111,16 @@ zwave_button_aaron_bedside_4_short:
   properties:
     scene_id: 4
     scene_data: 7680
+
+zwave_button_aaron_bedside_4_long:
+  module: button
+  class: ZWaveButton
+  dependencies:
+    - climate_manager
+    - security_manager
+  entity_ids:
+    entity_id: zwave.aeotec_nanomote_quad_aaron_bedside
+    action_list: input_select.zwave_button_aaron_bedside_4_long
+  properties:
+    scene_id: 4
+    scene_data: 7800
