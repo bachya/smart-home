@@ -12,8 +12,32 @@ input_select:
       - Toggle Living Room Lights
     icon: mdi:z-wave
 
+  zwave_button_aaron_bedside_1_long:
+    name: "Aeotec Nanomote (AMB Bedside): 1 (long)"
+    options:
+      - Activate "Good Night"
+      - Arm Security System "Home"
+      - Bump Climate 2°
+      - Toggle All Salt Lamps
+      - Toggle Christmas Tree
+      - Toggle Climate
+      - Toggle Living Room Lights
+    icon: mdi:z-wave
+
   zwave_button_aaron_bedside_2_short:
     name: "Aeotec Nanomote (AMB Bedside): 2 (short)"
+    options:
+      - Activate "Good Night"
+      - Arm Security System "Home"
+      - Bump Climate 2°
+      - Toggle All Salt Lamps
+      - Toggle Christmas Tree
+      - Toggle Climate
+      - Toggle Living Room Lights
+    icon: mdi:z-wave
+
+  zwave_button_aaron_bedside_2_long:
+    name: "Aeotec Nanomote (AMB Bedside): 2 (long)"
     options:
       - Activate "Good Night"
       - Arm Security System "Home"
@@ -36,8 +60,32 @@ input_select:
       - Toggle Living Room Lights
     icon: mdi:z-wave
 
+  zwave_button_aaron_bedside_3_long:
+    name: "Aeotec Nanomote (AMB Bedside): 3 (long)"
+    options:
+      - Activate "Good Night"
+      - Arm Security System "Home"
+      - Bump Climate 2°
+      - Toggle All Salt Lamps
+      - Toggle Christmas Tree
+      - Toggle Climate
+      - Toggle Living Room Lights
+    icon: mdi:z-wave
+
   zwave_button_aaron_bedside_4_short:
     name: "Aeotec Nanomote (AMB Bedside): 4 (short)"
+    options:
+      - Activate "Good Night"
+      - Arm Security System "Home"
+      - Bump Climate 2°
+      - Toggle All Salt Lamps
+      - Toggle Christmas Tree
+      - Toggle Climate
+      - Toggle Living Room Lights
+    icon: mdi:z-wave
+
+  zwave_button_aaron_bedside_4_long:
+    name: "Aeotec Nanomote (AMB Bedside): 4 (long)"
     options:
       - Activate "Good Night"
       - Arm Security System "Home"
