@@ -101,8 +101,8 @@ class AutoDepartureLockup(Base):  # pylint: disable=too-few-public-methods
         """Respond to 'PROXIMITY_CHANGE' events."""
         if (
             not self.security_manager.secure
-            and data["old"] == self.presence_manager.ProximityStates.home.value
-            and data["new"] != self.presence_manager.ProximityStates.home.value
+            and data["old"] == self.presence_manager.ProximityZones.home.value
+            and data["new"] != self.presence_manager.ProximityZones.home.value
         ):
             self.log("Everyone has left; locking up")
 

@@ -8,7 +8,7 @@ from const import CONF_PEOPLE, EVENT_PROXIMITY_CHANGE
 CONF_EDGE_THRESHOLD = "edge_threshold"
 CONF_HOME_THRESHOLD = "home_threshold"
 CONF_NEARBY_THRESHOLD = "nearby_threshold"
-CONF_PROXIMITY_SENSOR = "proximity_sensor"
+CONF_PROXIMITY_ZONE_SENSOR = "proximity_zone_sensor"
 
 DEFAULT_EDGE_THRESHOLD = 3 * 5280
 DEFAULT_HOME_THRESHOLD = 0 * 5280
@@ -27,26 +27,19 @@ class PresenceManager(Base):
         just_arrived = "Just Arrived"
         just_left = "Just Left"
 
-    class ProximityStates(Enum):
+    class ProximityZones(Enum):
         """Define an enum for proximity states."""
 
-        away = "away"
-        edge = "edge"
-        home = "home"
-        nearby = "nearby"
+        away = "Away"
+        edge = "Edge"
+        home = "Home"
+        nearby = "Nearby"
 
     def configure(self) -> None:
         """Configure."""
-        if self.proximity == self.home_threshold:
-            self.state = self.ProximityStates.home
-        elif self.home_threshold < self.proximity <= self.nearby_threshold:
-            self.state = self.ProximityStates.nearby
-        else:
-            self.state = self.ProximityStates.away
-
         self.listen_state(
-            self._on_proximity_change,
-            self.entity_ids[CONF_PROXIMITY_SENSOR],
+            self._on_proximity_zone_change,
+            self.entity_ids[CONF_PROXIMITY_ZONE_SENSOR],
             attribute="all",
             duration=60,
         )
@@ -76,14 +69,13 @@ class PresenceManager(Base):
             return DEFAULT_NEARBY_THRESHOLD
 
     @property
-    def proximity(self) -> int:
-        """Return the current proximity."""
-        try:
-            return int(self.get_state(self.entity_ids[CONF_PROXIMITY_SENSOR]))
-        except ValueError:
-            return 0
+    def proximity_zone(self) -> "ProximityZones":
+        """Return the current proximity zone."""
+        return self.ProximityZones(
+            self.get_state(self.entity_ids[CONF_PROXIMITY_ZONE_SENSOR])
+        )
 
-    def _on_proximity_change(
+    def _on_proximity_zone_change(
         self,
         entity: Union[str, dict],
         attribute: str,
@@ -92,37 +84,7 @@ class PresenceManager(Base):
         kwargs: dict,
     ) -> None:
         """Lock up when we leave home."""
-        if old["state"] == "not set" or new["state"] == "not set":
-            return
-
-        new_proximity = int(new["state"])
-        old_state = self.state
-
-        if (
-            self.state != self.ProximityStates.home
-            and new_proximity == self.home_threshold
-        ):
-            self.state = self.ProximityStates.home
-        elif (
-            self.state != self.ProximityStates.nearby
-            and self.home_threshold < new_proximity <= self.nearby_threshold
-        ):
-            self.state = self.ProximityStates.nearby
-        elif (
-            self.state != self.ProximityStates.edge
-            and self.nearby_threshold < new_proximity <= self.edge_threshold
-        ):
-            self.state = self.ProximityStates.edge
-        elif (
-            self.state != self.ProximityStates.away
-            and new_proximity > self.edge_threshold
-        ):
-            self.state = self.ProximityStates.away
-
-        if self.state != old_state:
-            self.fire_event(
-                EVENT_PROXIMITY_CHANGE, old=old_state.value, new=self.state.value
-            )
+        self.fire_event(EVENT_PROXIMITY_CHANGE, old=old, new=new)
 
     def _whos_in_state(self, *states: "HomeStates") -> list:
         """Return a list people who are in a certain set of states."""

@@ -6,4 +6,4 @@ presence_manager:
     edge_threshold: input_select.edge_radius
     home_threshold: input_select.home_radius
     nearby_threshold: input_select.nearby_radius
-    proximity_sensor: proximity.home
+    proximity_zone_sensor: sensor.proximity_zone
