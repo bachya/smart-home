@@ -18,7 +18,7 @@ climate_manager:
     outdoor_brightness_sensor: sensor.side_yard_solar_rad
     outdoor_high_threshold: input_number.outdoor_extreme_high_threshold
     outdoor_low_threshold: input_number.outdoor_extreme_high_threshold
-    outdoor_temperature_sensor: sensor.dark_sky_temperature
+    outdoor_temperature_sensor: sensor.side_yard_temp
     thermostat: climate.thermostat
 
 lightning_detected_automation:
