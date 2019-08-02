@@ -18,29 +18,29 @@ automation:
 input_number:
   outdoor_extreme_high_threshold:
     name: "Outdoor: Extreme High"
-    min: 80
-    max: 110
+    min: 20
+    max: 100
     step: 1
     unit_of_measurement: °F
     icon: mdi:thermometer-chevron-up
   outdoor_extreme_low_threshold:
     name: "Outdoor: Extreme Low"
-    min: 30
-    max: 60
+    min: 20
+    max: 100
     step: 1
     unit_of_measurement: °F
     icon: mdi:thermometer-chevron-down
   thermostat_eco_high_threshold:
     name: "Eco: High"
-    min: 70
-    max: 90
+    min: 50
+    max: 80
     step: 1
     unit_of_measurement: °F
     icon: mdi:thermostat
   thermostat_eco_low_threshold:
     name: "Eco: Low"
     min: 50
-    max: 65
+    max: 80
     step: 1
     unit_of_measurement: °F
     icon: mdi:thermostat
