@@ -241,8 +241,9 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
     def _restore_previous_state(self) -> None:
         """Restore the thermostat to its previous state."""
-        self._set_hvac_mode(self._last_hvac_mode)
-        self.set_temperature(self._last_temperature)
+        if self._last_hvac_mode and self._last_temperature:
+            self._set_hvac_mode(self._last_hvac_mode)
+            self.set_temperature(self._last_temperature)
 
     def _set_hvac_mode(self, hvac_mode: str) -> None:
         """Set the themostat's operation mode."""
