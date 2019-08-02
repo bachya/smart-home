@@ -124,12 +124,12 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
     @property
     def eco_high_temperature(self) -> int:
         """Return the upper limit of eco mode."""
-        return int(self.get_state(self.entity_ids[CONF_ECO_HIGH_THRESHOLD]))
+        return float(self.get_state(self.entity_ids[CONF_ECO_HIGH_THRESHOLD]))
 
     @property
     def eco_low_temperature(self) -> int:
         """Return the lower limit of eco mode."""
-        return int(self.get_state(self.entity_ids[CONF_ECO_LOW_THRESHOLD]))
+        return float(self.get_state(self.entity_ids[CONF_ECO_LOW_THRESHOLD]))
 
     @property
     def fan_mode(self) -> str:
@@ -154,12 +154,12 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
     @property
     def outdoor_brightness(self) -> int:
         """Return the outdoor brightness in lux."""
-        return int(self.get_state(self.entity_ids[CONF_BRIGHTNESS_SENSOR]))
+        return float(self.get_state(self.entity_ids[CONF_BRIGHTNESS_SENSOR]))
 
     @property
     def outdoor_brightness_percentage(self) -> int:
         """Return the human-perception of brightness percentage."""
-        return int(self.get_state(self.entity_ids[CONF_BRIGHTNESS_PERCENT_SENSOR]))
+        return float(self.get_state(self.entity_ids[CONF_BRIGHTNESS_PERCENT_SENSOR]))
 
     @property
     def outdoor_high_temperature(self) -> float:
@@ -188,7 +188,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
     def target_temperature(self) -> int:
         """Return the temperature the thermostat is currently set to."""
         try:
-            return int(
+            return float(
                 self.get_state(
                     self.entity_ids[CONF_THERMOSTAT], attribute="temperature"
                 )
