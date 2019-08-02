@@ -40,7 +40,6 @@ class PresenceManager(Base):
         self.listen_state(
             self._on_proximity_zone_change,
             self.entity_ids[CONF_PROXIMITY_ZONE_SENSOR],
-            attribute="all",
             duration=60,
         )
 
