@@ -34,9 +34,9 @@ sensor:
           - proximity.home
         value_template: >
           {% set prox_mi = states("proximity.home")|int / 5280 %}
-          {% set home = states("input_number.home_radius")|int * 5280 %}
-          {% set nearby = states("input_number.nearby_radius")|int * 5280 %}
-          {% set edge = states("input_number.edge_radius")|int * 5280 %}
+          {% set home = states("input_number.home_radius")|int %}
+          {% set nearby = states("input_number.nearby_radius")|int %}
+          {% set edge = states("input_number.edge_radius")|int %}
           {% if prox_mi <= home %}
             Home
           {% elif home < prox_mi <= nearby %}
