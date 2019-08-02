@@ -72,31 +72,19 @@ class AdjustOnProximity(Base):  # pylint: disable=too-few-public-methods
         """Respond to "PROXIMITY_CHANGE" events."""
         if self.climate_manager.outdoor_temperature_extreme:
             # Scenario 1: Anything -> Away (Extreme Temps)
-            if (
-                data["old"] != self.presence_manager.ProximityZones.away.value
-                and data["new"] == self.presence_manager.ProximityZones.away.value
-            ):
+            if data["new"] == self.presence_manager.ProximityZones.away.value:
                 self.climate_manager.set_away()
 
             # Scenario 2: Away -> Anything (Extreme Temps)
-            elif (
-                data["old"] == self.presence_manager.ProximityZones.away.value
-                and data["new"] != self.presence_manager.ProximityZones.away.value
-            ):
+            elif data["old"] == self.presence_manager.ProximityZones.away.value:
                 self.climate_manager.set_home()
         else:
             # Scenario 3: Home -> Anything
-            if (
-                data["old"] == self.presence_manager.ProximityZones.home.value
-                and data["new"] != self.presence_manager.ProximityZones.home.value
-            ):
+            if data["old"] == self.presence_manager.ProximityZones.home.value:
                 self.climate_manager.set_away()
 
             # Scenario 4: Anything -> Nearby
-            elif (
-                data["old"] != self.presence_manager.ProximityZones.nearby.value
-                and data["new"] == self.presence_manager.ProximityZones.nearby.value
-            ):
+            elif data["new"] == self.presence_manager.ProximityZones.nearby.value:
                 self.climate_manager.set_home()
 
 
