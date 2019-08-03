@@ -78,11 +78,12 @@ class PresenceManager(Base):
         self,
         entity: Union[str, dict],
         attribute: str,
-        old: dict,
-        new: dict,
+        old: str,
+        new: str,
         kwargs: dict,
     ) -> None:
-        """Lock up when we leave home."""
+        """Fire a proximity change event."""
+        self.log("Proximity change: {0} -> {1}".format(old, new))
         self.fire_event(EVENT_PROXIMITY_CHANGE, old=old, new=new)
 
     def _whos_in_state(self, *states: "HomeStates") -> list:
