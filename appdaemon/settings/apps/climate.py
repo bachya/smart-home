@@ -13,6 +13,7 @@ from const import (
     EVENT_PROXIMITY_CHANGE,
 )
 
+CONF_AWAY_MODE = "away_mode"
 CONF_THERMOSTAT = "thermostat"
 FAN_MODE_AUTO_LOW = "Auto Low"
 FAN_MODE_CIRCULATE = "Circulate"
@@ -116,6 +117,8 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         self._last_hvac_mode = None
         self._last_temperature = None
 
+        self.listen_state(self._on_away_mode_change, self.entity_ids[CONF_AWAY_MODE])
+
     @property
     def away_mode(self) -> bool:
         """Return the state of away mode."""
@@ -196,6 +199,38 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         except TypeError:
             return 0
 
+    def _on_away_mode_change(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """React when away mode is toggled."""
+        if new == "on":
+            if self._away:
+                return
+
+            self.log('Setting thermostat to "Away" mode')
+
+            self._away = True
+            self.set_mode_off()
+
+            self.handles[HANDLE_ECO_MODE] = self.listen_state(
+                self._on_eco_temp_change,
+                self.entity_ids[CONF_INDOOR_TEMPERATURE_SENSOR],
+            )
+        else:
+            if not self._away:
+                return
+
+            self.log('Setting thermostat to "Home" mode')
+            self._away = False
+
+            handle = self.handles.pop(HANDLE_ECO_MODE)
+            self.cancel_listen_state(handle)
+
+            # If the thermostat isn't doing anything, set it to the previous settings
+            # (before away mode); otherwise, let it keep doing its thing:
+            if self.hvac_mode == HVAC_MODE_OFF:
+                self._restore_previous_state()
+
     def _on_eco_temp_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
@@ -267,17 +302,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
     def set_away(self) -> None:
         """Set the thermostat to away."""
-        if self._away:
-            return
-
-        self.log('Setting thermostat to "Away" mode')
-
-        self._away = True
-        self.set_mode_off()
-
-        self.handles[HANDLE_ECO_MODE] = self.listen_state(
-            self._on_eco_temp_change, self.entity_ids[CONF_INDOOR_TEMPERATURE_SENSOR]
-        )
+        self.turn_on(CONF_AWAY_MODE)
 
     def set_fan_auto_low(self) -> None:
         """Set the fan mode to auto_low."""
@@ -293,19 +318,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
     def set_home(self) -> None:
         """Set the thermostat to home."""
-        if not self._away:
-            return
-
-        self.log('Setting thermostat to "Home" mode')
-        self._away = False
-
-        handle = self.handles.pop(HANDLE_ECO_MODE)
-        self.cancel_listen_state(handle)
-
-        # If the thermostat isn't doing anything, set it to the previous settings
-        # (before away mode); otherwise, let it keep doing its thing:
-        if self.hvac_mode == HVAC_MODE_OFF:
-            self._restore_previous_state()
+        self.turn_off(CONF_AWAY_MODE)
 
     def set_mode_auto(self) -> None:
         """Set the operation mode to auto."""

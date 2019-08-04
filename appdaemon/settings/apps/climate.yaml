@@ -10,6 +10,7 @@ climate_manager:
   module: climate
   class: ClimateManager
   entity_ids:
+    away_mode: input_boolean.climate_away_mode
     eco_high_threshold: input_number.thermostat_eco_high_threshold
     eco_low_threshold: input_number.thermostat_eco_low_threshold
     humidity_sensor: sensor.average_indoor_humidity

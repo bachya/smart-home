@@ -15,6 +15,11 @@ automation:
         event_data_template:
           distance: "{{ trigger.to_state.state }}"
 
+input_boolean:
+  climate_away_mode:
+    name: "Away Mode"
+    icon: mdi:home-thermometer
+
 input_number:
   outdoor_extreme_high_threshold:
     name: "Outdoor: Extreme High"
