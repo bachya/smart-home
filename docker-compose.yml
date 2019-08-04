@@ -22,6 +22,15 @@ services:
       - appdaemon-config:/conf
       - shared:/shared
 
+  esphome-dashboard:
+    container_name: esphome-dashboard
+    image: esphome/esphome:1.13.6
+    network_mode: "host"
+    restart: unless-stopped
+    volumes:
+      - ./esphome:/config
+      - /etc/localtime:/etc/localtime:ro
+
   glances:
     build:
       context: ./glances/docker

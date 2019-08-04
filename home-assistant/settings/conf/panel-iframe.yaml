@@ -3,6 +3,14 @@ ambient:
   title: Ambient PWS
   url: !secret panel_url_ambient
   icon: mdi:weather-cloudy
+esphome_dashboard:
+  title: ESPHome Dashboard
+  url: !secret panel_url_esphome_dashboard
+  icon: mdi:chip
+grafana:
+  title: Grafana
+  url: !secret panel_url_grafana
+  icon: mdi:chart-bar
 jupyterlab:
   title: JupyterLab
   url: !secret panel_url_jupyterlab
