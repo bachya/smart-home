@@ -293,7 +293,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
     def set_away(self) -> None:
         """Set the thermostat to away."""
-        self.turn_on(CONF_AWAY_MODE)
+        self.turn_on(self.entity_ids[CONF_AWAY_MODE])
 
     def set_fan_auto_low(self) -> None:
         """Set the fan mode to auto_low."""
@@ -309,7 +309,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
     def set_home(self) -> None:
         """Set the thermostat to home."""
-        self.turn_off(CONF_AWAY_MODE)
+        self.turn_off(self.entity_ids[CONF_AWAY_MODE])
 
     def set_mode_auto(self) -> None:
         """Set the operation mode to auto."""
