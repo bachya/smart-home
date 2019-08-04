@@ -222,7 +222,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             and self.hvac_mode != HVAC_MODE_COOL
         ):
             self.log(
-                'Eco Mode: setting to "cool" ({0}°)'.format(self.eco_high_temperature)
+                'Eco Mode: setting to "Cool" ({0}°)'.format(self.eco_high_temperature)
             )
             self.set_mode_cool()
             self.set_temperature(self.eco_high_temperature)
@@ -231,7 +231,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             and self.hvac_mode != HVAC_MODE_HEAT
         ):
             self.log(
-                'Eco Mode: setting to "heat" ({0}°)'.format(self.eco_low_temperature)
+                'Eco Mode: setting to "Heat" ({0}°)'.format(self.eco_low_temperature)
             )
             self.set_mode_heat()
             self.set_temperature(self.eco_low_temperature)
@@ -239,7 +239,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             self.eco_low_temperature <= current_temperature <= self.eco_high_temperature
             and self.hvac_mode != HVAC_MODE_OFF
         ):
-            self.log('Within eco mode limits; turning thermostat to "off"')
+            self.log('Within eco mode limits; turning thermostat to "Off"')
             self.set_mode_off()
 
     def _set_away(self) -> None:
