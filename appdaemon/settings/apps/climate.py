@@ -113,7 +113,6 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        self._away = False
         self._last_hvac_mode = None
         self._last_temperature = None
 
@@ -122,7 +121,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
     @property
     def away_mode(self) -> bool:
         """Return the state of away mode."""
-        return self._away
+        return self.get_state(self.entity_ids[CONF_AWAY_MODE]) == "on"
 
     @property
     def eco_high_temperature(self) -> int:
@@ -204,12 +203,8 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
     ) -> None:
         """React when away mode is toggled."""
         if new == "on":
-            if self._away:
-                return
-
             self.log('Setting thermostat to "Away" mode')
 
-            self._away = True
             self.set_mode_off()
 
             self.handles[HANDLE_ECO_MODE] = self.listen_state(
@@ -217,11 +212,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
                 self.entity_ids[CONF_INDOOR_TEMPERATURE_SENSOR],
             )
         else:
-            if not self._away:
-                return
-
             self.log('Setting thermostat to "Home" mode')
-            self._away = False
 
             handle = self.handles.pop(HANDLE_ECO_MODE)
             self.cancel_listen_state(handle)
