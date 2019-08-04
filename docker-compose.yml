@@ -22,18 +22,6 @@ services:
       - appdaemon-config:/conf
       - shared:/shared
 
-  amazon-dash:
-    command: amazon-dash run --config /config/amazon-dash.yml
-    container_name: amazon-dash
-    depends_on:
-      - hass
-    image: nekmo/amazon-dash:latest
-    network_mode: "host"
-    restart: unless-stopped
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - amazon-dash-config:/config:ro
-
   glances:
     build:
       context: ./glances/docker
@@ -170,7 +158,6 @@ services:
 
 volumes:
 
-  amazon-dash-config:
   appdaemon-config:
   glances-config:
   hass-config:

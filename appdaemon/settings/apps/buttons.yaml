@@ -1,26 +1,4 @@
 ---
-# amazon_dash_button_amazon_basics_batteries:
-#   module: button
-#   class: AmazonDashButton
-#   dependencies:
-#     - climate_manager
-#     - security_manager
-#   entity_ids:
-#     action_list: input_select.dash_amazon_basics_batteries
-#   properties:
-#     friendly_name: Amazon Basics Batteries
-
-# amazon_dash_button_neat:
-#   module: button
-#   class: AmazonDashButton
-#   dependencies:
-#     - climate_manager
-#     - security_manager
-#   entity_ids:
-#     action_list: input_select.dash_neat
-#   properties:
-#     friendly_name: Neat
-
 zwave_button_aaron_bedside_1_short:
   module: button
   class: ZWaveButton

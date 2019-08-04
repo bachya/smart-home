@@ -20,10 +20,6 @@ function copy_config_data() {
 # Update AppDaemon configs:
 copy_config_data "hub_appdaemon-config" "$REPO_PATH/appdaemon/settings"
 
-# Update amazon-dash configs:
-copy_config_data "hub_amazon-dash-config" "$REPO_PATH/amazon-dash/settings"
-sudo chown -R root:root /var/lib/docker/volumes/hub_amazon-dash-config/_data/
-
 # Update Glances configs:
 copy_config_data "hub_glances-config" "$REPO_PATH/glances/settings"
 
