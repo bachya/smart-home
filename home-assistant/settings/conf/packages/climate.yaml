@@ -18,7 +18,7 @@ automation:
 input_boolean:
   climate_away_mode:
     name: "Away Mode"
-    icon: mdi:home-thermometer
+    icon: mdi:thermostat
 
 input_number:
   outdoor_extreme_high_threshold:
