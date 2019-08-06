@@ -46,6 +46,22 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - glances-config:/etc/glances:ro
 
+  grafana:
+    container_name: grafana
+    depends_on:
+      - influxdb
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: password
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SERVER_DOMAIN: grafana.myserver.com
+    image: grafana/grafana:6.3.0
+    ports:
+      - "3000:3000/tcp"
+    restart: unless-stopped
+    user: "104"
+    volumes:
+      - grafana-config:/var/lib/grafana
+
   hass:
     container_name: hass
     depends_on:
