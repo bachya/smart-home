@@ -31,3 +31,7 @@ rainmachine:
   title: RainMachine
   url: !secret panel_url_rainmachine
   icon: mdi:water
+vernemq:
+  title: VerneMQ
+  url: !secret panel_url_vernemq
+  icon: mdi:wifi

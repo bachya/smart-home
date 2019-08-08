@@ -66,8 +66,9 @@ services:
     container_name: hass
     depends_on:
       - glances
-      - mosquitto
+      - influxdb
       - mysql
+      - vernemq
     devices:
       - "/dev/zigbee:/dev/zigbee"
       - "/dev/zwave:/dev/zwave"
@@ -93,19 +94,6 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - jupyterlab-config:/home/jovyan
-
-  mosquitto:
-    container_name: mosquitto
-    image: eclipse-mosquitto:1.6.4
-    ports:
-      - "1883:1883/tcp"
-    restart: unless-stopped
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/ssl:/etc/ssl:ro
-      - /usr/share/ca-certificates:/usr/share/ca-certificates:ro
-      - mosquitto-config:/mosquitto/config
-      - mosquitto-data:/mosquitto/data
 
   mysql:
     container_name: mysql
@@ -181,14 +169,35 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer-config:/data
 
+  vernemq:
+    container_name: vernemq
+    environment:
+      DOCKER_VERNEMQ_USER_user_1: "password"
+      DOCKER_VERNEMQ_plugins.vmq_bridge: "on"
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.cafile: /etc/ssl/certs/DST_Root_CA_X3.pem
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.insecure: "on"
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.max_outgoing_buffered_messages: 100
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.password: "remote_password"
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.topic.1: "* in"
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.username: hub_mqtt
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0: remote_mqtt.myserver.com:18883
+    image: erlio/docker-vernemq:1.9.0-alpine
+    ports:
+      - "1883:1883/tcp"
+      - "8888:8888/tcp"
+    restart: unless-stopped
+    user: root
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/ssl:/etc/ssl:ro
+      - /usr/share/ca-certificates:/usr/share/ca-certificates:ro
+
 volumes:
 
   appdaemon-config:
   glances-config:
   hass-config:
   jupyterlab-config:
-  mosquitto-config:
-  mosquitto-data:
   node-red-config:
   portainer-config:
   shared:

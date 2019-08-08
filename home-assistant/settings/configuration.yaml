@@ -21,7 +21,7 @@ group: !include_dir_named conf/groups/
 ifttt: !include conf/platforms/ifttt.yaml
 input_boolean: !include_dir_merge_named conf/input-booleans/
 ios: !include conf/platforms/ios.yaml
-mqtt: !include conf/platforms/mosquitto.yaml
+mqtt: !include conf/platforms/mqtt.yaml
 nest: !include conf/platforms/nest.yaml
 notion: !include conf/platforms/notion.yaml
 notify: !include conf/platforms/notifiers.yaml

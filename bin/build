@@ -26,9 +26,6 @@ copy_config_data "hub_glances-config" "$REPO_PATH/glances/settings"
 # Update Home Assistant configs:
 copy_config_data "hub_hass-config" "$REPO_PATH/home-assistant/settings"
 
-# Update Mosquitto configs:
-copy_config_data "hub_mosquitto-config" "$REPO_PATH/mosquitto/settings"
-
 # Re-build the containers if necessary:
 docker-compose build
 

@@ -156,21 +156,21 @@ new_influxdb_version_automation:
     icon: mdi:home-assistant
     initial: true
 
-new_mosquitto_version_automation:
+new_vernemq_version_automation:
   module: version
   class: NewPortainerVersionNotification
   dependencies:
     - presence_manager
   entity_ids:
-    available: sensor.mosquitto_available
-    installed: sensor.mosquitto_installed
+    available: sensor.vernemq_available
+    installed: sensor.vernemq_installed
   properties:
-    app_name: Mosquitto
-    created_entity_id: sensor.mosquitto_installed
+    app_name: VerneMQ
+    created_entity_id: sensor.vernemq_installed
     endpoint_id: 1
-    friendly_name: Mosquitto Installed
+    friendly_name: VerneMQ Installed
     icon: mdi:wifi
-    image_name: eclipse-mosquitto
+    image_name: docker-vernemq
     update_interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
   state_changes:

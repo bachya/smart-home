@@ -8,12 +8,6 @@ appdaemon:
       type: hass
       ha_url: http://hub.myserver.com:8123
       token: !secret ha_token
-    MQTT:
-      type: mqtt
-      namespace: mqtt
-      client_host: mosquitto
-      client_user: appdaemon
-      client_password: !secret mqtt_password
   portainer_password: !secret portainer_password
   portainer_username: !secret portainer_username
   production_mode: true
