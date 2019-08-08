@@ -4,6 +4,8 @@ verify_ssl = true
 
 [dev-packages]
 "flake8" = "*"
+homeassistant = "*"
 mypy = "*"
 pre-commit = "*"
 pylint = "*"
+yamllint = "*"
