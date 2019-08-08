@@ -22,7 +22,15 @@ CONF_SCENE_DATA = "scene_data"
 CONF_SCENE_ID = "scene_id"
 
 
-class ActivateScene:
+class ButtonAction:
+    """Define a generic button action."""
+
+    def run(self) -> None:
+        """Run."""
+        raise NotImplementedError()
+
+
+class ActivateScene(ButtonAction):
     """Define an action that turns on a scene."""
 
     def __init__(self, app: Base, scene: str) -> None:
@@ -35,7 +43,7 @@ class ActivateScene:
         self._app.turn_on("scene.{0}".format(self._scene))
 
 
-class BumpClimate:
+class BumpClimate(ButtonAction):
     """Define an action that bumps the climate X° in the correct direction."""
 
     def __init__(self, app: Base, degrees: int) -> None:
@@ -48,7 +56,7 @@ class BumpClimate:
         self._app.climate_manager.bump_temperature(self._degrees)
 
 
-class SetSecuritySystem:
+class SetSecuritySystem(ButtonAction):
     """Define an action that sets the security system."""
 
     def __init__(self, app: Base, state: str) -> None:
@@ -63,7 +71,7 @@ class SetSecuritySystem:
         )
 
 
-class ToggleClimate:
+class ToggleClimate(ButtonAction):
     """Define an action that toggles the thermostat between off and its prev. state."""
 
     def __init__(self, app: Base) -> None:
@@ -75,7 +83,7 @@ class ToggleClimate:
         self._app.climate_manager.toggle()
 
 
-class ToggleEntity:
+class ToggleEntity(ButtonAction):
     """Toggle an entity."""
 
     def __init__(
@@ -109,7 +117,7 @@ class Button(Base):
 
     def configure(self) -> None:
         """Configure."""
-        raise NotImplementedError("Don't instantiate a Button ABC directly")
+        raise NotImplementedError()
 
     def _on_button_press(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond when button is pressed."""
@@ -118,6 +126,7 @@ class Button(Base):
         if action_name == BUTTON_ACTION_NO_ACTION:
             return
 
+        action: ButtonAction
         if action_name == BUTTON_ACTION_BUMP_CLIMATE_2_DEGREES:
             action = BumpClimate(self, 2)
         elif action_name == BUTTON_ACTION_GOOD_NIGHT:

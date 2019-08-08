@@ -114,8 +114,8 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        self._last_hvac_mode = None
-        self._last_temperature = None
+        self._last_hvac_mode = None  # type: Optional[str]
+        self._last_temperature = None  # type: Optional[float]
 
         if self.away_mode:
             self._set_away()
@@ -128,12 +128,12 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         return self.get_state(self.entity_ids[CONF_AWAY_MODE]) == "on"
 
     @property
-    def eco_high_temperature(self) -> int:
+    def eco_high_temperature(self) -> float:
         """Return the upper limit of eco mode."""
         return float(self.get_state(self.entity_ids[CONF_ECO_HIGH_THRESHOLD]))
 
     @property
-    def eco_low_temperature(self) -> int:
+    def eco_low_temperature(self) -> float:
         """Return the lower limit of eco mode."""
         return float(self.get_state(self.entity_ids[CONF_ECO_LOW_THRESHOLD]))
 
@@ -158,12 +158,12 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         return self.get_state(self.entity_ids[CONF_THERMOSTAT])
 
     @property
-    def outdoor_brightness(self) -> int:
+    def outdoor_brightness(self) -> float:
         """Return the outdoor brightness in lux."""
         return float(self.get_state(self.entity_ids[CONF_BRIGHTNESS_SENSOR]))
 
     @property
-    def outdoor_brightness_percentage(self) -> int:
+    def outdoor_brightness_percentage(self) -> float:
         """Return the human-perception of brightness percentage."""
         return float(self.get_state(self.entity_ids[CONF_BRIGHTNESS_PERCENT_SENSOR]))
 
@@ -191,7 +191,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         )
 
     @property
-    def target_temperature(self) -> int:
+    def target_temperature(self) -> float:
         """Return the temperature the thermostat is currently set to."""
         try:
             return float(
@@ -200,7 +200,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
                 )
             )
         except TypeError:
-            return 0
+            return 0.0
 
     def _on_away_mode_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
@@ -339,7 +339,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         self._last_temperature = self.target_temperature
         self._set_hvac_mode(HVAC_MODE_OFF)
 
-    def set_temperature(self, temperature: int) -> None:
+    def set_temperature(self, temperature: float) -> None:
         """Set the thermostat temperature."""
         if temperature == self.target_temperature:
             return
@@ -359,7 +359,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         self.call_service(
             "climate/set_temperature",
             entity_id=self.entity_ids[CONF_THERMOSTAT],
-            temperature=str(temperature),
+            temperature=str(int(temperature)),
         )
 
     def toggle(self) -> None:

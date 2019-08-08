@@ -89,9 +89,6 @@ class BadLoginNotification(Base):  # pylint: disable=too-few-public-methods
                 self, "person:Aaron", new["attributes"]["message"], title=title
             )
 
-        # If the automation is enabled when a new version is detected, send a
-        # notification; if not, remember that we should send the notification when
-        # the automation becomes enabled:
         if self.enabled:
             _send_notification()
         else:

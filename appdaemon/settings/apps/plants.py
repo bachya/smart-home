@@ -55,7 +55,7 @@ class LowMoisture(Base):
         try:
             return int(self.get_state(self.entity_ids[CONF_CURRENT_MOISTURE]))
         except ValueError:
-            return "Unknown"
+            return 100
 
     def _cancel_notification_cycle(self) -> None:
         """Cancel any active notification."""

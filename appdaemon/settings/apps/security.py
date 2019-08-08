@@ -246,9 +246,6 @@ class NotifyOnChange(Base):  # pylint: disable=too-few-public-methods
                 title="Security Change 🔐",
             )
 
-        # If the automation is enabled when the state changes, send a notification;
-        # if not, remember that we should send the notification when the automation
-        # becomes enabled:
         if self.enabled:
             _send_notification()
         else:

@@ -94,10 +94,6 @@ class NewVersionNotification(Base):  # pylint: disable=too-few-public-methods
                     self.properties[CONF_APP_NAME], new
                 )
             )
-
-            # If the automation is enabled when a new version is detected, send a
-            # notification; if not, remember that we should send the notification when
-            # the automation becomes enabled:
             if self.enabled:
                 _send_notification()
             else:
