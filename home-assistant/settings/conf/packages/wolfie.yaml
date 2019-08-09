@@ -137,6 +137,7 @@ sensor:
 
       vacuum_do_not_disturb:
         friendly_name: Do Not Disturb
+        entity_id: vacuum.xiaomi_vacuum_cleaner
         value_template: >
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.do_not_disturb }}
         icon_template: >
