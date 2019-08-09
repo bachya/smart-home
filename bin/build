@@ -29,14 +29,20 @@ copy_config_data "hub_hass-config" "$REPO_PATH/home-assistant/settings"
 # Re-build the containers if necessary:
 docker-compose build
 
-# Restart the containers:
+# Tear the stack down and clean up loose containers and images:
 docker-compose down --remove-orphans
 docker container prune -f
 docker image prune -f
-docker-compose up -d
+
+# Bring up all "background" services:
+docker-compose up -d --scale appdaemon=0 --scale hass=0
+
+# Bring up HASS and AppDaemon with delays in-between:
+sleep 5
+docker-compose up -d hass
+sleep 5
+docker-compose up -d appdaemon
+
+# Do a final cleanup of unused networks and volumes:
 docker network prune -f
 docker volume prune -f
-
-# Restart AppDaemon (just in case it hasn't gotten its data yet - bug):
-sleep 10
-docker-compose restart appdaemon
