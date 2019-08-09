@@ -1,6 +1,7 @@
 """Define automations for various home systems."""
 from typing import Callable, List, Optional, Union
 
+import requests
 import voluptuous as vol
 
 from core import APP_SCHEMA, Base
@@ -22,7 +23,6 @@ CONF_BATTERIES_TO_MONITOR = "batteries_to_monitor"
 CONF_BATTERY_LEVEL_THRESHOLD = "battery_level_threshold"
 
 CONF_EXPIRY_THRESHOLD = "expiry_threshold"
-CONF_SSL_EXPIRY = "ssl_expiry"
 
 CONF_PI_HOLE_ACTIVE_SENSOR = "pi_hole_active_sensor"
 CONF_PI_HOLE_API_KEY = "pi_hole_api_key"
@@ -236,53 +236,83 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
             self._send_notification_func = None
 
 
-class SslExpiration(Base):  # pylint: disable=too-few-public-methods
-    """Define a feature to notify me when the SSL cert is expiring."""
+class PiHoleSwitch(Base):  # pylint: disable=too-few-public-methods
+    """Define a switch to turn on/off all Pi-hole instances."""
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             CONF_ENTITY_IDS: vol.Schema(
-                {vol.Required(CONF_SSL_EXPIRY): cv.entity_id}, extra=vol.ALLOW_EXTRA
+                {vol.Required(CONF_PI_HOLE_ACTIVE_SENSOR): cv.entity_id},
+                extra=vol.ALLOW_EXTRA,
             ),
             CONF_PROPERTIES: vol.Schema(
-                {vol.Required(CONF_EXPIRY_THRESHOLD): int}, extra=vol.ALLOW_EXTRA
+                {
+                    vol.Required(CONF_PI_HOLE_API_KEY): str,
+                    vol.Required(CONF_PI_HOLE_HOSTS): list,
+                    vol.Required(CONF_PI_HOLE_OFF_EVENT): str,
+                    vol.Required(CONF_PI_HOLE_ON_EVENT): str,
+                },
+                extra=vol.ALLOW_EXTRA,
             ),
         }
     )
 
     def configure(self) -> None:
         """Configure."""
-        self._send_notification_func = None  # type: Optional[Callable]
+        if self._is_enabled:
+            self._set_dummy_sensor("on")
+        else:
+            self._set_dummy_sensor("off")
 
-        self.listen_state(self._on_expiration_near, self.entity_ids[CONF_SSL_EXPIRY])
+        self.listen_event(self._on_switch_off, self.properties[CONF_PI_HOLE_OFF_EVENT])
+        self.listen_event(self._on_switch_on, self.properties[CONF_PI_HOLE_ON_EVENT])
 
-    def _on_expiration_near(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """When SSL is about to expire, send a notification."""
+    @property
+    def _is_enabled(self) -> bool:
+        """Return whether any Pi-hole hosts are enabled."""
+        for host in self.properties[CONF_PI_HOLE_HOSTS]:
+            resp = self._request(host, "status")
+            status = resp.json()["status"]
 
-        def _send_notification():
-            """Send the notification."""
-            send_notification(
-                self, "slack:@aaron", "SSL expires in less than {0} days".format(new)
-            )
+            if status == "enabled":
+                return True
 
-        if int(new) < self.properties[CONF_EXPIRY_THRESHOLD]:
-            self.log("SSL certificate about to expire: {0} days".format(new))
+        return False
 
-            # If the automation is enabled when the SSL cert is near expiration, send a
-            # notification; if not, remember that we should send the notification when
-            # the automation becomes enabled:
-            if self.enabled:
-                _send_notification()
-            else:
-                self._send_notification_func = _send_notification
+    def _on_switch_off(self, event_name: str, data: dict, kwargs: dict) -> None:
+        """Respond to the switch being turned off."""
+        self.disable_pi_hole()
 
-    def on_enable(self) -> None:
-        """Send the notification once the automation is enabled (if appropriate)."""
-        if self._send_notification_func:
-            self._send_notification_func()
-            self._send_notification_func = None
+    def _on_switch_on(self, event_name: str, data: dict, kwargs: dict) -> None:
+        """Respond to the switch being turned on."""
+        self.enable_pi_hole()
+
+    def _request(self, host: str, endpoint: str) -> requests.Response:
+        """Send an HTTP request to Pi-hole."""
+        return requests.get(
+            "http://{0}/admin/api.php?{1}".format(host, endpoint),
+            params={"auth": self.properties[CONF_PI_HOLE_API_KEY]},
+        )
+
+    def _set_dummy_sensor(self, state: str) -> None:
+        """Set the state of off a dummy sensor which informs the switch's state."""
+        self.set_state(
+            self.entity_ids[CONF_PI_HOLE_ACTIVE_SENSOR],
+            state=state,
+            attributes={"friendly_name": "Pi-hole"},
+        )
+
+    def disable_pi_hole(self) -> None:
+        """Disable Pi-hole."""
+        self._set_dummy_sensor("off")
+        for host in self.properties[CONF_PI_HOLE_HOSTS]:
+            self._request(host, "disable")
+
+    def enable_pi_hole(self) -> None:
+        """Enable Pi-hole."""
+        self._set_dummy_sensor("on")
+        for host in self.properties[CONF_PI_HOLE_HOSTS]:
+            self._request(host, "enable")
 
 
 class StartHomeKitOnZwaveReady(Base):

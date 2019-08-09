@@ -150,44 +150,19 @@ notify_ps4_left_on_automation:
           name: blackout_mode
           state: "off"
 
-notify_of_ssl_expiration_automation:
+pi_hole_switch:
   module: systems
-  class: SslExpiration
-  dependencies:
-    - presence_manager
+  class: PiHoleSwitch
   entity_ids:
-    ssl_expiry: sensor.ssl_expiry
+    pi_hole_active_sensor: sensor.pi_hole_active
   properties:
-    expiry_threshold: 7
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "off"
-    - disable:
-        event: PROXIMITY_CHANGE
-        event_data:
-          old: home
-      enable:
-        event: PROXIMITY_CHANGE
-        event_data:
-          new: home
+    pi_hole_api_key: !secret pihole_api_key
+    pi_hole_hosts:
+      - "172.16.10.137:8080"
+      - "172.16.10.20:8080"
+      - "172.16.10.24:8080"
+    pi_hole_off_event: PI_HOLE_OFF
+    pi_hole_on_event: PI_HOLE_ON
 
 start_homekit_on_zwave_ready_automation:
   module: systems

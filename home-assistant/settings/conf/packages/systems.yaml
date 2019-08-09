@@ -87,10 +87,6 @@ sensor:
     name: HASS Installed
 
     # Networking
-  - platform: cert_expiry
-    name: SSL Expiry
-    host: !secret ssl_cert_host
-
   - platform: filter
     name: Filtered Speedtest Download
     entity_id: sensor.speedtest_download

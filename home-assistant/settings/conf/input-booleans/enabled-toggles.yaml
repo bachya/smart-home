@@ -153,10 +153,6 @@ notify_of_new_versions:
   icon: mdi:home-assistant
   initial: true
   name: Notify of new versions
-notify_of_ssl_expiration_automation:
-  icon: mdi:certificate
-  initial: true
-  name: Notify of SSL expiration
 notify_of_trash_pickup_automation:
   icon: mdi:delete
   initial: true
