@@ -5,12 +5,6 @@ device_tracker:
     secret: !secret automatic_secret
     current_location: true
 
-  - platform: tile
-    username: !secret tile_username
-    password: !secret tile_password
-    monitored_variables:
-      - TILE
-
   - platform: unifi
     host: cloud-key.phil.lan
     username: !secret unifi_username
