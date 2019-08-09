@@ -1,6 +1,6 @@
 ---
 api:
-  password: "password"
+  password: !secret api_password
 
 binary_sensor:
   - platform: gpio
@@ -50,8 +50,8 @@ text_sensor:
     id: esphome_version
 
 wifi:
-  ssid: "SSID"
-  password: "password"
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
   fast_connect: true
   manual_ip:
     static_ip: 172.16.11.15
