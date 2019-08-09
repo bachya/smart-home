@@ -140,10 +140,9 @@ sensor:
         value_template: >
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.do_not_disturb }}
         icon_template: >
-          {%
-            set val =
-              states.vacuum.xiaomi_vacuum_cleaner.attributes.do_not_disturb
-          %}
+          {% set val = state_attr(
+            "vacuum.xiaomi_vacuum_cleaner", "do_not_disturb"
+            ) %}
           {% if val == 'on' %}
             mdi:do-not-disturb
           {% else %}

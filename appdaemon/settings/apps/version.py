@@ -1,9 +1,10 @@
 """Define automations for tracking software versions."""
 from typing import Callable, Optional, Union
 
-from packaging import version
 import requests
 import voluptuous as vol
+
+from packaging import version
 
 from core import APP_SCHEMA, Base
 from const import (

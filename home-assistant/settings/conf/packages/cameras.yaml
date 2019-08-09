@@ -37,7 +37,8 @@ camera:
 
   - platform: ffmpeg
     name: Guest Bedroom Camera
-    input: -rtsp_transport tcp -i rtsp://yi-camera-guest-bedroom.phil.iot/ch0_0.h264
+    input: "-rtsp_transport tcp -i rtsp://yi-camera-guest-bedroom.phil.\
+            iot/ch0_0.h264"
 
   - platform: nest
 

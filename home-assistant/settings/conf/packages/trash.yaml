@@ -5,19 +5,27 @@ binary_sensor:
       recollect_next_pickup_includes_compost:
         friendly_name: Compost
         value_template: >
-          {{ "organics" in states.sensor.recollect_waste.attributes.pickup_types }}
+          {{ "organics" in state_attr(
+            "sensor.recollect_waste", "pickup_types"
+          ) }}
       recollect_next_pickup_includes_extra_trash:
         friendly_name: Extra Trash
         value_template: >
-          {{ "extra_garbage" in states.sensor.recollect_waste.attributes.pickup_types }}
+          {{ "ExtraTrash_Day" in state_attr(
+            "sensor.recollect_waste", "pickup_types"
+          ) }}
       recollect_next_pickup_includes_recycling:
         friendly_name: Recycling
         value_template: >
-          {{ "recycle" in states.sensor.recollect_waste.attributes.pickup_types }}
+          {{ "recycle" in state_attr(
+            "sensor.recollect_waste", "pickup_types"
+          ) }}
       recollect_next_pickup_includes_trash:
         friendly_name: Trash
         value_template: >
-          {{ "garbage" in states.sensor.recollect_waste.attributes.pickup_types }}
+          {{ "garbage" in state_attr(
+            "sensor.recollect_waste", "pickup_types"
+          ) }}
 
 sensor:
   - platform: recollect_waste
@@ -29,11 +37,15 @@ sensor:
       recollect_waste_friendly_date:
         friendly_name: Next Pickup
         value_template: >
-          {% set date = strptime(states.sensor.recollect_waste.state, "%Y-%m-%d") %}
+          {% set date = strptime(
+            states("sensor.recollect_waste"), "%Y-%m-%d"
+          ) %}
           {% set day = date.strftime("%d")|int %}
           {% if 4 <= day <= 20 or 24 <= day <= 30 %}
             {% set suffix = "th" %}
           {% else %}
             {% set suffix = ["st", "nd", "rd"][day % 10 - 1] %}
           {% endif %}
-          {{ date.strftime("%A, %B %d").lstrip("0").replace(" 0", " ") + suffix }}
+          {{ date.strftime("%A, %B %d").lstrip("0").replace(
+            " 0", " "
+          ) + suffix }}

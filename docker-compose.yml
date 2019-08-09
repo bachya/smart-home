@@ -20,7 +20,6 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - appdaemon-config:/conf
-      - shared:/shared
 
   esphome-dashboard:
     container_name: esphome-dashboard
@@ -79,7 +78,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - hass-config:/config
-      - shared:/shared
 
   jupyterlab:
     build:
@@ -200,4 +198,3 @@ volumes:
   jupyterlab-config:
   node-red-config:
   portainer-config:
-  shared:
