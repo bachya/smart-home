@@ -13,12 +13,13 @@ init:
 	pipenv run pre-commit install
 
 lint:
-	pipenv run flake8 appdaemon/settings/apps
-	pipenv run mypy --ignore-missing-imports appdaemon/settings/apps
-	pipenv run pylint --rcfile appdaemon/settings/pylintrc appdaemon/settings/apps
-	pipenv run yamllint appdaemon/settings/
-	pipenv run yamllint esphome/
-	pipenv run yamllint home-assistant/settings/
+	# pipenv run flake8 appdaemon/settings/apps
+	# pipenv run mypy --ignore-missing-imports appdaemon/settings/apps
+	# pipenv run pylint --rcfile appdaemon/settings/pylintrc appdaemon/settings/apps
+	# pipenv run yamllint appdaemon/settings/
+	# pipenv run yamllint esphome/
+	# pipenv run yamllint home-assistant/settings/
+	docker run --rm -v `pwd`:/mnt koalaman/shellcheck:stable bin/*
 
 test:
 	docker run --rm -v `pwd`/nginx/settings/nginx:/etc/nginx:ro yandex/gixy /etc/nginx/nginx.conf
