@@ -120,7 +120,11 @@ services:
     container_name: nginx
     depends_on:
       - appdaemon
+      - esphome-dashboard
+      - grafana
       - hass
+      - portainer
+      - vernemq
     image: bachya/nginx
     networks:
       default:
