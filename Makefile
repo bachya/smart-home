@@ -17,6 +17,7 @@ lint:
 	pipenv run mypy --ignore-missing-imports appdaemon/settings/apps
 	pipenv run pylint --rcfile appdaemon/settings/pylintrc appdaemon/settings/apps
 	pipenv run yamllint appdaemon/settings/
+	pipenv run yamllint esphome/
 	pipenv run yamllint home-assistant/settings/
 
 test:
