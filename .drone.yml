@@ -61,6 +61,7 @@ steps:
   - name: dev
     image: homeassistant/home-assistant:dev
     pull: always
+    failure: ignore
     commands:
       - cd /usr/src/app
       - "python -m homeassistant -c /drone/src/home-assistant/settings \
@@ -108,6 +109,7 @@ steps:
   - name: beta
     image: esphome/esphome:beta
     pull: always
+    failure: ignore
     commands:
       - "for file in $(find /drone/src/esphome -type f -name \"*.yaml\" -not \
          -name \"secrets.yaml\"); do esphome \"$file\" config; done"
