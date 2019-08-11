@@ -95,9 +95,42 @@ trigger:
 steps:
   - name: beta
     image: esphome/esphome:beta
+    pull: always
     commands:
       - "for file in $(find /drone/src/esphome -type f -name \"*.yaml\" -not \
          -name \"secrets.yaml\"); do esphome \"$file\" config; done"
+  - name: latest
+    image: esphome/esphome:latest
+    pull: always
+    commands:
+      - "for file in $(find /drone/src/esphome -type f -name \"*.yaml\" -not \
+         -name \"secrets.yaml\"); do esphome \"$file\" config; done"
+  - name: slack
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: slack_webhook
+      channel:
+        from_secret: slack_channel_name
+    when:
+      status: [success, failure]
+
+---
+kind: pipeline
+name: NGINX
+
+trigger:
+  branch:
+    - master
+    - feature/*
+
+steps:
+  - name: configs
+    image: yandex/gixy:latest
+    pull: always
+    commands:
+      - ln -s /drone/src/nginx/settings/nginx /etc/nginx
+      - gixy /etc/nginx/nginx.conf
   - name: slack
     image: plugins/slack
     settings:
