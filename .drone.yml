@@ -41,9 +41,9 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          build `{{build.number}}` succeeded (`{{repo.name}}/{{build.branch}}`)
+          `Pre-Flight` built successfully (`{{repo.name}}/{{build.branch}}`)
         {{else}}
-          build `{{build.number}}` failed (`{{repo.name}}/{{build.branch}}`)
+          `Pre-Flight` failed to build (`{{repo.name}}/{{build.branch}}`)
         {{/success}}
     when:
       status: [success, failure]
@@ -88,9 +88,9 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          build `{{build.number}}` succeeded (`{{repo.name}}/{{build.branch}}`)
+          `Home Assistant` built successfully (`{{repo.name}}/{{build.branch}}`)
         {{else}}
-          build `{{build.number}}` failed (`{{repo.name}}/{{build.branch}}`)
+          `Home Assistant` failed to build (`{{repo.name}}/{{build.branch}}`)
         {{/success}}
     when:
       status: [success, failure]
@@ -126,9 +126,9 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          build `{{build.number}}` succeeded (`{{repo.name}}/{{build.branch}}`)
+          `ESPHome` built successfully (`{{repo.name}}/{{build.branch}}`)
         {{else}}
-          build `{{build.number}}` failed (`{{repo.name}}/{{build.branch}}`)
+          `ESPHome` failed to build (`{{repo.name}}/{{build.branch}}`)
         {{/success}}
     when:
       status: [success, failure]
@@ -158,9 +158,9 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          build `{{build.number}}` succeeded (`{{repo.name}}/{{build.branch}}`)
+          `NGINX` built successfully (`{{repo.name}}/{{build.branch}}`)
         {{else}}
-          build `{{build.number}}` failed (`{{repo.name}}/{{build.branch}}`)
+          `NGINX` failed to build (`{{repo.name}}/{{build.branch}}`)
         {{/success}}
     when:
       status: [success, failure]
