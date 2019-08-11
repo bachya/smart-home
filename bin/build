@@ -1,17 +1,17 @@
 #!/bin/bash
 set -euxo pipefail
 
-REPO_PATH="$( dirname $( cd "$(dirname "$0")" ; pwd -P ) )"
+REPO_PATH="$( dirname "$( cd "$(dirname "$0")" ; pwd -P )" )"
 
 function copy_config_data() {
   volume_name=$1
   settings_path=$2
 
-  docker volume create $volume_name
+  docker volume create "$volume_name"
 
   docker run --rm \
-    -v $settings_path:/src \
-    -v $volume_name:/data \
+    -v "$settings_path":/src \
+    -v "$volume_name":/data \
     -w /src \
     busybox \
     cp -a . /data

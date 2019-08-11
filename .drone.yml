@@ -1,11 +1,41 @@
 ---
 kind: pipeline
-name: preflight
+name: pre-flight
+
+trigger:
+  branch:
+    - master
+    - feature/*
 
 steps:
+  - name: appdaemon-linting
+    image: python:3
+    commands:
+      - pip3 install flake8 mypy pylint yamllint
+      - flake8 appdaemon/settings/apps/
+      - mypy --ignore-missing-imports appdaemon/settings/apps/
+      - pylint --rcfile appdaemon/settings/pylintrc appdaemon/settings/apps/
+      - yamllint appdaemon/settings/
+  - name: esphome-linting
+    image: python:3
+    commands:
+      - pip3 install yamllint
+      - yamllint esphome/
+  - name: hass-linting
+    image: python:3
+    commands:
+      - pip3 install yamllint
+      - yamllint home-assistant/settings/
   - name: shellcheck
     image: koalaman/shellcheck-alpine:stable
     pull: always
     commands:
       - shellcheck --version
       - shellcheck ./bin/*
+  - name: slack
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: slack_webhook
+      channel:
+        from_secret: slack_channel_name
