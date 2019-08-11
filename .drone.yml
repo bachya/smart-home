@@ -1,6 +1,6 @@
 ---
 kind: pipeline
-name: Pre-Flight
+name: Linting
 
 trigger:
   branch:
