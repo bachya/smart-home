@@ -8,7 +8,7 @@ trigger:
     - feature/*
 
 steps:
-  - name: appdaemon-linting
+  - name: AppDaemon
     image: python:3
     commands:
       - pip3 install flake8 mypy pylint yamllint
@@ -16,23 +16,23 @@ steps:
       - mypy --ignore-missing-imports ./appdaemon/settings/apps/
       - pylint --rcfile ./appdaemon/settings/pylintrc appdaemon/settings/apps/
       - yamllint ./appdaemon/settings/
-  - name: esphome-linting
+  - name: ESPHome
     image: python:3
     commands:
       - pip3 install yamllint
       - yamllint ./esphome/
-  - name: hass-linting
+  - name: Home Assistant
     image: python:3
     commands:
       - pip3 install yamllint
       - yamllint ./home-assistant/settings/
-  - name: shellcheck
+  - name: Shell Scripts
     image: koalaman/shellcheck-alpine:stable
     pull: always
     commands:
       - shellcheck --version
       - shellcheck ./bin/*
-  - name: slack
+  - name: Send Notification
     image: plugins/slack
     settings:
       webhook:
@@ -80,7 +80,7 @@ steps:
       - cd /usr/src/app
       - "python -m homeassistant -c /drone/src/home-assistant/settings \
          --script check_config"
-  - name: slack
+  - name: Send Notification
     image: plugins/slack
     settings:
       webhook:
@@ -119,7 +119,7 @@ steps:
     commands:
       - "for file in $(find /drone/src/esphome -type f -name \"*.yaml\" -not \
          -name \"secrets.yaml\"); do esphome \"$file\" config; done"
-  - name: slack
+  - name: Send Notification
     image: plugins/slack
     settings:
       webhook:
@@ -146,13 +146,13 @@ trigger:
     - feature/*
 
 steps:
-  - name: configs
+  - name: Gixy
     image: yandex/gixy:latest
     pull: always
     commands:
       - ln -s /drone/src/nginx/settings/nginx /etc/nginx
       - gixy /etc/nginx/nginx.conf
-  - name: slack
+  - name: Send Notification
     image: plugins/slack
     settings:
       webhook:
