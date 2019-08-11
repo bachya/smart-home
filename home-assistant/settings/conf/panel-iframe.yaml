@@ -3,6 +3,10 @@ ambient:
   title: Ambient PWS
   url: !secret panel_url_ambient
   icon: mdi:weather-cloudy
+ci_cd:
+  title: CI/CD
+  url: !secret panel_url_drone
+  icon: mdi:sitemap
 esphome_dashboard:
   title: ESPHome Dashboard
   url: !secret panel_url_esphome_dashboard
