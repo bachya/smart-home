@@ -1,0 +1,11 @@
+---
+kind: pipeline
+name: preflight
+
+steps:
+  - name: shellcheck
+    image: koalaman/shellcheck-alpine:stable
+    pull: always
+    commands:
+      - shellcheck --version
+      - shellcheck ./bin/*
