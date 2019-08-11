@@ -41,10 +41,9 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          Build #{{build.number}}: `Pre-Flight` built successfully
-          (`{{repo.name}}/{{build.branch}}`)
+          #{{build.number}}: `Pre-Flight` successful (`{{repo.name}}/{{build.branch}}`)
         {{else}}
-          `Pre-Flight` failed to build (`{{repo.name}}/{{build.branch}}`)
+          `Pre-Flight` failed (`{{repo.name}}/{{build.branch}}`)
         {{/success}}
     when:
       status: [success, failure]
@@ -89,10 +88,9 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          Build #{{build.number}}: `Home Assistant` built successfully
-          (`{{repo.name}}/{{build.branch}}`)
+          #{{build.number}}: `Home Assistant` successful (`{{repo.name}}/{{build.branch}}`)
         {{else}}
-          `Home Assistant` failed to build (`{{repo.name}}/{{build.branch}}`)
+          `Home Assistant` failed (`{{repo.name}}/{{build.branch}}`)
         {{/success}}
     when:
       status: [success, failure]
@@ -128,10 +126,9 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          Build #{{build.number}}: `ESPHome` built successfully
-          (`{{repo.name}}/{{build.branch}}`)
+          #{{build.number}}: `ESPHome` successful (`{{repo.name}}/{{build.branch}}`)
         {{else}}
-          `ESPHome` failed to build (`{{repo.name}}/{{build.branch}}`)
+          `ESPHome` failed (`{{repo.name}}/{{build.branch}}`)
         {{/success}}
     when:
       status: [success, failure]
@@ -161,10 +158,9 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          Build #{{build.number}}: `NGINX` built successfully
-          (`{{repo.name}}/{{build.branch}}`)
+          #{{build.number}}: `NGINX` successful (`{{repo.name}}/{{build.branch}}`)
         {{else}}
-          `NGINX` failed to build (`{{repo.name}}/{{build.branch}}`)
+          `NGINX` failed (`{{repo.name}}/{{build.branch}}`)
         {{/success}}
     when:
       status: [success, failure]
