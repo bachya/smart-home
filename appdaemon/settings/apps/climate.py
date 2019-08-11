@@ -132,10 +132,20 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         """Return the upper limit of eco mode."""
         return float(self.get_state(self.entity_ids[CONF_ECO_HIGH_THRESHOLD]))
 
+    @eco_high_temperature.setter
+    def eco_high_temperature(self, value: int) -> None:
+        """Set the upper limit of eco mode."""
+        self.set_value(self.entity_ids[CONF_ECO_HIGH_THRESHOLD], value)
+
     @property
     def eco_low_temperature(self) -> float:
         """Return the lower limit of eco mode."""
         return float(self.get_state(self.entity_ids[CONF_ECO_LOW_THRESHOLD]))
+
+    @eco_low_temperature.setter
+    def eco_low_temperature(self, value: int) -> None:
+        """Set the upper limit of eco mode."""
+        self.set_value(self.entity_ids[CONF_ECO_LOW_THRESHOLD], value)
 
     @property
     def fan_mode(self) -> str:
