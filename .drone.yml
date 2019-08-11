@@ -41,7 +41,8 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          `Pre-Flight` built successfully (`{{repo.name}}/{{build.branch}}`)
+          Build #{{build.number}}: `Pre-Flight` built successfully
+          (`{{repo.name}}/{{build.branch}}`)
         {{else}}
           `Pre-Flight` failed to build (`{{repo.name}}/{{build.branch}}`)
         {{/success}}
@@ -88,7 +89,8 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          `Home Assistant` built successfully (`{{repo.name}}/{{build.branch}}`)
+          Build #{{build.number}}: `Home Assistant` built successfully
+          (`{{repo.name}}/{{build.branch}}`)
         {{else}}
           `Home Assistant` failed to build (`{{repo.name}}/{{build.branch}}`)
         {{/success}}
@@ -126,7 +128,8 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          `ESPHome` built successfully (`{{repo.name}}/{{build.branch}}`)
+          Build #{{build.number}}: `ESPHome` built successfully
+          (`{{repo.name}}/{{build.branch}}`)
         {{else}}
           `ESPHome` failed to build (`{{repo.name}}/{{build.branch}}`)
         {{/success}}
@@ -158,7 +161,8 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          `NGINX` built successfully (`{{repo.name}}/{{build.branch}}`)
+          Build #{{build.number}}: `NGINX` built successfully
+          (`{{repo.name}}/{{build.branch}}`)
         {{else}}
           `NGINX` failed to build (`{{repo.name}}/{{build.branch}}`)
         {{/success}}
