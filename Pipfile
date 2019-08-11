@@ -1,0 +1,9 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+
+[dev-packages]
+"flake8" = "*"
+mypy = "*"
+pylint = "*"
+yamllint = "*"
