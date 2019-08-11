@@ -6,7 +6,7 @@ ambient:
 ci_cd:
   title: CI/CD
   url: !secret panel_url_drone
-  icon: mdi:sitemap
+  icon: mdi:lan
 esphome_dashboard:
   title: ESPHome Dashboard
   url: !secret panel_url_esphome_dashboard
