@@ -1,6 +1,6 @@
 ---
 kind: pipeline
-name: pre-flight
+name: Pre-Flight
 
 trigger:
   branch:
