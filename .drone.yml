@@ -41,9 +41,9 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          #{{build.number}}: `Pre-Flight` successful (`{{repo.name}}/{{build.branch}}`)
+          #{{build.number}}: `Linting` successful (`{{repo.name}}/{{build.branch}}`)
         {{else}}
-          `Pre-Flight` failed (`{{repo.name}}/{{build.branch}}`)
+          `Linting` failed (`{{repo.name}}/{{build.branch}}`)
         {{/success}}
     when:
       status: [success, failure]
