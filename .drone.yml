@@ -39,3 +39,46 @@ steps:
         from_secret: slack_webhook
       channel:
         from_secret: slack_channel_name
+    when:
+      status: [success, failure]
+
+---
+kind: pipeline
+name: Home Assistant
+
+trigger:
+  branch:
+    - master
+    - feature/*
+
+steps:
+  - name: dev
+    image: homeassistant/home-assistant:dev
+    pull: always
+    commands:
+      - cd /usr/src/app
+      - "python -m homeassistant -c /drone/src/home-assistant/settings \
+         --script check_config"
+  - name: latest
+    image: homeassistant/home-assistant:latest
+    pull: always
+    commands:
+      - cd /usr/src/app
+      - "python -m homeassistant -c /drone/src/home-assistant/settings \
+         --script check_config"
+  - name: rc
+    image: homeassistant/home-assistant:rc
+    pull: always
+    commands:
+      - cd /usr/src/app
+      - "python -m homeassistant -c /drone/src/home-assistant/settings \
+         --script check_config"
+  - name: slack
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: slack_webhook
+      channel:
+        from_secret: slack_channel_name
+    when:
+      status: [success, failure]
