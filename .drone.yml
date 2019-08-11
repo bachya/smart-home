@@ -12,20 +12,20 @@ steps:
     image: python:3
     commands:
       - pip3 install flake8 mypy pylint yamllint
-      - flake8 appdaemon/settings/apps/
-      - mypy --ignore-missing-imports appdaemon/settings/apps/
-      - pylint --rcfile appdaemon/settings/pylintrc appdaemon/settings/apps/
-      - yamllint appdaemon/settings/
+      - flake8 ./appdaemon/settings/apps/
+      - mypy --ignore-missing-imports ./appdaemon/settings/apps/
+      - pylint --rcfile ./appdaemon/settings/pylintrc appdaemon/settings/apps/
+      - yamllint ./appdaemon/settings/
   - name: esphome-linting
     image: python:3
     commands:
       - pip3 install yamllint
-      - yamllint esphome/
+      - yamllint ./esphome/
   - name: hass-linting
     image: python:3
     commands:
       - pip3 install yamllint
-      - yamllint home-assistant/settings/
+      - yamllint ./home-assistant/settings/
   - name: shellcheck
     image: koalaman/shellcheck-alpine:stable
     pull: always
