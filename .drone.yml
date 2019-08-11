@@ -82,3 +82,28 @@ steps:
         from_secret: slack_channel_name
     when:
       status: [success, failure]
+
+---
+kind: pipeline
+name: ESPHome
+
+trigger:
+  branch:
+    - master
+    - feature/*
+
+steps:
+  - name: beta
+    image: esphome/esphome:beta
+    commands:
+      - "for file in $(find /drone/src/esphome -type f -name \"*.yaml\" -not \
+         -name \"secrets.yaml\"); do esphome \"$file\" config; done"
+  - name: slack
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: slack_webhook
+      channel:
+        from_secret: slack_channel_name
+    when:
+      status: [success, failure]
