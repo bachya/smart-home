@@ -39,6 +39,12 @@ steps:
         from_secret: slack_webhook
       channel:
         from_secret: slack_channel_name
+      template: >
+        {{#success build.status}}
+          build `{{build.number}}` succeeded (`{{repo.name}}/{{build.branch}}`)
+        {{else}}
+          build `{{build.number}}` failed (`{{repo.name}}/{{build.branch}}`)
+        {{/success}}
     when:
       status: [success, failure]
 
@@ -80,6 +86,12 @@ steps:
         from_secret: slack_webhook
       channel:
         from_secret: slack_channel_name
+      template: >
+        {{#success build.status}}
+          build `{{build.number}}` succeeded (`{{repo.name}}/{{build.branch}}`)
+        {{else}}
+          build `{{build.number}}` failed (`{{repo.name}}/{{build.branch}}`)
+        {{/success}}
     when:
       status: [success, failure]
 
@@ -112,6 +124,12 @@ steps:
         from_secret: slack_webhook
       channel:
         from_secret: slack_channel_name
+      template: >
+        {{#success build.status}}
+          build `{{build.number}}` succeeded (`{{repo.name}}/{{build.branch}}`)
+        {{else}}
+          build `{{build.number}}` failed (`{{repo.name}}/{{build.branch}}`)
+        {{/success}}
     when:
       status: [success, failure]
 
@@ -138,5 +156,11 @@ steps:
         from_secret: slack_webhook
       channel:
         from_secret: slack_channel_name
+      template: >
+        {{#success build.status}}
+          build `{{build.number}}` succeeded (`{{repo.name}}/{{build.branch}}`)
+        {{else}}
+          build `{{build.number}}` failed (`{{repo.name}}/{{build.branch}}`)
+        {{/success}}
     when:
       status: [success, failure]
