@@ -42,9 +42,9 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          `{{repo.name}}/{{build.branch}}`: `Linting` #{{build.number}} successful
+          `{{repo.name}}/{{build.branch}}`: Linting #{{build.number}} successful
         {{else}}
-          `{{repo.name}}/{{build.branch}}`: `Linting` #{{build.number}} failed
+          `{{repo.name}}/{{build.branch}}`: Linting #{{build.number}} failed
         {{/success}}
     when:
       status: [success, failure]
@@ -90,9 +90,9 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          `{{repo.name}}/{{build.branch}}`: `Home Assistant` #{{build.number}} successful
+          `{{repo.name}}/{{build.branch}}`: Home Assistant #{{build.number}} successful
         {{else}}
-          `{{repo.name}}/{{build.branch}}`: `Home Assistant` #{{build.number}} failed
+          `{{repo.name}}/{{build.branch}}`: Home Assistant #{{build.number}} failed
         {{/success}}
     when:
       status: [success, failure]
@@ -129,9 +129,9 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          `{{repo.name}}/{{build.branch}}`: `ESPHome` #{{build.number}} successful
+          `{{repo.name}}/{{build.branch}}`: ESPHome #{{build.number}} successful
         {{else}}
-          `{{repo.name}}/{{build.branch}}`: `ESPHome` #{{build.number}} failed
+          `{{repo.name}}/{{build.branch}}`: ESPHome #{{build.number}} failed
         {{/success}}
     when:
       status: [success, failure]
@@ -161,9 +161,9 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          `{{repo.name}}/{{build.branch}}`: `NGINX` #{{build.number}} successful
+          `{{repo.name}}/{{build.branch}}`: NGINX #{{build.number}} successful
         {{else}}
-          `{{repo.name}}/{{build.branch}}`: `NGINX` #{{build.number}} failed
+          `{{repo.name}}/{{build.branch}}`: NGINX #{{build.number}} failed
         {{/success}}
     when:
       status: [success, failure]
