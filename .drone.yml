@@ -127,9 +127,9 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          #{{build.number}}: Build successful (`{{repo.name}}/{{build.branch}}`)
+          `{{repo.name}}/{{build.branch}}`: Build #{{build.number}} successful
         {{else}}
-          #{{build.number}}: Build failed (`{{repo.name}}/{{build.branch}}`)
+          `{{repo.name}}/{{build.branch}}`: Build #{{build.number}} failed
         {{/success}}
     when:
       status: [success, failure]
