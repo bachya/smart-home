@@ -42,7 +42,7 @@ function should_update() {
 
     # If the repo has a branch other than the target one checked out, don't trigger
     # a build:
-    if [ ! "$(remote_git rev-parse --abbrev-ref HEAD)" != "$TARGET_BRANCH" ]; then
+    if [ "$(remote_git rev-parse --abbrev-ref HEAD)" != "$TARGET_BRANCH" ]; then
         echo "false"
         return
     fi
@@ -87,7 +87,7 @@ function update() {
 
 
 dirty=$(should_update)
-if [ "$dirty" = "true" ]; then
+if [ "$dirty" == "true" ]; then
     update  > /dev/null 2>&1
     echo -n "Deployment complete"
 else
