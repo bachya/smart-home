@@ -38,8 +38,7 @@ class PresenceManager(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self._on_proximity_zone_change,
-            self.entity_ids[CONF_PROXIMITY_ZONE_SENSOR],
+            self._on_proximity_zone_change, self.entity_ids[CONF_PROXIMITY_ZONE_SENSOR]
         )
 
     @property
@@ -74,12 +73,7 @@ class PresenceManager(Base):
         )
 
     def _on_proximity_zone_change(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: str,
-        kwargs: dict,
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Fire a proximity change event."""
         self.log("Proximity change: {0} -> {1}".format(old, new))
