@@ -128,7 +128,7 @@ sensor:
         entity_id: sensor.side_yard_solar_rad
         value_template: >
           {{ (
-            states("sensor.side_yard_solar_rad") | int | log(10)/5
+            states("sensor.side_yard_solar_rad_lx") | int | log(10)/5
           )| round(2) * 100 }}
         unit_of_measurement: "%"
         device_class: illuminance
