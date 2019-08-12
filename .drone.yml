@@ -44,7 +44,7 @@ steps:
         {{#success build.status}}
           #{{build.number}}: `Linting` successful (`{{repo.name}}/{{build.branch}}`)
         {{else}}
-          `Linting` failed (`{{repo.name}}/{{build.branch}}`)
+          #{{build.number}}: `Linting` failed (`{{repo.name}}/{{build.branch}}`)
         {{/success}}
     when:
       status: [success, failure]
@@ -92,7 +92,7 @@ steps:
         {{#success build.status}}
           #{{build.number}}: `Home Assistant` successful (`{{repo.name}}/{{build.branch}}`)
         {{else}}
-          `Home Assistant` failed (`{{repo.name}}/{{build.branch}}`)
+          #{{build.number}}: `Home Assistant` failed (`{{repo.name}}/{{build.branch}}`)
         {{/success}}
     when:
       status: [success, failure]
@@ -131,7 +131,7 @@ steps:
         {{#success build.status}}
           #{{build.number}}: `ESPHome` successful (`{{repo.name}}/{{build.branch}}`)
         {{else}}
-          `ESPHome` failed (`{{repo.name}}/{{build.branch}}`)
+          #{{build.number}}: `ESPHome` failed (`{{repo.name}}/{{build.branch}}`)
         {{/success}}
     when:
       status: [success, failure]
@@ -163,7 +163,7 @@ steps:
         {{#success build.status}}
           #{{build.number}}: `NGINX` successful (`{{repo.name}}/{{build.branch}}`)
         {{else}}
-          `NGINX` failed (`{{repo.name}}/{{build.branch}}`)
+          #{{build.number}}: `NGINX` failed (`{{repo.name}}/{{build.branch}}`)
         {{/success}}
     when:
       status: [success, failure]
