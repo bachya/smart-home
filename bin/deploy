@@ -47,6 +47,8 @@ function should_update() {
         return
     fi
 
+    [ ! -f "$LAST_BUILD_FILEPATH" ] && touch "$LAST_BUILD_FILEPATH"
+
     latest_build_number=$(fetch_latest_build_number)
     saved_build_number=$(cat "$LAST_BUILD_FILEPATH")
 
