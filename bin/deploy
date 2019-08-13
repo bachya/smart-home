@@ -70,6 +70,7 @@ function update() {
     send_slack_message \
         "\`hub\`: Deployment for build #$saved_build_number starting..." \
         "#1539e0"
+    remote_git pull origin master
     "$REPO_PATH"/bin/build
     send_slack_message \
         "\`hub\`: Deployment for build #$saved_build_number completed" \
