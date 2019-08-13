@@ -48,15 +48,6 @@ function should_update() {
     fi
 
     latest_build_number=$(fetch_latest_build_number)
-
-    # If the last build number hasn't been saved, save it, but don't trigger
-    # a build
-    if [ ! -f "$LAST_BUILD_FILEPATH" ]; then
-        echo "$latest_build_number" > "$LAST_BUILD_FILEPATH"
-        echo "false"
-        return
-    fi
-
     saved_build_number=$(cat "$LAST_BUILD_FILEPATH")
 
     # If the build number is the same as the last one retrieved, don't trigger
