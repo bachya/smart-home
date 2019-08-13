@@ -1,1 +1,1 @@
-*/5 * * * * root /bin/echo "$(/bin/date): $(sudo -i -u bachya /home/bachya/git/hub/bin/deploy)" >> /var/log/hub.log
+*/5 * * * * root /bin/echo "$(/bin/date): $(sudo -i -u bachya /home/bachya/git/hub/bin/deploy)" >> /var/log/hub_cd.log
