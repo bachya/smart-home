@@ -27,23 +27,26 @@ copy_config_data "hub_glances-config" "$REPO_PATH/glances/settings"
 copy_config_data "hub_hass-config" "$REPO_PATH/home-assistant/settings"
 
 # Re-build the containers if necessary:
-docker-compose build
+docker-compose -f $REPO_PATH/docker-compose.yml build
 
 # Tear the stack down and clean up loose containers and images:
-docker-compose down --remove-orphans
+docker-compose -f $REPO_PATH/docker-compose.yml down --remove-orphans
 docker container prune -f
 docker image prune -f
 
 # Bring up all "background" services:
-docker-compose up -d --scale appdaemon=0 --scale hass=0 --scale nginx=0
+docker-compose -f $REPO_PATH/docker-compose.yml up -d \
+    --scale appdaemon=0 \
+    --scale hass=0 \
+    --scale nginx=0
 
 # Bring up HASS, AppDaemon, and NGINX with delays in-between:
 sleep 5
-docker-compose up -d hass
+docker-compose -f $REPO_PATH/docker-compose.yml up -d hass
 sleep 5
-docker-compose up -d appdaemon
+docker-compose -f $REPO_PATH/docker-compose.yml up -d appdaemon
 sleep 5
-docker-compose up -d nginx
+docker-compose -f $REPO_PATH/docker-compose.yml up -d nginx
 
 # Do a final cleanup of unused networks and volumes:
 docker network prune -f
