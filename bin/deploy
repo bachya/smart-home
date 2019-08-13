@@ -18,7 +18,7 @@ function fetch_latest_build_number() {
         -s "$API_BASE/$API_LAST_BUILD" \
         -H "$API_USER_AGENT" \
         -H "Authorization: Bearer $API_TOKEN" \
-        | jq 'map(select(.status == "success"))[0].id'
+        | jq 'map(select(.status == "success"))[0].number'
 }
 
 function remote_git() {
