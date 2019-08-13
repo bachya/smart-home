@@ -2,7 +2,7 @@
 scene:
   - name: Depart Home
     entities:
-      alarm_control_panel.simplisafe:
+      alarm_control_panel.8673_e_55th_avenue:
         state: armed_away
       cover.garage_door:
         state: closed
@@ -29,7 +29,7 @@ scene:
 
   - name: Drive Home
     entities:
-      alarm_control_panel.simplisafe:
+      alarm_control_panel.8673_e_55th_avenue:
         state: disarmed
       cover.garage_door:
         state: open
@@ -38,7 +38,7 @@ scene:
 
   - name: Good Night
     entities:
-      alarm_control_panel.simplisafe:
+      alarm_control_panel.8673_e_55th_avenue:
         state: armed_home
       cover.garage_door:
         state: closed
@@ -71,7 +71,7 @@ scene:
 
   - name: Walk Home
     entities:
-      alarm_control_panel.simplisafe:
+      alarm_control_panel.8673_e_55th_avenue:
         state: disarmed
       lock.front_door:
         state: unlocked

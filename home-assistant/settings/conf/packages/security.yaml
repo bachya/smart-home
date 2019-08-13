@@ -63,7 +63,7 @@ sensor:
         value_template: >
           {% if is_state('lock.front_door', 'locked')
              and is_state('lock.garage_fire_door', 'locked')
-             and not is_state('alarm_control_panel.simplisafe', 'disarmed')
+             and not is_state('alarm_control_panel.8673_e_55th_avenue', 'disarmed')
              and is_state('cover.garage_door', 'closed') %}
             Secure
           {% else %}
@@ -72,7 +72,7 @@ sensor:
         icon_template: >
           {% if is_state('lock.front_door', 'locked')
              and is_state('lock.garage_fire_door', 'locked')
-             and not is_state('alarm_control_panel.simplisafe', 'disarmed')
+             and not is_state('alarm_control_panel.8673_e_55th_avenue', 'disarmed')
              and is_state('cover.garage_door', 'closed') %}
             mdi:lock
           {% else %}

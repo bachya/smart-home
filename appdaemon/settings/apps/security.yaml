@@ -130,7 +130,7 @@ security_manager:
   module: security
   class: SecurityManager
   entity_ids:
-    alarm_control_panel: alarm_control_panel.simplisafe
+    alarm_control_panel: alarm_control_panel.8673_e_55th_avenue
     garage_door: cover.garage_door
     overall_security_status_sensor: sensor.secure_status
   properties:
@@ -144,6 +144,6 @@ security_manager:
       - entity_id: cover.garage_door
         friendly_name: the garage door
         state: open
-      - entity_id: alarm_control_panel.simplisafe
+      - entity_id: alarm_control_panel.8673_e_55th_avenue
         friendly_name: the security system
         state: disarmed
