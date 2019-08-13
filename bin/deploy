@@ -72,7 +72,6 @@ function should_update() {
 }
 
 function update() {
-    "$REPO_PATH"/bin/build
     local saved_build_number
 
     saved_build_number=$(cat "$LAST_BUILD_FILEPATH")
@@ -80,6 +79,7 @@ function update() {
     send_slack_message \
         "\`hub\`: Deployment for build #$saved_build_number starting..." \
         "#1539e0"
+    "$REPO_PATH"/bin/build
     send_slack_message \
         "\`hub\`: Deployment for build #$saved_build_number completed" \
         "good"
