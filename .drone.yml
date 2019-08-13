@@ -33,21 +33,6 @@ steps:
     commands:
       - shellcheck --version
       - shellcheck ./bin/*
-  - name: Send Notification
-    image: plugins/slack
-    settings:
-      webhook:
-        from_secret: slack_webhook
-      channel:
-        from_secret: slack_channel_name
-      template: >
-        {{#success build.status}}
-          `{{repo.name}}/{{build.branch}}`: Linting #{{build.number}} successful
-        {{else}}
-          `{{repo.name}}/{{build.branch}}`: Linting #{{build.number}} failed
-        {{/success}}
-    when:
-      status: [success, failure]
 
 ---
 kind: pipeline
@@ -81,21 +66,6 @@ steps:
       - cd /usr/src/app
       - "python -m homeassistant -c /drone/src/home-assistant/settings \
          --script check_config"
-  - name: Send Notification
-    image: plugins/slack
-    settings:
-      webhook:
-        from_secret: slack_webhook
-      channel:
-        from_secret: slack_channel_name
-      template: >
-        {{#success build.status}}
-          `{{repo.name}}/{{build.branch}}`: Home Assistant #{{build.number}} successful
-        {{else}}
-          `{{repo.name}}/{{build.branch}}`: Home Assistant #{{build.number}} failed
-        {{/success}}
-    when:
-      status: [success, failure]
 
 ---
 kind: pipeline
@@ -120,21 +90,6 @@ steps:
     commands:
       - "for file in $(find /drone/src/esphome -type f -name \"*.yaml\" -not \
          -name \"secrets.yaml\"); do esphome \"$file\" config; done"
-  - name: Send Notification
-    image: plugins/slack
-    settings:
-      webhook:
-        from_secret: slack_webhook
-      channel:
-        from_secret: slack_channel_name
-      template: >
-        {{#success build.status}}
-          `{{repo.name}}/{{build.branch}}`: ESPHome #{{build.number}} successful
-        {{else}}
-          `{{repo.name}}/{{build.branch}}`: ESPHome #{{build.number}} failed
-        {{/success}}
-    when:
-      status: [success, failure]
 
 ---
 kind: pipeline
@@ -152,6 +107,17 @@ steps:
     commands:
       - ln -s /drone/src/nginx/settings/nginx /etc/nginx
       - gixy /etc/nginx/nginx.conf
+
+---
+kind: pipeline
+name: NGINX
+
+trigger:
+  branch:
+    - master
+    - feature/*
+
+steps:
   - name: Send Notification
     image: plugins/slack
     settings:
@@ -161,9 +127,9 @@ steps:
         from_secret: slack_channel_name
       template: >
         {{#success build.status}}
-          `{{repo.name}}/{{build.branch}}`: NGINX #{{build.number}} successful
+          `{{repo.name}}/{{build.branch}}`: #{{build.number}} successful
         {{else}}
-          `{{repo.name}}/{{build.branch}}`: NGINX #{{build.number}} failed
+          `{{repo.name}}/{{build.branch}}`: #{{build.number}} failed
         {{/success}}
     when:
       status: [success, failure]
