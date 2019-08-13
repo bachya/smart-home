@@ -110,7 +110,7 @@ steps:
 
 ---
 kind: pipeline
-name: NGINX
+name: Build Notification
 
 trigger:
   branch:
