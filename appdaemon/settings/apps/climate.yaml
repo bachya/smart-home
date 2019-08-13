@@ -6,6 +6,15 @@ adjust_climate_on_proximity_automation:
     - climate_manager
     - presence_manager
 
+back_off_climate_in_the_morning_automation:
+  module: climate
+  class: BumpClimateAtTime
+  dependencies:
+    - climate_manager
+  properties:
+    degrees: -3
+    time: 00:06:00
+
 climate_manager:
   module: climate
   class: ClimateManager
