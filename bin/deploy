@@ -9,7 +9,7 @@ API_LAST_BUILD="api/repos/bachya/hub/builds"
 API_TOKEN="mKAk7aBngFlvcpWe8ir4FGcSrJ6lgzyd"
 API_USER_AGENT="User-Agent: Paw/3.1.8 (Macintosh; OS X/10.14.6) GCDHTTPRequest"
 
-SLACK_HOOK_URL="https://hooks.slack.com/services/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"
+SLACK_HOOK_URL="https://hooks.slack.com/services/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"
 
 TARGET_BRANCH="master"
 
