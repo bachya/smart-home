@@ -117,6 +117,12 @@ trigger:
     - master
     - feature/*
 
+depends_on:
+  - Linting
+  - Home Assistant
+  - ESPHome
+  - NGINX
+
 steps:
   - name: Send Notification
     image: plugins/slack
