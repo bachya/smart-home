@@ -116,6 +116,9 @@ trigger:
   branch:
     - master
     - feature/*
+  status:
+    - failure
+    - success
 
 depends_on:
   - Linting
@@ -138,4 +141,6 @@ steps:
           `{{repo.name}}/{{build.branch}}`: Build #{{build.number}} failed
         {{/success}}
     when:
-      status: [success, failure]
+      status:
+        - failure
+        - success
