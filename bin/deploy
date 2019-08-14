@@ -1,17 +1,24 @@
 #!/bin/bash
 set -euxo pipefail
 
-LAST_BUILD_FILEPATH="/tmp/hub_last_build"
-REPO_PATH="$( dirname "$( cd "$(dirname "$0")" ; pwd -P )" )"
+# Variables to edit when copying this deployment script to other repos:
+BRANCH="master"
+REPO_NAME="hub"
 
+# Variables that shouldn't need editing:
 API_BASE="https://bf5959ab-1a7e-47b7-9528-19651d1b8018.bachyaproductions.com:18884"
-API_LAST_BUILD="api/repos/bachya/hub/builds"
+API_LAST_BUILD="api/repos/bachya/$REPO_NAME/builds"
 API_TOKEN="mKAk7aBngFlvcpWe8ir4FGcSrJ6lgzyd"
 API_USER_AGENT="User-Agent: Paw/3.1.8 (Macintosh; OS X/10.14.6) GCDHTTPRequest"
 
 SLACK_HOOK_URL="https://hooks.slack.com/services/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"
+COLOR_BLUE="#1539e0"
+COLOR_GREEN="#00ff00"
+COLOR_YELLOW="#c4a908"
 
-BRANCH="master"
+LAST_BUILD_FILEPATH="/tmp/${REPO_NAME}_last_drone_build"
+BIN_PATH="$( dirname "$( cd "$(dirname "$0")" ; pwd -P )" )"
+
 
 function fetch_latest_build_number() {
     curl \
@@ -22,12 +29,14 @@ function fetch_latest_build_number() {
 }
 
 function remote_git() {
-    git --git-dir "$REPO_PATH"/.git --work-tree="$REPO_PATH" "$@"
+    git --git-dir "$BIN_PATH"/.git --work-tree="$BIN_PATH" "$@"
 }
 
 function send_slack_message() {
-   local message="$1"
    local color="$2"
+   local text="$1"
+   local message
+   message="\`$REPO_NAME/$BRANCH\`: $text"
 
    curl \
        -X "POST" \
@@ -38,15 +47,21 @@ function send_slack_message() {
 
 function should_update() {
     local latest_build_number
+    local local_branch
     local saved_build_number
 
     # If the repo has a branch other than the target one checked out, don't trigger
     # a build:
-    if [ "$(remote_git rev-parse --abbrev-ref HEAD)" != "$BRANCH" ]; then
+    local_branch="$(remote_git rev-parse --abbrev-ref HEAD)"
+    if [ "$local_branch" != "$BRANCH" ]; then
+        send_slack_message \
+            "Refusing to deploy to local branch: $local_branch" \
+        "$COLOR_YELLOW"
         echo "false"
         return
     fi
 
+    # If the last build file doesn't exist, create it:
     [ ! -f "$LAST_BUILD_FILEPATH" ] && touch "$LAST_BUILD_FILEPATH"
 
     latest_build_number=$(fetch_latest_build_number)
@@ -66,17 +81,16 @@ function should_update() {
 
 function update() {
     local saved_build_number
-
     saved_build_number=$(cat "$LAST_BUILD_FILEPATH")
 
     send_slack_message \
-        "\`hub\`: Deployment for build #$saved_build_number starting..." \
-        "#1539e0"
+        "Deployment for build #$saved_build_number starting..." \
+        "$COLOR_BLUE"
     remote_git pull origin master
-    "$REPO_PATH"/bin/build
+    "$BIN_PATH"/bin/build
     send_slack_message \
-        "\`hub\`: Deployment for build #$saved_build_number completed" \
-        "good"
+        "Deployment for build #$saved_build_number completed" \
+        "$COLOR_GREEN"
 }
 
 
