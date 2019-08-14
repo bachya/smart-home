@@ -13,8 +13,8 @@ API_USER_AGENT="User-Agent: Paw/3.1.8 (Macintosh; OS X/10.14.6) GCDHTTPRequest"
 
 SLACK_HOOK_URL="https://hooks.slack.com/services/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"
 COLOR_BLUE="#1539e0"
-COLOR_GREEN="#00ff00"
-COLOR_YELLOW="#c4a908"
+COLOR_GREEN="good"
+COLOR_YELLOW="warning"
 
 LAST_BUILD_FILEPATH="/tmp/${REPO_NAME}_last_drone_build"
 BIN_PATH="$( dirname "$( cd "$(dirname "$0")" ; pwd -P )" )"
@@ -56,7 +56,7 @@ function should_update() {
     if [ "$local_branch" != "$BRANCH" ]; then
         send_slack_message \
             "Refusing to deploy to local branch: $local_branch" \
-        "$COLOR_YELLOW"
+            "$COLOR_YELLOW"
         echo "false"
         return
     fi
