@@ -11,14 +11,14 @@ API_USER_AGENT="User-Agent: Paw/3.1.8 (Macintosh; OS X/10.14.6) GCDHTTPRequest"
 
 SLACK_HOOK_URL="https://hooks.slack.com/services/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"
 
-TARGET_BRANCH="master"
+BRANCH="master"
 
 function fetch_latest_build_number() {
     curl \
         -s "$API_BASE/$API_LAST_BUILD" \
         -H "$API_USER_AGENT" \
         -H "Authorization: Bearer $API_TOKEN" \
-        | jq 'map(select(.status == "success"))[0].number'
+        | jq 'map(select(.status == "success" and .target == "'$BRANCH'"))[0].number'
 }
 
 function remote_git() {
@@ -42,7 +42,7 @@ function should_update() {
 
     # If the repo has a branch other than the target one checked out, don't trigger
     # a build:
-    if [ "$(remote_git rev-parse --abbrev-ref HEAD)" != "$TARGET_BRANCH" ]; then
+    if [ "$(remote_git rev-parse --abbrev-ref HEAD)" != "$BRANCH" ]; then
         echo "false"
         return
     fi
