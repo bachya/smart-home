@@ -99,6 +99,7 @@ function update() {
         "$COLOR_BLUE"
 
     "$BIN_PATH"/bin/build
+
     send_slack_message \
         "Deployment for build #$saved_build_number completed" \
         "$COLOR_GREEN"
