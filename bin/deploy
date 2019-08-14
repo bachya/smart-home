@@ -87,7 +87,7 @@ function update() {
     git_pull_result="$(remote_git pull origin master > /dev/null 2>&1)"
     if [ "$git_pull_result" == "1" ]; then
         send_slack_message \
-            "Deployment failed because latest build could not be pulled" \
+            "Deployment failed due to failed Git pull on target host" \
             "$COLOR_RED"
         return
     fi
