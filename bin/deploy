@@ -14,6 +14,7 @@ API_USER_AGENT="User-Agent: Paw/3.1.8 (Macintosh; OS X/10.14.6) GCDHTTPRequest"
 SLACK_HOOK_URL="https://hooks.slack.com/services/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"
 COLOR_BLUE="#1539e0"
 COLOR_GREEN="good"
+COLOR_RED="danger"
 COLOR_YELLOW="warning"
 
 LAST_BUILD_FILEPATH="/tmp/${REPO_NAME}_last_drone_build"
@@ -80,13 +81,23 @@ function should_update() {
 }
 
 function update() {
+    local git_pull_result
     local saved_build_number
+
+    git_pull_result="$(remote_git pull origin master > /dev/null 2>&1)"
+    if [ "$git_pull_result" == "1" ]; then
+        send_slack_message \
+            "Deployment failed because latest build could not be pulled" \
+            "$COLOR_RED"
+        return
+    fi
+
     saved_build_number=$(cat "$LAST_BUILD_FILEPATH")
 
     send_slack_message \
         "Deployment for build #$saved_build_number starting..." \
         "$COLOR_BLUE"
-    remote_git pull origin master
+
     "$BIN_PATH"/bin/build
     send_slack_message \
         "Deployment for build #$saved_build_number completed" \
