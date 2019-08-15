@@ -48,19 +48,7 @@ function send_slack_message() {
 
 function should_update() {
     local latest_build_number
-    local local_branch
     local saved_build_number
-
-    # If the repo has a branch other than the target one checked out, don't trigger
-    # a build:
-    local_branch="$(remote_git rev-parse --abbrev-ref HEAD)"
-    if [ "$local_branch" != "$BRANCH" ]; then
-        send_slack_message \
-            "Refusing to deploy to local branch: $local_branch" \
-            "$COLOR_YELLOW"
-        echo "false"
-        return
-    fi
 
     # If the last build file doesn't exist, create it:
     [ ! -f "$LAST_BUILD_FILEPATH" ] && touch "$LAST_BUILD_FILEPATH"
@@ -82,7 +70,19 @@ function should_update() {
 
 function update() {
     local git_pull_result
+    local local_branch
     local saved_build_number
+
+    # If the repo has a branch other than the target one checked out, don't trigger
+    # a build:
+    local_branch="$(remote_git rev-parse --abbrev-ref HEAD)"
+    if [ "$local_branch" != "$BRANCH" ]; then
+        send_slack_message \
+            "Refusing to deploy to local branch: $local_branch" \
+            "$COLOR_YELLOW"
+        echo "false"
+        return
+    fi
 
     git_pull_result="$(remote_git pull origin master > /dev/null 2>&1)"
     if [ "$git_pull_result" == "1" ]; then
