@@ -112,7 +112,7 @@ services:
       context: ./nginx/docker
       args:
         maxminddb_version: 1.3.2
-        nginx_version: 1.17.2
+        nginx_version: 1.17.3
         ngx_http_geoip2_module_version: 3.2
     cap_add:
       - NET_ADMIN
