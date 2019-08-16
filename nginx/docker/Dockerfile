@@ -1,4 +1,4 @@
-FROM alpine:3.9
+FROM alpine:3.10.1
 
 ARG maxminddb_version
 ARG nginx_version
