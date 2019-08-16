@@ -71,7 +71,7 @@ services:
     devices:
       - "/dev/zigbee:/dev/zigbee"
       - "/dev/zwave:/dev/zwave"
-    image: homeassistant/intel-nuc-homeassistant:0.97.0
+    image: homeassistant/intel-nuc-homeassistant:0.97.2
     network_mode: "host"
     restart: unless-stopped
     volumes:
