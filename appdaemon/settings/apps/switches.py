@@ -303,7 +303,7 @@ class ToggleAtTime(BaseSwitch):
                 )
 
 
-class ToggleNumericThreshold(BaseSwitch):
+class ToggleOnNumericThreshold(BaseSwitch):
     """Define a feature to toggle the switch above/below a threshold."""
 
     APP_SCHEMA = APP_SCHEMA.extend(
