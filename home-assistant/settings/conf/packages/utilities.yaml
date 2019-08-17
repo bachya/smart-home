@@ -1,0 +1,13 @@
+---
+sensor:
+  - platform: mqtt
+    name: Electricity Consumption
+    state_topic: !secret electricity_mqtt_topic
+    unit_of_measurement: kWh
+    value_template: "{{ value_json.consumption }}"
+
+  - platform: mqtt
+    name: Natural Gas Consumption
+    state_topic: !secret gas_mqtt_topic
+    unit_of_measurement: therm
+    value_template: "{{ value_json.consumption }}"
