@@ -44,6 +44,7 @@ APP_SCHEMA = vol.Schema(
             }
         ),
         vol.Optional(CONF_ENABLED_TOGGLE_ENTITY_ID): str,
+        vol.Optional(CONF_STATE_CHANGES): list,
     },
     extra=vol.ALLOW_EXTRA,
 )
