@@ -46,9 +46,6 @@ EVENT_LIGHTNING_DETECTED = "LIGHTNING_DETECTED"
 CONF_DISTANCE = "distance"
 CONF_LIGHTNING_WINDOW = "notification_window_seconds"
 
-CONF_DEGREES = "degrees"
-CONF_TIME = "time"
-
 
 class AdjustOnProximity(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to adjust climate based on proximity to home."""
@@ -90,30 +87,6 @@ class AdjustOnProximity(Base):  # pylint: disable=too-few-public-methods
             # Scenario 4: Anything -> Nearby
             elif data["new"] == self.presence_manager.ProximityZones.nearby.value:
                 self.climate_manager.set_home()
-
-
-class BumpClimateAtTime(Base):  # pylint: disable=too-few-public-methods
-    """Define a feature to bump the climate at a certain time."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            CONF_PROPERTIES: vol.Schema(
-                {vol.Required(CONF_TIME): str, vol.Required(CONF_DEGREES): int}
-            )
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self.run_daily(
-            self._on_time_hit,
-            self.parse_time(self.properties[CONF_TIME]),
-            constrain_enabled=True,
-        )
-
-    def _on_time_hit(self, kwargs: dict) -> None:
-        """Bump the temperature."""
-        self.climate_manager.bump_temperature(self.properties[CONF_DEGREES])
 
 
 class ClimateManager(Base):  # pylint: disable=too-many-public-methods

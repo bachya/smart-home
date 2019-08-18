@@ -6,34 +6,6 @@ adjust_climate_on_proximity_automation:
     - climate_manager
     - presence_manager
 
-back_off_climate_in_the_morning_automation:
-  module: climate
-  class: BumpClimateAtTime
-  dependencies:
-    - climate_manager
-  properties:
-    degrees: -3
-    time: 00:06:00
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
-    - disable:
-        event: PROXIMITY_CHANGE
-        event_data:
-          old: home
-      enable:
-        event: PROXIMITY_CHANGE
-        event_data:
-          new: home
-
 climate_manager:
   module: climate
   class: ClimateManager
@@ -49,6 +21,28 @@ climate_manager:
     outdoor_low_threshold: input_number.outdoor_extreme_low_threshold
     outdoor_temperature_sensor: sensor.side_yard_temp
     thermostat: climate.thermostat
+
+disable_thermostat_schedule_when_leaving_automation:
+  module: switches
+  class: ToggleOnEvent
+  entity_ids:
+    switch: input_boolean.climate_schedule_automation
+  properties:
+    state: "off"
+    event: PROXIMITY_CHANGE
+    event_data:
+      old: home
+
+enable_thermostat_schedule_when_leaving_automation:
+  module: switches
+  class: ToggleOnEvent
+  entity_ids:
+    switch: input_boolean.climate_schedule_automation
+  properties:
+    state: "on"
+    event: PROXIMITY_CHANGE
+    event_data:
+      new: home
 
 lightning_detected_automation:
   module: climate
@@ -124,3 +118,47 @@ notify_bad_aqi_automation:
         event: PROXIMITY_CHANGE
         event_data:
           new: home
+
+thermostat_schedule:
+  module: hass_apps_loader
+  class: SchedyApp
+  constrain_input_boolean: input_boolean.climate_schedule_automation
+
+  actor_type: thermostat
+
+  expression_environment: |
+    def hvac_mode():
+      return state("climate.thermostat")
+      
+  schedule_snippets:
+    cooling_season:
+      - v: 72
+        rules:
+          - {start: "20:30", end: "07:00", weekdays: 1-5}
+          - {start: "20:30", end: "08:30", weekdays: 6-7}
+      - v: 75
+    heating_season:
+      - v: 68
+        rules:
+          - {start: "20:30", end: "07:00"}
+      - v: 70
+
+  rooms:
+
+    whole_house:
+
+      actors:
+        climate.thermostat:
+          supports_hvac_modes: false
+          max_temp: 95
+          min_temp: 45
+
+      rescheduling_delay: 0
+
+      schedule:
+        - x: "IncludeSchedule(schedule_snippets['cooling_season']) if hvac_mode() == 'cool' else Skip()"
+        - x: "IncludeSchedule(schedule_snippets['heating_season']) if hvac_mode() == 'heat' else Skip()"
+
+  watched_entities:
+    - climate.thermostat
+    - input_boolean.climate_schedule_automation

@@ -15,9 +15,6 @@ auto_vacation_mode_alterations_automation:
   icon: mdi:beach
   initial: true
   name: Auto enable/disable vacation mode
-back_off_climate_in_the_morning_automation:
-  icon: mdi:arrow-left
-  name: Reduce climate at 6am
 backyard_lights_off_at_11pm_automation:
   icon: mdi:lightbulb
   initial: true
@@ -62,6 +59,9 @@ christmas_lights_on_at_sunrise_automation:
   icon: mdi:pine-tree
   initial: true
   name: Turn on Christmas tree at sunrise
+climate_schedule_automation:
+  icon: mdi:home-thermometer
+  name: Automatic thermostat schedule
 cycle_whole_house_fan_automation:
   icon: mdi:fan
   initial: true
