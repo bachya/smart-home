@@ -129,7 +129,7 @@ thermostat_schedule:
   expression_environment: |
     def hvac_mode():
       return state("climate.thermostat")
-      
+
   schedule_snippets:
     cooling_season:
       - v: 72
@@ -156,8 +156,10 @@ thermostat_schedule:
       rescheduling_delay: 0
 
       schedule:
-        - x: "IncludeSchedule(schedule_snippets['cooling_season']) if hvac_mode() == 'cool' else Skip()"
-        - x: "IncludeSchedule(schedule_snippets['heating_season']) if hvac_mode() == 'heat' else Skip()"
+        - x: "IncludeSchedule(schedule_snippets['cooling_season']) \
+              if hvac_mode() == 'cool' else Skip()"
+        - x: "IncludeSchedule(schedule_snippets['heating_season']) \
+              if hvac_mode() == 'heat' else Skip()"
 
   watched_entities:
     - climate.thermostat
