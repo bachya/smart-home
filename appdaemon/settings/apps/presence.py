@@ -38,7 +38,9 @@ class PresenceManager(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self._on_proximity_zone_change, self.entity_ids[CONF_PROXIMITY_ZONE_SENSOR]
+            self._on_proximity_zone_change,
+            self.entity_ids[CONF_PROXIMITY_ZONE_SENSOR],
+            duration=60,
         )
 
     @property
