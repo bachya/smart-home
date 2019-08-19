@@ -386,6 +386,11 @@ class ToggleOnEvent(BaseSwitch):
 
     def _on_event_received(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Toggle the switch when the event is heard."""
+        self.log(
+            '"{0}" received; toggling switch: {1} -> {2}'.format(
+                event_name, self.switch, self.properties[CONF_STATE]
+            )
+        )
         self.toggle(state=self.properties[CONF_STATE])
 
 
