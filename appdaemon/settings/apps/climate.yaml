@@ -22,28 +22,6 @@ climate_manager:
     outdoor_temperature_sensor: sensor.side_yard_temp
     thermostat: climate.thermostat
 
-disable_thermostat_schedule_when_leaving_automation:
-  module: switches
-  class: ToggleOnEvent
-  entity_ids:
-    switch: input_boolean.thermostat_schedule_automation
-  properties:
-    state: "off"
-    event: PROXIMITY_CHANGE
-    event_data:
-      old: home
-
-enable_thermostat_schedule_when_leaving_automation:
-  module: switches
-  class: ToggleOnEvent
-  entity_ids:
-    switch: input_boolean.thermostat_schedule_automation
-  properties:
-    state: "on"
-    event: PROXIMITY_CHANGE
-    event_data:
-      new: home
-
 lightning_detected_automation:
   module: climate
   class: LightningDetected
