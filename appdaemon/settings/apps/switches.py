@@ -357,43 +357,6 @@ class ToggleOnNumericThreshold(BaseSwitch):
             self.toggle(opposite_of=self.properties[CONF_STATE])
 
 
-class ToggleOnEvent(BaseSwitch):
-    """Define a feature to toggle the switch upon hearing a specific event payload."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            CONF_ENTITY_IDS: vol.Schema(
-                {vol.Required(CONF_SWITCH): cv.entity_id}, extra=vol.ALLOW_EXTRA
-            ),
-            CONF_PROPERTIES: vol.Schema(
-                {
-                    vol.Required(CONF_STATE): vol.In(TOGGLE_STATES),
-                    vol.Required(CONF_EVENT): str,
-                    vol.Required(CONF_EVENT_DATA): dict,
-                },
-                extra=vol.ALLOW_EXTRA,
-            ),
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_event(
-            self._on_event_received,
-            self.properties[CONF_EVENT],
-            **self.properties[CONF_EVENT_DATA],
-        )
-
-    def _on_event_received(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Toggle the switch when the event is heard."""
-        self.log(
-            '"{0}" received; toggling switch: {1} -> {2}'.format(
-                event_name, self.switch, self.properties[CONF_STATE]
-            )
-        )
-        self.toggle(state=self.properties[CONF_STATE])
-
-
 class ToggleOnInterval(BaseSwitch):
     """Define a feature to toggle the switch at intervals."""
 
