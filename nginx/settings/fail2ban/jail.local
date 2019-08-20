@@ -1,4 +1,4 @@
 [DEFAULT]
-ignoreip = 172.16.10.0/24 172.16.11.119 09cbad95-6c80-4aa5-8349-16755e6bd3aa.bachho.me
+ignoreip = 172.16.10.0/24 172.16.11.119
 bantime = 172800
 maxretry = 2
