@@ -101,6 +101,15 @@ trigger:
     - feature/*
 
 steps:
+  - name: Fail2Ban
+    image: alpine:3.10.1
+    commands:
+      - apk update && apk add fail2ban
+      - ln -s ./nginx/settings/fail2ban /etc/fail2ban
+      - touch /var/log/messages
+      - "mkdir -p /var/log/nginx && touch /var/log/nginx/access.log \
+         && touch /var/log/nginx/error.log"
+      - fail2ban-client -t
   - name: Gixy
     image: yandex/gixy:latest
     pull: always
