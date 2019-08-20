@@ -37,11 +37,21 @@ class PresenceManager(Base):
 
     def configure(self) -> None:
         """Configure."""
-        self.listen_state(
-            self._on_proximity_zone_change,
-            self.entity_ids[CONF_PROXIMITY_ZONE_SENSOR],
-            duration=60,
-        )
+        # The duration parameter isn't respected unless a specific old or new
+        # state is provided; therefore, we need to loop through all possible states and
+        # create listeners for them:
+        for new_state in (
+            self.ProximityZones.away,
+            self.ProximityZones.edge,
+            self.ProximityZones.home,
+            self.ProximityZones.nearby,
+        ):
+            self.listen_state(
+                self._on_proximity_zone_change,
+                self.entity_ids[CONF_PROXIMITY_ZONE_SENSOR],
+                new=new_state.value,
+                duration=60,
+            )
 
     @property
     def edge_threshold(self) -> int:
