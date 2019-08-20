@@ -123,6 +123,89 @@ sensor:
       - unique_clients
       - unique_domains
 
+  - platform: pi_hole
+    host: hufflepuff.phil.lan:8080
+    monitored_conditions:
+      - ads_blocked_today
+      - ads_percentage_today
+      - dns_queries_today
+      - domains_being_blocked
+      - queries_cached
+      - queries_forwarded
+      - unique_clients
+      - unique_domains
+
+  - platform: pi_hole
+    host: slytherin.phil.lan:8080
+    monitored_conditions:
+      - ads_blocked_today
+      - ads_percentage_today
+      - dns_queries_today
+      - domains_being_blocked
+      - queries_cached
+      - queries_forwarded
+      - unique_clients
+      - unique_domains
+
+  # CI (Drone.io)
+  - platform: rest
+    name: Latest Drone Build
+    resource: !secret drone_sensor_resource_url
+    value_template: "{{ value_json.status }}"
+    verify_ssl: false
+    headers:
+      Authorization: !secret drone_sensor_token
+    json_attributes:
+      - finished
+      - message
+      - started
+      - target
+  - platform: template
+    sensors:
+      latest_drone_build_branch:
+        friendly_name: Branch
+        value_template: |
+          {{ state_attr("sensor.latest_drone_build", "target") }}
+      latest_drone_build_duration:
+        friendly_name: Duration
+        value_template: |
+          {% set duration = (
+            state_attr("sensor.latest_drone_build", "finished") -
+            state_attr("sensor.latest_drone_build", "started")) / 60
+          %}
+          {{ duration | round(0) }}
+        unit_of_measurement: minutes
+      latest_drone_build_finished:
+        friendly_name: Finished
+        value_template: |
+          {{
+            state_attr("sensor.latest_drone_build", "finished") |
+            timestamp_local
+          }}
+      latest_drone_build_message:
+        friendly_name: Message
+        value_template: |
+          {{ state_attr("sensor.latest_drone_build", "message")[:-1] }}
+      latest_drone_build_started:
+        friendly_name: Started
+        value_template: |
+          {{
+            state_attr("sensor.latest_drone_build", "started") |
+            timestamp_local
+          }}
+      latest_drone_build_status:
+        friendly_name: Status
+        value_template: |
+          {{ states("sensor.latest_drone_build").title() }}
+        icon_template: >
+          {% if states("sensor.latest_drone_build") == "failure" %}
+            mdi:progress-close
+          {% elif states("sensor.latest_drone_build") == "running" %}
+            mdi:progress-clock
+          {% elif states("sensor.latest_drone_build") == "success" %}
+            mdi:progress-check
+          {% endif %}
+
   # Batteries
   - platform: template
     sensors:
