@@ -13,8 +13,6 @@ from const import (
     CONF_DURATION,
     CONF_END_TIME,
     CONF_ENTITY_IDS,
-    CONF_EVENT,
-    CONF_EVENT_DATA,
     CONF_PROPERTIES,
     CONF_START_TIME,
     CONF_STATE,
