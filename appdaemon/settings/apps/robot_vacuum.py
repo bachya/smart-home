@@ -189,7 +189,7 @@ class NotifyWhenStuck(Base):
         """Start a repeating notification sequence."""
         self._cancel_notification_cycle()
 
-        self.handles[HANDLE_BIN_FULL] = send_notification(
+        self.handles[HANDLE_STUCK] = send_notification(
             self,
             "presence:home",
             "Help him get back on track or home.",
