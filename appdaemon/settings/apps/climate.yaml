@@ -100,7 +100,7 @@ notify_bad_aqi_automation:
 thermostat_schedule:
   module: hass_apps_loader
   class: SchedyApp
-  constrain_input_boolean: input_boolean.thermostat_schedule_automation
+  constrain_input_boolean: "input_boolean.climate_away_mode,off"
 
   actor_type: thermostat
 
