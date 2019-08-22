@@ -1,6 +1,7 @@
 """Define automations for climate control."""
 from threading import Lock
 from typing import Callable, Optional, Union
+
 import voluptuous as vol
 
 from core import APP_SCHEMA, Base
