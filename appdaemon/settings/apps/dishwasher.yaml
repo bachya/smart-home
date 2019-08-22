@@ -18,7 +18,7 @@ dishwasher_cycle_automation:
     clean_threshold: 0.0
     drying_threshold: 3.0
     ios_emptied_key: DISHWASHER_EMPTIED
-    notification_interval: 3600
+    notification_interval: 10800
     running_threshold: 10.0
   state_changes:
     - disable:
