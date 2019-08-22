@@ -141,4 +141,3 @@ thermostat_schedule:
 
   watched_entities:
     - climate.thermostat
-    - input_boolean.thermostat_schedule_automation

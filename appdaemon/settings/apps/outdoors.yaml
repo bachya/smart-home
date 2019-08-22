@@ -1,45 +1,48 @@
 ---
-backyard_lights_off_at_930pm_automation:
-  module: switches
-  class: ToggleAtTime
-  dependencies:
-    - presence_manager
-  entity_ids:
-    switch: switch.backyard_lights
-  properties:
-    run_on_days:
-      - Sunday
-      - Monday
-      - Tuesday
-      - Wednesday
-      - Thursday
-    schedule_time: "21:30:00"
-    state: "off"
+outdoor_lights_schedule:
+  module: hass_apps_loader
+  class: SchedyApp
+  constrain_input_boolean: input_boolean.outdoor_lights_schedule_automation
 
-backyard_lights_off_at_11pm_automation:
-  module: switches
-  class: ToggleAtTime
-  dependencies:
-    - presence_manager
-  entity_ids:
-    switch: switch.backyard_lights
-  properties:
-    run_on_days:
-      - Friday
-      - Saturday
-    schedule_time: "23:00:00"
-    state: "off"
+  actor_type: switch
 
-backyard_lights_on_at_sunset_automation:
-  module: switches
-  class: ToggleAtTime
-  dependencies:
-    - presence_manager
-  entity_ids:
-    switch: switch.backyard_lights
-  properties:
-    schedule_time: sunset
-    state: "on"
+  expression_environment: |
+    def is_sun_down():
+      return state("sun.sun") == "below_horizon"
+
+  rooms:
+
+    backyard:
+
+      actors:
+        switch.backyard_lights:
+
+      rescheduling_delay: 0
+
+      schedule:
+        - v: "on"
+          rules:
+            - x: "Skip() if is_sun_down() else Break()"
+            - {start: "17:00", end: "21:30", weekdays: "1-4, 7"}
+            - {start: "17:00", end: "23:00", weekdays: 5-6}
+        - v: "off"
+
+    front_and_kitchen_patios:
+
+      actors:
+        group.patio_lights:
+
+      rescheduling_delay: 0
+
+      schedule:
+        - v: "on"
+          rules:
+            - x: "Skip() if is_sun_down() else Break()"
+            - {start: "17:00", end: "23:00"}
+        - v: "off"
+
+  watched_entities:
+    - sun.sun
 
 kitchen_patio_light_double_tap_backyard_lights_automation:
   module: switches
@@ -49,27 +52,3 @@ kitchen_patio_light_double_tap_backyard_lights_automation:
   entity_ids:
     zwave_device: zwave.kitchen_patio_light
     target: switch.backyard_lights
-
-patio_lights_off_at_11pm_automation:
-  module: switches
-  class: ToggleAtTime
-  dependencies:
-    - presence_manager
-    - vacation_mode
-  entity_ids:
-    switch: group.patio_lights
-  properties:
-    schedule_time: "23:00:00"
-    state: "off"
-
-patio_lights_on_at_sunset_automation:
-  module: switches
-  class: ToggleAtTime
-  dependencies:
-    - presence_manager
-    - vacation_mode
-  entity_ids:
-    switch: group.patio_lights
-  properties:
-    schedule_time: sunset
-    state: "on"
