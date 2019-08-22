@@ -61,7 +61,7 @@ wolfie_notify_when_cycle_complete_automation:
     - wolfie
   app: wolfie
   properties:
-    notification_interval: 3600
+    notification_interval: 10800
   state_changes:
     - disable:
         event: MODE_CHANGE
