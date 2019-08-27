@@ -28,14 +28,14 @@ trigger:
     - feature/*
 
 steps:
-  - name: "Config Check: beta"
+  - name: "Config Check: Beta"
     image: esphome/esphome:beta
     pull: always
     failure: ignore
     commands:
       - "for file in $(find /drone/src/esphome -type f -name \"*.yaml\" -not \
          -name \"secrets.yaml\"); do esphome \"$file\" config; done"
-  - name: "Config Check: latest"
+  - name: "Config Check: Latest"
     image: esphome/esphome:latest
     pull: always
     commands:
@@ -57,7 +57,7 @@ trigger:
     - feature/*
 
 steps:
-  - name: "Config Check: dev"
+  - name: "Config Check: Dev"
     image: homeassistant/home-assistant:dev
     pull: always
     failure: ignore
@@ -65,14 +65,14 @@ steps:
       - cd /usr/src/homeassistant
       - "python -m homeassistant -c /drone/src/home-assistant/settings \
          --script check_config"
-  - name: "Config Check: latest"
+  - name: "Config Check: Latest"
     image: homeassistant/home-assistant:latest
     pull: always
     commands:
       - cd /usr/src/app
       - "python -m homeassistant -c /drone/src/home-assistant/settings \
          --script check_config"
-  - name: "Config Check: rc"
+  - name: "Config Check: RC"
     image: homeassistant/home-assistant:rc
     pull: always
     commands:
@@ -95,13 +95,13 @@ trigger:
     - feature/*
 
 steps:
-  - name: Config Check
+  - name: "Config Check: NGINX"
     image: alpine:3.10.1
     commands:
       - apk update && apk add --no-cache nginx
       - ln -s /drone/src/nginx/settings/nginx /etc/nginx
       - nginx -t -c /etc/nginx/nginx.conf
-  - name: Fail2Ban
+  - name: "Config Check: Fail2Ban"
     image: alpine:3.10.1
     commands:
       - apk update && apk add --no-cache fail2ban
@@ -110,7 +110,7 @@ steps:
       - "mkdir -p /var/log/nginx && touch /var/log/nginx/access.log \
          && touch /var/log/nginx/error.log"
       - fail2ban-client -t
-  - name: Gixy
+  - name: "Static Analysis: NGINX"
     image: yandex/gixy:latest
     pull: always
     commands:
