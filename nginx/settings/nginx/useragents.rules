@@ -8,7 +8,6 @@ map $http_user_agent $blockedagent {
   ~*brandwatch 1;
   ~*clshttp 1;
   ~*crawler 1;
-  ~*curl 1;
   ~*jersey 1;
   ~*jorgee 1;
   ~*libwww-perl 1;
@@ -22,12 +21,9 @@ map $http_user_agent $blockedagent {
   ~*openvas 1;
   ~*profound 1;
   ~*pxbroker 1;
-  ~*python 1;
-  ~*python-requests 1;
   ~*redback 1;
   ~*scrapyproject 1;
   ~*slowhttptest 1;
   ~*sqlmap 1;
-  ~*wget 1;
   ~*zgrab 1;
 }
