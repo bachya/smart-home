@@ -1,6 +1,6 @@
 ---
 kind: pipeline
-name: Linting
+name: AppDaemon
 
 trigger:
   branch:
@@ -8,7 +8,7 @@ trigger:
     - feature/*
 
 steps:
-  - name: AppDaemon
+  - name: Linting & Typing
     image: python:3
     commands:
       - pip3 install --upgrade pip black flake8 mypy pylint yamllint
@@ -17,55 +17,6 @@ steps:
       - mypy --ignore-missing-imports ./appdaemon/settings/apps/
       - pylint --rcfile ./appdaemon/settings/pylintrc appdaemon/settings/apps/
       - yamllint ./appdaemon/settings/
-  - name: ESPHome
-    image: python:3
-    commands:
-      - pip3 install --upgrade pip yamllint
-      - yamllint ./esphome/
-  - name: Home Assistant
-    image: python:3
-    commands:
-      - pip3 install --upgrade pip yamllint
-      - yamllint ./home-assistant/settings/
-  - name: Shell Scripts
-    image: koalaman/shellcheck-alpine:stable
-    pull: always
-    commands:
-      - shellcheck --version
-      - shellcheck ./bin/*
-
----
-kind: pipeline
-name: Home Assistant
-
-trigger:
-  branch:
-    - master
-    - feature/*
-
-steps:
-  - name: dev
-    image: homeassistant/home-assistant:dev
-    pull: always
-    failure: ignore
-    commands:
-      - cd /usr/src/homeassistant
-      - "python -m homeassistant -c /drone/src/home-assistant/settings \
-         --script check_config"
-  - name: latest
-    image: homeassistant/home-assistant:latest
-    pull: always
-    commands:
-      - cd /usr/src/app
-      - "python -m homeassistant -c /drone/src/home-assistant/settings \
-         --script check_config"
-  - name: rc
-    image: homeassistant/home-assistant:rc
-    pull: always
-    commands:
-      - cd /usr/src/homeassistant
-      - "python -m homeassistant -c /drone/src/home-assistant/settings \
-         --script check_config"
 
 ---
 kind: pipeline
@@ -77,19 +28,62 @@ trigger:
     - feature/*
 
 steps:
-  - name: beta
+  - name: "Config Check: beta"
     image: esphome/esphome:beta
     pull: always
     failure: ignore
     commands:
       - "for file in $(find /drone/src/esphome -type f -name \"*.yaml\" -not \
          -name \"secrets.yaml\"); do esphome \"$file\" config; done"
-  - name: latest
+  - name: "Config Check: latest"
     image: esphome/esphome:latest
     pull: always
     commands:
       - "for file in $(find /drone/src/esphome -type f -name \"*.yaml\" -not \
          -name \"secrets.yaml\"); do esphome \"$file\" config; done"
+  - name: Linting
+    image: python:3
+    commands:
+      - pip3 install --upgrade pip yamllint
+      - yamllint ./esphome/
+
+---
+kind: pipeline
+name: Home Assistant
+
+trigger:
+  branch:
+    - master
+    - feature/*
+
+steps:
+  - name: "Config Check: dev"
+    image: homeassistant/home-assistant:dev
+    pull: always
+    failure: ignore
+    commands:
+      - cd /usr/src/homeassistant
+      - "python -m homeassistant -c /drone/src/home-assistant/settings \
+         --script check_config"
+  - name: "Config Check: latest"
+    image: homeassistant/home-assistant:latest
+    pull: always
+    commands:
+      - cd /usr/src/app
+      - "python -m homeassistant -c /drone/src/home-assistant/settings \
+         --script check_config"
+  - name: "Config Check: rc"
+    image: homeassistant/home-assistant:rc
+    pull: always
+    commands:
+      - cd /usr/src/homeassistant
+      - "python -m homeassistant -c /drone/src/home-assistant/settings \
+         --script check_config"
+  - name: Linting
+    image: python:3
+    commands:
+      - pip3 install --upgrade pip yamllint
+      - yamllint ./home-assistant/settings/
 
 ---
 kind: pipeline
@@ -101,7 +95,7 @@ trigger:
     - feature/*
 
 steps:
-  - name: Fail2Ban
+  - name: "Config Check: Fail2Ban"
     image: alpine:3.10.1
     commands:
       - apk update && apk add fail2ban
@@ -110,7 +104,7 @@ steps:
       - "mkdir -p /var/log/nginx && touch /var/log/nginx/access.log \
          && touch /var/log/nginx/error.log"
       - fail2ban-client -t
-  - name: Gixy
+  - name: "Config Check: Gixy"
     image: yandex/gixy:latest
     pull: always
     commands:
@@ -119,7 +113,24 @@ steps:
 
 ---
 kind: pipeline
-name: Build Notification
+name: Shell Scripts
+
+trigger:
+  branch:
+    - master
+    - feature/*
+
+steps:
+  - name: "Config Check: bin/*"
+    image: koalaman/shellcheck-alpine:stable
+    pull: always
+    commands:
+      - shellcheck --version
+      - shellcheck ./bin/*
+
+---
+kind: pipeline
+name: Wrap-up
 
 trigger:
   branch:
@@ -130,10 +141,11 @@ trigger:
     - success
 
 depends_on:
-  - Linting
-  - Home Assistant
+  - AppDaemon
   - ESPHome
+  - Home Assistant
   - NGINX
+  - Shell Scripts
 
 steps:
   - name: Send Notification
