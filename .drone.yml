@@ -49,7 +49,7 @@ steps:
     pull: always
     failure: ignore
     commands:
-      - cd /usr/src/app
+      - cd /usr/src/homeassistant
       - "python -m homeassistant -c /drone/src/home-assistant/settings \
          --script check_config"
   - name: latest
