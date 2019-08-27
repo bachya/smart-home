@@ -95,16 +95,22 @@ trigger:
     - feature/*
 
 steps:
-  - name: "Config Check: Fail2Ban"
+  - name: Config Check
     image: alpine:3.10.1
     commands:
-      - apk update && apk add fail2ban
+      - apk update && apk add --no-cache nginx
+      - ln -s /drone/src/nginx/settings/nginx /etc/nginx
+      - nginx -t -c /etc/nginx/nginx.conf
+  - name: Fail2Ban
+    image: alpine:3.10.1
+    commands:
+      - apk update && apk add --no-cache fail2ban
       - ln -s ./nginx/settings/fail2ban /etc/fail2ban
       - touch /var/log/messages
       - "mkdir -p /var/log/nginx && touch /var/log/nginx/access.log \
          && touch /var/log/nginx/error.log"
       - fail2ban-client -t
-  - name: "Config Check: Gixy"
+  - name: Gixy
     image: yandex/gixy:latest
     pull: always
     commands:
