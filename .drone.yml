@@ -127,7 +127,7 @@ trigger:
     - feature/*
 
 steps:
-  - name: "Config Check: bin/*"
+  - name: "Static Analysis: bin/*"
     image: koalaman/shellcheck-alpine:stable
     pull: always
     commands:
