@@ -79,19 +79,18 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - hass-config:/config
 
-  jupyterlab:
-    build:
-      context: ./jupyterlab/docker
-    container_name: jupyterlab
-    depends_on:
-      - hass
+  influxdb:
+    container_name: influxdb
+    image: influxdb:1.7.7-alpine
     environment:
-      JUPYTER_ENABLE_LAB: "yes"
-    image: bachya/jupyterlab
+      INFLUXDB_DB: hassdb
+      INFLUXDB_USER: hassuser
+      INFLUXDB_USER_PASSWORD: Iatvpok0##07
+    ports:
+      - "8086:8086/tcp"
     restart: unless-stopped
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - jupyterlab-config:/home/jovyan
+      - influxdb-config:/var/lib/influxdb
 
   mysql:
     container_name: mysql
@@ -189,5 +188,5 @@ volumes:
   appdaemon-config:
   glances-config:
   hass-config:
-  jupyterlab-config:
+  influxdb-config:
   portainer-config:

@@ -15,10 +15,6 @@ grafana:
   title: Grafana
   url: !secret panel_url_grafana
   icon: mdi:chart-bar
-jupyterlab:
-  title: JupyterLab
-  url: !secret panel_url_jupyterlab
-  icon: mdi:database-search
 pihole:
   title: Pi-hole
   url: !secret panel_url_pihole
