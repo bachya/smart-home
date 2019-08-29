@@ -442,7 +442,6 @@ class NotifyBadAqi(Base):
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Send select notifications when cooling and poor AQI."""
-
         if self.climate_manager.hvac_mode != HVAC_MODE_COOL:
             return
 
