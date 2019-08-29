@@ -100,11 +100,13 @@ notify_bad_aqi_automation:
 thermostat_schedule:
   module: hass_apps_loader
   class: SchedyApp
-  constrain_input_boolean: "input_boolean.climate_away_mode,off"
 
   actor_type: thermostat
 
   expression_environment: |
+    def away_mode():
+      return state("input_boolean.climate_away_mode")
+
     def hvac_mode():
       return state("climate.thermostat")
 
@@ -135,9 +137,10 @@ thermostat_schedule:
 
       schedule:
         - x: "IncludeSchedule(schedule_snippets['cooling_season']) \
-              if hvac_mode() == 'cool' else Skip()"
+              if hvac_mode() == 'cool' and away_mode() == 'off' else Skip()"
         - x: "IncludeSchedule(schedule_snippets['heating_season']) \
-              if hvac_mode() == 'heat' else Skip()"
+              if hvac_mode() == 'heat' and away_mode() == 'off' else Skip()"
 
   watched_entities:
     - climate.thermostat
+    - input_boolean.climate_away_mode
