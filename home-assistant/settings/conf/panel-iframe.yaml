@@ -19,10 +19,6 @@ jupyterlab:
   title: JupyterLab
   url: !secret panel_url_jupyterlab
   icon: mdi:database-search
-node_red:
-  title: Node-RED
-  url: !secret panel_url_node_red
-  icon: mdi:sitemap
 pihole:
   title: Pi-hole
   url: !secret panel_url_pihole

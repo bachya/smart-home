@@ -150,16 +150,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/ssl:/etc/ssl:ro
 
-  node-red:
-    container_name: node-red
-    image: nodered/node-red-docker:0.20.5-slim-v10
-    ports:
-      - "1880:1880/tcp"
-    restart: unless-stopped
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - node-red-config:/data
-
   portainer:
     container_name: portainer
     image: portainer/portainer:1.22.0
@@ -200,5 +190,4 @@ volumes:
   glances-config:
   hass-config:
   jupyterlab-config:
-  node-red-config:
   portainer-config:
