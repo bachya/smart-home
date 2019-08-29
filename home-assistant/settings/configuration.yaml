@@ -8,7 +8,6 @@ frontend: !include conf/frontend.yaml
 http: !include conf/http.yaml
 logger: !include conf/logger.yaml
 lovelace:
-panel_custom: !include conf/panel-custom.yaml
 panel_iframe: !include conf/panel-iframe.yaml
 recorder: !include conf/recorder.yaml
 stream:
