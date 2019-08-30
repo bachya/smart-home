@@ -74,7 +74,7 @@ class PIN(Base):  # pylint: disable=too-many-instance-attributes
     @property
     def active(self) -> bool:
         """Return whether this PIN is in use."""
-        return self.label is not "" and self.value is not ""
+        return self.label != "" and self.value != ""
 
     @property
     def label(self) -> str:
