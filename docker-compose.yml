@@ -15,7 +15,7 @@ services:
       - hass
     environment:
       EXTRA_CMD: -D INFO
-    image: acockburn/appdaemon:3.0.5
+    image: acockburn/appdaemon:4.0.0b1
     restart: unless-stopped
     volumes:
       - /etc/localtime:/etc/localtime:ro

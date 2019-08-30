@@ -1,4 +1,5 @@
 """Define a generic object which  all apps/automations inherit from."""
+from datetime import timedelta
 from typing import Callable, Dict, Union
 
 import voluptuous as vol
@@ -305,6 +306,11 @@ class Base(Hass):
 
     def run_every(self, callback, start, interval, auto_constraints=False, **kwargs):
         """Wrap AppDaemon's `run_every` with the constraint mechanism."""
+        # Since AD4 has microsecond resolution, these wrapped calls will fail because
+        # `start` will technically be in the past. So, to be safe, bump out the start
+        # time by a second
+        start = start + timedelta(seconds=1)
+
         if not auto_constraints:
             return super().run_every(callback, start, interval, **kwargs)
 
