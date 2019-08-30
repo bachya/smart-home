@@ -53,7 +53,6 @@ class PIN(Base):  # pylint: disable=too-many-instance-attributes
 
     def configure(self) -> None:
         """Configure."""
-        self._dirty = False
         self._reset_lock = Lock()
 
         self._end_entity_id = "input_datetime.{0}_end".format(self.name)
@@ -72,6 +71,11 @@ class PIN(Base):  # pylint: disable=too-many-instance-attributes
             self.log("Re-establishing scheduled PIN")
             self._add_pin_during_schedule()
 
+    @property
+    def active(self) -> bool:
+        """Return whether this PIN is in use."""
+        return self.label is not "" and self.value is not ""
+    
     @property
     def label(self) -> str:
         """Return the label of the PIN in the UI."""
@@ -190,8 +194,6 @@ class PIN(Base):  # pylint: disable=too-many-instance-attributes
             self.log("Adding permanent PIN")
             self.set_pin()
 
-        self._dirty = True
-
     def _on_reset_clicked(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond when the reset button is clicked."""
         self.log("Resetting PIN")
@@ -242,7 +244,6 @@ class PIN(Base):  # pylint: disable=too-many-instance-attributes
             self.remove_pin()
             self.clear_handles()
             self.reset_ui()
-            self._dirty = False
 
     def reset_ui(self) -> None:
         """Reset the UI."""
@@ -333,7 +334,7 @@ class ZWaveLockPIN(PIN):
 
     def _on_midnight_reached(self, kwargs: dict) -> None:
         """Cycle new codes into empty slots (for extra security on open-zwave bug)."""
-        if not self._dirty:
+        if self.active:
             return
 
         self.log("Recycling code")
