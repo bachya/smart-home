@@ -345,18 +345,19 @@ class ZWaveLockPIN(PIN):
         return pin == ZWAVE_CHANGED_MESSAGE_STUB.format(self._code_slot)
 
     def remove_pin(self) -> None:
-        """Remove the PIN from any active locks."""
-        # Because of a bug in Home Assistant's fork of open-zwave, we can't clear
-        # user codes from Z-Wave locks... As a compromise, we set the code to a random
-        # value:
-        new_code = str(random.randint(0, 99999)).zfill(5)
+        """
+        "Remove" the PIN from any active locks.
 
+        Because of a bug in Home Assistant's fork of open-zwave, we can't clear
+        user codes from Z-Wave locks... As a compromise, we set the code to a random
+        value:
+        """
         for _, _, attrs in self._get_active_locks():
             self.call_service(
                 "lock/set_usercode",
                 node_id=attrs[CONF_NODE_ID],
                 code_slot=self._code_slot,
-                usercode=new_code,
+                usercode=str(random.randint(0, 99999)).zfill(5),
             )
 
     def reset_ui(self) -> None:
