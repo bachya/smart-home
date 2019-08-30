@@ -349,7 +349,7 @@ class ZWaveLockPIN(PIN):
         # Because of a bug in Home Assistant's fork of open-zwave, we can't clear
         # user codes from Z-Wave locks... As a compromise, we set the code to a random
         # value:
-        new_code = str(random.randint(00000, 99999)).zfill(5)
+        new_code = str(random.randint(0, 99999)).zfill(5)
 
         for _, _, attrs in self._get_active_locks():
             self.call_service(
