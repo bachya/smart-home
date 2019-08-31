@@ -33,6 +33,7 @@ services:
     container_name: fail2ban
     environment:
       TZ: America/Denver
+      F2B_LOG_TARGET: /usr/local/fail2ban-log/fail2ban.log
       F2B_MAX_RETRY: 3
       F2B_IPTABLES_CHAIN: INPUT
     image: crazymax/fail2ban:0.10.4
@@ -43,6 +44,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/log:/var/log:ro
       - fail2ban-config:/data
+      - fail2ban-log:/usr/local/fail2ban-log
 
   fail2ban-mqtt-notifier:
     build: ./fail2ban-mqtt-notifier/docker
@@ -52,6 +54,8 @@ services:
     restart: unless-stopped
     volumes:
       - /etc/localtime:/etc/localtime:ro
+      - /var/log/nginx:/var/log/nginx:ro
+      - fail2ban-log:/var/log/fail2ban:ro
 
   glances:
     build:
@@ -204,6 +208,7 @@ volumes:
 
   appdaemon-config:
   fail2ban-config:
+  fail2ban-log:
   glances-config:
   hass-config:
   influxdb-config:

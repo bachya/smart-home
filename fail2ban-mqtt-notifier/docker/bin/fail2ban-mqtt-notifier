@@ -19,11 +19,11 @@ _send_mqtt_payload() {
 }
 
 get_bans() {
-    /usr/bin/zgrep 'Ban' /var/log/fail2ban.log*
+    /usr/bin/zgrep 'Ban' /var/log/fail2ban/fail2ban.log*
 }
 
 get_failures() {
-    /usr/bin/zgrep 'Found' /var/log/fail2ban.log*
+    /usr/bin/zgrep 'Found' /var/log/fail2ban/fail2ban.log*
 }
 
 log() {
