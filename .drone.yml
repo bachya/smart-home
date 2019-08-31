@@ -114,7 +114,7 @@ steps:
     image: yandex/gixy:latest
     pull: always
     commands:
-      - ln -s /drone/src/nginx/settings/nginx /etc/nginx
+      - ln -s /drone/src/nginx/settings /etc/nginx
       - gixy /etc/nginx/nginx.conf
 
 ---
