@@ -19,7 +19,6 @@ RUN apk update \
       openssl \
       pcre \
       perl \
-      rsyslog \
       supervisor \
       tzdata \
       wget \
