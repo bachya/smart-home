@@ -1,4 +1,0 @@
-[DEFAULT]
-ignoreip = 172.16.10.0/24 172.16.11.119
-bantime = 172800
-maxretry = 2

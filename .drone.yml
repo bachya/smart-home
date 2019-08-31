@@ -105,7 +105,7 @@ steps:
     image: alpine:3.10.1
     commands:
       - apk update && apk add --no-cache fail2ban
-      - ln -s ./nginx/settings/fail2ban /etc/fail2ban
+      - ln -s ./fail2ban/settings /etc/fail2ban
       - touch /var/log/messages
       - "mkdir -p /var/log/nginx && touch /var/log/nginx/access.log \
          && touch /var/log/nginx/error.log"

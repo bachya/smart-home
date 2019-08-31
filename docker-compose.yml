@@ -1,12 +1,6 @@
 ---
 version: "3"
 
-networks:
-  default:
-    ipam:
-      config:
-        - subnet: 192.168.0.0/16
-
 services:
 
   appdaemon:
@@ -16,6 +10,8 @@ services:
     environment:
       EXTRA_CMD: -D INFO
     image: acockburn/appdaemon:4.0.0b1
+    ports:
+      - "127.0.0.1:5051:5051"
     restart: unless-stopped
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -28,6 +24,33 @@ services:
     restart: unless-stopped
     volumes:
       - ./esphome:/config
+      - /etc/localtime:/etc/localtime:ro
+
+  fail2ban:
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    container_name: fail2ban
+    environment:
+      TZ: America/Denver
+      F2B_MAX_RETRY: 3
+      F2B_IPTABLES_CHAIN: INPUT
+    image: crazymax/fail2ban:0.10.4
+    network_mode: "host"
+    restart: unless-stopped
+    volumes:
+      - ./fail2ban/settings/jail.local:/etc/fail2ban/jail.local
+      - /etc/localtime:/etc/localtime:ro
+      - /var/log:/var/log:ro
+      - fail2ban-config:/data
+
+  fail2ban-mqtt-notifier:
+    build: ./fail2ban-mqtt-notifier/docker
+    command: /entry.sh
+    container_name: fail2ban-mqtt-notifier
+    image: bachya/fail2ban-mqtt-notifier:latest
+    restart: unless-stopped
+    volumes:
       - /etc/localtime:/etc/localtime:ro
 
   glances:
@@ -55,7 +78,7 @@ services:
       GF_SERVER_DOMAIN: grafana.myserver.com
     image: grafana/grafana:6.3.4
     ports:
-      - "3000:3000/tcp"
+      - "127.0.0.1:3000:3000/tcp"
     restart: unless-stopped
     user: "104"
     volumes:
@@ -125,35 +148,29 @@ services:
       - portainer
       - vernemq
     image: bachya/nginx
-    networks:
-      default:
-        ipv4_address: 192.168.7.7
+    network_mode: "host"
     ports:
       - "443:443/tcp"
     restart: unless-stopped
     volumes:
-      - ./nginx/settings/fail2ban/filter.d/nginx-4xx.conf:/etc/fail2ban/filter.d/nginx-4xx.conf
-      - ./nginx/settings/fail2ban/filter.d/nginx-noproxy.conf:/etc/fail2ban/filter.d/nginx-noproxy.conf
-      - ./nginx/settings/fail2ban/filter.d/nginx-req-limit.conf:/etc/fail2ban/filter.d/nginx-req-limit.conf
-      - ./nginx/settings/fail2ban/jail.d/nginx.conf:/etc/fail2ban/jail.d/nginx.conf
-      - ./nginx/settings/fail2ban/jail.local:/etc/fail2ban/jail.local
-      - ./nginx/settings/nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/settings/nginx/dhparams.pem:/etc/nginx/dhparams.pem
-      - ./nginx/settings/nginx/geoip.rules:/etc/nginx/geoip.rules
-      - ./nginx/settings/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/settings/nginx/proxy.conf:/etc/nginx/proxy.conf
-      - ./nginx/settings/nginx/security.conf:/etc/nginx/security.conf
-      - ./nginx/settings/nginx/ssl.conf:/etc/nginx/ssl.conf
-      - ./nginx/settings/nginx/useragents.rules:/etc/nginx/useragents.rules
+      - ./nginx/settings/conf.d:/etc/nginx/conf.d
+      - ./nginx/settings/dhparams.pem:/etc/nginx/dhparams.pem
+      - ./nginx/settings/geoip.rules:/etc/nginx/geoip.rules
+      - ./nginx/settings/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/settings/proxy.conf:/etc/nginx/proxy.conf
+      - ./nginx/settings/security.conf:/etc/nginx/security.conf
+      - ./nginx/settings/ssl.conf:/etc/nginx/ssl.conf
+      - ./nginx/settings/useragents.rules:/etc/nginx/useragents.rules
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /etc/localtime:/etc/localtime:ro
       - /etc/ssl:/etc/ssl:ro
+      - /var/log/nginx:/var/log/nginx
 
   portainer:
     container_name: portainer
     image: portainer/portainer:1.22.0
     ports:
-      - "9000:9000/tcp"
+      - "127.0.0.1:9000:9000/tcp"
     restart: unless-stopped
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -175,7 +192,7 @@ services:
     image: erlio/docker-vernemq:1.9.1-alpine
     ports:
       - "1883:1883/tcp"
-      - "8888:8888/tcp"
+      - "127.0.0.1:8888:8888/tcp"
     restart: unless-stopped
     user: root
     volumes:
@@ -186,6 +203,7 @@ services:
 volumes:
 
   appdaemon-config:
+  fail2ban-config:
   glances-config:
   hass-config:
   influxdb-config:

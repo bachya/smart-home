@@ -1,0 +1,2 @@
+# Send latest fail2ban info to the MQTT broker:
+* * * * * /usr/local/bin/fail2ban-mqtt-notifier

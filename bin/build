@@ -20,6 +20,9 @@ function copy_config_data() {
 # Update AppDaemon configs:
 copy_config_data "hub_appdaemon-config" "$REPO_PATH"/appdaemon/settings
 
+# Update Fail2Ban configs:
+copy_config_data "hub_fail2ban-config" "$REPO_PATH"/fail2ban/settings
+
 # Update Glances configs:
 copy_config_data "hub_glances-config" "$REPO_PATH"/glances/settings
 

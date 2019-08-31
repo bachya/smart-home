@@ -15,9 +15,7 @@ RUN apk update \
       pcre-dev \
       zlib-dev \
     && apk add --update \
-      fail2ban \
       gzip \
-      mosquitto-clients \
       openssl \
       pcre \
       perl \
@@ -58,6 +56,7 @@ RUN apk update \
       --with-http_ssl_module \
       --with-http_stub_status_module \
       --with-http_v2_module \
+      --with-ipv6 \
       --with-pcre-jit \
       --with-stream \
       --with-stream_ssl_module \
@@ -79,12 +78,10 @@ RUN set -x ; \
 
 # Set up configuration structures:
 COPY bin/geolite-download /usr/local/bin/geolite-download
-COPY bin/fail2ban-mqtt-notifier /usr/local/bin/fail2ban-mqtt-notifier
 COPY conf/supervisor/supervisor.conf /etc/supervisor.conf
 COPY conf/crontab.txt /crontab.txt
 RUN mkdir -p /var/run/nginx \
     && mkdir -p /var/lib/nginx \
     && chown -R www-data:www-data /var/lib/nginx \
-    && chmod 755 /usr/local/bin/fail2ban-mqtt-notifier \
     && chmod 755 /usr/local/bin/geolite-download \
     && /usr/bin/crontab /crontab.txt

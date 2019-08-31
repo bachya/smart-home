@@ -2,7 +2,7 @@
 sensor:
   - platform: glances
     name: Hub
-    host: localhost
+    host: 0.0.0.0
     version: 3
     resources:
       - disk_use_percent
