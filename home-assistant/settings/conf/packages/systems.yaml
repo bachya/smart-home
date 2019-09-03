@@ -153,15 +153,20 @@ sensor:
             state_attr("sensor.latest_drone_build", "finished") -
             state_attr("sensor.latest_drone_build", "started")) / 60
           %}
-          {{ duration | round(0) }}
+          {% if duration > 0 %}
+            {{ duration | round(0) }}
+          {% endif %}
         unit_of_measurement: minutes
       latest_drone_build_finished:
         friendly_name: Finished
         value_template: |
-          {{
-            state_attr("sensor.latest_drone_build", "finished") |
-            timestamp_local
-          }}
+          {% set finished = state_attr(
+            "sensor.latest_drone_build", "finished"
+            )
+          %}
+          {% if finished > 0 %}
+            {{ finished|timestamp_local }}
+          {% endif %}
       latest_drone_build_message:
         friendly_name: Message
         value_template: |
