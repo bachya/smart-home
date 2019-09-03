@@ -87,6 +87,7 @@ send_info() {
 
     _send_mqtt_payload $mqtt_topic "{ \
         \"failure_count\": $failure_count, \
+        \"last_failure_jail\": \"$last_failure_jail\", \
         \"last_failure_ip\": \"$last_failure_ip\", \
         \"last_failure_ts\": \"$last_failure_ts\", \
         \"last_failure_country\": \"$last_failure_country\", \
