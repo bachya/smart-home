@@ -1,9 +1,5 @@
 ---
 sensor:
-  - platform: dnsip
-    hostname: !secret base_domain_name
-
-  # Available Versions
   - platform: command_line
     name: AppDaemon Available
     command: >-
@@ -25,115 +21,9 @@ sensor:
     scan_interval: 1800
 
   - platform: command_line
-    name: VerneMQ Available
-    command: >-
-      curl -L
-      -H "User-Agent: Home Assistant"
-      -H "Content-Type: application/json"
-      https://api.github.com/repos/vernemq/vernemq/tags
-    value_template: '{{ value_json[0].name }}'
-    scan_interval: 1800
-
-  - platform: command_line
-    name: Portainer Available
-    command: >-
-      curl -L
-      -H "User-Agent: Home Assistant"
-      -H "Content-Type: application/json"
-      https://api.github.com/repos/portainer/portainer/releases/latest
-    value_template: '{{ value_json.tag_name }}'
-    scan_interval: 1800
-
-  - platform: command_line
-    name: Yi Hack Available
-    command: >-
-      curl -L
-      -H "User-Agent: Home Assistant"
-      -H "Content-Type: application/json"
-      https://api.github.com/repos/TheCrypt0/yi-hack-v4/releases/latest
-    value_template: '{{ value_json.tag_name[1:] }}'
-    scan_interval: 1800
-
-  - platform: version
-    name: HASS Available
-    source: docker
-    beta: true
-
-  # Installed Versions
-  - platform: command_line
-    name: Yi Hack Installed
-    command: >
-      ssh -i /config/id_rsa -o StrictHostKeyChecking=no
-      root@yi-camera-guest-bedroom.phil.iot cat version
-
-  - platform: version
-    name: HASS Installed
-
-    # Networking
-  - platform: filter
-    name: Filtered Speedtest Download
-    entity_id: sensor.speedtest_download
-    filters:
-      - filter: lowpass
-        time_constant: 10
-        precision: 2
-
-  - platform: filter
-    name: Filtered Speedtest Ping
-    entity_id: sensor.speedtest_ping
-    filters:
-      - filter: lowpass
-        time_constant: 10
-        precision: 2
-
-  - platform: filter
-    name: Filtered Speedtest Upload
-    entity_id: sensor.speedtest_upload
-    filters:
-      - filter: lowpass
-        time_constant: 10
-        precision: 2
-
-  - platform: pi_hole
-    host: gryffindor.phil.lan:8080
-    monitored_conditions:
-      - ads_blocked_today
-      - ads_percentage_today
-      - dns_queries_today
-      - domains_being_blocked
-      - queries_cached
-      - queries_forwarded
-      - unique_clients
-      - unique_domains
-
-  - platform: pi_hole
-    host: hufflepuff.phil.lan:8080
-    monitored_conditions:
-      - ads_blocked_today
-      - ads_percentage_today
-      - dns_queries_today
-      - domains_being_blocked
-      - queries_cached
-      - queries_forwarded
-      - unique_clients
-      - unique_domains
-
-  - platform: pi_hole
-    host: slytherin.phil.lan:8080
-    monitored_conditions:
-      - ads_blocked_today
-      - ads_percentage_today
-      - dns_queries_today
-      - domains_being_blocked
-      - queries_cached
-      - queries_forwarded
-      - unique_clients
-      - unique_domains
-
-  # CI (Drone.io)
-  - platform: command_line
     name: Latest Drone Build
-    command: "curl -s 'http://drone/api/repos/bachya/hub/builds?per_page=1' \
+    command: "curl -s 'https://bf5959ab-1a7e-47b7-9528-19651d1b8018.bachyaprodu\
+              ctions.com:18884/api/repos/bachya/hub/builds?per_page=1' \
             -H 'Authorization: Bearer mKAk7aBngFlvcpWe8ir4FGcSrJ6lgzyd' \
             -H 'User-Agent: Paw/3.1.8 (Macintosh; OS X/10.14.6)' \
             | tr -d []"
@@ -195,7 +85,105 @@ sensor:
             mdi:progress-check
           {% endif %}
 
-  # Batteries
+  - platform: command_line
+    name: VerneMQ Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/vernemq/vernemq/tags
+    value_template: '{{ value_json[0].name }}'
+    scan_interval: 1800
+
+  - platform: command_line
+    name: Portainer Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/portainer/portainer/releases/latest
+    value_template: '{{ value_json.tag_name }}'
+    scan_interval: 1800
+
+  - platform: command_line
+    name: Yi Hack Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/TheCrypt0/yi-hack-v4/releases/latest
+    value_template: '{{ value_json.tag_name[1:] }}'
+    scan_interval: 1800
+
+  - platform: command_line
+    name: Yi Hack Installed
+    command: >
+      ssh -i /config/id_rsa -o StrictHostKeyChecking=no
+      root@yi-camera-guest-bedroom.phil.iot cat version
+
+  - platform: dnsip
+    hostname: !secret base_domain_name
+
+  - platform: filter
+    name: Filtered Speedtest Download
+    entity_id: sensor.speedtest_download
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 2
+
+  - platform: filter
+    name: Filtered Speedtest Ping
+    entity_id: sensor.speedtest_ping
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 2
+
+  - platform: filter
+    name: Filtered Speedtest Upload
+    entity_id: sensor.speedtest_upload
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 2
+
+  - platform: pi_hole
+    host: gryffindor.phil.lan:8080
+    monitored_conditions:
+      - ads_blocked_today
+      - ads_percentage_today
+      - dns_queries_today
+      - domains_being_blocked
+      - queries_cached
+      - queries_forwarded
+      - unique_clients
+      - unique_domains
+
+  - platform: pi_hole
+    host: hufflepuff.phil.lan:8080
+    monitored_conditions:
+      - ads_blocked_today
+      - ads_percentage_today
+      - dns_queries_today
+      - domains_being_blocked
+      - queries_cached
+      - queries_forwarded
+      - unique_clients
+      - unique_domains
+
+  - platform: pi_hole
+    host: slytherin.phil.lan:8080
+    monitored_conditions:
+      - ads_blocked_today
+      - ads_percentage_today
+      - dns_queries_today
+      - domains_being_blocked
+      - queries_cached
+      - queries_forwarded
+      - unique_clients
+      - unique_domains
+
   - platform: template
     sensors:
       aeotec_nanomote_quad_aaron_bedside_battery:
@@ -205,6 +193,14 @@ sensor:
           {{ states.zwave.aeotec_nanomote_quad_aaron_bedside.attributes.battery_level }}
         unit_of_measurement: "%"
         device_class: battery
+
+  - platform: version
+    name: HASS Available
+    source: docker
+    beta: true
+
+  - platform: version
+    name: HASS Installed
 
 speedtestdotnet:
 
