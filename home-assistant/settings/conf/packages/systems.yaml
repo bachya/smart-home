@@ -1,6 +1,7 @@
 ---
 sensor:
   - platform: dnsip
+    hostname: !secret base_domain_name
 
   # Available Versions
   - platform: command_line
