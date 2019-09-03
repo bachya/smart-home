@@ -1,5 +1,7 @@
 ---
 sensor:
+  - platform: dnsip
+
   # Available Versions
   - platform: command_line
     name: AppDaemon Available
