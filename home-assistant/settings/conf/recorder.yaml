@@ -16,5 +16,3 @@ exclude:
     - sensor.garage_door_sourcenodeid
     - sensor.garage_door_system
     - sun.sun
-purge_interval: 2
-purge_keep_days: 5
