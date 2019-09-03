@@ -46,6 +46,9 @@ send_info() {
     local failures=$(get_failures)
     local failure_count=$(echo "$failures" | sed '/^\s*$/d' | wc -l)
     local last_failure="$(echo "$failures" | tail -n 1)"
+    local last_failure_jail="$(
+        echo $last_failure | cut -d " " -f6 | sed 's/^.\(.*\).$/\1/'
+    )"
     local last_failure_ts="$(echo "$last_failure" | awk -F, '{ print $1 }')"
     local last_failure_ip="$(
         echo "$last_failure" | awk -F\ -\  '{ print $1}' | sed 's/.\+Found\s//g'
