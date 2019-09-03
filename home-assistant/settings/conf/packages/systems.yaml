@@ -161,6 +161,7 @@ sensor:
         unit_of_measurement: minutes
       latest_drone_build_finished:
         friendly_name: Finished
+        entity_id: sensor.latest_drone_build
         value_template: |
           {% set finished = state_attr(
             "sensor.latest_drone_build", "finished"
