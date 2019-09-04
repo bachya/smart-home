@@ -38,13 +38,14 @@ bar_cart_on_at_sunset_automation:
 
 bar_cart_on_upon_arrival_automation:
   module: switches
-  class: TurnOnUponArrival
+  class: ToggleUponArrival
   dependencies:
     - guest_mode
     - presence_manager
   entity_ids:
     switch: switch.bar_cart
   properties:
+    state: "on"
     trigger_on_first_only: true
   constraints:
     constraints:

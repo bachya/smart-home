@@ -29,12 +29,13 @@ garage_lights_on_garage_open_sundown_automation:
 
 garage_lights_on_upon_arrival_automation:
   module: switches
-  class: TurnOnUponArrival
+  class: ToggleUponArrival
   dependencies:
     - presence_manager
   entity_ids:
     switch: switch.garage_lights
   properties:
+    state: "on"
     trigger_on_first_only: false
   constraints:
     constraints:

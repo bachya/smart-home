@@ -480,14 +480,17 @@ class ToggleOnState(BaseSwitch):
                 self.cancel_timer(handle)
 
 
-class TurnOnUponArrival(BaseSwitch):
-    """Define a feature to turn a switch on when one of us arrives."""
+class ToggleUponArrival(BaseSwitch):
+    """Define a feature to toggle a switch when one of us arrives."""
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             CONF_ENTITY_IDS: vol.Schema(
                 {vol.Required(CONF_SWITCH): cv.entity_id}, extra=vol.ALLOW_EXTRA
-            )
+            ),
+            CONF_PROPERTIES: vol.Schema(
+                {vol.Required(CONF_STATE): vol.In(TOGGLE_STATES)}, extra=vol.ALLOW_EXTRA
+            ),
         }
     )
 
@@ -503,9 +506,9 @@ class TurnOnUponArrival(BaseSwitch):
 
     def _on_someone_arrive(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Turn on after dark when someone comes homes."""
-        self.log("Someone came home; turning on the switch")
+        self.log("Someone came home; togglign the switch")
 
-        self.toggle(state="on")
+        self.toggle(state=self.properties[CONF_STATE])
 
 
 class VacationMode(BaseSwitch):
