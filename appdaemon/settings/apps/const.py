@@ -42,7 +42,6 @@ TOGGLE_STATES = ("closed", "off", "on", "open")
 
 # Misc. config keys:
 CONF_PEOPLE = "people"
-CONF_TRIGGER_FIRST = "trigger_on_first_only"
 
 # Events:
 CONF_EVENT = "event"

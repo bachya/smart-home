@@ -140,7 +140,6 @@ living_room_lights_on_upon_arrival_automation:
     switch: group.living_room_lights
   properties:
     state: "on"
-    trigger_on_first_only: true
   constraints:
     constraints:
       constrain_sun: "down"
