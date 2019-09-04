@@ -86,6 +86,9 @@ kitchen_patio_light_double_tap_backyard_lights_automation:
 lightning_detected_automation:
   icon: mdi:flash
   name: Notify when lightning detected
+lights_on_night_doorbell_automation:
+  icon: mdi:motion-sensor
+  name: Turn on lights when doorbell sees person at night
 living_room_lights_on_at_sunset_automation:
   icon: mdi:weather-sunset-down
   initial: true

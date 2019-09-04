@@ -22,6 +22,7 @@ from const import (
 from helpers import config_validation as cv
 from helpers.scheduler import run_on_days
 
+CONF_RETURN_DELAY = "return_delay"
 CONF_RUN_ON_DAYS = "run_on_days"
 CONF_SCHEDULE_TIME = "schedule_time"
 CONF_SWITCH = "switch"
@@ -36,6 +37,7 @@ HANDLE_TIMER = "timer"
 HANDLE_TOGGLE_IN_WINDOW = "in_window"
 HANDLE_TOGGLE_OUT_WINDOW = "out_window"
 HANDLE_TOGGLE_STATE = "toggle_state"
+HANDLE_TOGGLE_STATE_RETURN = "toggle_state_return"
 HANDLE_VACATION_MODE = "vacation_mode"
 
 SOLAR_EVENTS = ("sunrise", "sunset")
@@ -446,6 +448,7 @@ class ToggleOnState(BaseSwitch):
                     vol.Required(CONF_SWITCH_STATE): vol.In(TOGGLE_STATES),
                     vol.Required(CONF_TARGET_STATE): vol.In(TOGGLE_STATES),
                     vol.Optional(CONF_DELAY): int,
+                    vol.Optional(CONF_RETURN_DELAY): int,
                 },
                 extra=vol.ALLOW_EXTRA,
             ),
@@ -466,7 +469,7 @@ class ToggleOnState(BaseSwitch):
     ) -> None:
         """Toggle the switch depending on the target entity's state."""
         if new == self.properties[CONF_TARGET_STATE]:
-            if self.properties.get(CONF_DELAY):
+            if CONF_DELAY in self.properties:
                 self.handles[HANDLE_TOGGLE_STATE] = self.run_in(
                     self._on_schedule_toggle,
                     self.properties[CONF_DELAY],
@@ -474,9 +477,20 @@ class ToggleOnState(BaseSwitch):
                 )
             else:
                 self.toggle(state=self.properties[CONF_SWITCH_STATE])
+
+            if CONF_RETURN_DELAY in self.properties:
+                self.handles[HANDLE_TOGGLE_STATE_RETURN] = self.run_in(
+                    self._on_schedule_toggle,
+                    self.properties[CONF_RETURN_DELAY],
+                    state=self.properties[CONF_SWITCH_STATE],
+                    opposite=True,
+                )
         else:
             if HANDLE_TOGGLE_STATE in self.handles:
                 handle = self.handles.pop(HANDLE_TOGGLE_STATE)
+                self.cancel_timer(handle)
+            if HANDLE_TOGGLE_STATE_RETURN in self.handles:
+                handle = self.handles.pop(HANDLE_TOGGLE_STATE_RETURN)
                 self.cancel_timer(handle)
 
 
