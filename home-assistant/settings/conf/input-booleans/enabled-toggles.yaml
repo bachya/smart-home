@@ -51,10 +51,6 @@ cycle_whole_house_fan_automation:
   icon: mdi:fan
   initial: true
   name: Cycle house fan every 15 min.
-detect_blackout_automation:
-  icon: mdi:theme-light-dark
-  initial: true
-  name: Detect in-blackout
 dishwasher_cycle_automation:
   icon: mdi:washing-machine
   initial: true
