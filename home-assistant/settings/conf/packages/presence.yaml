@@ -9,7 +9,6 @@ binary_sensor:
         platform: state
         to_state: below_horizon
         prob_given_true: 0.75
-        prob_given_false: 0.1
       - entity_id: input_boolean.blackout_mode
         platform: state
         to_state: "on"
@@ -17,11 +16,11 @@ binary_sensor:
       - entity_id: group.living_room_lights
         platform: state
         to_state: "off"
-        prob_given_true: 0.5
+        prob_given_true: 0.75
       - entity_id: alarm_control_panel.8673_e_55th_avenue
         platform: state
         to_state: "armed_home"
-        prob_given_true: 0.75
+        prob_given_true: 0.65
       - entity_id: remote.living_room_tv
         platform: state
         to_state: "off"
