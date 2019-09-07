@@ -16,7 +16,7 @@ binary_sensor:
       - entity_id: group.living_room_lights
         platform: state
         to_state: "off"
-        prob_given_true: 0.3
+        prob_given_true: 0.65
       - entity_id: alarm_control_panel.8673_e_55th_avenue
         platform: state
         to_state: "armed_home"
@@ -24,7 +24,7 @@ binary_sensor:
       - entity_id: remote.living_room_tv
         platform: state
         to_state: "off"
-        prob_given_true: 0.3
+        prob_given_true: 0.65
 
 input_number:
   edge_radius:
