@@ -1,6 +1,6 @@
 """Define automations for robot vacuums."""
 from enum import Enum
-from typing import Callable, Optional, Union
+from typing import Callable, List, Optional, Union
 
 import voluptuous as vol
 
@@ -47,8 +47,8 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        self._send_notification_func = None  # type: Optional[Callable]
-        self._triggered = False
+        self._consumables_met: List[str] = []
+        self._send_notification_func: Optional[Callable] = None
 
         for consumable in self.properties[CONF_CONSUMABLES]:
             self.listen_state(
@@ -72,8 +72,10 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
             )
 
         if int(new) < self.properties[CONF_CONSUMABLE_THRESHOLD]:
-            if self._triggered:
+            if attribute in self._consumables_met:
                 return
+
+            self._consumables_met.append(attribute)
 
             self.log("Consumable is low: {0}".format(attribute))
 
@@ -81,10 +83,13 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
                 _send_notification()
             else:
                 self._send_notification_func = _send_notification
+        else:
+            if attribute not in self._consumables_met:
+                return
 
-            self._triggered = True
-        elif self._triggered:
-            self._triggered = False
+            self._consumables_met.remove(attribute)
+
+            self.log("Consumable is restored: {0}".format(attribute))
 
     def on_enable(self) -> None:
         """Send the notification once the automation is enabled (if appropriate)."""
