@@ -312,20 +312,20 @@ class ZWaveLockPIN(PIN):
 
         self.run_daily(self._on_midnight_reached, time(0, 0, 0))
 
-    def _get_active_locks(self) -> Generator[Tuple, None, None]:
+    def _get_locks(self, *, active_only: bool = True) -> Generator[Tuple, None, None]:
         """Return a generator of all locks (entity ID, enabled, name, and attrs)."""
         for lock_name, attrs in ZWAVE_LOCKS.items():
             enabled_entity_id = attrs[  # type: ignore
                 CONF_ENABLED_ENTITY_ID_STUB
             ].format(self.name)
             enabled = self.get_state(enabled_entity_id) == "on"
-            if not enabled:
+            if active_only and not enabled:
                 continue
             yield enabled_entity_id, lock_name, attrs
 
     def _listen_for_otp_use(self) -> None:
         """Listen for the use of a one-time PIN."""
-        for _, name, attrs in self._get_active_locks():
+        for _, name, attrs in self._get_locks():
             self.handles[
                 HANDLE_ONE_TIME_STUB.format(slugify(name))
             ] = self.listen_state(
@@ -350,9 +350,12 @@ class ZWaveLockPIN(PIN):
 
         Because of a bug in Home Assistant's fork of open-zwave, we can't clear
         user codes from Z-Wave locks... As a compromise, we set the code to a random
-        value:
+        value.
+
+        Note that this occurs to all locks, regardless of whether they're "active" or
+        not.
         """
-        for _, _, attrs in self._get_active_locks():
+        for _, _, attrs in self._get_locks(active_only=False):
             self.call_service(
                 "lock/set_usercode",
                 node_id=attrs[CONF_NODE_ID],
@@ -364,12 +367,12 @@ class ZWaveLockPIN(PIN):
         """Reset the UI."""
         super().reset_ui()
 
-        for _, _, attrs in self._get_active_locks():
+        for _, _, attrs in self._get_locks():
             self.turn_off(attrs[CONF_ENABLED_ENTITY_ID_STUB].format(self.name))
 
     def set_pin(self) -> None:
         """Add the pin to any active locks."""
-        for _, _, attrs in self._get_active_locks():
+        for _, _, attrs in self._get_locks():
             self.call_service(
                 "lock/set_usercode",
                 node_id=attrs[CONF_NODE_ID],
