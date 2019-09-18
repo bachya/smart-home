@@ -148,7 +148,7 @@ trigger:
     - success
 
 depends_on:
-  - AppDaemon
+  - Pre-Flight
   - ESPHome
   - Home Assistant
   - NGINX
@@ -175,7 +175,7 @@ kind: pipeline
 name: Build Notification
 
 depends_on:
-  - AppDaemon
+  - Pre-Flight
   - ESPHome
   - Home Assistant
   - NGINX
