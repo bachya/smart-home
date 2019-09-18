@@ -1,6 +1,6 @@
 ---
 kind: pipeline
-name: AppDaemon
+name: Pre-Flight
 
 trigger:
   branch:
@@ -8,7 +8,7 @@ trigger:
     - feature/*
 
 steps:
-  - name: Linting & Typing
+  - name: Linting
     image: python:3
     commands:
       - pip3 install --upgrade pip black flake8 mypy pylint yamllint
@@ -17,6 +17,8 @@ steps:
       - mypy --ignore-missing-imports ./appdaemon/settings/apps/
       - pylint --rcfile ./appdaemon/settings/pylintrc appdaemon/settings/apps/
       - yamllint ./appdaemon/settings/
+      - yamllint ./esphome/
+      - yamllint ./home-assistant/settings/
 
 ---
 kind: pipeline
@@ -41,11 +43,6 @@ steps:
     commands:
       - "for file in $(find /drone/src/esphome -type f -name \"*.yaml\" -not \
          -name \"secrets.yaml\"); do esphome \"$file\" config; done"
-  - name: Linting
-    image: python:3
-    commands:
-      - pip3 install --upgrade pip yamllint
-      - yamllint ./esphome/
 
 ---
 kind: pipeline
@@ -99,11 +96,6 @@ steps:
       - cd /usr/src/homeassistant
       - "python -m homeassistant -c /drone/src/home-assistant/settings \
          --script check_config"
-  - name: Linting
-    image: python:3
-    commands:
-      - pip3 install --upgrade pip yamllint
-      - yamllint ./home-assistant/settings/
 
 ---
 kind: pipeline
