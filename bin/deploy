@@ -39,8 +39,8 @@ function update() {
 
     # If there are no new changes to the repo, don't trigger a build:
     remote_git fetch
-    status_result=$(remote_git status | grep -c "behind")
-    if [ "$status_result" == 0 ]; then
+    status_result=$(remote_git status | grep -c "behind" || true)
+    if [ "$status_result" -eq "0" ]; then
         send_slack_message "No new changes to deploy" "$COLOR_BLUE"
         return
     fi
@@ -72,4 +72,4 @@ function update() {
     send_slack_message "Deployment completed" "$COLOR_GREEN"
 }
 
-update > /dev/null 2>&1
+update
