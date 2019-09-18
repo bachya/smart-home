@@ -183,7 +183,11 @@ kind: pipeline
 name: Build Notification
 
 depends_on:
-  - Deploy
+  - AppDaemon
+  - ESPHome
+  - Home Assistant
+  - NGINX
+  - Shell Scripts
 
 steps:
   - name: Send Notification
