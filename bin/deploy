@@ -6,18 +6,12 @@ BRANCH="master"
 REPO_NAME="hub"
 
 # Variables that shouldn't need editing:
-API_BASE="https://bf5959ab-1a7e-47b7-9528-19651d1b8018.bachyaproductions.com:18884"
-API_LAST_BUILD="api/repos/bachya/$REPO_NAME/builds"
-API_TOKEN="mKAk7aBngFlvcpWe8ir4FGcSrJ6lgzyd"
-API_USER_AGENT="User-Agent: Paw/3.1.8 (Macintosh; OS X/10.14.6) GCDHTTPRequest"
-
 SLACK_HOOK_URL="https://hooks.slack.com/services/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"
 COLOR_BLUE="#1539e0"
 COLOR_GREEN="good"
 COLOR_RED="danger"
 COLOR_YELLOW="warning"
 
-LAST_BUILD_FILEPATH="/tmp/${REPO_NAME}_last_drone_build"
 BIN_PATH="$( dirname "$( cd "$(dirname "$0")" ; pwd -P )" )"
 
 
@@ -41,11 +35,12 @@ function send_slack_message() {
 function update() {
     local git_pull_result
     local local_branch
+    local status_result
 
     # If there are no new changes to the repo, don't trigger a build:
     remote_git fetch
-    local result=$( echo $( remote_git status ) | grep "behind" | wc -l )
-    if [ $result == 0 ]; then
+    status_result=$("$(remote_git status)" | grep -c "behind")
+    if [ "$status_result" == 0 ]; then
         send_slack_message "No new changes to deploy" "$COLOR_BLUE"
         return
     fi
