@@ -21,14 +21,6 @@ LAST_BUILD_FILEPATH="/tmp/${REPO_NAME}_last_drone_build"
 BIN_PATH="$( dirname "$( cd "$(dirname "$0")" ; pwd -P )" )"
 
 
-function fetch_latest_build_number() {
-    curl \
-        -s "$API_BASE/$API_LAST_BUILD" \
-        -H "$API_USER_AGENT" \
-        -H "Authorization: Bearer $API_TOKEN" \
-        | jq 'map(select(.status == "success" and .target == "'$BRANCH'"))[0].number'
-}
-
 function remote_git() {
     git --git-dir "$BIN_PATH"/.git --work-tree="$BIN_PATH" "$@"
 }
@@ -46,32 +38,17 @@ function send_slack_message() {
     "$SLACK_HOOK_URL"
 }
 
-function should_update() {
-    local latest_build_number
-    local saved_build_number
-
-    # If the last build file doesn't exist, create it:
-    [ ! -f "$LAST_BUILD_FILEPATH" ] && touch "$LAST_BUILD_FILEPATH"
-
-    latest_build_number=$(fetch_latest_build_number)
-    saved_build_number=$(cat "$LAST_BUILD_FILEPATH")
-
-    # If the build number is the same as the last one retrieved, don't trigger
-    # a build:
-    if [ "$latest_build_number" == "$saved_build_number" ]; then
-        echo "false"
-        return
-    fi
-
-    echo "$latest_build_number" > "$LAST_BUILD_FILEPATH"
-
-    echo "true"
-}
-
 function update() {
     local git_pull_result
     local local_branch
-    local saved_build_number
+
+    # If there are no new changes to the repo, don't trigger a build:
+    remote_git fetch
+    local result=$( echo $( remote_git status ) | grep "behind" | wc -l )
+    if [ $result == 0 ]; then
+        send_slack_message "No new changes to deploy" "$COLOR_BLUE"
+        return
+    fi
 
     # If the repo has a branch other than the target one checked out, don't trigger
     # a build:
@@ -84,6 +61,7 @@ function update() {
         return
     fi
 
+    # If the hub has a branch other than master checked out, don't trigger a build:
     git_pull_result="$(remote_git pull origin master > /dev/null 2>&1)"
     if [ "$git_pull_result" == "1" ]; then
         send_slack_message \
@@ -92,24 +70,11 @@ function update() {
         return
     fi
 
-    saved_build_number=$(cat "$LAST_BUILD_FILEPATH")
-
-    send_slack_message \
-        "Deployment for build #$saved_build_number starting..." \
-        "$COLOR_BLUE"
+    send_slack_message "Deployment started..." "$COLOR_BLUE"
 
     "$BIN_PATH"/bin/build
 
-    send_slack_message \
-        "Deployment for build #$saved_build_number completed" \
-        "$COLOR_GREEN"
+    send_slack_message "Deployment completed" "$COLOR_GREEN"
 }
 
-
-dirty=$(should_update)
-if [ "$dirty" == "true" ]; then
-    update > /dev/null 2>&1
-    echo -n "Deployment complete"
-else
-    echo -n "No deployment required"
-fi
+update > /dev/null 2>&1

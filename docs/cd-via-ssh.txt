@@ -1,0 +1,7 @@
+1. AUTHORIZED KEYS FOR CD VIA SSH
+----------------------------------------------------------------------------------------
+Here's any authorized_keys line that allows for the HASS SSH key to access the host
+machine and deploy the stack:
+
+command="/home/bachya/git/hub/bin/deploy",restrict ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH7bvR/YpUtlbNFZ2osTydvgLO6PMn6g5WrU5YSwgcXT abach@ABACH-MAC.fourwindsinteractive.com
+

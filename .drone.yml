@@ -147,14 +147,12 @@ steps:
 
 ---
 kind: pipeline
-name: Wrap-up
+name: Deploy
 
 trigger:
   branch:
     - master
-    - feature/*
   status:
-    - failure
     - success
 
 depends_on:
@@ -163,6 +161,29 @@ depends_on:
   - Home Assistant
   - NGINX
   - Shell Scripts
+
+steps:
+  - name: Deploy
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: deploy_ssh_host
+      username:
+        from_secret: deploy_ssh_username
+      port:
+        from_secret: deploy_ssh_port
+      key:
+        from_secret: deploy_ssh_key
+    when:
+      status:
+        - success
+
+---
+kind: pipeline
+name: Build Notification
+
+depends_on:
+  - Deploy
 
 steps:
   - name: Send Notification
