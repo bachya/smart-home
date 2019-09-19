@@ -1,5 +1,5 @@
 ---
-permit_join: true
+permit_join: false
 
 homeassistant: true
 
