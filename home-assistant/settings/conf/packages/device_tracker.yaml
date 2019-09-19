@@ -11,12 +11,9 @@ owntracks:
 
 unifi:
   controllers:
-    host: cloud-key.phil.lan
-    site: !secret unifi_site
-    username: !secret unifi_username
-    password: !secret unifi_password
-    ssid_filter:
-      - "Phil?"
-      - "Phil?_IoT"
-    detection_time: 60
-    consider_home: 60
+    - host: cloud-key.phil.lan
+      site: !secret unifi_site
+      detection_time: 60
+      ssid_filter:
+        - "Phil?"
+        - "Phil?_IoT"
