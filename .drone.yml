@@ -97,6 +97,13 @@ steps:
       - cd /usr/src/homeassistant
       - "python -m homeassistant -c /drone/src/home-assistant/settings \
          --script check_config"
+  - name: "Config Check: Stable"
+    image: homeassistant/home-assistant:stable
+    pull: always
+    commands:
+      - cd /usr/src/homeassistant
+      - "python -m homeassistant -c /drone/src/home-assistant/settings \
+         --script check_config"
 
 ---
 kind: pipeline
