@@ -156,6 +156,7 @@ sensor:
       - sensor.fiddle_leaf_fig_temperature
       - sensor.guest_bedroom_sensor_temperature
       - sensor.kitchen_sensor_temperature
+      - sensor.kitchen_sink_sensor_temperature
       - sensor.kitchen_sink_temperature
       - sensor.master_bathroom_temperature
       - sensor.side_yard_inside_temp
