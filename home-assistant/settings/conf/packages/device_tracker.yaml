@@ -5,14 +5,18 @@ device_tracker:
     secret: !secret automatic_secret
     current_location: true
 
-  - platform: unifi
-    host: cloud-key.phil.lan
-    username: !secret unifi_username
-    password: !secret unifi_password
-    verify_ssl: false
-    detection_time: 60
-    consider_home: 60
-
 owntracks:
   max_gps_accuracy: 200
   mqtt_topic: !secret mqtt_topic_owntracks
+
+unifi:
+  controllers:
+    host: cloud-key.phil.lan
+    site: !secret unifi_site
+    username: !secret unifi_username
+    password: !secret unifi_password
+    ssid_filter:
+      - "Phil?"
+      - "Phil?_IoT"
+    detection_time: 60
+    consider_home: 60

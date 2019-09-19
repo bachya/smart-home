@@ -80,7 +80,7 @@ services:
       - vernemq
     devices:
       - "/dev/zwave:/dev/zwave"
-    image: homeassistant/home-assistant:0.98.0
+    image: homeassistant/home-assistant:0.99.0
     network_mode: "host"
     restart: unless-stopped
     volumes:

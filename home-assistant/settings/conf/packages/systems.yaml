@@ -148,42 +148,6 @@ sensor:
         time_constant: 10
         precision: 2
 
-  - platform: pi_hole
-    host: gryffindor.phil.lan:8080
-    monitored_conditions:
-      - ads_blocked_today
-      - ads_percentage_today
-      - dns_queries_today
-      - domains_being_blocked
-      - queries_cached
-      - queries_forwarded
-      - unique_clients
-      - unique_domains
-
-  - platform: pi_hole
-    host: hufflepuff.phil.lan:8080
-    monitored_conditions:
-      - ads_blocked_today
-      - ads_percentage_today
-      - dns_queries_today
-      - domains_being_blocked
-      - queries_cached
-      - queries_forwarded
-      - unique_clients
-      - unique_domains
-
-  - platform: pi_hole
-    host: slytherin.phil.lan:8080
-    monitored_conditions:
-      - ads_blocked_today
-      - ads_percentage_today
-      - dns_queries_today
-      - domains_being_blocked
-      - queries_cached
-      - queries_forwarded
-      - unique_clients
-      - unique_domains
-
   - platform: sql
     db_url: !secret recorder_db_url
     queries:
