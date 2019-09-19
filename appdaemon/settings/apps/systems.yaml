@@ -23,6 +23,7 @@ notify_of_low_batteries_automation:
       - sensor.fiddle_leaf_fig_battery
       - sensor.front_door_lock_battery
       - sensor.garage_fire_door_lock_battery
+      - sensor.kitchen_sink_sensor_battery
   properties:
     battery_level_threshold: 20
     notification_interval: 900
