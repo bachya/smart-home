@@ -40,15 +40,12 @@ docker-compose -f "$REPO_PATH"/docker-compose.yml down --remove-orphans
 docker container prune -f
 docker image prune -f
 
-# Bring up all "background" services (i.e., those services that can come up before the
-# big three: HASS, AppDaemon, and NGINX):
+# Bring up the services in a staggered order:
 docker-compose -f "$REPO_PATH"/docker-compose.yml up -d \
     --scale appdaemon=0 \
     --scale hass=0 \
-    --scale nginx=0
+    --scale nginx=0 \
     --scale vernemq=0
-
-# Bring up HASS, AppDaemon, and NGINX with delays in-between:
 docker-compose -f "$REPO_PATH"/docker-compose.yml up -d vernemq
 sleep 3
 docker-compose -f "$REPO_PATH"/docker-compose.yml up
