@@ -175,6 +175,7 @@ steps:
         from_secret: deploy_ssh_port
       key:
         from_secret: deploy_ssh_key
+      command_timeout: 5m
     when:
       status:
         - success
