@@ -13,3 +13,8 @@ mqtt:
 
 serial:
   port: /dev/zigbee
+
+devices:
+  "0x000d6f00129d168a":
+    friendly_name: Kitchen Sink Sensor
+    retain: true
