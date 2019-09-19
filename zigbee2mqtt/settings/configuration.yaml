@@ -1,0 +1,15 @@
+---
+permit_join: true
+
+homeassistant: true
+
+mqtt:
+  base_topic: zigbee2mqtt
+  homeassistant_discovery_topic: homeassistant
+  homeassistant_status_topic: "hass/status"
+  password: 8tYtazjfRVgXzbjsHtf7AcTKH
+  server: mqtt://vernemq:1883
+  user: zigbee2mqttassistant
+
+serial:
+  port: /dev/zigbee

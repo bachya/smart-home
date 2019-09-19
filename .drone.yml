@@ -19,6 +19,7 @@ steps:
       - yamllint ./appdaemon/settings/
       - yamllint ./esphome/
       - yamllint ./home-assistant/settings/
+      - yamllint ./zigbee2mqtt/settings/
 
 ---
 kind: pipeline
@@ -150,6 +151,7 @@ trigger:
 depends_on:
   - Pre-Flight
   - ESPHome
+  - Fail2Ban
   - Home Assistant
   - NGINX
   - Shell Scripts
@@ -182,6 +184,7 @@ trigger:
 depends_on:
   - Pre-Flight
   - ESPHome
+  - Fail2Ban
   - Home Assistant
   - NGINX
   - Shell Scripts

@@ -27,3 +27,7 @@ vernemq:
   title: VerneMQ
   url: !secret panel_url_vernemq
   icon: mdi:wifi
+zigbee2mqtt:
+  title: Zigbee2MQTT
+  url: !secret panel_url_zibee2mqtt
+  icon: mdi:zigbee

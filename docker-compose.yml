@@ -79,7 +79,6 @@ services:
       - mysql
       - vernemq
     devices:
-      # - "/dev/zigbee:/dev/zigbee"
       - "/dev/zwave:/dev/zwave"
     image: homeassistant/home-assistant:0.98.0
     network_mode: "host"
@@ -173,6 +172,36 @@ services:
       - /etc/ssl:/etc/ssl:ro
       - /usr/share/ca-certificates:/usr/share/ca-certificates:ro
 
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    depends_on:
+      - vernemq
+    devices:
+      - "/dev/zigbee:/dev/zigbee"
+    environment:
+      TZ: America/Denver
+    image: koenkk/zigbee2mqtt:1.6.0
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - zigbee2mqtt-config:/app/data
+
+  zigbee2mqttassistant:
+    container_name: zigbee2mqttassistant
+    depends_on:
+      - vernemq
+    environment:
+      Z2MA_SETTINGS__MQTTSERVER: vernemq
+      Z2MA_SETTINGS__MQTTUSERNAME: zigbee2mqttassistant
+      Z2MA_SETTINGS__MQTTPASSWORD: 8tYtazjfRVgXzbjsHtf7AcTKH
+    image: carldebilly/zigbee2mqttassistant:0.2.0-dev.66
+    ports:
+      - "127.0.0.1:8880:80/tcp"
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - zigbee2mqtt-config:/app/data
+
 volumes:
 
   appdaemon-config:
@@ -181,3 +210,4 @@ volumes:
   glances-config:
   hass-config:
   portainer-config:
+  zigbee2mqtt-config:

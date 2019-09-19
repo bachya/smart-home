@@ -1,7 +1,8 @@
 ---
 broker: 0.0.0.0
-port: 1883
 client_id: younger-bachs-hass
-username: !secret vernemq_username
+discovery: true
 password: !secret vernemq_password
+port: 1883
 protocol: 3.1
+username: !secret vernemq_username

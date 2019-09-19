@@ -29,6 +29,9 @@ copy_config_data "hub_glances-config" "$REPO_PATH"/glances/settings
 # Update Home Assistant configs:
 copy_config_data "hub_hass-config" "$REPO_PATH"/home-assistant/settings
 
+# Update Zigbee2MQTT configs:
+copy_config_data "hub_zigbee2mqtt-config" "$REPO_PATH"/zigbee2mqtt/settings
+
 # Re-build the containers if necessary:
 docker-compose -f "$REPO_PATH"/docker-compose.yml build
 
@@ -36,6 +39,10 @@ docker-compose -f "$REPO_PATH"/docker-compose.yml build
 docker-compose -f "$REPO_PATH"/docker-compose.yml down --remove-orphans
 docker container prune -f
 docker image prune -f
+
+# VerneMQ is slow to start, so let it get up and running first:
+docker-compose -f "$REPO_PATH"/docker-compose.yml up -d vernemq
+sleep 5
 
 # Bring up all "background" services (i.e., those services that can come up before the
 # big three: HASS, AppDaemon, and NGINX):
