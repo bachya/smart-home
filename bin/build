@@ -40,24 +40,18 @@ docker-compose -f "$REPO_PATH"/docker-compose.yml down --remove-orphans
 docker container prune -f
 docker image prune -f
 
-# VerneMQ is slow to start, so let it get up and running first:
-docker-compose -f "$REPO_PATH"/docker-compose.yml up -d vernemq
-sleep 5
-
 # Bring up all "background" services (i.e., those services that can come up before the
 # big three: HASS, AppDaemon, and NGINX):
 docker-compose -f "$REPO_PATH"/docker-compose.yml up -d \
     --scale appdaemon=0 \
     --scale hass=0 \
     --scale nginx=0
+    --scale vernemq=0
 
 # Bring up HASS, AppDaemon, and NGINX with delays in-between:
-sleep 5
-docker-compose -f "$REPO_PATH"/docker-compose.yml up -d hass
-sleep 5
-docker-compose -f "$REPO_PATH"/docker-compose.yml up -d appdaemon
-sleep 5
-docker-compose -f "$REPO_PATH"/docker-compose.yml up -d nginx
+docker-compose -f "$REPO_PATH"/docker-compose.yml up -d vernemq
+sleep 3
+docker-compose -f "$REPO_PATH"/docker-compose.yml up
 
 # Do a final cleanup of unused networks and volumes:
 docker network prune -f

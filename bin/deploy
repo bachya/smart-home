@@ -37,14 +37,6 @@ function update() {
     local local_branch
     local status_result
 
-    # If there are no new changes to the repo, don't trigger a build:
-    remote_git fetch
-    status_result=$(remote_git status | grep -c "behind" || true)
-    if [ "$status_result" -eq "0" ]; then
-        send_slack_message "No new changes to deploy" "$COLOR_BLUE"
-        return
-    fi
-
     # If the repo has a branch other than the target one checked out, don't trigger
     # a build:
     local_branch="$(remote_git rev-parse --abbrev-ref HEAD)"
@@ -53,6 +45,14 @@ function update() {
             "Refusing to deploy to local branch: $local_branch" \
             "$COLOR_YELLOW"
         echo "false"
+        return
+    fi
+
+    # If there are no new changes to the repo, don't trigger a build:
+    remote_git fetch
+    status_result=$(remote_git status | grep -c "behind" || true)
+    if [ "$status_result" -eq "0" ]; then
+        send_slack_message "No new changes to deploy" "$COLOR_BLUE"
         return
     fi
 
