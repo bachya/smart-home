@@ -2,12 +2,18 @@
 appdaemon:
   api_key: !secret api_key
   api_port: 5051
+  elevation: !secret base_elevation
+  latitude: !secret base_latitude
+  longitude: !secret base_longitude
   missing_app_warnings: false
+  timezone: !secret base_timezone
+
   plugins:
     HASS:
       type: hass
       ha_url: http://hub.myserver.com:8123
       token: !secret ha_token
+
   portainer_password: !secret portainer_password
   portainer_username: !secret portainer_username
   production_mode: true
