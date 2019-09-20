@@ -21,6 +21,7 @@ climate_manager:
     outdoor_low_threshold: input_number.outdoor_extreme_low_threshold
     outdoor_temperature_sensor: sensor.side_yard_temp
     thermostat_cooling: climate.thermostat_cooling
+    thermostat_heating: climate.thermostat_heating
 
 lightning_detected_automation:
   module: climate
