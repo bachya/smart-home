@@ -148,5 +148,4 @@ thermostat_schedule:
 
   watched_entities:
     - climate.thermostat_cooling
-    - climate.thermostat_heating
     - input_boolean.climate_away_mode
