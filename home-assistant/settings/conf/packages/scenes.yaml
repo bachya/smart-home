@@ -90,7 +90,7 @@ script:
     sequence:
       - service: climate.set_temperature
         data:
-          entity_id: climate.thermostat
+          entity_id: climate.thermostat_cooling
           temperature: 68
 
   switch_roku_to_plex:

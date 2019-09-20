@@ -20,7 +20,7 @@ climate_manager:
     outdoor_high_threshold: input_number.outdoor_extreme_high_threshold
     outdoor_low_threshold: input_number.outdoor_extreme_low_threshold
     outdoor_temperature_sensor: sensor.side_yard_temp
-    thermostat: climate.thermostat
+    thermostat_cooling: climate.thermostat_cooling
 
 lightning_detected_automation:
   module: climate
@@ -108,7 +108,7 @@ thermostat_schedule:
       return state("input_boolean.climate_away_mode")
 
     def hvac_mode():
-      return state("climate.thermostat")
+      return state("climate.thermostat_cooling")
 
   schedule_snippets:
     cooling_season:
@@ -128,7 +128,7 @@ thermostat_schedule:
     whole_house:
 
       actors:
-        climate.thermostat:
+        climate.thermostat_cooling:
           supports_hvac_modes: false
           max_temp: 95
           min_temp: 45
@@ -142,5 +142,5 @@ thermostat_schedule:
               if hvac_mode() == 'heat' and away_mode() == 'off' else Skip()"
 
   watched_entities:
-    - climate.thermostat
+    - climate.thermostat_cooling
     - input_boolean.climate_away_mode
