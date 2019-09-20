@@ -98,7 +98,7 @@ notify_bad_aqi_automation:
         event_data:
           new: home
 
-thermostat_schedule:
+thermostat_schedule_cooling_season:
   module: hass_apps_loader
   class: SchedyApp
 
@@ -118,6 +118,41 @@ thermostat_schedule:
           - {start: "20:30", end: "07:00", weekdays: "1-4, 7"}
           - {start: "20:30", end: "08:30", weekdays: "5-6"}
       - v: 75
+
+  rooms:
+
+    whole_house:
+
+      actors:
+        climate.thermostat_cooling:
+          supports_hvac_modes: false
+          max_temp: 80
+          min_temp: 60
+
+      rescheduling_delay: 0
+
+      schedule:
+        - x: "IncludeSchedule(schedule_snippets['cooling_season']) \
+              if hvac_mode() == 'cool' and away_mode() == 'off' else Skip()"
+
+  watched_entities:
+    - climate.thermostat_cooling
+    - input_boolean.climate_away_mode
+
+thermostat_schedule_heating_season:
+  module: hass_apps_loader
+  class: SchedyApp
+
+  actor_type: thermostat
+
+  expression_environment: |
+    def away_mode():
+      return state("input_boolean.climate_away_mode")
+
+    def hvac_mode():
+      return state("climate.thermostat_heating")
+
+  schedule_snippets:
     heating_season:
       - v: 68
         rules:
@@ -129,10 +164,6 @@ thermostat_schedule:
     whole_house:
 
       actors:
-        climate.thermostat_cooling:
-          supports_hvac_modes: false
-          max_temp: 80
-          min_temp: 60
         climate.thermostat_heating:
           supports_hvac_modes: false
           max_temp: 80
@@ -141,11 +172,9 @@ thermostat_schedule:
       rescheduling_delay: 0
 
       schedule:
-        - x: "IncludeSchedule(schedule_snippets['cooling_season']) \
-              if hvac_mode() == 'cool' and away_mode() == 'off' else Skip()"
         - x: "IncludeSchedule(schedule_snippets['heating_season']) \
               if hvac_mode() == 'heat' and away_mode() == 'off' else Skip()"
 
   watched_entities:
-    - climate.thermostat_cooling
+    - climate.thermostat_heating
     - input_boolean.climate_away_mode
