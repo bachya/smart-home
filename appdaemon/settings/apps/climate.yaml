@@ -131,8 +131,12 @@ thermostat_schedule:
       actors:
         climate.thermostat_cooling:
           supports_hvac_modes: false
-          max_temp: 95
-          min_temp: 45
+          max_temp: 80
+          min_temp: 60
+        climate.thermostat_heating:
+          supports_hvac_modes: false
+          max_temp: 80
+          min_temp: 60
 
       rescheduling_delay: 0
 
@@ -144,4 +148,5 @@ thermostat_schedule:
 
   watched_entities:
     - climate.thermostat_cooling
+    - climate.thermostat_heating
     - input_boolean.climate_away_mode
