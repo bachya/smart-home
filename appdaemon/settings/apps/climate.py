@@ -259,6 +259,12 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             self.log('Within eco mode limits; turning thermostat to "Off"')
             self.set_mode_off()
 
+    def _restore_previous_state(self) -> None:
+        """Restore the thermostat to its previous state."""
+        if self._last_hvac_mode and self._last_temperature:
+            self._set_hvac_mode(self._last_hvac_mode)
+            self.set_temperature(self._last_temperature)
+
     def _set_away(self) -> None:
         """Put the thermostat in "Away" mode."""
         self.log('Setting thermostat to "Away" mode')
@@ -290,11 +296,6 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         # (before away mode); otherwise, let it keep doing its thing:
         if self.hvac_mode == HVAC_MODE_OFF:
             self._restore_previous_state()
-
-    def _restore_previous_state(self) -> None:
-        """Restore the thermostat to its previous state."""
-        if self._last_hvac_mode and self._last_temperature:
-            self.set_temperature(self._last_temperature)
 
     def _set_hvac_mode(self, hvac_mode: str) -> None:
         """Set the themostat's operation mode."""
@@ -357,11 +358,6 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             return
 
         self._last_temperature = self.target_temperature
-
-        # If the thermostat is off and the temperature is adjusted,
-        # make a guess as to which operation mode should be used:
-        if self.hvac_mode == HVAC_MODE_OFF:
-            self._restore_previous_state()
 
         self.call_service(
             "climate/set_temperature",
