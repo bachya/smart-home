@@ -161,7 +161,7 @@ turn_on_front_patio_light_when_nighttime_person_detected_automation:
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
   constraints:
     constraints:
-      constrain_in_blackout: true
+      constrain_in_bed: true
 
 turn_on_living_room_lights_when_nighttime_person_detected_automation:
   module: switches
@@ -176,4 +176,4 @@ turn_on_living_room_lights_when_nighttime_person_detected_automation:
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
   constraints:
     constraints:
-      constrain_in_blackout: true
+      constrain_in_bed: true
