@@ -3,6 +3,7 @@ FROM alpine:3.10.1
 # Update, install, and clean up packages all in one step:
 RUN apk update \
     && apk add --no-cache \
+      bash \
       gzip \
       mosquitto-clients
 

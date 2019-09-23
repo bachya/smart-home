@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 log_file="/var/log/fail2ban-mqtt-notifier"
 mqtt_host="myserver.com"
 mqtt_password="password"
@@ -10,11 +10,11 @@ _send_mqtt_payload() {
     local payload=$2
 
     /usr/bin/mosquitto_pub \
-        -h $mqtt_host \
-        -u $mqtt_username \
-        -P $mqtt_password \
+        -h "$mqtt_host" \
+        -u "$mqtt_username" \
+        -P "$mqtt_password" \
         -r \
-        -t $topic \
+        -t "$topic" \
         -m "$payload"
 }
 
@@ -32,7 +32,9 @@ log() {
 }
 
 new_info() {
-    local latest=$(echo "$(get_failures)" | sha256sum )
+    local latest
+    latest=$(get_failures | sha256sum)
+
     if [ "$FAIL2BAN_FAILURES" == "$latest" ]
     then
         return 1
@@ -43,49 +45,75 @@ new_info() {
 }
 
 send_info() {
-    local failures=$(get_failures)
-    local failure_count=$(echo "$failures" | sed '/^\s*$/d' | wc -l)
-    local last_failure="$(echo "$failures" | tail -n 1)"
-    local last_failure_jail="$(
-        echo $last_failure | cut -d " " -f6 | sed 's/^.\(.*\).$/\1/'
+    local failures
+    failures=$(get_failures)
+
+    local failure_count
+    failure_count=$(echo "$failures" | sed '/^\s*$/d' | wc -l)
+
+    local last_failure
+    last_failure="$(echo "$failures" | tail -n 1)"
+
+    local last_failure_jail
+    last_failure_jail="$(
+        echo "$last_failure" | cut -d " " -f6 | sed 's/^.\(.*\).$/\1/'
     )"
-    local last_failure_ts="$(echo "$last_failure" | awk -F, '{ print $1 }')"
-    local last_failure_ip="$(
+
+    local last_failure_ts
+    last_failure_ts="$(echo "$last_failure" | awk -F, '{ print $1 }')"
+
+    local last_failure_ip
+    last_failure_ip="$(
         echo "$last_failure" | awk -F'Found ' '{ print $2 }' | cut -d " " -f 1
     )"
+
+    local last_failure_country
     if [[ -z "$last_failure_ip" ]]
     then
-        local last_failure_country=""
+        last_failure_country=""
     else
-        local last_failure_country="$(
+        last_failure_country="$(
             grep "$last_failure_ip" /var/log/nginx/access.log \
                 | tail -n 1 \
                 | cut -d '"' -f10
         )"
     fi
 
-    local bans=$(get_bans)
-    local ban_count=$(echo "$bans" | sed '/^\s*$/d' | wc -l)
-    local last_ban="$(echo "$bans" | tail -n 1)"
-    local last_ban_jail="$(
-        echo $last_ban | cut -d " " -f6 | sed 's/^.\(.*\).$/\1/'
+    local bans
+    bans=$(get_bans)
+
+    local ban_count
+    ban_count=$(echo "$bans" | sed '/^\s*$/d' | wc -l)
+
+    local last_ban
+    last_ban="$(echo "$bans" | tail -n 1)"
+
+    local last_ban_jail
+    last_ban_jail="$(
+        echo "$last_ban" | cut -d " " -f6 | sed 's/^.\(.*\).$/\1/'
     )"
-    local last_ban_ts="$(echo "$last_ban" | awk -F, '{ print $1 }')"
-    local last_ban_ip="$(
+
+    local last_ban_ts
+    last_ban_ts="$(echo "$last_ban" | awk -F, '{ print $1 }')"
+
+    local last_ban_ip
+    last_ban_ip="$(
         echo "$last_ban" | awk -F'Found ' '{ print $2 }' | cut -d " " -f 1
     )"
+
+    local last_ban_country
     if [[ -z "$last_ban_ip" ]]
     then
-        local last_ban_country=""
+        last_ban_country=""
     else
-        local last_ban_country="$(
+        last_ban_country="$(
             grep "$last_ban_ip" /var/log/nginx/access.log \
                 | tail -n 1 \
                 | cut -d '"' -f10
         )"
     fi
 
-    _send_mqtt_payload $mqtt_topic "{ \
+    _send_mqtt_payload "$mqtt_topic" "{ \
         \"failure_count\": $failure_count, \
         \"last_failure_jail\": \"$last_failure_jail\", \
         \"last_failure_ip\": \"$last_failure_ip\", \
