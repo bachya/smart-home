@@ -144,6 +144,8 @@ steps:
     commands:
       - shellcheck --version
       - shellcheck ./bin/*
+      - shellcheck ./fail2ban-mqtt-notifier/docker/bin/*
+      - shellcheck ./nginx/docker/bin/*
 
 ---
 kind: pipeline
