@@ -51,7 +51,7 @@ send_info() {
     )"
     local last_failure_ts="$(echo "$last_failure" | awk -F, '{ print $1 }')"
     local last_failure_ip="$(
-        echo "$last_failure" | awk -F\ -\  '{ print $1}' | sed 's/.\+Found\s//g'
+        echo "$last_failure" | awk -F'Found ' '{ print $2 }' | cut -d " " -f 1
     )"
     if [[ -z "$last_failure_ip" ]]
     then
@@ -72,9 +72,9 @@ send_info() {
     )"
     local last_ban_ts="$(echo "$last_ban" | awk -F, '{ print $1 }')"
     local last_ban_ip="$(
-        echo "$last_ban" | awk -F\ -\  '{ print $1}' | sed 's/.\+Ban\s//g'
+        echo "$last_ban" | awk -F'Found ' '{ print $2 }' | cut -d " " -f 1
     )"
-    if [[ -z "$last_failure_ip" ]]
+    if [[ -z "$last_ban_ip" ]]
     then
         local last_ban_country=""
     else
