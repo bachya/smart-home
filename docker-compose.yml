@@ -161,7 +161,7 @@ services:
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.topic.1: "* in"
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.username: hub_mqtt
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0: remote_mqtt.myserver.com:18883
-    image: erlio/docker-vernemq:1.9.1-alpine
+    image: erlio/docker-vernemq:1.9.2-alpine
     ports:
       - "1883:1883/tcp"
       - "127.0.0.1:8888:8888/tcp"
