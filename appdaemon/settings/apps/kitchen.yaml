@@ -70,3 +70,17 @@ bar_cart_on_upon_arrival_automation:
         event_data:
           name: vacation_mode
           state: "off"
+
+kitchen_sink_leak_detected_automation:
+  module: systems
+  class: LeftInState
+  dependencies:
+    - presence_manager
+  entity_ids:
+    entity_id: binary_sensor.kitchen_sink_sensor_water_leak
+  properties:
+    duration: 60
+    notification_target:
+      - "person:Aaron"
+      - "person:Britt"
+    state: "on"

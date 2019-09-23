@@ -1,4 +1,18 @@
 ---
+basement_leak_detected_automation:
+  module: systems
+  class: LeftInState
+  dependencies:
+    - presence_manager
+  entity_ids:
+    entity_id: binary_sensor.basement_sensor_leak_detector
+  properties:
+    duration: 60
+    notification_target:
+      - "person:Aaron"
+      - "person:Britt"
+    state: "on"
+
 basement_lights_vacation_mode_automation:
   module: switches
   class: VacationMode
