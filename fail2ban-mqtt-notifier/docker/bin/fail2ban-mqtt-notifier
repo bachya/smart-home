@@ -56,7 +56,7 @@ send_info() {
 
     local last_failure_jail
     last_failure_jail="$(
-        echo "$last_failure" | cut -d " " -f6 | sed 's/^.\(.*\).$/\1/'
+        echo "$last_failure" | tr -s " " | cut -d " " -f6 | sed 's/[][]//g'
     )"
 
     local last_failure_ts
@@ -64,7 +64,7 @@ send_info() {
 
     local last_failure_ip
     last_failure_ip="$(
-        echo "$last_failure" | awk -F'Found ' '{ print $2 }' | cut -d " " -f 1
+        echo "$last_failure" | grep -o '[0-9]\+[.][0-9]\+[.][0-9]\+[.][0-9]\+'
     )"
 
     local last_failure_country
@@ -90,7 +90,7 @@ send_info() {
 
     local last_ban_jail
     last_ban_jail="$(
-        echo "$last_ban" | cut -d " " -f6 | sed 's/^.\(.*\).$/\1/'
+        echo "$last_ban" | tr -s " " | cut -d " " -f6 | sed 's/[][]//g'
     )"
 
     local last_ban_ts
@@ -98,7 +98,7 @@ send_info() {
 
     local last_ban_ip
     last_ban_ip="$(
-        echo "$last_ban" | awk -F'Found ' '{ print $2 }' | cut -d " " -f 1
+        echo "$last_ban" | grep -o '[0-9]\+[.][0-9]\+[.][0-9]\+[.][0-9]\+'
     )"
 
     local last_ban_country
