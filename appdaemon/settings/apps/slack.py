@@ -3,6 +3,8 @@ import json
 from typing import Dict, Optional, Union
 from zlib import adler32
 
+import requests
+
 from core import Base
 from helpers import (
     grammatical_list_join,
@@ -14,8 +16,6 @@ from notification import send_notification
 
 def message(response_url: str, text: str, attachments: list = None) -> None:
     """Send a response via the Slack app."""
-    import requests
-
     payload = {"text": text}  # type: Dict[str, Union[str, list]]
     if attachments:
         payload["attachments"] = attachments

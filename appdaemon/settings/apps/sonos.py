@@ -86,10 +86,10 @@ class SonosManager(Base):
 
     def group(self, entity_list: List[SonosSpeaker] = None) -> Optional[SonosSpeaker]:
         """Group a list of speakers together (default: all)."""
-        if not entity_list:
-            entities = [entity for entity in self.entity_ids]
-        else:
+        if entity_list:
             entities = entity_list
+        else:
+            entities = self.entity_ids
 
         if len(entities) == 1:
             self.error("Refusing to group only one Sonos speaker", level="WARNING")

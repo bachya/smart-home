@@ -53,7 +53,7 @@ APP_SCHEMA = vol.Schema(
 class Base(Hass):
     """Define a base app/automation object."""
 
-    APP_SCHEMA = APP_SCHEMA
+    APP_SCHEMA = APP_SCHEMA.extend({})
 
     def initialize(self) -> None:
         """Initialize."""
