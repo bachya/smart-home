@@ -33,7 +33,7 @@ function send_slack_message() {
 }
 
 function update() {
-    local git_pull_result
+    local git_merge_result
     local local_branch
     local status_result
 
@@ -56,16 +56,18 @@ function update() {
         return
     fi
 
-    # If the hub has a branch other than master checked out, don't trigger a build:
-    git_pull_result="$(remote_git pull origin master > /dev/null 2>&1)"
-    if [ "$git_pull_result" == "1" ]; then
+    new_commits="$(remote_git --no-pager log --format=%s HEAD...FETCH_HEAD)"
+
+    # If the merge doesn't go well, abort:
+    git_merge_result="$(remote_git merge FETCH_HEAD > /dev/null 2>&1)"
+    if [ "$git_merge_result" == "1" ]; then
         send_slack_message \
-            "Deployment failed due to failed Git pull on target host" \
+            "Deployment failed due to failed Git merge on target host" \
             "$COLOR_RED"
         return
     fi
 
-    send_slack_message "Deployment started..." "$COLOR_BLUE"
+    send_slack_message "Deployment started:\n$new_commits" "$COLOR_BLUE"
 
     "$BIN_PATH"/bin/build
 
