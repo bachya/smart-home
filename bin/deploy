@@ -56,7 +56,7 @@ function update() {
         return
     fi
 
-    new_commits="$(remote_git --no-pager log --format=%s HEAD...FETCH_HEAD)"
+    new_commits="$(remote_git --no-pager log --format='• %h %s' HEAD...FETCH_HEAD)"
 
     # If the merge doesn't go well, abort:
     git_merge_result="$(remote_git merge FETCH_HEAD > /dev/null 2>&1)"
