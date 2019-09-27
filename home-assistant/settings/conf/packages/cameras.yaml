@@ -40,8 +40,6 @@ camera:
     input: "-rtsp_transport tcp -i rtsp://yi-camera-guest-bedroom.phil.\
             iot/ch0_0.h264"
 
-  - platform: nest
-
 image_processing:
   - platform: google_coral
     ip_address: slytherin.phil.lan
@@ -49,7 +47,6 @@ image_processing:
     confidence: 60
     target_object: person
     source:
-      - entity_id: camera.front_door_camera
       - entity_id: camera.garage_camera
       - entity_id: camera.guest_bedroom_camera
       - entity_id: camera.kitchen_camera
