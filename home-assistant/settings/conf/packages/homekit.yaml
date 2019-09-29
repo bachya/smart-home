@@ -8,6 +8,7 @@ homekit:
       - media_player
     include_entities:
       - climate.thermostat_cooling
+      - climate.thermostat_heating
       - cover.garage_door
       - sensor.fiddle_leaf_fig_moisture
       - switch.backyard_lights
