@@ -162,9 +162,6 @@ notify_when_status_changes_automation:
   icon: mdi:shield-half-full
   initial: false
   name: Notify when state changes
-notify_zwave_offline_automation:
-  icon: mdi:z-wave
-  name: Notify when Z-Wave offline
 office_lights_off_at_10pm_automation:
   icon: mdi:lightbulb
   initial: true

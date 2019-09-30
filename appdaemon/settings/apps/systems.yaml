@@ -151,53 +151,6 @@ notify_ps4_left_on_automation:
           name: blackout_mode
           state: "off"
 
-notify_zwave_offline_automation:
-  module: systems
-  class: NotifyOnStateChange
-  dependencies:
-    - presence_manager
-  entity_ids:
-    entity_id:
-      - zwave.aeotec_zw090_z_stick_gen5_us
-      - zwave.backyard_lights
-      - zwave.dishwasher
-      - zwave.fireplace
-      - zwave.front_door
-      - zwave.front_patio_light
-      - zwave.garage_door
-      - zwave.garage_lights
-      - zwave.kitchen_patio_light
-      - zwave.master_bathroom_fan
-      - zwave.master_toilet_fan
-      - zwave.powder_room_fan
-      - zwave.thermostat
-  properties:
-    duration: 60
-    notification_target:
-      - "person:Aaron"
-    old_state: "ready"
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "off"
-
 pi_hole_switch:
   module: systems
   class: PiHoleSwitch

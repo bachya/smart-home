@@ -24,9 +24,6 @@ CONF_BATTERY_LEVEL_THRESHOLD = "battery_level_threshold"
 
 CONF_EXPIRY_THRESHOLD = "expiry_threshold"
 
-CONF_NEW_STATE = "new_state"
-CONF_OLD_STATE = "old_state"
-
 CONF_PI_HOLE_ACTIVE_SENSOR = "pi_hole_active_sensor"
 CONF_PI_HOLE_API_KEY = "pi_hole_api_key"
 CONF_PI_HOLE_HOSTS = "pi_hole_hosts"
@@ -223,70 +220,6 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
             )
 
             send_notification(self, self.properties[CONF_NOTIFICATION_TARGET], message)
-
-        # If the automation is enabled when a battery is low, send a notification;
-        # if not, remember that we should send the notification when the automation
-        # becomes enabled:
-        if self.enabled:
-            _send_notification()
-        else:
-            self._send_notification_func = _send_notification
-
-    def on_enable(self) -> None:
-        """Send the notification once the automation is enabled (if appropriate)."""
-        if self._send_notification_func:
-            self._send_notification_func()
-            self._send_notification_func = None
-
-
-class NotifyOnStateChange(Base):  # pylint: disable=too-few-public-methods
-    """Define a feature to send a notification when an entity(s) changes state."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            CONF_ENTITY_IDS: vol.Schema({vol.Required(CONF_ENTITY_ID): cv.ensure_list}),
-            CONF_PROPERTIES: vol.All(
-                vol.Schema(
-                    {
-                        vol.Required(CONF_NOTIFICATION_TARGET): str,
-                        vol.Optional(CONF_NEW_STATE): str,
-                        vol.Optional(CONF_OLD_STATE): str,
-                        vol.Optional(CONF_DURATION): int,
-                    },
-                    extra=vol.ALLOW_EXTRA,
-                ),
-                cv.has_at_least_one_key(CONF_NEW_STATE, CONF_OLD_STATE),
-            ),
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self._send_notification_func = None  # type: Optional[Callable]
-
-        kwargs = {}
-        if CONF_DURATION in self.properties:
-            kwargs["duration"] = self.properties[CONF_DURATION]
-        if CONF_NEW_STATE in self.properties:
-            kwargs["new"] = self.properties[CONF_NEW_STATE]
-        if CONF_OLD_STATE in self.properties:
-            kwargs["old"] = self.properties[CONF_OLD_STATE]
-
-        for entity in self.entity_ids[CONF_ENTITY_ID]:
-            self.listen_state(self._on_state_change, entity, **kwargs)
-
-    def _on_state_change(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Send a notification when the state has changed."""
-
-        def _send_notification() -> None:
-            """Send a notification."""
-            send_notification(
-                self,
-                self.properties[CONF_NOTIFICATION_TARGET],
-                "{0} has changed its state: `{1}`.".format(entity, new),
-            )
 
         # If the automation is enabled when a battery is low, send a notification;
         # if not, remember that we should send the notification when the automation

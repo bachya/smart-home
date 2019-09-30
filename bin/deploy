@@ -6,7 +6,7 @@ BRANCH="master"
 REPO_NAME="hub"
 
 # Variables that shouldn't need editing:
-SLACK_HOOK_URL="https://hooks.slack.com/services/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"
+SLACK_HOOK_URL="https://hooks.slack.com/services/ID/ID2/ID3"
 COLOR_BLUE="#1539e0"
 COLOR_GREEN="good"
 COLOR_RED="danger"
