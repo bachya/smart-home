@@ -174,7 +174,7 @@ notify_zwave_offline_automation:
   properties:
     duration: 60
     notification_target:
-      - "person:Aaron"
+      - "slack"
     old_state: "ready"
   state_changes:
     - disable:
