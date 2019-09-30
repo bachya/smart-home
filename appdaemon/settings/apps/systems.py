@@ -248,7 +248,7 @@ class NotifyOnStateChange(Base):  # pylint: disable=too-few-public-methods
             CONF_PROPERTIES: vol.All(
                 vol.Schema(
                     {
-                        vol.Required(CONF_NOTIFICATION_TARGET): cv.ensure_list,
+                        vol.Required(CONF_NOTIFICATION_TARGET): str,
                         vol.Optional(CONF_NEW_STATE): str,
                         vol.Optional(CONF_OLD_STATE): str,
                         vol.Optional(CONF_DURATION): int,
