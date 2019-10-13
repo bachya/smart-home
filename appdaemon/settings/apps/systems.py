@@ -211,15 +211,18 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
 
         def _send_notification() -> None:
             """Send a notification."""
-            message = "The {0} has been left {1} for {2} minutes".format(
-                self.get_state(
-                    self.entity_ids[CONF_ENTITY_ID], attribute="friendly_name"
+            send_notification(
+                self,
+                self.properties[CONF_NOTIFICATION_TARGET],
+                "{0} -> {1} ({2} seconds)".format(
+                    self.get_state(
+                        self.entity_ids[CONF_ENTITY_ID], attribute="friendly_name"
+                    ),
+                    self.properties[CONF_STATE],
+                    self.properties[CONF_DURATION],
                 ),
-                self.properties[CONF_STATE],
-                int(self.properties[CONF_DURATION]) / 60,
+                title="Entity Alert",
             )
-
-            send_notification(self, self.properties[CONF_NOTIFICATION_TARGET], message)
 
         # If the automation is enabled when a battery is low, send a notification;
         # if not, remember that we should send the notification when the automation
