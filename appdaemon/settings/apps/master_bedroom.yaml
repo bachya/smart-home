@@ -8,18 +8,17 @@ master_bedroom_lights_sleep_timer_automation:
     switch: switch.master_bedroom_salt_lamp
     timer_slider: input_number.master_bedroom_salt_lamp_timer
 
-master_bedroom_lights_on_at_sunset_automation:
+master_bedroom_salt_lamp_on_in_bed_automation:
   module: switches
-  class: ToggleAtTime
+  class: ToggleOnState
   dependencies:
-    - guest_mode
     - presence_manager
-    - vacation_mode
   entity_ids:
     switch: switch.master_bedroom_salt_lamp
+    target: binary_sensor.in_bed
   properties:
-    schedule_time: sunset
-    state: "on"
+    switch_state: "on"
+    target_state: "on"
   state_changes:
     - disable:
         event: MODE_CHANGE

@@ -107,6 +107,9 @@ master_bedroom_lights_sleep_timer_automation:
   icon: mdi:sleep
   initial: true
   name: Enable sleep timer
+master_bedroom_salt_lamp_on_in_bed_automation:
+  icon: mdi:hotel
+  name: Turn on when in bed
 master_toilet_fan_double_tap_timer_automation:
   icon: mdi:timer
   name: "Toilet: double tap 10-minute timer"
