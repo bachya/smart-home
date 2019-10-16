@@ -7,6 +7,14 @@ binary_sensor:
 
   - platform: template
     sensors:
+      basement_person_detected:
+        entity_id: image_processing.google_coral_basement_camera_person
+        value_template: >
+          {{ states(
+            "image_processing.google_coral_basement_camera_person"
+          ) | int > 0 }}
+        device_class: occupancy
+        friendly_name: Basement Camera
       garage_person_detected:
         entity_id: image_processing.google_coral_garage_camera_person
         value_template: >
