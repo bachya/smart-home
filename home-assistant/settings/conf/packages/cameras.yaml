@@ -28,6 +28,10 @@ binary_sensor:
 
 camera:
   - platform: ffmpeg
+    name: Basement Camera
+    input: -rtsp_transport tcp -i rtsp://basement-camera.phil.iot:8554/unicast
+
+  - platform: ffmpeg
     name: Garage Camera
     input: -rtsp_transport tcp -i rtsp://garage-camera.myserver.com:8554/unicast
 
@@ -47,6 +51,7 @@ image_processing:
     confidence: 60
     target_object: person
     source:
+      - entity_id: camera.basement_camera
       - entity_id: camera.garage_camera
       - entity_id: camera.guest_bedroom_camera
       - entity_id: camera.kitchen_camera
