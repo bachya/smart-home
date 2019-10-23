@@ -92,44 +92,44 @@ wolfie_notify_when_cycle_complete_automation:
         event_data:
           new: home
 
-# wolfie_notify_when_stuck_automation:
-#   module: robot_vacuum
-#   class: NotifyWhenStuck
-#   dependencies:
-#     - presence_manager
-#     - wolfie
-#   app: wolfie
-#   properties:
-#     notification_interval: 300
-#   state_changes:
-#     - disable:
-#         event: MODE_CHANGE
-#         event_data:
-#           name: blackout_mode
-#           state: "on"
-#       enable:
-#         event: MODE_CHANGE
-#         event_data:
-#           name: blackout_mode
-#           state: "off"
-#     - disable:
-#         event: MODE_CHANGE
-#         event_data:
-#           name: vacation_mode
-#           state: "on"
-#       enable:
-#         event: MODE_CHANGE
-#         event_data:
-#           name: vacation_mode
-#           state: "off"
-#     - disable:
-#         event: PROXIMITY_CHANGE
-#         event_data:
-#           old: home
-#       enable:
-#         event: PROXIMITY_CHANGE
-#         event_data:
-#           new: home
+wolfie_notify_when_stuck_automation:
+  module: robot_vacuum
+  class: NotifyWhenStuck
+  dependencies:
+    - presence_manager
+    - wolfie
+  app: wolfie
+  properties:
+    notification_interval: 300
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: blackout_mode
+          state: "off"
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: vacation_mode
+          state: "off"
+    - disable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          old: home
+      enable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          new: home
 
 wolfie_scheduled_cycle_automation:
   module: robot_vacuum
