@@ -1,40 +1,4 @@
 ---
-input_boolean:
-  vacuum_schedule_monday:
-    name: "Monday"
-    icon: mdi:calendar
-    initial: true
-
-  vacuum_schedule_tuesday:
-    name: "Tuesday"
-    icon: mdi:calendar
-    initial: false
-
-  vacuum_schedule_wednesday:
-    name: "Wednesday"
-    icon: mdi:calendar
-    initial: false
-
-  vacuum_schedule_thursday:
-    name: "Thursday"
-    icon: mdi:calendar
-    initial: true
-
-  vacuum_schedule_friday:
-    name: "Friday"
-    icon: mdi:calendar
-    initial: false
-
-  vacuum_schedule_saturday:
-    name: "Saturday"
-    icon: mdi:calendar
-    initial: false
-
-  vacuum_schedule_sunday:
-    name: "Sunday"
-    icon: mdi:calendar
-    initial: false
-
 input_select:
   wolfie_bin_status:
     name: Bin Status
@@ -156,6 +120,14 @@ sensor:
           {{ as_timestamp(
             states.vacuum.xiaomi_vacuum_cleaner.attributes.clean_stop
             ) | timestamp_custom("%m/%d, %I:%M %p") }}
+        icon_template: mdi:calendar-check
+
+      vacuum_next_run:
+        friendly_name: Next Run Date/Time
+        value_template: >
+          {{ as_timestamp(
+            state_attr("calendar.wolfie_schedule", "start_time")
+          ) | timestamp_custom("%m/%d, %I:%M %p") }}
         icon_template: mdi:calendar-check
 
 switch:

@@ -139,17 +139,10 @@ wolfie_scheduled_cycle_automation:
     - security_manager
     - wolfie
   app: wolfie
+  entity_ids:
+    calendar: calendar.wolfie_schedule
   properties:
     ios_emptied_key: WOLFIE_EMPTIED
-    schedule_switches:
-      - input_boolean.vacuum_schedule_monday
-      - input_boolean.vacuum_schedule_tuesday
-      - input_boolean.vacuum_schedule_wednesday
-      - input_boolean.vacuum_schedule_thursday
-      - input_boolean.vacuum_schedule_friday
-      - input_boolean.vacuum_schedule_saturday
-      - input_boolean.vacuum_schedule_sunday
-    schedule_time: "10:00:00"
   state_changes:
     - disable:
         event: MODE_CHANGE

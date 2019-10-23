@@ -12,21 +12,21 @@ from const import (
     EVENT_VACUUM_START,
 )
 from helpers import config_validation as cv
-from helpers.scheduler import run_on_days
 from notification import send_notification
 
 CONF_BIN_STATE = "bin_state"
+CONF_STATUS = "status"
+
 CONF_CONSUMABLES = "consumables"
 CONF_CONSUMABLE_THRESHOLD = "consumable_threshold"
+
+CONF_CALENDAR = "calendar"
 CONF_IOS_EMPTIED_KEY = "ios_emptied_key"
 CONF_NOTIFICATION_INTERVAL = "notification_interval"
-CONF_SCHEDULE_SWITCHES = "schedule_switches"
-CONF_SCHEDULE_TIME = "schedule_time"
-CONF_STATUS = "status"
+
 CONF_VACUUM = "vacuum"
 
 HANDLE_BIN_FULL = "bin_full"
-HANDLE_SCHEDULE = "schedule"
 HANDLE_STUCK = "stuck"
 
 
@@ -214,37 +214,23 @@ class NotifyWhenStuck(Base):
             self._start_notification_cycle()
 
 
-class ScheduledCycle(Base):
+class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to run the vacuum on a schedule."""
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
+            CONF_ENTITY_IDS: vol.Schema(
+                {vol.Required(CONF_CALENDAR): cv.entity_id}, extra=vol.ALLOW_EXTRA
+            ),
             CONF_PROPERTIES: vol.Schema(
-                {
-                    vol.Required(CONF_IOS_EMPTIED_KEY): str,
-                    vol.Required(CONF_SCHEDULE_SWITCHES): cv.ensure_list,
-                    vol.Required(CONF_SCHEDULE_TIME): str,
-                },
-                extra=vol.ALLOW_EXTRA,
-            )
+                {vol.Required(CONF_IOS_EMPTIED_KEY): str}, extra=vol.ALLOW_EXTRA
+            ),
         }
     )
-
-    @property
-    def active_days(self) -> list:
-        """Get the days that the vacuuming schedule should run."""
-        on_days = []
-        for toggle in self.properties["schedule_switches"]:
-            state = self.get_state(toggle, attribute="all")
-            if state["state"] == "on":
-                on_days.append(state["attributes"]["friendly_name"])
-
-        return on_days
 
     def configure(self) -> None:
         """Configure."""
         self.initiated_by_app = False
-        self._create_schedule()
 
         self.listen_event(
             self._on_security_system_change, EVENT_ALARM_CHANGE, constrain_enabled=True
@@ -259,29 +245,12 @@ class ScheduledCycle(Base):
             new=self.app.States.docked.value,
             constrain_enabled=True,
         )
-
-        for toggle in self.properties[CONF_SCHEDULE_SWITCHES]:
-            self.listen_state(self._on_schedule_change, toggle, constrain_enabled=True)
-
-    def _create_schedule(self) -> None:
-        """Create the vacuuming schedule from the on booleans."""
-        if HANDLE_SCHEDULE in self.handles:
-            cancel = self.handles.pop(HANDLE_SCHEDULE)
-            cancel()
-
-        self.handles[HANDLE_SCHEDULE] = run_on_days(
-            self,
+        self.listen_state(
             self._on_schedule_start,
-            self.active_days,
-            self.parse_time(self.properties["schedule_time"]),
+            self.entity_ids[CONF_CALENDAR],
+            new="on",
             constrain_enabled=True,
         )
-
-    def _on_schedule_change(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Reload the schedule when one of the input booleans change."""
-        self._create_schedule()
 
     def _on_security_system_change(
         self, event_name: str, data: dict, kwargs: dict
@@ -317,6 +286,20 @@ class ScheduledCycle(Base):
                 "vacuum/start_pause", entity_id=self.app.entity_ids[CONF_VACUUM]
             )
 
+    def _on_schedule_start(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Start cleaning via the schedule."""
+        if not self.initiated_by_app:
+            self.app.start()
+            self.initiated_by_app = True
+
+    def _on_switch_start(self, event_name: str, data: dict, kwargs: dict) -> None:
+        """Start cleaning via the switch."""
+        if not self.initiated_by_app:
+            self.app.start()
+            self.initiated_by_app = True
+
     def _on_vacuum_cycle_done(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
@@ -331,18 +314,6 @@ class ScheduledCycle(Base):
 
         self.app.bin_state = self.app.BinStates.full
         self.initiated_by_app = False
-
-    def _on_schedule_start(self, kwargs: dict) -> None:
-        """Start cleaning via the schedule."""
-        if not self.initiated_by_app:
-            self.app.start()
-            self.initiated_by_app = True
-
-    def _on_switch_start(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Start cleaning via the switch."""
-        if not self.initiated_by_app:
-            self.app.start()
-            self.initiated_by_app = True
 
 
 class Vacuum(Base):

@@ -16,6 +16,7 @@ stream:
 cloud: !include_dir_merge_named conf/cloud/
 emulated_hue: !include conf/platforms/emulated-hue.yaml
 ffmpeg: !include conf/platforms/ffmpeg.yaml
+google: !include conf/platforms/google.yaml
 group: !include_dir_named conf/groups/
 ifttt: !include conf/platforms/ifttt.yaml
 input_boolean: !include_dir_merge_named conf/input-booleans/
@@ -27,6 +28,5 @@ proximity: !include conf/platforms/proximity.yaml
 tts: !include conf/platforms/tts.yaml
 wemo: !include conf/platforms/wemo.yaml
 wwlln: !include conf/platforms/wwlln.yaml
-# zha: !include conf/platforms/zha.yaml
 zone: !include conf/zones.yaml
 zwave: !include conf/platforms/zwave.yaml
