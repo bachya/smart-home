@@ -100,7 +100,7 @@ wolfie_notify_when_stuck_automation:
     - wolfie
   app: wolfie
   properties:
-    notification_interval: 300
+    notification_interval: 7200
   state_changes:
     - disable:
         event: MODE_CHANGE
