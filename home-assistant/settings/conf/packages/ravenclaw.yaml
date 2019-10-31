@@ -1,13 +1,9 @@
 ---
-sensor:
-  - platform: glances
-    name: Ravenclaw
-    host: ravenclaw.myserver.com
-    resources:
-      - disk_use_percent
-      - memory_use_percent
-      - processor_load
+glances:
+  name: Ravenclaw
+  host: ravenclaw.myserver.com
 
+sensor:
   - platform: command_line
     name: Ravenclaw CPU Temperature
     command: >

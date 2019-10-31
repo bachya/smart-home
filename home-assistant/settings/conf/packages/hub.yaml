@@ -1,14 +1,9 @@
 ---
-sensor:
-  - platform: glances
-    name: Hub
-    host: 0.0.0.0
-    version: 3
-    resources:
-      - disk_use_percent
-      - memory_use_percent
-      - processor_load
+glances:
+  name: Hub
+  host: 0.0.0.0
 
+sensor:
   - platform: command_line
     name: Hub CPU Temperature
     command: >

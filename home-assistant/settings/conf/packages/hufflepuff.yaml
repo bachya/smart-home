@@ -1,13 +1,9 @@
 ---
-sensor:
-  - platform: glances
-    name: Hufflepuff
-    host: hufflepuff.myserver.com
-    resources:
-      - disk_use_percent
-      - memory_use_percent
-      - processor_load
+glances:
+  name: Hufflepuff
+  host: hufflepuff.myserver.com
 
+sensor:
   - platform: command_line
     name: Hufflepuff CPU Temperature
     command: >

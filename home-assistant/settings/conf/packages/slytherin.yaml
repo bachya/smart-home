@@ -1,13 +1,9 @@
 ---
-sensor:
-  - platform: glances
-    name: Slytherin
-    host: slytherin.myserver.com
-    resources:
-      - disk_use_percent
-      - memory_use_percent
-      - processor_load
+glances:
+  name: Slytherin
+  host: slytherin.myserver.com
 
+sensor:
   - platform: command_line
     name: Slytherin CPU Temperature
     command: >

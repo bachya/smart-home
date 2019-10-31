@@ -1,13 +1,9 @@
 ---
-sensor:
-  - platform: glances
-    name: Gryffindor
-    host: gryffindor.myserver.com
-    resources:
-      - disk_use_percent
-      - memory_use_percent
-      - processor_load
+glances:
+  name: Gryffindor
+  host: gryffindor.myserver.com
 
+sensor:
   - platform: command_line
     name: Gryffindor CPU Temperature
     command: >
