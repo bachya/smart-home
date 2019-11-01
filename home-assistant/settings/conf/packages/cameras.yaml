@@ -29,6 +29,10 @@ binary_sensor:
         device_class: occupancy
         friendly_name: Kitchen Camera
 
+eufy_security:
+  username: !secret eufy_security_email
+  password: !secret eufy_security_password
+
 camera:
   - platform: ffmpeg
     name: Basement Camera
