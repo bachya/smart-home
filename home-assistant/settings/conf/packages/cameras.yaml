@@ -1,10 +1,5 @@
 ---
 binary_sensor:
-  - platform: mqtt
-    name: "Garage Camera Motion Detected"
-    device_class: motion
-    state_topic: "home/garage-camera/motion"
-
   - platform: template
     sensors:
       basement_person_detected:
