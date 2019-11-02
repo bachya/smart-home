@@ -7,8 +7,8 @@ christmas_tree_schedule:
   actor_type: switch
 
   expression_environment: |
-    def is_sun_down():
-      return state("sun.sun") == "below_horizon"
+    def is_sun_up():
+      return state("sun.sun") == "above_horizon"
 
   rooms:
 
@@ -22,7 +22,7 @@ christmas_tree_schedule:
       schedule:
         - v: "on"
           rules:
-            - x: "Break() if is_sun_down()"
+            - x: "Skip() if is_sun_up() else Break()"
             - {start: "00:00", end: "09:00", weekdays: 1-5}
             - {start: "00:00", weekdays: 6-7}
         - v: "off"

@@ -7,8 +7,8 @@ outdoor_lights_schedule:
   actor_type: switch
 
   expression_environment: |
-    def is_sun_up():
-      return state("sun.sun") == "above_horizon"
+    def is_sun_down():
+      return state("sun.sun") == "below_horizon"
 
   rooms:
 
@@ -22,7 +22,7 @@ outdoor_lights_schedule:
       schedule:
         - v: "on"
           rules:
-            - x: "Break() if is_sun_up()"
+            - x: "Skip() if is_sun_down() else Break()"
             - {start: "17:00", end: "21:30", weekdays: "1-4, 7"}
             - {start: "17:00", end: "23:00", weekdays: 5-6}
         - v: "off"
