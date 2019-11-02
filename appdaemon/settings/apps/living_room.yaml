@@ -1,4 +1,35 @@
 ---
+christmas_tree_schedule:
+  module: hass_apps_loader
+  class: SchedyApp
+  constrain_input_boolean: input_boolean.christmas_lights_schedule_automation
+
+  actor_type: switch
+
+  expression_environment: |
+    def is_sun_down():
+      return state("sun.sun") == "below_horizon"
+
+  rooms:
+
+    living_room:
+
+      actors:
+        switch.christmas_tree:
+
+      rescheduling_delay: 0
+
+      schedule:
+        - v: "on"
+          rules:
+            - x: "Break() if is_sun_down()"
+            - {start: "00:00", end: "09:00", weekdays: 1-5}
+            - {start: "00:00", weekdays: 6-7}
+        - v: "off"
+
+  watched_entities:
+    - sun.sun
+
 fireplace_failsafe_automation:
   module: switches
   class: PresenceFailsafe
@@ -17,80 +48,6 @@ fireplace_failsafe_automation:
         event: MODE_CHANGE
         event_data:
           name: guest_mode
-          state: "off"
-
-christmas_lights_on_at_sunrise_automation:
-  module: switches
-  class: ToggleAtTime
-  dependencies:
-    - guest_mode
-    - presence_manager
-    - vacation_mode
-  entity_ids:
-    switch: switch.christmas_tree
-  properties:
-    schedule_time: sunrise
-    state: "on"
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
-
-christmas_lights_off_at_9am_automation:
-  module: switches
-  class: ToggleAtTime
-  dependencies:
-    - guest_mode
-    - presence_manager
-    - vacation_mode
-  entity_ids:
-    switch: switch.christmas_tree
-  properties:
-    run_on_days:
-      - Monday
-      - Tuesday
-      - Wednesday
-      - Thursday
-      - Friday
-    schedule_time: "09:00:00"
-    state: "off"
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
           state: "off"
 
 living_room_lights_on_at_sunset_automation:

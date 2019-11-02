@@ -39,14 +39,9 @@ blackout_deactivate_weekday_automation:
 blackout_deactivate_weekend_automation:
   icon: mdi:brightness-4
   name: "Weekend Blackout End: 9am"
-christmas_lights_off_at_9am_automation:
+christmas_lights_schedule_automation:
   icon: mdi:pine-tree
-  initial: true
-  name: Turn on Christmas tree off at 9am (weekdays)
-christmas_lights_on_at_sunrise_automation:
-  icon: mdi:pine-tree
-  initial: true
-  name: Turn on Christmas tree at sunrise
+  name: Christmas tree schedule
 cycle_whole_house_fan_automation:
   icon: mdi:fan
   initial: true
