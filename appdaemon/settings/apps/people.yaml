@@ -8,7 +8,7 @@ aaron:
   entity_ids:
     person: person.aaron
     notifiers:
-      - ios_aaron_bachs_iphone
+      - ios_aarons_iphone
     presence_status_sensor: sensor.aaron_presence_status
 
 britt:
