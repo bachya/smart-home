@@ -266,9 +266,7 @@ class ToggleAtTime(BaseSwitch):
             ),
             CONF_PROPERTIES: vol.Schema(
                 {
-                    vol.Required(CONF_SCHEDULE_TIME): vol.Any(
-                        str, vol.In(SOLAR_EVENTS)
-                    ),
+                    vol.Required(CONF_SCHEDULE_TIME): str,
                     vol.Required(CONF_STATE): vol.In(TOGGLE_STATES),
                     vol.Optional(CONF_RUN_ON_DAYS): cv.ensure_list,
                 },
@@ -281,28 +279,22 @@ class ToggleAtTime(BaseSwitch):
         """Configure."""
         kwargs = {"state": self.properties[CONF_STATE], "constrain_enabled": True}
 
-        if self.properties[CONF_SCHEDULE_TIME] in SOLAR_EVENTS:
-            method = getattr(
-                self, "run_at_{0}".format(self.properties[CONF_SCHEDULE_TIME])
+        if self.properties.get(CONF_RUN_ON_DAYS):
+            run_on_days(
+                self,
+                self._on_schedule_toggle,
+                self.properties[CONF_RUN_ON_DAYS],
+                self.parse_time(self.properties[CONF_SCHEDULE_TIME]),
+                auto_constraints=True,
+                **kwargs,
             )
-            method(self._on_schedule_toggle, auto_constraints=True, **kwargs)
         else:
-            if self.properties.get(CONF_RUN_ON_DAYS):
-                run_on_days(
-                    self,
-                    self._on_schedule_toggle,
-                    self.properties[CONF_RUN_ON_DAYS],
-                    self.parse_time(self.properties[CONF_SCHEDULE_TIME]),
-                    auto_constraints=True,
-                    **kwargs,
-                )
-            else:
-                self.run_daily(
-                    self._on_schedule_toggle,
-                    self.parse_time(self.properties[CONF_SCHEDULE_TIME]),
-                    auto_constraints=True,
-                    **kwargs,
-                )
+            self.run_daily(
+                self._on_schedule_toggle,
+                self.parse_time(self.properties[CONF_SCHEDULE_TIME]),
+                auto_constraints=True,
+                **kwargs,
+            )
 
 
 class ToggleOnNumericThreshold(BaseSwitch):
