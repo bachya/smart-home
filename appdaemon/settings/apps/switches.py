@@ -438,7 +438,7 @@ class ToggleOnState(BaseSwitch):
             CONF_PROPERTIES: vol.Schema(
                 {
                     vol.Required(CONF_SWITCH_STATE): vol.In(TOGGLE_STATES),
-                    vol.Required(CONF_TARGET_STATE): vol.In(TOGGLE_STATES),
+                    vol.Required(CONF_TARGET_STATE): str,
                     vol.Optional(CONF_DELAY): int,
                     vol.Optional(CONF_RETURN_DELAY): int,
                 },
