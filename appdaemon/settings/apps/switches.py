@@ -405,6 +405,9 @@ class ToggleOnState(BaseSwitch):
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Toggle the switch depending on the target entity's state."""
+        if old == new:
+            return
+
         if new == self.properties[CONF_TARGET_STATE]:
             if CONF_DELAY in self.properties:
                 self.handles[HANDLE_TOGGLE_STATE] = self.run_in(
