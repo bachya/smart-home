@@ -7,8 +7,6 @@ import voluptuous as vol
 
 from core import APP_SCHEMA, Base
 from const import (
-    CONF_ABOVE,
-    CONF_BELOW,
     CONF_DELAY,
     CONF_DURATION,
     CONF_END_TIME,
@@ -16,7 +14,6 @@ from const import (
     CONF_PROPERTIES,
     CONF_START_TIME,
     CONF_STATE,
-    EVENT_PRESENCE_CHANGE,
     TOGGLE_STATES,
 )
 from helpers import config_validation as cv
