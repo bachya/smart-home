@@ -297,58 +297,6 @@ class ToggleAtTime(BaseSwitch):
             )
 
 
-class ToggleOnNumericThreshold(BaseSwitch):
-    """Define a feature to toggle the switch above/below a threshold."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            CONF_ENTITY_IDS: vol.Schema(
-                {
-                    vol.Required(CONF_SWITCH): cv.entity_id,
-                    vol.Required(CONF_TARGET): cv.entity_id,
-                },
-                extra=vol.ALLOW_EXTRA,
-            ),
-            CONF_PROPERTIES: vol.All(
-                vol.Schema(
-                    {
-                        vol.Required(CONF_STATE): vol.In(TOGGLE_STATES),
-                        vol.Optional(CONF_ABOVE): int,
-                        vol.Optional(CONF_BELOW): int,
-                    },
-                    extra=vol.ALLOW_EXTRA,
-                ),
-                cv.has_at_least_one_key(CONF_ABOVE, CONF_BELOW),
-            ),
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_state(
-            self._on_state_change,
-            self.entity_ids[CONF_TARGET],
-            auto_constraints=True,
-            constrain_enabled=True,
-        )
-
-    def _on_state_change(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Toggle the switch if outside the threshold."""
-        new_value = float(new)
-
-        above = self.properties.get(CONF_ABOVE)
-        below = self.properties.get(CONF_BELOW)
-
-        if above and new_value >= above:
-            self.toggle(state=self.properties[CONF_STATE])
-        elif below and new_value < below:
-            self.toggle(state=self.properties[CONF_STATE])
-        else:
-            self.toggle(opposite_of=self.properties[CONF_STATE])
-
-
 class ToggleOnInterval(BaseSwitch):
     """Define a feature to toggle the switch at intervals."""
 
