@@ -39,14 +39,17 @@ bar_cart_on_at_sunset_automation:
 
 bar_cart_on_upon_arrival_automation:
   module: switches
-  class: ToggleUponArrival
+  class: ToggleOnState
   dependencies:
     - guest_mode
     - presence_manager
+    - vacation_mode
   entity_ids:
     switch: switch.bar_cart
+    target: sensor.proximity_zone
   properties:
-    state: "on"
+    switch_state: "on"
+    target_state: Home
   constraints:
     constraints:
       constrain_sun: "down"
