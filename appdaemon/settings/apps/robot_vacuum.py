@@ -117,7 +117,7 @@ class NotifyWhenRunComplete(Base):
 
         self.listen_state(
             self._on_notification_interval_change,
-            self.get_state(self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER]),
+            self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER],
         )
         self.listen_state(
             self._on_vacuum_bin_change, self.app.entity_ids[CONF_BIN_STATE]
@@ -156,7 +156,9 @@ class NotifyWhenRunComplete(Base):
             "Empty him now and you won't have to do it later!",
             title="Wolfie Full 🤖",
             when=self.datetime(),
-            interval=self.get_state(self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER])
+            interval=int(
+                self.get_state(self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER])
+            )
             * 60,
             data={"push": {"category": "dishwasher"}},
         )
@@ -191,7 +193,7 @@ class NotifyWhenStuck(Base):
         self.listen_state(self._on_error_change, self.app.entity_ids[CONF_STATUS])
         self.listen_state(
             self._on_notification_interval_change,
-            self.get_state(self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER]),
+            self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER],
         )
 
     def _cancel_notification_cycle(self) -> None:
@@ -227,7 +229,9 @@ class NotifyWhenStuck(Base):
             "Help him get back on track or home.",
             title="Wolfie Stuck 😢",
             when=self.datetime(),
-            interval=self.get_state(self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER])
+            interval=int(
+                self.get_state(self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER])
+            )
             * 60,
             data={"push": {"category": "dishwasher"}},
         )
