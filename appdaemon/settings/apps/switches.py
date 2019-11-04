@@ -11,6 +11,8 @@ from const import (
     CONF_DURATION,
     CONF_END_TIME,
     CONF_ENTITY_IDS,
+    CONF_EVENT,
+    CONF_EVENT_DATA,
     CONF_PROPERTIES,
     CONF_START_TIME,
     CONF_STATE,
@@ -291,6 +293,39 @@ class ToggleAtTime(BaseSwitch):
                 auto_constraints=True,
                 **kwargs,
             )
+
+
+class ToggleOnEvent(BaseSwitch):
+    """Define a feature to toggle a switch when seeing a certain event/payload."""
+
+    APP_SCHEMA = APP_SCHEMA.extend(
+        {
+            CONF_ENTITY_IDS: vol.Schema(
+                {vol.Required(CONF_SWITCH): cv.entity_id}, extra=vol.ALLOW_EXTRA
+            ),
+            CONF_PROPERTIES: vol.Schema(
+                {
+                    vol.Required(CONF_STATE): vol.In(TOGGLE_STATES),
+                    vol.Required(CONF_EVENT): str,
+                    vol.Optional(CONF_EVENT_DATA): dict,
+                },
+                extra=vol.ALLOW_EXTRA,
+            ),
+        }
+    )
+
+    def configure(self) -> None:
+        """Configure."""
+        self.listen_event(
+            self._on_event_triggered,
+            self.properties[CONF_EVENT],
+            **self.properties.get(CONF_EVENT_DATA, {}),
+            constrain_enabled=True,
+        )
+
+    def _on_event_triggered(self, event_name: str, data: dict, kwargs: dict) -> None:
+        """React when the method/payload is seen."""
+        self.toggle(state=self.properties[CONF_STATE])
 
 
 class ToggleOnInterval(BaseSwitch):

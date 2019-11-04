@@ -3,103 +3,56 @@ blackout_mode:
   module: mode
   class: Mode
 
-blackout_activate_weekday_automation:
-  module: switches
-  class: ToggleAtTime
-  entity_ids:
-    switch: input_boolean.blackout_mode
-  properties:
-    run_on_days:
-      - Sunday
-      - Monday
-      - Tuesday
-      - Wednesday
-      - Thursday
-    schedule_time: "21:00:00"
-    state: "on"
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
+blackout_mode_schedule:
+  module: hass_apps_loader
+  class: SchedyApp
+  constrain_input_boolean: input_boolean.blackout_schedule_automation
 
-blackout_activate_weekend_automation:
-  module: switches
-  class: ToggleAtTime
-  entity_ids:
-    switch: input_boolean.blackout_mode
-  properties:
-    run_on_days:
-      - Friday
-      - Saturday
-    schedule_time: "22:00:00"
-    state: "on"
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
+  actor_type: switch
 
-blackout_deactivate_weekday_automation:
+  rooms:
+
+    blackout_mode:
+
+      actors:
+        input_boolean.blackout_mode:
+
+      rescheduling_delay: 0
+
+      schedule:
+        - v: "on"
+          rules:
+            - {start: "21:00", end: "07:00", weekdays: "1-4, 7"}
+            - {start: "22:00", end: "09:00", weekdays: 5-6}
+        - v: "off"
+
+blackout_mode_off_when_vacation_mode_on_automation:
   module: switches
-  class: ToggleAtTime
+  class: ToggleOnEvent
+  dependencies:
+    - presence_manager
   entity_ids:
-    switch: input_boolean.blackout_mode
+    switch: input_boolean.blackout_schedule_automation
   properties:
-    run_on_days:
-      - Monday
-      - Tuesday
-      - Wednesday
-      - Thursday
-      - Friday
-    schedule_time: "07:00:00"
     state: "off"
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
+    event: MODE_CHANGE
+    event_data:
+      name: VacationMode
+      state: "on"
 
-blackout_deactivate_weekend_automation:
+blackout_mode_on_when_vacation_mode_off_automation:
   module: switches
-  class: ToggleAtTime
+  class: ToggleOnEvent
+  dependencies:
+    - presence_manager
   entity_ids:
-    switch: input_boolean.blackout_mode
+    switch: input_boolean.blackout_schedule_automation
   properties:
-    run_on_days:
-      - Saturday
-      - Sunday
-    schedule_time: "09:00:00"
-    state: "off"
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
+    state: "on"
+    event: MODE_CHANGE
+    event_data:
+      name: VacationMode
+      state: "off"
 
 guest_mode:
   module: mode
