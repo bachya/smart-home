@@ -272,7 +272,7 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
         ):
             self.log('Security mode is "Away"; pausing until "Home"')
             self.call_service(
-                "vacuum/start_pause", entity_id=self.app.entity_ids[CONF_VACUUM]
+                "vacuum/pause", entity_id=self.app.entity_ids[CONF_VACUUM]
             )
             self.security_manager.set_alarm(self.security_manager.AlarmStates.home)
 
@@ -283,7 +283,7 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
         ):
             self.log('Alarm in "Home"; resuming')
             self.call_service(
-                "vacuum/start_pause", entity_id=self.app.entity_ids[CONF_VACUUM]
+                "vacuum/start", entity_id=self.app.entity_ids[CONF_VACUUM]
             )
 
     def _on_schedule_start(
