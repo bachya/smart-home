@@ -22,7 +22,7 @@ CONF_CONSUMABLE_THRESHOLD = "consumable_threshold"
 
 CONF_CALENDAR = "calendar"
 CONF_IOS_EMPTIED_KEY = "ios_emptied_key"
-CONF_NOTIFICATION_INTERVAL_SLIDER = "input_number.notification_interval_slider"
+CONF_NOTIFICATION_INTERVAL_SLIDER = "notification_interval_slider"
 
 CONF_VACUUM = "vacuum"
 
