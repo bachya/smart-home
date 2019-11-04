@@ -37,7 +37,7 @@ blackout_mode_off_when_vacation_mode_on_automation:
     state: "off"
     event: MODE_CHANGE
     event_data:
-      name: VacationMode
+      name: vacation_mode
       state: "on"
 
 blackout_mode_on_when_vacation_mode_off_automation:
@@ -51,7 +51,7 @@ blackout_mode_on_when_vacation_mode_off_automation:
     state: "on"
     event: MODE_CHANGE
     event_data:
-      name: VacationMode
+      name: vacation_mode
       state: "off"
 
 guest_mode:
