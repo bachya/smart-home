@@ -117,7 +117,7 @@ class NotifyWhenRunComplete(Base):
 
         self.listen_state(
             self._on_notification_interval_change,
-            self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER],
+            self.get_state(self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER]),
         )
         self.listen_state(
             self._on_vacuum_bin_change, self.app.entity_ids[CONF_BIN_STATE]
@@ -190,7 +190,7 @@ class NotifyWhenStuck(Base):
         self.listen_state(self._on_error_change, self.app.entity_ids[CONF_STATUS])
         self.listen_state(
             self._on_notification_interval_change,
-            self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER],
+            self.get_state(self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER]),
         )
 
     def _cancel_notification_cycle(self) -> None:
