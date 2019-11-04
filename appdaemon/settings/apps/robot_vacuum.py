@@ -156,7 +156,8 @@ class NotifyWhenRunComplete(Base):
             "Empty him now and you won't have to do it later!",
             title="Wolfie Full 🤖",
             when=self.datetime(),
-            interval=self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER] * 60,
+            interval=self.get_state(self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER])
+            * 60,
             data={"push": {"category": "dishwasher"}},
         )
 
@@ -226,7 +227,8 @@ class NotifyWhenStuck(Base):
             "Help him get back on track or home.",
             title="Wolfie Stuck 😢",
             when=self.datetime(),
-            interval=self.properties[CONF_NOTIFICATION_INTERVAL_SLIDER] * 60,
+            interval=self.get_state(self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER])
+            * 60,
             data={"push": {"category": "dishwasher"}},
         )
 
