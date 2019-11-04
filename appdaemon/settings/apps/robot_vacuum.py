@@ -22,7 +22,7 @@ CONF_CONSUMABLE_THRESHOLD = "consumable_threshold"
 
 CONF_CALENDAR = "calendar"
 CONF_IOS_EMPTIED_KEY = "ios_emptied_key"
-CONF_NOTIFICATION_INTERVAL = "notification_interval"
+CONF_NOTIFICATION_INTERVAL_SLIDER = "input_number.notification_interval_slider"
 
 CONF_VACUUM = "vacuum"
 
@@ -103,8 +103,9 @@ class NotifyWhenRunComplete(Base):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_PROPERTIES: vol.Schema(
-                {vol.Required(CONF_NOTIFICATION_INTERVAL): int}, extra=vol.ALLOW_EXTRA
+            CONF_ENTITY_IDS: vol.Schema(
+                {vol.Required(CONF_NOTIFICATION_INTERVAL_SLIDER): cv.entity_id},
+                extra=vol.ALLOW_EXTRA,
             )
         }
     )
@@ -115,6 +116,10 @@ class NotifyWhenRunComplete(Base):
             self._start_notification_cycle()
 
         self.listen_state(
+            self._on_notification_interval_change,
+            self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER],
+        )
+        self.listen_state(
             self._on_vacuum_bin_change, self.app.entity_ids[CONF_BIN_STATE]
         )
 
@@ -123,6 +128,14 @@ class NotifyWhenRunComplete(Base):
         if HANDLE_BIN_FULL in self.handles:
             cancel = self.handles.pop(HANDLE_BIN_FULL)
             cancel()
+
+    def _on_notification_interval_change(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Reset the notification interval."""
+        self._cancel_notification_cycle()
+        if self.enabled and self.app.bin_state == self.app.BinStates.full:
+            self._start_notification_cycle()
 
     def _on_vacuum_bin_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
@@ -143,7 +156,7 @@ class NotifyWhenRunComplete(Base):
             "Empty him now and you won't have to do it later!",
             title="Wolfie Full 🤖",
             when=self.datetime(),
-            interval=self.properties[CONF_NOTIFICATION_INTERVAL],
+            interval=self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER] * 60,
             data={"push": {"category": "dishwasher"}},
         )
 
@@ -163,7 +176,8 @@ class NotifyWhenStuck(Base):
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             CONF_PROPERTIES: vol.Schema(
-                {vol.Required(CONF_NOTIFICATION_INTERVAL): int}, extra=vol.ALLOW_EXTRA
+                {vol.Required(CONF_NOTIFICATION_INTERVAL_SLIDER): cv.entity_id},
+                extra=vol.ALLOW_EXTRA,
             )
         }
     )
@@ -174,6 +188,10 @@ class NotifyWhenStuck(Base):
             self._start_notification_cycle()
 
         self.listen_state(self._on_error_change, self.app.entity_ids[CONF_STATUS])
+        self.listen_state(
+            self._on_notification_interval_change,
+            self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER],
+        )
 
     def _cancel_notification_cycle(self) -> None:
         """Cancel any active notification."""
@@ -190,6 +208,14 @@ class NotifyWhenStuck(Base):
         elif old == self.app.States.error.value:
             self._cancel_notification_cycle()
 
+    def _on_notification_interval_change(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Reset the notification interval."""
+        self._cancel_notification_cycle()
+        if self.enabled and self.app.state == self.app.States.error:
+            self._start_notification_cycle()
+
     def _start_notification_cycle(self) -> None:
         """Start a repeating notification sequence."""
         self._cancel_notification_cycle()
@@ -200,7 +226,7 @@ class NotifyWhenStuck(Base):
             "Help him get back on track or home.",
             title="Wolfie Stuck 😢",
             when=self.datetime(),
-            interval=self.properties[CONF_NOTIFICATION_INTERVAL],
+            interval=self.properties[CONF_NOTIFICATION_INTERVAL_SLIDER] * 60,
             data={"push": {"category": "dishwasher"}},
         )
 

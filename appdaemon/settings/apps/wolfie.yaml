@@ -60,8 +60,8 @@ wolfie_notify_when_cycle_complete_automation:
     - presence_manager
     - wolfie
   app: wolfie
-  properties:
-    notification_interval: 10800
+  entity_ids:
+    notification_interval_slider: input_number.wolfie_notification_interval
   state_changes:
     - disable:
         event: MODE_CHANGE
@@ -99,8 +99,8 @@ wolfie_notify_when_stuck_automation:
     - presence_manager
     - wolfie
   app: wolfie
-  properties:
-    notification_interval: 7200
+  entity_ids:
+    notification_interval_slider: input_number.wolfie_notification_interval
   state_changes:
     - disable:
         event: MODE_CHANGE

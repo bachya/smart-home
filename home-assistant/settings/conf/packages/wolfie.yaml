@@ -1,4 +1,13 @@
 ---
+input_number:
+  wolfie_notification_interval:
+    name: Notification Interval
+    min: 1
+    max: 10
+    step: 1
+    unit_of_measurement: hours
+    icon: mdi:bell
+
 input_select:
   wolfie_bin_status:
     name: Bin Status
