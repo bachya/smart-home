@@ -85,6 +85,8 @@ sensor:
             mdi:progress-clock
           {% elif states("sensor.latest_drone_build") == "success" %}
             mdi:progress-check
+          {% else %}
+            mdi:progress-alert
           {% endif %}
 
   - platform: command_line
