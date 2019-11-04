@@ -10,7 +10,7 @@ bar_cart_on_at_sunset_automation:
     switch: switch.bar_cart
     target: sun.sun
   properties:
-    switch_state: "on"
+    state: "on"
     target_state: "below_horizon"
   constraints:
     constraints:
@@ -48,7 +48,7 @@ bar_cart_on_upon_arrival_automation:
     switch: switch.bar_cart
     target: sensor.proximity_zone
   properties:
-    switch_state: "on"
+    state: "on"
     target_state: Home
   constraints:
     constraints:

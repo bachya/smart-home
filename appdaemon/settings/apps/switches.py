@@ -23,7 +23,6 @@ CONF_RETURN_DELAY = "return_delay"
 CONF_RUN_ON_DAYS = "run_on_days"
 CONF_SCHEDULE_TIME = "schedule_time"
 CONF_SWITCH = "switch"
-CONF_SWITCH_STATE = "switch_state"
 CONF_TARGET = "target"
 CONF_TARGET_STATE = "target_state"
 CONF_TIMER_SLIDER = "timer_slider"
@@ -382,7 +381,7 @@ class ToggleOnState(BaseSwitch):
             ),
             CONF_PROPERTIES: vol.Schema(
                 {
-                    vol.Required(CONF_SWITCH_STATE): vol.In(TOGGLE_STATES),
+                    vol.Required(CONF_STATE): vol.In(TOGGLE_STATES),
                     vol.Required(CONF_TARGET_STATE): str,
                     vol.Optional(CONF_DELAY): int,
                     vol.Optional(CONF_RETURN_DELAY): int,
@@ -413,16 +412,16 @@ class ToggleOnState(BaseSwitch):
                 self.handles[HANDLE_TOGGLE_STATE] = self.run_in(
                     self._on_schedule_toggle,
                     self.properties[CONF_DELAY],
-                    state=self.properties[CONF_SWITCH_STATE],
+                    state=self.properties[CONF_STATE],
                 )
             else:
-                self.toggle(state=self.properties[CONF_SWITCH_STATE])
+                self.toggle(state=self.properties[CONF_STATE])
 
             if CONF_RETURN_DELAY in self.properties:
                 self.handles[HANDLE_TOGGLE_STATE_RETURN] = self.run_in(
                     self._on_schedule_toggle,
                     self.properties[CONF_RETURN_DELAY],
-                    state=self.properties[CONF_SWITCH_STATE],
+                    state=self.properties[CONF_STATE],
                     opposite=True,
                 )
         else:

@@ -19,7 +19,7 @@ master_bedroom_lights_on_at_sunset_automation:
     switch: switch.master_bedroom_salt_lamp
     target: sun.sun
   properties:
-    switch_state: "on"
+    state: "on"
     target_state: "below_horizon"
   state_changes:
     - disable:

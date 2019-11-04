@@ -9,7 +9,7 @@ garage_lights_off_after_garage_close_automation:
     target: cover.garage_door
   properties:
     delay: 600
-    switch_state: "off"
+    state: "off"
     target_state: "closed"
 
 garage_lights_on_garage_open_sundown_automation:
@@ -21,7 +21,7 @@ garage_lights_on_garage_open_sundown_automation:
     switch: switch.garage_lights
     target: cover.garage_door
   properties:
-    switch_state: "on"
+    state: "on"
     target_state: "open"
   constraints:
     constraints:
