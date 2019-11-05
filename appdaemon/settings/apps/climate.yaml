@@ -154,10 +154,10 @@ thermostat_schedule_heating_season:
 
   schedule_snippets:
     heating_season:
-      - v: 68
+      - v: 69
         rules:
           - {start: "20:30", end: "07:00"}
-      - v: 70
+      - v: 67
 
   rooms:
 
