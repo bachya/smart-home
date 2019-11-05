@@ -24,6 +24,7 @@ CONF_UPDATE_INTERVAL = "update_interval"
 # Notification-related config keys:
 CONF_MESSAGE = "message"
 CONF_NOTIFICATION_INTERVAL = "notification_interval"
+CONF_NOTIFICATION_INTERVAL_SLIDER = "notification_interval_slider"
 CONF_NOTIFICATION_TARGET = "notification_target"
 CONF_NOTIFIERS = "notifiers"
 CONF_TITLE = "title"

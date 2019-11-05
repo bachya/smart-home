@@ -5,7 +5,7 @@ from typing import Union
 
 import voluptuous as vol
 
-from const import CONF_NOTIFICATION_INTERVAL, CONF_ENTITY_IDS, CONF_PROPERTIES
+from const import CONF_ENTITY_IDS, CONF_NOTIFICATION_INTERVAL_SLIDER, CONF_PROPERTIES
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 from notification import send_notification
@@ -30,7 +30,7 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
                     vol.Required(CONF_CLEAN_THRESHOLD): float,
                     vol.Required(CONF_DRYING_THRESHOLD): float,
                     vol.Required(CONF_IOS_EMPTIED_KEY): str,
-                    vol.Required(CONF_NOTIFICATION_INTERVAL): int,
+                    vol.Required(CONF_NOTIFICATION_INTERVAL_SLIDER): cv.entity_id,
                     vol.Required(CONF_RUNNING_THRESHOLD): float,
                 },
                 extra=vol.ALLOW_EXTRA,
@@ -43,6 +43,10 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
         if self.enabled and self.app.state == self.app.States.clean:
             self._start_notification_cycle()
 
+        self.listen_state(
+            self._on_notification_interval_change,
+            self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER],
+        )
         self.listen_state(self._on_power_change, self.app.entity_ids[CONF_POWER])
         self.listen_state(self._on_status_change, self.app.entity_ids[CONF_STATUS])
 
@@ -51,6 +55,14 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
         if HANDLE_CLEAN in self.handles:
             cancel = self.handles.pop(HANDLE_CLEAN)
             cancel()
+
+    def _on_notification_interval_change(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Reset the notification interval."""
+        self._cancel_notification_cycle()
+        if self.enabled and self.app.state == self.app.States.clean:
+            self._start_notification_cycle()
 
     def _on_power_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
@@ -95,7 +107,12 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
             "Empty it now and you won't have to do it later!",
             title="Dishwasher Clean 🍽",
             when=self.datetime() + timedelta(minutes=15),
-            interval=self.properties[CONF_NOTIFICATION_INTERVAL],
+            interval=int(
+                float(
+                    self.get_state(self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER])
+                )
+            )
+            * 60,
             data={"push": {"category": "dishwasher"}},
         )
 

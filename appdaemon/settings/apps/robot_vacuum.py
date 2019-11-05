@@ -7,6 +7,7 @@ import voluptuous as vol
 from core import APP_SCHEMA, Base
 from const import (
     CONF_ENTITY_IDS,
+    CONF_NOTIFICATION_INTERVAL_SLIDER,
     CONF_PROPERTIES,
     EVENT_ALARM_CHANGE,
     EVENT_VACUUM_START,
@@ -22,7 +23,6 @@ CONF_CONSUMABLE_THRESHOLD = "consumable_threshold"
 
 CONF_CALENDAR = "calendar"
 CONF_IOS_EMPTIED_KEY = "ios_emptied_key"
-CONF_NOTIFICATION_INTERVAL_SLIDER = "notification_interval_slider"
 
 CONF_VACUUM = "vacuum"
 
