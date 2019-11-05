@@ -10,6 +10,7 @@
 disable=
   attribute-defined-outside-init,
   bad-continuation,
+  duplicate-code,
   import-error,
   no-name-in-module,
   too-many-arguments,
@@ -21,16 +22,3 @@ reports=no
 
 [FORMAT]
 expected-line-ending-format=LF
-
-[SIMILARITIES]
-#Minimum lines number of a similarity.
-min-similarity-lines=10
-
-# Ignore comments when computing similarities.
-ignore-comments=yes
-
-# Ignore docstrings when computing similarities.
-ignore-docstrings=yes
-
-# Ignore imports when computing similarities.
-ignore-imports=no
