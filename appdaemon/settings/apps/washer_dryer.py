@@ -114,6 +114,7 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
                     self.get_state(self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER])
                 )
             )
+            * 60
             * 60,
             data={"push": {"category": "dishwasher"}},
         )
