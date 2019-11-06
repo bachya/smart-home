@@ -1,4 +1,2 @@
 ---
 default: error
-logs:
-  homeassistant.components.python_script: critical

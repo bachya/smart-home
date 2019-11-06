@@ -63,10 +63,6 @@ class Base(Hass):
             self.error("Invalid app schema: {0}".format(err), level="ERROR")
             return
 
-        # Set up the app so that in addition to the AppDaemon logs, it logs to HASS,
-        # as well:
-        self.listen_log(self._on_log_entry)
-
         # Define a holding place for HASS entity IDs:
         self.entity_ids = self.args.get(CONF_ENTITY_IDS, {})
 
@@ -187,12 +183,6 @@ class Base(Hass):
     ) -> None:
         """Set a listener for when the automation is enabled."""
         self.on_enable()
-
-    def _on_log_entry(self, name: str, timestamp: int, level: str, message: str):
-        """Replicate log entries to the HASS logs."""
-        self.call_service(
-            "python_script/log", level=level, message="{0}: {1}".format(name, message)
-        )
 
     def _on_state_change_disable(
         self, event_name: str, data: dict, kwargs: dict
