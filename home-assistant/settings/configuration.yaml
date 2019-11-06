@@ -9,6 +9,7 @@ http: !include conf/http.yaml
 logger: !include conf/logger.yaml
 lovelace:
 panel_iframe: !include conf/panel-iframe.yaml
+python_script:
 recorder: !include conf/recorder.yaml
 stream:
 
