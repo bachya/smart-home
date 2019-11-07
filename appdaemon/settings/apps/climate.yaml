@@ -157,7 +157,7 @@ thermostat_schedule_heating_season:
       - v: 69
         rules:
           - {start: "20:30", end: "07:00"}
-      - v: 67
+      - v: 68
 
   rooms:
 
