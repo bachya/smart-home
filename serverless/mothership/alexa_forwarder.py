@@ -6,7 +6,7 @@ APPDAEMON_URL = "https://appdaemon.myserver.com/api/appdaemon/alexa"
 
 
 def forward_invocation_handler(event, context):  # pylint: disable=unused-argument
-    """Handle a InNextTrashPickupIntent intent."""
+    """Forward an Alexa intent invocation to AppDaemon."""
     resp = requests.post(
         APPDAEMON_URL, params={"api_password": APPDAEMON_API_PASSWORD}, json=event
     )
