@@ -1,0 +1,23 @@
+---
+service: mothership
+app: mothership-app
+org: bachya1208
+
+provider:
+  name: aws
+  runtime: python3.7
+  profile: personal-serverless-framework
+  region: us-west-2
+
+plugins:
+  - serverless-python-requirements
+
+functions:
+  alexa_forwarder:
+    handler: alexa_forwarder.forward_invocation_handler
+    events:
+      - alexaSkill: amzn1.ask.skill.xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+custom:
+  pythonRequirements:
+    dockerizePip: non-linux

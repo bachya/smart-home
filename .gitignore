@@ -20,6 +20,7 @@ id_rsa*
 ip_bans.yaml
 known_devices.yaml
 nest.conf
+node_modules
 options.xml
 passwd
 secrets.yaml
