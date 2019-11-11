@@ -45,7 +45,7 @@ function update() {
             "Refusing to deploy to local branch: $local_branch" \
             "$COLOR_YELLOW"
         echo "false"
-        return
+        return 1
     fi
 
     # If there are no new changes to the repo, don't trigger a build:
@@ -53,7 +53,7 @@ function update() {
     status_result=$(remote_git status | grep -c "behind" || true)
     if [ "$status_result" -eq "0" ]; then
         send_slack_message "No new changes to deploy" "$COLOR_BLUE"
-        return
+        return 0
     fi
 
     new_commits="$(remote_git --no-pager log --format='• %h %s' HEAD...FETCH_HEAD)"
@@ -64,7 +64,7 @@ function update() {
         send_slack_message \
             "Deployment failed due to failed Git merge on target host" \
             "$COLOR_RED"
-        return
+        return 1
     fi
 
     send_slack_message "Deployment started:\n$new_commits" "$COLOR_BLUE"
