@@ -3,9 +3,10 @@ kind: pipeline
 name: Pre-Flight
 
 trigger:
-  branch:
-    - master
-    - feature/*
+  ref:
+    - refs/heads/master
+    - refs/heads/feature/*
+    - refs/tags/*
 
 steps:
   - name: Linting
@@ -26,9 +27,10 @@ kind: pipeline
 name: ESPHome
 
 trigger:
-  branch:
-    - master
-    - feature/*
+  ref:
+    - refs/heads/master
+    - refs/heads/feature/*
+    - refs/tags/*
 
 steps:
   - name: "Config Check: Beta"
@@ -50,9 +52,10 @@ kind: pipeline
 name: Fail2Ban
 
 trigger:
-  branch:
-    - master
-    - feature/*
+  ref:
+    - refs/heads/master
+    - refs/heads/feature/*
+    - refs/tags/*
 
 steps:
   - name: "Config Check"
@@ -70,9 +73,10 @@ kind: pipeline
 name: Home Assistant
 
 trigger:
-  branch:
-    - master
-    - feature/*
+  ref:
+    - refs/heads/master
+    - refs/heads/feature/*
+    - refs/tags/*
 
 steps:
   - name: "Config Check: Dev"
@@ -110,9 +114,10 @@ kind: pipeline
 name: NGINX
 
 trigger:
-  branch:
-    - master
-    - feature/*
+  ref:
+    - refs/heads/master
+    - refs/heads/feature/*
+    - refs/tags/*
 
 steps:
   - name: "Config Check"
@@ -133,9 +138,10 @@ kind: pipeline
 name: Shell Scripts
 
 trigger:
-  branch:
-    - master
-    - feature/*
+  ref:
+    - refs/heads/master
+    - refs/heads/feature/*
+    - refs/tags/*
 
 steps:
   - name: "Static Analysis: bin/*"
