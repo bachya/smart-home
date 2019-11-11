@@ -26,7 +26,6 @@ mqtt: !include conf/platforms/mqtt.yaml
 notion: !include conf/platforms/notion.yaml
 notify: !include conf/platforms/notifiers.yaml
 proximity: !include conf/platforms/proximity.yaml
-tts: !include conf/platforms/tts.yaml
 wemo: !include conf/platforms/wemo.yaml
 wwlln: !include conf/platforms/wwlln.yaml
 zone: !include conf/zones.yaml
