@@ -5,6 +5,17 @@ adjust_climate_on_proximity_automation:
   dependencies:
     - climate_manager
     - presence_manager
+  state_changes:
+    - disable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "on"
+      enable:
+        event: MODE_CHANGE
+        event_data:
+          name: guest_mode
+          state: "off"
 
 climate_manager:
   module: climate
