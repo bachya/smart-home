@@ -6,8 +6,6 @@ trigger:
   branch:
     - master
     - feature/*
-  event:
-    - tag
 
 steps:
   - name: Linting
@@ -31,8 +29,6 @@ trigger:
   branch:
     - master
     - feature/*
-  event:
-    - tag
 
 steps:
   - name: "Config Check: Beta"
@@ -57,8 +53,6 @@ trigger:
   branch:
     - master
     - feature/*
-  event:
-    - tag
 
 steps:
   - name: "Config Check"
@@ -79,8 +73,6 @@ trigger:
   branch:
     - master
     - feature/*
-  event:
-    - tag
 
 steps:
   - name: "Config Check: Dev"
@@ -121,8 +113,6 @@ trigger:
   branch:
     - master
     - feature/*
-  event:
-    - tag
 
 steps:
   - name: "Config Check"
@@ -146,8 +136,6 @@ trigger:
   branch:
     - master
     - feature/*
-  event:
-    - tag
 
 steps:
   - name: "Static Analysis: bin/*"
