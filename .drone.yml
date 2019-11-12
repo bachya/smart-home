@@ -158,8 +158,8 @@ kind: pipeline
 name: Deploy
 
 trigger:
-  event:
-    - tag
+  branch:
+    - master
   status:
     - success
 
