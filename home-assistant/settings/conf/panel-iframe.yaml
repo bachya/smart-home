@@ -11,10 +11,6 @@ esphome_dashboard:
   title: ESPHome Dashboard
   url: !secret panel_url_esphome_dashboard
   icon: mdi:chip
-pihole:
-  title: Pi-hole
-  url: !secret panel_url_pihole
-  icon: mdi:block-helper
 portainer:
   title: Portainer
   url: !secret panel_url_portainer
