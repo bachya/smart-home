@@ -53,6 +53,7 @@ wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
   fast_connect: true
+  output_power: 20dB
   manual_ip:
     static_ip: 172.16.11.15
     gateway: 172.16.11.1
