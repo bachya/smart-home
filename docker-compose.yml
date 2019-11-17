@@ -19,7 +19,7 @@ services:
 
   esphome-dashboard:
     container_name: esphome-dashboard
-    image: esphome/esphome:1.14.2
+    image: esphome/esphome:1.14.3
     network_mode: "host"
     restart: unless-stopped
     volumes:
