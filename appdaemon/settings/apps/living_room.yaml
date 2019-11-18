@@ -1,35 +1,4 @@
 ---
-christmas_tree_schedule:
-  module: hass_apps_loader
-  class: SchedyApp
-  constrain_input_boolean: input_boolean.christmas_lights_schedule_automation
-
-  actor_type: switch
-
-  expression_environment: |
-    def is_sun_up():
-      return state("sun.sun") == "above_horizon"
-
-  rooms:
-
-    living_room:
-
-      actors:
-        switch.christmas_tree:
-
-      rescheduling_delay: 0
-
-      schedule:
-        - v: "on"
-          rules:
-            - x: "Skip() if is_sun_up() else Break()"
-            - {start: "00:00", end: "09:00", weekdays: 1-5}
-            - {start: "00:00", weekdays: 6-7}
-        - v: "off"
-
-  watched_entities:
-    - sun.sun
-
 fireplace_failsafe_automation:
   module: switches
   class: PresenceFailsafe

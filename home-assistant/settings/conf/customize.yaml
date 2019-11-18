@@ -89,8 +89,6 @@ switch.bar_cart:
   icon: mdi:lightbulb
 switch.basement_lights:
   icon: mdi:lightbulb
-switch.christmas_tree:
-  icon: mdi:pine-tree
 switch.fireplace:
   icon: mdi:fire
 switch.front_patio_light:

@@ -30,9 +30,6 @@ bar_cart_on_upon_arrival_automation:
 blackout_schedule_automation:
   icon: mdi:brightness-4
   name: Blackout Schedule
-christmas_lights_schedule_automation:
-  icon: mdi:pine-tree
-  name: Christmas tree schedule
 cycle_whole_house_fan_automation:
   icon: mdi:fan
   initial: true
