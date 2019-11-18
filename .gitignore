@@ -28,3 +28,4 @@ sonoff
 tags*
 zwave_device_config.yaml
 zwcfg_*
+docs/
