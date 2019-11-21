@@ -12,7 +12,7 @@ panel_custom: !include conf/panel-custom.yaml
 panel_iframe: !include conf/panel-iframe.yaml
 recorder: !include conf/recorder.yaml
 stream:
-scene: !include conf/scenes.yaml
+scene: !include scenes.yaml
 script: !include conf/scripts.yaml
 
 # Components:
