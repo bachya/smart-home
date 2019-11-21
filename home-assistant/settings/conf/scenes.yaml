@@ -1,5 +1,6 @@
 ---
-- name: Depart Home
+- id: depart_home
+  name: Depart Home
   entities:
     alarm_control_panel.8673_e_55th_avenue:
       state: armed_away
@@ -26,7 +27,8 @@
     switch.fireplace:
       state: false
 
-- name: Drive Home
+- id: drive_home
+  name: Drive Home
   entities:
     alarm_control_panel.8673_e_55th_avenue:
       state: disarmed
@@ -35,7 +37,8 @@
     lock.garage_fire_door:
       state: unlocked
 
-- name: Good Night
+- id: good_night
+  name: Good Night
   entities:
     alarm_control_panel.8673_e_55th_avenue:
       state: armed_home
@@ -66,14 +69,16 @@
     switch.fireplace:
       state: false
 
-- name: Walk Home
+- id: walk_home
+  name: Walk Home
   entities:
     alarm_control_panel.8673_e_55th_avenue:
       state: disarmed
     lock.front_door:
       state: unlocked
 
-- name: Watch Plex
+- id: watch_plex
+  name: Watch Plex
   entities:
     switch.media_center:
       state: true
