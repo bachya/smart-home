@@ -22,7 +22,7 @@ outdoor_lights_schedule:
       schedule:
         - v: "on"
           rules:
-            - x: "Skip() if is_sun_down() else Break()"
+            - x: "Next() if is_sun_down() else Break()"
             - {start: "15:00", end: "21:30", weekdays: "1-4, 7"}
             - {start: "15:00", end: "23:00", weekdays: 5-6}
         - v: "off"
@@ -37,7 +37,7 @@ outdoor_lights_schedule:
       schedule:
         - v: "on"
           rules:
-            - x: "Skip() if is_sun_down() else Break()"
+            - x: "Next() if is_sun_down() else Break()"
             - {start: "15:00", end: "23:00"}
         - v: "off"
 

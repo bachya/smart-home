@@ -184,7 +184,7 @@ thermostat_schedule_heating_season:
 
       schedule:
         - x: "IncludeSchedule(schedule_snippets['heating_season']) \
-              if hvac_mode() == 'heat' and away_mode() == 'off' else Skip()"
+              if hvac_mode() == 'heat' and away_mode() == 'off' else Next()"
 
   watched_entities:
     - climate.thermostat_heating
