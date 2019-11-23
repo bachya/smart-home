@@ -164,7 +164,7 @@ thermostat_schedule_heating_season:
       return state("climate.thermostat_heating")
 
     def in_bed():
-      return state("binary_sensor.in_bed")
+      return state("binary_sensor.in_bed") == "on"
 
   schedule_snippets:
     heating_season:
