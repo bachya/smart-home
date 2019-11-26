@@ -22,6 +22,8 @@
       state: false
     switch.bar_cart:
       state: false
+    switch.basement_lights:
+      state: false
     switch.garage_lights:
       state: false
     switch.fireplace:
@@ -63,6 +65,8 @@
     remote.living_room_tv:
       state: false
     switch.bar_cart:
+      state: false
+    switch.basement_lights:
       state: false
     switch.garage_lights:
       state: false
