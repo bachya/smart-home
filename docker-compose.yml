@@ -5,19 +5,15 @@ services:
 
   almond:
     container_name: almond
-    depends_on:
-      - hass
     image: stanfordoval/almond-server:v1.7.1-portable
     network_mode: "host"
     restart: unless-stopped
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - almond-config:/var/lib/almond
+      - almond-config:/var/lib/almond-server
 
   appdaemon:
     container_name: appdaemon
-    depends_on:
-      - hass
     environment:
       EXTRA_CMD: -D INFO
     image: acockburn/appdaemon:3.0.5
