@@ -3,6 +3,17 @@ version: "3"
 
 services:
 
+  almond:
+    container_name: almond
+    depends_on:
+      - hass
+    image: stanfordoval/almond-server:v1.7.1-portable
+    network_mode: "host"
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - almond-config:/var/lib/almond
+
   appdaemon:
     container_name: appdaemon
     depends_on:
@@ -121,8 +132,6 @@ services:
       - vernemq
     image: bachya/nginx
     network_mode: "host"
-    ports:
-      - "443:443/tcp"
     restart: unless-stopped
     volumes:
       - ./nginx/settings/conf.d:/etc/nginx/conf.d
@@ -204,6 +213,7 @@ services:
 
 volumes:
 
+  almond-config:
   appdaemon-config:
   fail2ban-config:
   fail2ban-log:
