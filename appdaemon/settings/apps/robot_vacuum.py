@@ -268,8 +268,6 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        self.initiated_by_app = False
-
         self.listen_event(
             self._on_security_system_change, EVENT_ALARM_CHANGE, constrain_enabled=True
         )
@@ -297,9 +295,10 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
         state = self.app.States(self.get_state(self.app.entity_ids[CONF_STATUS]))
 
         # Scenario 1: Vacuum is charging and is told to start:
-        if (self.initiated_by_app and state == self.app.States.docked) and data[
-            "state"
-        ] == self.security_manager.AlarmStates.home.value:
+        if (
+            state == self.app.States.docked
+            and data["state"] == self.security_manager.AlarmStates.home.value
+        ):
             self.log("Activating vacuum (post-security)")
             self.turn_on(self.app.entity_ids[CONF_VACUUM])
 
@@ -328,15 +327,11 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Start cleaning via the schedule."""
-        if not self.initiated_by_app:
-            self.app.start()
-            self.initiated_by_app = True
+        self.app.start()
 
     def _on_switch_start(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Start cleaning via the switch."""
-        if not self.initiated_by_app:
-            self.app.start()
-            self.initiated_by_app = True
+        self.app.start()
 
     def _on_vacuum_cycle_done(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
@@ -351,7 +346,6 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
             self.security_manager.set_alarm(self.security_manager.AlarmStates.away)
 
         self.app.bin_state = self.app.BinStates.full
-        self.initiated_by_app = False
 
 
 class Vacuum(Base):
