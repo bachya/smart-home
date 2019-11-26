@@ -25,7 +25,6 @@ google: !include conf/platforms/google.yaml
 group: !include_dir_named conf/groups/
 ifttt: !include conf/platforms/ifttt.yaml
 input_boolean: !include_dir_merge_named conf/input-booleans/
-ios: !include conf/platforms/ios.yaml
 mqtt: !include conf/platforms/mqtt.yaml
 notion: !include conf/platforms/notion.yaml
 notify: !include conf/platforms/notifiers.yaml

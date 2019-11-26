@@ -63,7 +63,7 @@ class AaronAccountability(Base):
         """Send notification to my love."""
         send_notification(
             self,
-            "ios_brittany_bachs_iphone",
+            "mobile_app_brittany_bachs_iphone",
             "His phone shouldn't be off wifi during the night.",
             title="Check on Aaron",
         )
