@@ -10,7 +10,6 @@ from const import (
     CONF_NOTIFICATION_INTERVAL_SLIDER,
     CONF_PROPERTIES,
     EVENT_ALARM_CHANGE,
-    EVENT_VACUUM_START,
 )
 from helpers import config_validation as cv
 from notification import send_notification
