@@ -139,20 +139,6 @@ sensor:
           ) | timestamp_custom("%m/%d, %I:%M %p") }}
         icon_template: mdi:calendar-check
 
-switch:
-  - platform: template
-    switches:
-      wolfie_cycle:
-        friendly_name: Activate
-        value_template: "{{ is_state('sensor.vacuum_status', 'Cleaning') }}"
-        icon_template: "mdi:google-circles-group"
-        turn_on:
-          event: VACUUM_START
-        turn_off:
-          service: vacuum.return_to_base
-          data:
-            entity_id: vacuum.xiaomi_vacuum_cleaner
-
 vacuum:
   - platform: xiaomi_miio
     host: wolfie.myserver.com
