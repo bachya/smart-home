@@ -1,6 +1,6 @@
 """Define voluptuous helpers."""
 from datetime import time as time_sys
-from typing import Any, Callable, Dict, Sequence, TypeVar, Union
+from typing import Any, Callable, Dict, List, TypeVar, Union
 
 import voluptuous as vol
 
@@ -9,7 +9,7 @@ from util.dt import parse_time
 T = TypeVar("T")  # pylint: disable=invalid-name
 
 
-def ensure_list(value: Union[T, Sequence[T]]) -> Sequence[T]:
+def ensure_list(value: Union[T, List[T], None]) -> List[T]:
     """Wrap value in list if it is not one."""
     if value is None:
         return []
