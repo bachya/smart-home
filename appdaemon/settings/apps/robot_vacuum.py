@@ -271,9 +271,6 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
         self.listen_event(
             self._on_security_system_change, EVENT_ALARM_CHANGE, constrain_enabled=True
         )
-        self.listen_event(
-            self._on_switch_start, EVENT_VACUUM_START, constrain_enabled=True
-        )
         self.listen_state(
             self._on_vacuum_cycle_done,
             self.app.entity_ids[CONF_STATUS],
@@ -282,7 +279,7 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
             constrain_enabled=True,
         )
         self.listen_state(
-            self._on_schedule_start,
+            self._on_vacuum_cycle_start,
             self.entity_ids[CONF_CALENDAR],
             new="on",
             constrain_enabled=True,
@@ -300,7 +297,7 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
             and data["state"] == self.security_manager.AlarmStates.home.value
         ):
             self.log("Activating vacuum (post-security)")
-            self.turn_on(self.app.entity_ids[CONF_VACUUM])
+            self.app.start()
 
         # Scenario 2: Vacuum is running when alarm is set to "Away":
         elif (
@@ -308,9 +305,7 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
             and data["state"] == self.security_manager.AlarmStates.away.value
         ):
             self.log('Security mode is "Away"; pausing until "Home"')
-            self.call_service(
-                "vacuum/pause", entity_id=self.app.entity_ids[CONF_VACUUM]
-            )
+            self.app.pause()
             self.security_manager.set_alarm(self.security_manager.AlarmStates.home)
 
         # Scenario 3: Vacuum is paused when alarm is set to "Home":
@@ -319,18 +314,12 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
             and data["state"] == self.security_manager.AlarmStates.home.value
         ):
             self.log('Alarm in "Home"; resuming')
-            self.call_service(
-                "vacuum/start", entity_id=self.app.entity_ids[CONF_VACUUM]
-            )
+            self.app.start()
 
-    def _on_schedule_start(
+    def _on_vacuum_cycle_start(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Start cleaning via the schedule."""
-        self.app.start()
-
-    def _on_switch_start(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Start cleaning via the switch."""
         self.app.start()
 
     def _on_vacuum_cycle_done(
@@ -395,6 +384,10 @@ class Vacuum(Base):
     def state(self) -> "States":
         """Define a property to get the state."""
         return self.States(self.get_state(self.entity_ids[CONF_STATUS]))
+
+    def pause(self) -> None:
+        """Pause the cleaning cycle."""
+        self.call_service("vacuum/pause", entity_id=self.entity_ids[CONF_VACUUM])
 
     def start(self) -> None:
         """Start a cleaning cycle."""
