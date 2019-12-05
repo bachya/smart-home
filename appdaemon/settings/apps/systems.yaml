@@ -127,6 +127,12 @@ notify_ps4_left_on_automation:
           name: blackout_mode
           state: "off"
 
+notify_of_dead_zwave_devices_automation:
+  module: systems
+  class: NotifyOfDeadZwaveDevices
+  dependencies:
+    - presence_manager
+
 start_homekit_on_zwave_ready_automation:
   module: systems
   class: StartHomeKitOnZwaveReady

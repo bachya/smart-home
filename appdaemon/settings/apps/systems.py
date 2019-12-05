@@ -232,6 +232,28 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
             self._send_notification_func = None
 
 
+class NotifyOfDeadZwaveDevices(Base):  # pylint: disable=too-few-public-methods
+    """Define a feature to notify me of dead Z-Wave devices."""
+
+    def configure(self) -> None:
+        """Configure."""
+        for entity_id in self.get_state("zwave").keys():
+            self.listen_state(
+                self._on_dead_device_found,
+                entity_id,
+                new="dead",
+                constrain_in_blackout=True,
+            )
+
+    def _on_dead_device_found(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """React when a dead device is found."""
+        send_notification(
+            self, "slack:@aaron", "A Z-Wave device just died: {0}".format(entity)
+        )
+
+
 class StartHomeKitOnZwaveReady(Base):
     """Define a feature to start HomeKit when the Z-Wave network is ready."""
 

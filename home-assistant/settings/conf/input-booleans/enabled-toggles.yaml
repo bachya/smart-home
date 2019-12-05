@@ -106,6 +106,9 @@ notify_media_center_left_on_automation:
   icon: mdi:server
   initial: true
   name: Media Center left on
+notify_of_dead_zwave_devices_automation:
+  icon: mdi:z-wave
+  name: Notify of dead Z-Wave devices
 notify_of_garage_open_automation:
   icon: mdi:garage
   initial: true
