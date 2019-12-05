@@ -1,13 +1,8 @@
 """Define an app for working with Alexa."""
-from enum import Enum
 from typing import Tuple
 
 from core import Base
-from helpers import (
-    grammatical_list_join,
-    relative_search_dict,
-    random_affirmative_response,
-)
+from helpers import grammatical_list_join, relative_search_dict
 from util.string import camel_to_underscore
 
 
@@ -16,12 +11,6 @@ class Alexa(Base):
 
     def configure(self) -> None:
         """Configure."""
-        self.appliance_state_info = {
-            "The Dishwasher": (self.dishwasher, "state", self.dishwasher.States.dirty),
-            "Wolfie": (self.wolfie, "bin_state", self.wolfie.BinStates.empty),
-            "The Vacuum": (self.wolfie, "bin_state", self.wolfie.BinStates.empty),
-        }
-
         self.register_endpoint(self._alexa_endpoint, "alexa")
 
     def _alexa_endpoint(self, data: dict) -> Tuple[dict, int]:
@@ -50,21 +39,6 @@ class Alexa(Base):
         self.log("Answering: {0}".format(speech))
 
         return response, 200
-
-    def empty_appliance_intent(self, data: dict) -> Tuple[str, str, str]:
-        """Define a handler for the EmptyApplianceIntent intent."""
-        appliance = self.get_alexa_slot_value(data, "Appliance")
-        name, attrs = relative_search_dict(self.appliance_state_info, appliance)
-
-        app: Base
-        state_attr: str
-        desired_state: Enum
-        app, state_attr, desired_state = attrs
-
-        setattr(app, state_attr, desired_state)
-
-        speech = random_affirmative_response()
-        return (speech, speech, "{0} Is {1}".format(name, desired_state.name))
 
     def in_next_trash_pickup_intent(self, data: dict) -> Tuple[str, str, str]:
         """Define a handler for the InNextTrashPickupIntent intent."""
@@ -115,7 +89,3 @@ class Alexa(Base):
             title = title.format(plant)
 
         return speech, speech, title
-
-    def repeat_tts_intent(self, data: dict) -> None:
-        """Define a handler for the RepeatTTSIntent intent."""
-        self.tts.repeat()
