@@ -1,5 +1,6 @@
 """Define automations for robot vacuums."""
 from enum import Enum
+import time
 from typing import Callable, List, Optional, Union
 
 import voluptuous as vol
@@ -16,6 +17,7 @@ from notification import send_notification
 
 CONF_BIN_STATE = "bin_state"
 CONF_STATUS = "status"
+CONF_FULL_THRESHOLD_SECONDS = "full_threshold_seconds"
 
 CONF_CONSUMABLES = "consumables"
 CONF_CONSUMABLE_THRESHOLD = "consumable_threshold"
@@ -267,6 +269,8 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
+        self._start_time = None
+
         self.listen_event(
             self._on_security_system_change, EVENT_ALARM_CHANGE, constrain_enabled=True
         )
@@ -319,6 +323,7 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Start cleaning via the schedule."""
+        self._start_time = time.time()  # type: ignore
         self.app.start()
 
     def _on_vacuum_cycle_done(
@@ -333,7 +338,11 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
             self.log('Changing alarm state to "away"')
             self.security_manager.set_alarm(self.security_manager.AlarmStates.away)
 
-        self.app.bin_state = self.app.BinStates.full
+        if (
+            time.time() - self._start_time  # type: ignore
+            > self.properties[CONF_FULL_THRESHOLD_SECONDS]
+        ):
+            self.app.bin_state = self.app.BinStates.full
 
 
 class Vacuum(Base):
