@@ -89,3 +89,9 @@ class Alexa(Base):
             title = title.format(plant)
 
         return speech, speech, title
+
+    def start_wolfie_intent(self, data: dict) -> Tuple[str, str, str]:
+        """Define a handler for the StartWolfieIntent intent."""
+        speech = "Go get those dust bunnies, little guy!"
+        self.wolfie.start()
+        return speech, speech, "Running Wolfie"
