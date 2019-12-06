@@ -9,7 +9,7 @@ trigger:
     - refs/tags/*
 
 steps:
-  - name: Linting
+  - name: Linting & Typing
     image: python:3
     commands:
       - pip3 install --upgrade pip black flake8 mypy pylint yamllint
