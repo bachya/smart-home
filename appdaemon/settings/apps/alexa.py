@@ -90,8 +90,13 @@ class Alexa(Base):
 
         return speech, speech, title
 
-    def start_wolfie_intent(self, data: dict) -> Tuple[str, str, str]:
+    def run_wolfie_intent(self, data: dict) -> Tuple[str, str, str]:
         """Define a handler for the StartWolfieIntent intent."""
-        speech = "Go get those dust bunnies, little guy!"
-        self.wolfie.start()
-        return speech, speech, "Running Wolfie"
+        action = self.get_alexa_slot_value(data, "Action")
+        if action in ("activate", "run", "start"):
+            speech = "Go get those dust bunnies, little guy!"
+            self.wolfie.start()
+        else:
+            speech = "Time to go home, vacuum hero!"
+            self.wolfie.stop()
+        return speech, speech, "Wolfie"

@@ -406,3 +406,10 @@ class Vacuum(Base):
         else:
             self.log("Activating vacuum")
             self.call_service("vacuum/start", entity_id=self.entity_ids[CONF_VACUUM])
+
+    def stop(self) -> None:
+        """Stop a vacuuming cycle."""
+        self.log("Stopping vacuuming cycle")
+        self.call_service(
+            "vacuum/return_to_base", entity_id=self.entity_ids[CONF_VACUUM]
+        )
