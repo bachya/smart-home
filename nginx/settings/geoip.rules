@@ -12,8 +12,7 @@ map $geoip2_data_country_code $allowed_country {
   US yes;
 }
 
-geo $lan_ip {
+geo $trusted_ip {
   default no;
-  172.16.10.0/24 yes;
-  172.16.11.0/24 yes;
+  172.0.0.0/8 yes;
 }
