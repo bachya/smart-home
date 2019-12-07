@@ -9,19 +9,27 @@ trigger:
     - refs/tags/*
 
 steps:
-  - name: Linting & Typing
+  - name: Formatting
     image: python:3
     commands:
       - pip3 install --upgrade pip black flake8 mypy pylint yamllint
       - black --check --fast ./appdaemon/settings/apps/
+  - name: Linting
+    image: python:3
+    commands:
+      - pip3 install --upgrade pip flake8 pylint yamllint
       - flake8 ./appdaemon/settings/apps/
-      - mypy --ignore-missing-imports ./appdaemon/settings/apps/
       - pylint --rcfile ./appdaemon/settings/pylintrc appdaemon/settings/apps/
       - yamllint ./appdaemon/settings/
       - yamllint ./esphome/
       - yamllint ./home-assistant/settings/
       - yamllint ./zigbee2mqtt/settings/
-
+  - name: Typing
+    image: python:3
+    commands:
+      - pip3 install --upgrade pip mypy
+      - mypy --ignore-missing-imports ./appdaemon/settings/apps/
+      
 ---
 kind: pipeline
 name: ESPHome
