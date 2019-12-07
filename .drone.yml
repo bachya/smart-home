@@ -12,7 +12,7 @@ steps:
   - name: Formatting
     image: python:3
     commands:
-      - pip3 install --upgrade pip black flake8 mypy pylint yamllint
+      - pip3 install --upgrade pip black
       - black --check --fast ./appdaemon/settings/apps/
   - name: Linting
     image: python:3
