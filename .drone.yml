@@ -12,12 +12,12 @@ steps:
   - name: Formatting
     image: python:3
     commands:
-      - pip3 install --upgrade pip black
+      - pip3 install black
       - black --check --fast ./appdaemon/settings/apps/
   - name: Linting
     image: python:3
     commands:
-      - pip3 install --upgrade pip flake8 pylint yamllint
+      - pip3 install flake8 pylint yamllint
       - flake8 ./appdaemon/settings/apps/
       - pylint --rcfile ./appdaemon/settings/pylintrc appdaemon/settings/apps/
       - yamllint ./appdaemon/settings/
@@ -27,7 +27,7 @@ steps:
   - name: Typing
     image: python:3
     commands:
-      - pip3 install --upgrade pip mypy
+      - pip3 install mypy
       - mypy --ignore-missing-imports ./appdaemon/settings/apps/
       
 ---
