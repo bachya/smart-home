@@ -292,6 +292,11 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
         self, event_name: str, data: dict, kwargs: dict
     ) -> None:
         """Respond to 'ALARM_CHANGE' events."""
+        # Guard against running when the alarm changes in general – it should
+        # only respond if we've started a cycle:
+        if not self._start_time:
+            return
+
         state = self.app.States(self.get_state(self.app.entity_ids[CONF_STATUS]))
 
         # Scenario 1: Vacuum is charging and is told to start:
@@ -343,6 +348,8 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
             > self.properties[CONF_FULL_THRESHOLD_SECONDS]
         ):
             self.app.bin_state = self.app.BinStates.full
+
+        self._start_time = None
 
 
 class Vacuum(Base):
