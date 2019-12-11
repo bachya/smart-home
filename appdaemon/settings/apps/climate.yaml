@@ -31,8 +31,7 @@ climate_manager:
     outdoor_high_threshold: input_number.outdoor_extreme_high_threshold
     outdoor_low_threshold: input_number.outdoor_extreme_low_threshold
     outdoor_temperature_sensor: sensor.side_yard_temp
-    thermostat_cooling: climate.thermostat_cooling
-    thermostat_heating: climate.thermostat_heating
+    thermostat: climate.thermostat
 
 lightning_detected_automation:
   module: climate
@@ -109,7 +108,7 @@ notify_bad_aqi_automation:
         event_data:
           new: home
 
-thermostat_schedule_cooling_season:
+thermostat_schedule:
   module: hass_apps_loader
   class: SchedyApp
 
@@ -120,7 +119,10 @@ thermostat_schedule_cooling_season:
       return state("input_boolean.climate_away_mode")
 
     def hvac_mode():
-      return state("climate.thermostat_cooling")
+      return state("climate.thermostat")
+
+    def in_bed():
+      return state("binary_sensor.in_bed") == "on"
 
   schedule_snippets:
     cooling_season:
@@ -129,44 +131,6 @@ thermostat_schedule_cooling_season:
           - {start: "20:30", end: "07:00", weekdays: "1-4, 7"}
           - {start: "20:30", end: "08:30", weekdays: "5-6"}
       - v: 75
-
-  rooms:
-
-    whole_house:
-
-      actors:
-        climate.thermostat_cooling:
-          supports_hvac_modes: false
-          max_temp: 80
-          min_temp: 60
-
-      rescheduling_delay: 0
-
-      schedule:
-        - x: "IncludeSchedule(schedule_snippets['cooling_season']) \
-              if hvac_mode() == 'cool' and away_mode() == 'off' else Next()"
-
-  watched_entities:
-    - climate.thermostat_cooling
-    - input_boolean.climate_away_mode
-
-thermostat_schedule_heating_season:
-  module: hass_apps_loader
-  class: SchedyApp
-
-  actor_type: thermostat
-
-  expression_environment: |
-    def away_mode():
-      return state("input_boolean.climate_away_mode")
-
-    def hvac_mode():
-      return state("climate.thermostat_heating")
-
-    def in_bed():
-      return state("binary_sensor.in_bed") == "on"
-
-  schedule_snippets:
     heating_season:
       - x: "68 if in_bed() else Next()"
       - v: 69
@@ -176,7 +140,7 @@ thermostat_schedule_heating_season:
     whole_house:
 
       actors:
-        climate.thermostat_heating:
+        climate.thermostat:
           supports_hvac_modes: false
           max_temp: 80
           min_temp: 60
@@ -184,10 +148,12 @@ thermostat_schedule_heating_season:
       rescheduling_delay: 0
 
       schedule:
+        - x: "IncludeSchedule(schedule_snippets['cooling_season']) \
+              if hvac_mode() == 'cool' and away_mode() == 'off' else Next()"
         - x: "IncludeSchedule(schedule_snippets['heating_season']) \
               if hvac_mode() == 'heat' and away_mode() == 'off' else Next()"
 
   watched_entities:
     - binary_sensor.in_bed
-    - climate.thermostat_heating
+    - climate.thermostat
     - input_boolean.climate_away_mode

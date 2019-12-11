@@ -15,8 +15,7 @@ from const import (
 )
 
 CONF_AWAY_MODE = "away_mode"
-CONF_THERMOSTAT_COOLING = "thermostat_cooling"
-CONF_THERMOSTAT_HEATING = "thermostat_heating"
+CONF_THERMOSTAT = "thermostat"
 FAN_MODE_AUTO_LOW = "Auto Low"
 FAN_MODE_CIRCULATE = "Circulate"
 FAN_MODE_ON_LOW = "On Low"
@@ -108,8 +107,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
                     vol.Required(CONF_OUTDOOR_HIGH_THRESHOLD): cv.entity_id,
                     vol.Required(CONF_OUTDOOR_LOW_THRESHOLD): cv.entity_id,
                     vol.Required(CONF_OUTDOOR_TEMPERATURE_SENSOR): cv.entity_id,
-                    vol.Required(CONF_THERMOSTAT_COOLING): cv.entity_id,
-                    vol.Required(CONF_THERMOSTAT_HEATING): cv.entity_id,
+                    vol.Required(CONF_THERMOSTAT): cv.entity_id,
                 }
             )
         }
@@ -124,14 +122,6 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             self._set_away()
 
         self.listen_state(self._on_away_mode_change, self.entity_ids[CONF_AWAY_MODE])
-
-    @property
-    def active_entity(self) -> str:
-        """Return the active climate entity."""
-        if self.hvac_mode == HVAC_MODE_COOL:
-            return self.entity_ids[CONF_THERMOSTAT_COOLING]
-
-        return self.entity_ids[CONF_THERMOSTAT_HEATING]
 
     @property
     def away_mode(self) -> bool:
@@ -161,7 +151,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
     @property
     def fan_mode(self) -> str:
         """Return the current fan mode."""
-        return self.get_state(self.active_entity, attribute="fan_mode")
+        return self.get_state(self.entity_ids[CONF_THERMOSTAT], attribute="fan_mode")
 
     @property
     def indoor_humidity(self) -> float:
@@ -176,7 +166,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
     @property
     def hvac_mode(self) -> str:
         """Return the current operating mode."""
-        return self.get_state(self.entity_ids[CONF_THERMOSTAT_COOLING])
+        return self.get_state(self.entity_ids[CONF_THERMOSTAT])
 
     @property
     def outdoor_brightness(self) -> float:
@@ -215,7 +205,11 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
     def target_temperature(self) -> float:
         """Return the temperature the thermostat is currently set to."""
         try:
-            return float(self.get_state(self.active_entity, attribute="temperature"))
+            return float(
+                self.get_state(
+                    self.entity_ids[CONF_THERMOSTAT], attribute="temperature"
+                )
+            )
         except TypeError:
             return 0.0
 
@@ -282,7 +276,9 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
         self.log('Setting fan mode to "{0}"'.format(fan_mode.title()))
         self.call_service(
-            "climate/set_fan_mode", entity_id=self.active_entity, fan_mode=fan_mode
+            "climate/set_fan_mode",
+            entity_id=self.entity_ids[CONF_THERMOSTAT],
+            fan_mode=fan_mode,
         )
 
     def _set_home(self) -> None:
@@ -306,7 +302,9 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
         self.log('Setting operation mode to "{0}"'.format(hvac_mode.title()))
         self.call_service(
-            "climate/set_hvac_mode", entity_id=self.active_entity, hvac_mode=hvac_mode
+            "climate/set_hvac_mode",
+            entity_id=self.entity_ids[CONF_THERMOSTAT],
+            hvac_mode=hvac_mode,
         )
 
     def bump_temperature(self, value: int) -> None:
@@ -361,7 +359,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
         self.call_service(
             "climate/set_temperature",
-            entity_id=self.active_entity,
+            entity_id=self.entity_ids[CONF_THERMOSTAT],
             temperature=str(int(temperature)),
         )
 
