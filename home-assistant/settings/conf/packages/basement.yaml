@@ -18,7 +18,7 @@ shell_command:
 
 switch:
   - platform: wake_on_lan
-    mac_address: 4C:CC:6A:69:90:D4
+    mac: 4C:CC:6A:69:90:D4
     name: Media Center
     host: media-center.phil.lan
     turn_off:
