@@ -19,7 +19,6 @@ script: !include conf/scripts.yaml
 # Components:
 almond: !include conf/platforms/almond.yaml
 cloud: !include_dir_merge_named conf/cloud/
-emulated_hue: !include conf/platforms/emulated-hue.yaml
 ffmpeg: !include conf/platforms/ffmpeg.yaml
 google: !include conf/platforms/google.yaml
 group: !include_dir_named conf/groups/
