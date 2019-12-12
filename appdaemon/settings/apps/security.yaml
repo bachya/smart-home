@@ -155,7 +155,7 @@ turn_on_front_patio_light_when_nighttime_person_detected_automation:
     switch: switch.front_patio_light
     target: binary_sensor.front_door_camera_person_detected
   properties:
-    switch_state: "on"
+    state: "on"
     target_state: "on"
     return_delay: 300
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
@@ -170,7 +170,7 @@ turn_on_living_room_lights_when_nighttime_person_detected_automation:
     switch: group.living_room_lights
     target: binary_sensor.front_door_camera_person_detected
   properties:
-    switch_state: "on"
+    state: "on"
     target_state: "on"
     return_delay: 300
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
