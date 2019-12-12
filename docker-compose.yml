@@ -157,6 +157,7 @@ services:
   vernemq:
     container_name: vernemq
     environment:
+      DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
       DOCKER_VERNEMQ_USER_user_1: "password"
       DOCKER_VERNEMQ_plugins.vmq_bridge: "on"
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.cafile: /etc/ssl/certs/DST_Root_CA_X3.pem
@@ -166,7 +167,7 @@ services:
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.topic.1: "* in"
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.username: hub_mqtt
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0: remote_mqtt.myserver.com:18883
-    image: erlio/docker-vernemq:1.9.2-1-alpine
+    image: erlio/docker-vernemq:1.10.0-alpine
     ports:
       - "1883:1883/tcp"
       - "127.0.0.1:8888:8888/tcp"
