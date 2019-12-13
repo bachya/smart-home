@@ -55,7 +55,7 @@ camera:
 
 image_processing:
   - platform: google_coral
-    ip_address: slytherin.phil.lan
+    ip_address: gryffindor.phil.lan
     port: 5000
     confidence: 60
     target_object: person
