@@ -1,8 +1,4 @@
 ---
-glances:
-  name: OctoPi
-  host: octopi.phil.iot
-
 sensor:
   - platform: command_line
     name: OctoPi CPU Temperature
