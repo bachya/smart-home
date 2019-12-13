@@ -15,6 +15,10 @@ esphome_dashboard:
   title: ESPHome Dashboard
   url: !secret panel_url_esphome_dashboard
   icon: mdi:chip
+octopi:
+  title: OctoPi
+  url: !secret panel_url_octopi
+  icon: mdi:printer-3d
 portainer:
   title: Portainer
   url: !secret panel_url_portainer
