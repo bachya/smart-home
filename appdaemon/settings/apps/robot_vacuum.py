@@ -1,6 +1,5 @@
 """Define automations for robot vacuums."""
 from enum import Enum
-import time
 from typing import Callable, List, Optional, Union
 
 import voluptuous as vol
@@ -16,16 +15,16 @@ from helpers import config_validation as cv
 from notification import send_notification
 
 CONF_BIN_STATE = "bin_state"
+CONF_FULL_THRESHOLD_MINUTES = "full_threshold_minutes"
+CONF_RUN_TIME = "run_time"
 CONF_STATUS = "status"
-CONF_FULL_THRESHOLD_SECONDS = "full_threshold_seconds"
+CONF_VACUUM = "vacuum"
 
 CONF_CONSUMABLES = "consumables"
 CONF_CONSUMABLE_THRESHOLD = "consumable_threshold"
 
 CONF_CALENDAR = "calendar"
 CONF_IOS_EMPTIED_KEY = "ios_emptied_key"
-
-CONF_VACUUM = "vacuum"
 
 HANDLE_BIN_FULL = "bin_full"
 HANDLE_STUCK = "stuck"
@@ -269,8 +268,6 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        self._start_time = None
-
         self.listen_event(
             self._on_security_system_change, EVENT_ALARM_CHANGE, constrain_enabled=True
         )
@@ -328,7 +325,6 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Start cleaning via the schedule."""
-        self._start_time = time.time()  # type: ignore
         self.app.start()
 
     def _on_vacuum_cycle_done(
@@ -343,13 +339,8 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
             self.log('Changing alarm state to "away"')
             self.security_manager.set_alarm(self.security_manager.AlarmStates.away)
 
-        if (
-            time.time() - self._start_time  # type: ignore
-            > self.properties[CONF_FULL_THRESHOLD_SECONDS]
-        ):
+        if self.app.run_time >= self.properties[CONF_FULL_THRESHOLD_MINUTES]:
             self.app.bin_state = self.app.BinStates.full
-
-        self._start_time = None
 
 
 class Vacuum(Base):
@@ -394,6 +385,11 @@ class Vacuum(Base):
     def bin_state(self, value: "BinStates") -> None:
         """Set the bin state."""
         self.select_option(self.entity_ids[CONF_BIN_STATE], value.value)
+
+    @property
+    def run_time(self) -> int:
+        """Return the most recent amount of running time."""
+        return int(self.get_state(self.entity_ids[CONF_RUN_TIME]))
 
     @property
     def state(self) -> "States":

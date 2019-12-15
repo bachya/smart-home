@@ -142,7 +142,7 @@ wolfie_scheduled_cycle_automation:
   entity_ids:
     calendar: calendar.wolfie_schedule
   properties:
-    full_threshold_seconds: 300
+    full_threshold_minutes: 5
     ios_emptied_key: WOLFIE_EMPTIED
   state_changes:
     - disable:
