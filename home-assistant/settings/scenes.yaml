@@ -73,6 +73,18 @@
     switch.fireplace:
       state: false
 
+- id: vacation_mode_off
+  name: "Vacation Mode Off"
+  entities:
+    switch.water_main:
+      state: true
+
+- id: vacation_mode_on
+  name: "Vacation Mode On"
+  entities:
+    switch.water_main:
+      state: false
+
 - id: walk_home
   name: Walk Home
   entities:

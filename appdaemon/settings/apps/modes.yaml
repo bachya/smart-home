@@ -61,3 +61,31 @@ guest_mode:
 vacation_mode:
   module: mode
   class: Mode
+
+vacation_mode_off_scene_automation:
+  module: switches
+  class: ToggleOnEvent
+  dependencies:
+    - presence_manager
+  entity_ids:
+    switch: scene.vacation_mode_off
+  properties:
+    state: "on"
+    event: MODE_CHANGE
+    event_data:
+      name: vacation_mode
+      state: "off"
+
+vacation_mode_on_scene_automation:
+  module: switches
+  class: ToggleOnEvent
+  dependencies:
+    - presence_manager
+  entity_ids:
+    switch: scene.vacation_mode_on
+  properties:
+    state: "on"
+    event: MODE_CHANGE
+    event_data:
+      name: vacation_mode
+      state: "on"
