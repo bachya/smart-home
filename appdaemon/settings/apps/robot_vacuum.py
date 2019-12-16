@@ -366,13 +366,12 @@ class Vacuum(Base):
     class States(Enum):
         """Define an enum for vacuum states."""
 
-        cleaning = "Cleaning"
-        docked = "Docked"
-        error = "Error"
-        idle = "Idle"
-        paused = "Paused"
-        remote_control = "Remote Control"
-        returning = "Returning"
+        cleaning = "cleaning"
+        docked = "docked"
+        error = "error"
+        idle = "idle"
+        paused = "paused"
+        returning = "returning"
 
     @property
     def bin_state(self) -> "BinStates":
