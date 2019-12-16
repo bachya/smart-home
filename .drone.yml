@@ -29,7 +29,7 @@ steps:
     commands:
       - pip3 install mypy
       - mypy --ignore-missing-imports ./appdaemon/settings/apps/
-      
+
 ---
 kind: pipeline
 name: ESPHome
