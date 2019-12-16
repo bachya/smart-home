@@ -17,7 +17,6 @@ from notification import send_notification
 CONF_BIN_STATE = "bin_state"
 CONF_FULL_THRESHOLD_MINUTES = "full_threshold_minutes"
 CONF_RUN_TIME = "run_time"
-CONF_STATUS = "status"
 CONF_VACUUM = "vacuum"
 
 CONF_CONSUMABLES = "consumables"
@@ -193,7 +192,7 @@ class NotifyWhenStuck(Base):
         if self.enabled and self.app.state == self.app.States.error:
             self._start_notification_cycle()
 
-        self.listen_state(self._on_error_change, self.app.entity_ids[CONF_STATUS])
+        self.listen_state(self._on_error_change, self.app.entity_ids[CONF_VACUUM])
         self.listen_state(
             self._on_notification_interval_change,
             self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER],
@@ -273,7 +272,7 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
         )
         self.listen_state(
             self._on_vacuum_cycle_done,
-            self.app.entity_ids[CONF_STATUS],
+            self.app.entity_ids[CONF_VACUUM],
             old=self.app.States.returning.value,
             new=self.app.States.docked.value,
             constrain_enabled=True,
@@ -294,7 +293,7 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
         if not self._start_time:
             return
 
-        state = self.app.States(self.get_state(self.app.entity_ids[CONF_STATUS]))
+        state = self.app.States(self.get_state(self.app.entity_ids[CONF_VACUUM]))
 
         # Scenario 1: Vacuum is charging and is told to start:
         if (
@@ -351,7 +350,6 @@ class Vacuum(Base):
             CONF_ENTITY_IDS: vol.Schema(
                 {
                     vol.Required(CONF_BIN_STATE): cv.entity_id,
-                    vol.Required(CONF_STATUS): cv.entity_id,
                     vol.Required(CONF_VACUUM): cv.entity_id,
                 },
                 extra=vol.ALLOW_EXTRA,
@@ -394,7 +392,7 @@ class Vacuum(Base):
     @property
     def state(self) -> "States":
         """Define a property to get the state."""
-        return self.States(self.get_state(self.entity_ids[CONF_STATUS]))
+        return self.States(self.get_state(self.entity_ids[CONF_VACUUM]))
 
     def pause(self) -> None:
         """Pause the cleaning cycle."""
