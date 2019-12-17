@@ -119,6 +119,14 @@ master_toilet_fan_toggle_automation:
         event_data:
           name: guest_mode
           state: "off"
+    - disable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          old: home
+      enable:
+        event: PROXIMITY_CHANGE
+        event_data:
+          new: home
 
 master_toilet_fan_sleep_timer_automation:
   module: switches
