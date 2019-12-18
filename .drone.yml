@@ -32,6 +32,26 @@ steps:
 
 ---
 kind: pipeline
+name: AppDaemon
+
+trigger:
+  ref:
+    - refs/heads/master
+    - refs/heads/feature/*
+    - refs/tags/*
+
+depends_on:
+  - Pre-Flight
+
+steps:
+  - name: Security
+    image: python:3
+    commands:
+      - pip3 install bandit
+      - bandit -r --configfile=.bandit.yaml appdaemon/settings/apps
+
+---
+kind: pipeline
 name: ESPHome
 
 trigger:

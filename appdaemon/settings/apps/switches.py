@@ -4,8 +4,6 @@ from random import randint
 from typing import Callable, Union
 
 import voluptuous as vol
-
-from core import APP_SCHEMA, Base
 from const import (
     CONF_DELAY,
     CONF_DURATION,
@@ -18,6 +16,7 @@ from const import (
     CONF_STATE,
     TOGGLE_STATES,
 )
+from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 from helpers.scheduler import run_on_days
 
@@ -516,7 +515,7 @@ class VacationMode(BaseSwitch):
             state = "on"
 
         self.handles[HANDLE_VACATION_MODE] = self.run_in(
-            self._on_toggle_and_run, randint(5 * 60, 60 * 60), state=state
+            self._on_toggle_and_run, randint(5 * 60, 60 * 60), state=state  # nosec
         )
 
     def on_disable(self) -> None:

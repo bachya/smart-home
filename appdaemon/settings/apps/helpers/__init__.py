@@ -41,7 +41,7 @@ def most_common(the_list: list) -> Any:
 
 def random_affirmative_response(replace_hyphens: bool = True) -> str:
     """Return a randomly chosen affirmative response."""
-    choice = random.choice(AFFIRMATIVE_RESPONSES)
+    choice = random.choice(AFFIRMATIVE_RESPONSES)  # nosec
 
     if replace_hyphens:
         return choice.replace("-", " ")

@@ -1,14 +1,13 @@
 """Define PINs (locks, security system, etc.) and a PIN manager AppDaemon app."""
+import random
 from datetime import datetime, time
 from enum import Enum
-import random
 from threading import Lock
 from typing import Generator, Optional, Tuple, Union
 
 import voluptuous as vol
-
-from core import APP_SCHEMA, Base  # pylint: disable=no-name-in-module
 from const import CONF_PROPERTIES
+from core import APP_SCHEMA, Base  # pylint: disable=no-name-in-module
 from util.string import slugify
 
 CONF_CODE_SLOT = "code_slot"
@@ -360,7 +359,7 @@ class ZWaveLockPIN(PIN):
                 "lock/set_usercode",
                 node_id=attrs[CONF_NODE_ID],
                 code_slot=self._code_slot,
-                usercode=str(random.randint(0, 99999)).zfill(5),
+                usercode=str(random.randint(0, 99999)).zfill(5),  # nosec
             )
 
     def reset_ui(self) -> None:
