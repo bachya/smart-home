@@ -1,12 +1,15 @@
 ---
+api:
+
 appdaemon:
   api_key: !secret api_key
-  api_port: 5051
-  elevation: !secret base_elevation
+  missing_app_warnings: false
+  production_mode: true
+
   latitude: !secret base_latitude
   longitude: !secret base_longitude
-  missing_app_warnings: false
-  timezone: !secret base_timezone
+  elevation: !secret base_elevation
+  time_zone: !secret base_time_zone
 
   plugins:
     HASS:
@@ -16,5 +19,6 @@ appdaemon:
 
   portainer_password: !secret portainer_password
   portainer_username: !secret portainer_username
-  production_mode: true
-  threads: 10
+
+http:
+  url: http://appdaemon:5051

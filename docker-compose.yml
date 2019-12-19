@@ -16,7 +16,7 @@ services:
     container_name: appdaemon
     environment:
       EXTRA_CMD: -D INFO
-    image: acockburn/appdaemon:3.0.5
+    image: acockburn/appdaemon:dev
     ports:
       - "127.0.0.1:5051:5051"
     restart: unless-stopped
