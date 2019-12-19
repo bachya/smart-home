@@ -143,16 +143,6 @@ services:
       - /etc/ssl:/etc/ssl:ro
       - /var/log/nginx:/var/log/nginx
 
-  node-red:
-    container_name: node-red
-    image: nodered/node-red:1.0.3-2-minimal
-    ports:
-      - "127.0.0.1:1880:1880/tcp"
-    restart: unless-stopped
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - node-red-config:/data
-
   portainer:
     container_name: portainer
     image: portainer/portainer:1.23.0
@@ -226,6 +216,5 @@ volumes:
   fail2ban-log:
   glances-config:
   hass-config:
-  node-red-config:
   portainer-config:
   zigbee2mqtt-config:

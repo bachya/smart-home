@@ -15,10 +15,6 @@ esphome_dashboard:
   title: ESPHome Dashboard
   url: !secret panel_url_esphome_dashboard
   icon: mdi:chip
-node_red:
-  title: Node-RED
-  url: !secret panel_url_node_red
-  icon: mdi:sitemap
 octopi:
   title: OctoPi
   url: !secret panel_url_octopi
