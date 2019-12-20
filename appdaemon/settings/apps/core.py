@@ -105,7 +105,7 @@ class Base(Hass):
         self.register_constraint("constrain_sun")
 
         # Set up connections to the automation being disabled/enabled:
-        if self._enabled_entity_exists():
+        if self.enabled_entity_exists:
             # Listen and track mode changes so that the app can respond as needed:
             for state_change in self.state_changes:
                 self.listen_event(
@@ -139,9 +139,14 @@ class Base(Hass):
     @property
     def enabled(self) -> bool:
         """Return whether the app is enabled."""
-        if not self._enabled_entity_exists():
+        if not self.enabled_entity_exists:
             return True
         return self.get_state(self._enabled_toggle_entity_id) == "on"
+
+    @property
+    def enabled_entity_exists(self) -> bool:
+        """Return True if the enabled entity exists."""
+        return self.entity_exists(self._enabled_toggle_entity_id)
 
     def _attach_constraints(
         self, method: Callable, callback: Callable, *args: list, **kwargs: dict
@@ -168,10 +173,6 @@ class Base(Hass):
         return getattr(self.presence_manager, method)(
             *[self.presence_manager.HomeStates[s] for s in value.split(",")]
         )
-
-    def _enabled_entity_exists(self) -> bool:
-        """Return True if the enabled entity exists."""
-        return self.entity_exists(self._enabled_toggle_entity_id)
 
     def _on_disable(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
