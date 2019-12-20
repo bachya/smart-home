@@ -54,11 +54,11 @@ class PIN(Base):  # pylint: disable=too-many-instance-attributes
         """Configure."""
         self._reset_lock = Lock()
 
-        self._end_entity_id = "input_datetime.{0}_end".format(self.name)
-        self._name_entity_id = "input_text.{0}_name".format(self.name)
-        self._schedule_type_entity_id = "input_select.{0}_type".format(self.name)
-        self._start_entity_id = "input_datetime.{0}_start".format(self.name)
-        self._value_entity_id = "input_text.{0}_code".format(self.name)
+        self._end_entity_id = f"input_datetime.{self.name}_end"
+        self._name_entity_id = f"input_text.{self.name}_name"
+        self._schedule_type_entity_id = f"input_select.{self.name}_type"
+        self._start_entity_id = f"input_datetime.{self.name}_start"
+        self._value_entity_id = f"input_text.{self.name}_code"
 
         self.listen_event(self._on_execute_clicked, "PIN_EXECUTE", id=self.name)
         self.listen_event(self._on_reset_clicked, "PIN_RESET", id=self.name)
@@ -183,9 +183,7 @@ class PIN(Base):  # pylint: disable=too-many-instance-attributes
             # The PIN is set at the start date/time and is automatically removed at the
             # end date/time:
             self.log(
-                "Adding scheduled PIN ({0} -> {1})".format(
-                    self.schedule_start, self.schedule_end
-                )
+                f"Adding scheduled PIN ({self.schedule_start} -> {self.schedule_end})"
             )
             self._add_pin_during_schedule()
         else:

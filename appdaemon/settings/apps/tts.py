@@ -33,7 +33,7 @@ class TTS(Base):
 
         self.log("Emergency Notification from %s", name)
 
-        statement = "Please call {0} as soon as possible.".format(name)
+        statement = f"Please call {name} as soon as possible."
         self.speak(statement, iterations=3)
         return {"status": "ok", "message": statement}, 200
 
@@ -116,7 +116,7 @@ class TTS(Base):
             self._on_speak,
             3.25,
             master_sonos_player=master_sonos_player,
-            text="Good {0}. {1}".format(relative_time_of_day(self), final_string),
+            text=f"Good {relative_time_of_day(self)}. {final_string}",
         )
 
         self._last_spoken_text = text

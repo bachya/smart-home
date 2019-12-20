@@ -65,10 +65,8 @@ class NotifyLowFuel(Base):  # pylint: disable=too-few-public-methods
                 send_notification(
                     self,
                     self.properties[CONF_NOTIFICATION_TARGET],
-                    "{0} needs gas; fill 'er up!.".format(
-                        self.properties[CONF_FRIENDLY_NAME]
-                    ),
-                    title="{0} is low ⛽".format(self.properties[CONF_FRIENDLY_NAME]),
+                    f"{self.properties[CONF_FRIENDLY_NAME]} needs gas; fill 'er up!.",
+                    title=f"{self.properties[CONF_FRIENDLY_NAME]} is low ⛽",
                 )
             else:
                 self.registered = False

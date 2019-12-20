@@ -390,7 +390,7 @@ class LightningDetected(Base):  # pylint: disable=too-few-public-methods
             send_notification(
                 self,
                 "presence:home",
-                "Lightning detected {0} miles away.".format(data[CONF_DISTANCE]),
+                f"Lightning detected {data[CONF_DISTANCE]} miles away.",
                 title="Lightning Detected ⚡️",
             )
 
@@ -438,9 +438,7 @@ class NotifyBadAqi(Base):
             send_notification(
                 self,
                 "presence:home",
-                "AQI is at {0}; consider closing the humidifier vent.".format(
-                    current_aqi
-                ),
+                f"AQI is at {current_aqi}; consider closing the humidifier vent.",
                 title="Poor AQI 😤",
             )
 
@@ -449,7 +447,7 @@ class NotifyBadAqi(Base):
             send_notification(
                 self,
                 "presence:home",
-                "AQI is at {0}; open the humidifer vent again.".format(current_aqi),
+                f"AQI is at {current_aqi}; open the humidifer vent again.",
                 title="Better AQI 😅",
             )
 

@@ -242,7 +242,7 @@ class NotifyOnChange(Base):  # pylint: disable=too-few-public-methods
             send_notification(
                 self,
                 ["person:Aaron", "person:Britt"],
-                'The security status has changed to "{0}"'.format(new),
+                f'The security status has changed to "{new}"',
                 title="Security Change 🔐",
             )
 
@@ -312,7 +312,7 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
         send_notification(
             self,
             ["person:Aaron", "person:Britt"],
-            "A possible person was detected on the {0}.".format(camera_friendly_name),
+            f"A possible person was detected on the {camera_friendly_name}.",
             title="Security Issue 🔐",
             data={
                 "attachment": {"content-type": "jpeg"},
@@ -408,8 +408,8 @@ class SecurityManager(Base):
             self.log('Arming the security system: "%s"', new.name)
 
             self.call_service(
-                "alarm_control_panel/alarm_arm_{0}".format(new.value.split("_")[1]),
+                f'alarm_control_panel/alarm_arm_{new.value.split("_")[1]}',
                 entity_id=self.entity_ids[CONF_ALARM_CONTROL_PANEL],
             )
         else:
-            raise AttributeError("Unknown security state: {0}".format(new))
+            raise AttributeError(f"Unknown security state: {new}")

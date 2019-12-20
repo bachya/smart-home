@@ -83,9 +83,7 @@ class NewVersionNotification(Base):  # pylint: disable=too-few-public-methods
             send_notification(
                 self,
                 "slack:@aaron",
-                "New {0} Version: {1}".format(
-                    self.properties[CONF_APP_NAME], new_version
-                ),
+                f"New {self.properties[CONF_APP_NAME]} Version: {new_version}",
                 title="New Software 💿",
             )
 
@@ -194,7 +192,7 @@ class NewPortainerVersionNotification(DynamicSensor):
     def sensor_value(self) -> Optional[str]:
         """Get the version from Portainer."""
         auth_resp = requests.post(
-            "{0}/auth".format(self.API_URL),
+            f"{self.API_URL}/auth",
             json={
                 "Username": self.config["portainer_username"],
                 "Password": self.config["portainer_password"],
@@ -203,10 +201,11 @@ class NewPortainerVersionNotification(DynamicSensor):
         token = auth_resp["jwt"]
 
         images_resp = requests.get(
-            "{0}/endpoints/{1}/docker/images/json".format(
-                self.API_URL, self.properties[CONF_ENDPOINT_ID]
+            (
+                f"{self.API_URL}/endpoints/{self.properties[CONF_ENDPOINT_ID]}"
+                "/docker/images/json"
             ),
-            headers={"Authorization": "Bearer {0}".format(token)},
+            headers={"Authorization": f"Bearer {token}"},
         ).json()
 
         try:

@@ -52,8 +52,9 @@ class Security(SlashCommand):
             open_entities = self._hass.security_manager.get_insecure_entities()
             if open_entities:
                 self.message(
-                    "These entry points are insecure: {0}.".format(
-                        grammatical_list_join(open_entities)
+                    (
+                        "These entry points are insecure: "
+                        f"{grammatical_list_join(open_entities)}."
                     )
                 )
             else:
@@ -78,20 +79,21 @@ class Thermostat(SlashCommand):
     def execute(self) -> None:
         """Execute the response to the slash command."""
         if not self._text:
-            text = "The thermostat is set to `{0}` to `{1}°`.".format(
-                self._hass.climate_manager.hvac_mode,
-                self._hass.climate_manager.target_temperature,
+            text = (
+                f"The thermostat is set to `{self._hass.climate_manager.hvac_mode}` "
+                f"to `{self._hass.climate_manager.target_temperature}°`."
             )
 
             self.message(
-                "{0} The current indoor temperature is `{1}°`.".format(
-                    text, self._hass.climate_manager.indoor_temperature
+                (
+                    f"{text} The current indoor temperature is "
+                    f"`{self._hass.climate_manager.indoor_temperature}°`."
                 )
             )
             return
 
         self._hass.climate_manager.set_temperature(int(self._text))
-        self.message("I've set the thermostat to `{0}°`.".format(self._text))
+        self.message(f"I've set the thermostat to `{self._text}°`.")
 
 
 class Toggle(SlashCommand):
@@ -131,15 +133,11 @@ class Toggle(SlashCommand):
         try:
             method = getattr(self._hass, method_name)
             method(entity_id)
-            self.message(
-                "{0} `{1}` is now `{2}`.".format(
-                    random_affirmative_response(replace_hyphens=False),
-                    entity_id,
-                    new_state,
-                )
-            )
+            response = random_affirmative_response(replace_hyphens=False)
+
+            self.message(f"{response} `{entity_id}` is now `{new_state}`.")
         except (TypeError, ValueError):
-            self.message("Sorry: I don't know what `{0}` is.".format(target))
+            self.message(f"Sorry: I don't know what `{target}` is.")
 
 
 class SlackApp(Base):
@@ -206,7 +204,7 @@ class SlackApp(Base):
         actions: dict,
         *,
         urgent: bool = False,
-        image_url: str = None
+        image_url: str = None,
     ) -> None:
         """Ask a question on Slack (with an optional image)."""
         self._interactive_command_actions = actions
@@ -216,10 +214,10 @@ class SlackApp(Base):
         attachments = [
             {
                 "fallback": "",
-                "callback_id": "interactive_command_{0}".format(command_id),
+                "callback_id": f"interactive_command_{command_id}",
                 "actions": [
                     {
-                        "name": "{0}_{1}".format(command_id, action),
+                        "name": f"{command_id}_{action}",
                         "text": action,
                         "type": "button",
                         "value": action,

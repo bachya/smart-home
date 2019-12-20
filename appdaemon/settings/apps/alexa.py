@@ -20,7 +20,7 @@ class Alexa(Base):
         self.log("Received Alexa intent: %s", intent)
 
         if intent is None:
-            message = "Alexa error encountered: {0}".format(self.get_alexa_error(data))
+            message = f"Alexa error encountered: {self.get_alexa_error(data)}"
             response = {"status": "error", "message": message}
 
             self.error(message)
@@ -33,7 +33,7 @@ class Alexa(Base):
             response = self.format_alexa_response(speech=speech, card=card, title=title)
         except AttributeError as exc:
             self.error(str(exc))
-            speech = "I'm sorry, the {0} app does not exist.".format(intent)
+            speech = f"I'm sorry, the {intent} app does not exist."
             response = self.format_alexa_response(speech=speech)
 
         self.log("Answering: %s", speech)
@@ -50,8 +50,9 @@ class Alexa(Base):
         """Define a handler for the IsHouseSecureIntent intent."""
         open_entities = self.security_manager.get_insecure_entities()
         if open_entities:
-            speech = "These entry points are insecure: {0}.".format(
-                grammatical_list_join(open_entities)
+            speech = (
+                "These entry points are insecure: "
+                f"{grammatical_list_join(open_entities)}."
             )
         else:
             speech = "The house is secure, captain!"
@@ -77,15 +78,11 @@ class Alexa(Base):
             if current_moisture == "unknown":
                 speech = "I'm not sure; check back later."
             elif float(current_moisture) >= plant_moisture_threshold:
-                speech = "{0} is at {1}% and doing great!".format(
-                    name, current_moisture
-                )
+                speech = f"{name} is at {current_moisture}% and doing great!"
             else:
-                speech = "{0} is at {1}% moisture; I would water it!".format(
-                    name, current_moisture
-                )
+                speech = f"{name} is at {current_moisture}% moisture; I would water it!"
         else:
-            speech = "I couldn't find moisture information for {0}.".format(plant)
+            speech = f"I couldn't find moisture information for {plant}."
             title = title.format(plant)
 
         return speech, speech, title

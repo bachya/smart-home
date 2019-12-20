@@ -40,7 +40,7 @@ class ActivateScene(ButtonAction):
 
     def run(self) -> None:
         """Turn on the scene."""
-        self._app.turn_on("scene.{0}".format(self._scene))
+        self._app.turn_on(f"scene.{self._scene}")
 
 
 class BumpClimate(ButtonAction):

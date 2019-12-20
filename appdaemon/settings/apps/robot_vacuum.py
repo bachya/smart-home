@@ -65,9 +65,7 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
         def _send_notification() -> None:
             """Send the notification."""
             send_notification(
-                self,
-                "slack:@aaron",
-                "Order a new Wolfie consumable: {0}".format(attribute),
+                self, "slack:@aaron", f"Order a new Wolfie consumable: {attribute}"
             )
 
         if int(new) < self.properties[CONF_CONSUMABLE_THRESHOLD]:

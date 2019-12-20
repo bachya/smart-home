@@ -523,7 +523,7 @@ class VacationMode(BaseSwitch):
     def set_schedule(self, time: str, handler: Callable, **kwargs) -> None:
         """Set the appropriate schedulers based on the passed in time."""
         if time in ("sunrise", "sunset"):
-            method = getattr(self, "run_at_{0}".format(time))
+            method = getattr(self, f"run_at_{time}")
             method(handler, **kwargs, constrain_enabled=True)
         else:
             self.run_daily(

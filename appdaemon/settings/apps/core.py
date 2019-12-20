@@ -61,7 +61,7 @@ class Base(Hass):
         try:
             self.APP_SCHEMA(self.args)
         except vol.Invalid as err:
-            self.error("Invalid app schema: {0}".format(err), level="ERROR")
+            self.error("Invalid app schema: %s", err)
             return
 
         # Define a holding place for HASS entity IDs:
@@ -92,7 +92,7 @@ class Base(Hass):
         if self.args.get(CONF_ENABLED_TOGGLE_ENTITY_ID):
             self._enabled_toggle_entity_id = self.args[CONF_ENABLED_TOGGLE_ENTITY_ID]
         else:
-            self._enabled_toggle_entity_id = "input_boolean.{0}".format(self.name)
+            self._enabled_toggle_entity_id = f"input_boolean.{self.name}"
 
         # Register custom constraints:
         self.register_constraint("constrain_anyone")

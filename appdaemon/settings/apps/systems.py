@@ -122,14 +122,14 @@ class LowBatteries(Base):  # pylint: disable=too-few-public-methods
                 return
             value = 0
 
-        notification_handle = "{0}_{1}".format(HANDLE_BATTERY_LOW, name)
+        notification_handle = f"{HANDLE_BATTERY_LOW}_{name}"
 
         def _send_notification():
             """Send the notification."""
             self.handles[notification_handle] = send_notification(
                 self,
                 "slack",
-                "{0} has low batteries ({1}%). Replace them ASAP!".format(name, value),
+                f"{name} has low batteries ({value}%). Replace them ASAP!",
                 when=self.datetime(),
                 interval=self.properties[CONF_NOTIFICATION_INTERVAL],
             )
@@ -140,7 +140,7 @@ class LowBatteries(Base):  # pylint: disable=too-few-public-methods
             if name in self._registered:
                 return
 
-            self.log("Low battery detected: {0}".format(name))
+            self.log(f"Low battery detected: {name}")
             self._registered.append(name)
 
             # If the automation is enabled when a battery is low, send a notification;
@@ -204,15 +204,15 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
 
         def _send_notification() -> None:
             """Send a notification."""
+            friendly_name = self.get_state(
+                self.entity_ids[CONF_ENTITY_ID], attribute="friendly_name"
+            )
             send_notification(
                 self,
                 self.properties[CONF_NOTIFICATION_TARGET],
-                "{0} -> {1} ({2} seconds)".format(
-                    self.get_state(
-                        self.entity_ids[CONF_ENTITY_ID], attribute="friendly_name"
-                    ),
-                    self.properties[CONF_STATE],
-                    self.properties[CONF_DURATION],
+                (
+                    f"{friendly_name} -> {self.properties[CONF_STATE]} "
+                    f"({self.properties[CONF_DURATION]} seconds)"
                 ),
                 title="Entity Alert",
             )
@@ -249,9 +249,7 @@ class NotifyOfDeadZwaveDevices(Base):  # pylint: disable=too-few-public-methods
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """React when a dead device is found."""
-        send_notification(
-            self, "slack:@aaron", "A Z-Wave device just died: {0}".format(entity)
-        )
+        send_notification(self, "slack:@aaron", f"A Z-Wave device just died: {entity}")
 
 
 class StartHomeKitOnZwaveReady(Base):

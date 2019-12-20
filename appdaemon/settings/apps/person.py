@@ -192,6 +192,6 @@ class Person(Base):
             state=state,
             attributes={
                 "friendly_name": self.first_name,
-                "entity_picture": "/local/{0}-{1}.png".format(self.name, picture_state),
+                "entity_picture": f"/local/{self.name}-{picture_state}.png",
             },
         )

@@ -64,14 +64,15 @@ class TrashManager(Base):
         if delta == 1:
             relative_date_string = "tomorrow"
         else:
-            relative_date_string = "in {0} days".format(delta)
+            relative_date_string = f"in {delta} days"
 
-        response = "The next pickup is {0} on {1}. It includes {2}.".format(
-            relative_date_string,
-            suffix_strftime("%A, %B {TH}", date),
-            grammatical_list_join(
-                [pickup.replace("_", " ") for pickup in pickup_types]
-            ),
+        grammatical_time = suffix_strftime("%A, %B {TH}", date)
+        grammatical_types = grammatical_list_join(
+            [pickup.replace("_", " ") for pickup in pickup_types]
+        )
+        response = (
+            f"The next pickup is {relative_date_string} on {grammatical_time}. "
+            f"It includes {grammatical_types}."
         )
 
         return (date, response)
