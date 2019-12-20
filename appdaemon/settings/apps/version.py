@@ -90,11 +90,7 @@ class NewVersionNotification(Base):  # pylint: disable=too-few-public-methods
             )
 
         if new_version > installed_version:
-            self.log(
-                "New {0} version detected: {1}".format(
-                    self.properties[CONF_APP_NAME], new
-                )
-            )
+            self.log("New %s version detected: %s", self.properties[CONF_APP_NAME], new)
             if self.enabled:
                 _send_notification()
             else:
@@ -223,8 +219,7 @@ class NewPortainerVersionNotification(DynamicSensor):
                 )
             )
         except StopIteration:
-            self.error(
-                "No match for image: {0}".format(self.properties[CONF_IMAGE_NAME])
-            )
+            self.error("No match for image: %s", self.properties[CONF_IMAGE_NAME])
+            return None
 
         return tagged_image.split(":")[1].replace("v", "").split("-")[0]

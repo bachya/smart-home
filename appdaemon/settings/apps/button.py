@@ -146,10 +146,10 @@ class Button(Base):
         elif action_name == BUTTON_ACTION_TOGGLE_LIVING_ROOM_LIGHTS:
             action = ToggleEntity(self, "group.living_room_lights")
         else:
-            self.error("Unknown button action: {0}".format(action_name))
+            self.error("Unknown button action: %s", action_name)
             return
 
-        self.log("Running action: {0}".format(action_name))
+        self.log("Running action: %s", action_name)
         action.run()
 
 

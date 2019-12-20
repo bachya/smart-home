@@ -58,11 +58,10 @@ class NotifyLowFuel(Base):  # pylint: disable=too-few-public-methods
                 if self.registered:
                     return
 
-                self.log(
-                    "Low fuel detected detected: {0}".format(self.entity_ids[CONF_CAR])
-                )
-
                 self.registered = True
+
+                self.log("Low fuel detected detected: %s", self.entity_ids[CONF_CAR])
+
                 send_notification(
                     self,
                     self.properties[CONF_NOTIFICATION_TARGET],

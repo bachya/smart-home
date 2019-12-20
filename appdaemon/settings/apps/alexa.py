@@ -17,7 +17,7 @@ class Alexa(Base):
         """Define an API endpoint to pull Alexa intents."""
         intent = self.get_alexa_intent(data)
 
-        self.log("Received Alexa intent: {0}".format(intent))
+        self.log("Received Alexa intent: %s", intent)
 
         if intent is None:
             message = "Alexa error encountered: {0}".format(self.get_alexa_error(data))
@@ -36,7 +36,7 @@ class Alexa(Base):
             speech = "I'm sorry, the {0} app does not exist.".format(intent)
             response = self.format_alexa_response(speech=speech)
 
-        self.log("Answering: {0}".format(speech))
+        self.log("Answering: %s", speech)
 
         return response, 200
 

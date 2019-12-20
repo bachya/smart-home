@@ -76,7 +76,7 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
 
             self._consumables_met.append(attribute)
 
-            self.log("Consumable is low: {0}".format(attribute))
+            self.log("Consumable is low: %s", attribute)
 
             if self.enabled:
                 _send_notification()
@@ -88,7 +88,7 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
 
             self._consumables_met.remove(attribute)
 
-            self.log("Consumable is restored: {0}".format(attribute))
+            self.log("Consumable is restored: %s", attribute)
 
     def on_enable(self) -> None:
         """Send the notification once the automation is enabled (if appropriate)."""

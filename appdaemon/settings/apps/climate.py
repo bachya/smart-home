@@ -232,18 +232,14 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             current_temperature > self.eco_high_temperature
             and self.hvac_mode != HVAC_MODE_COOL
         ):
-            self.log(
-                'Eco Mode: setting to "Cool" ({0}°)'.format(self.eco_high_temperature)
-            )
+            self.log('Eco Mode: setting to "Cool" (%s°)', self.eco_high_temperature)
             self.set_mode_cool()
             self.set_temperature(self.eco_high_temperature)
         elif (
             current_temperature < self.eco_low_temperature
             and self.hvac_mode != HVAC_MODE_HEAT
         ):
-            self.log(
-                'Eco Mode: setting to "Heat" ({0}°)'.format(self.eco_low_temperature)
-            )
+            self.log('Eco Mode: setting to "Heat" (%s°)', self.eco_low_temperature)
             self.set_mode_heat()
             self.set_temperature(self.eco_low_temperature)
         elif (
@@ -274,7 +270,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         if fan_mode == self.fan_mode:
             return
 
-        self.log('Setting fan mode to "{0}"'.format(fan_mode.title()))
+        self.log('Setting fan mode to "%s"', fan_mode.title())
         self.call_service(
             "climate/set_fan_mode",
             entity_id=self.entity_ids[CONF_THERMOSTAT],
@@ -300,7 +296,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
         self._last_hvac_mode = self.hvac_mode
 
-        self.log('Setting operation mode to "{0}"'.format(hvac_mode.title()))
+        self.log('Setting operation mode to "%s"', hvac_mode.title())
         self.call_service(
             "climate/set_hvac_mode",
             entity_id=self.entity_ids[CONF_THERMOSTAT],

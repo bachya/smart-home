@@ -125,7 +125,7 @@ class PIN(Base):  # pylint: disable=too-many-instance-attributes
         try:
             return PinScheduleType(raw_state)
         except KeyError:
-            self.error("Unknown PIN schedule type: {0}".format(raw_state))
+            self.error("Unknown PIN schedule type: %s", raw_state)
             return None
 
     @schedule_type.setter

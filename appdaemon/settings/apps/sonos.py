@@ -108,7 +108,7 @@ class SonosManager(Base):
     def register_entity(self, speaker_object: SonosSpeaker) -> None:
         """Register a Sonos entity object."""
         if speaker_object in self.speakers:
-            self.log("Entity already registered; skipping: {0}".format(speaker_object))
+            self.log("Entity already registered; skipping: %s", speaker_object)
             return
 
         self.speakers.append(speaker_object)

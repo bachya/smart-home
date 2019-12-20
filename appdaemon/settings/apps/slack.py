@@ -168,7 +168,7 @@ class SlackApp(Base):
         response_url = payload["response_url"]
 
         if response_value not in self._interactive_command_actions:
-            self.error("Unknown response: {0}".format(response_value))
+            self.error("Unknown response: %s", response_value)
             return
 
         parameters = self._interactive_command_actions[response_value]
@@ -190,12 +190,10 @@ class SlackApp(Base):
         command = data["command"][1:]
 
         if command not in self.COMMAND_MAP:
-            self.error("Unknown slash command: {0}".format(command))
+            self.error("Unknown slash command: %s", command)
             return
 
-        self.log(
-            "Running Slack slash command: {0} {1}".format(data["command"], data["text"])
-        )
+        self.log("Running Slack slash command: %s %s", data["command"], data["text"])
 
         slash_command = self.COMMAND_MAP[command](
             self, data["text"], data["response_url"]

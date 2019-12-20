@@ -306,9 +306,9 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
         camera_friendly_name = self.get_state(
             camera_entity_id, attribute="friendly_name"
         )
-        self.log(
-            "Person detected on {0} while no one was home".format(camera_friendly_name)
-        )
+
+        self.log("Person detected on %s while no one was home", camera_friendly_name)
+
         send_notification(
             self,
             ["person:Aaron", "person:Britt"],
@@ -405,7 +405,7 @@ class SecurityManager(Base):
                 entity_id=self.entity_ids[CONF_ALARM_CONTROL_PANEL],
             )
         elif new in (self.AlarmStates.away, self.AlarmStates.home):
-            self.log('Arming the security system: "{0}"'.format(new.name))
+            self.log('Arming the security system: "%s"', new.name)
 
             self.call_service(
                 "alarm_control_panel/alarm_arm_{0}".format(new.value.split("_")[1]),

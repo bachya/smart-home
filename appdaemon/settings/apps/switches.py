@@ -69,12 +69,10 @@ class BaseSwitch(Base):
             _state = "off"
 
         if self.state == "off" and _state == "on":
-            self.log("Turning on: {0}".format(self.entity_ids["switch"]))
-
+            self.log("Turning on: %s", self.entity_ids["switch"])
             self.turn_on(self.entity_ids["switch"])
         elif self.state == "on" and _state == "off":
-            self.log("Turning off: {0}".format(self.entity_ids["switch"]))
-
+            self.log("Turning off: %s", self.entity_ids["switch"])
             self.turn_off(self.entity_ids["switch"])
 
 
@@ -234,7 +232,7 @@ class SleepTimer(BaseSwitch):
                 cancel = self.handles.pop(HANDLE_TIMER)
                 self.cancel_timer(cancel)
         else:
-            self.log("Activating sleep timer: {0} minutes".format(minutes))
+            self.log("Activating sleep timer: %s minutes", minutes)
             self.toggle(state="on")
             self.handles[HANDLE_TIMER] = self.run_in(
                 self._on_timer_complete, minutes * 60

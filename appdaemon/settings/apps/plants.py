@@ -71,7 +71,7 @@ class LowMoisture(Base):
             if self._low_moisture_detected:
                 return
 
-            self.log("{0} has low moisture".format(self.properties[CONF_FRIENDLY_NAME]))
+            self.log("%s has low moisture", self.properties[CONF_FRIENDLY_NAME])
             self._start_notification_cycle()
             self._low_moisture_detected = True
         elif self.enabled and int(new) >= self.properties[CONF_MOISTURE_THRESHOLD]:

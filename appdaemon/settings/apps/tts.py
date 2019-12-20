@@ -31,7 +31,7 @@ class TTS(Base):
         except KeyError:
             return ({"status": "error", "message": 'Missing "name" parameter'}, 502)
 
-        self.log("Emergency Notification from {0}".format(name))
+        self.log("Emergency Notification from %s", name)
 
         statement = "Please call {0} as soon as possible.".format(name)
         self.speak(statement, iterations=3)
@@ -83,7 +83,7 @@ class TTS(Base):
         except KeyError:
             return ({"status": "error", "message": 'Missing "text" parameter'}, 502)
 
-        self.log("Received TTS data: {0}".format(data))
+        self.log("Received TTS data: %s", data)
 
         self.speak(text, iterations=data.get("iterations", 1))
         return {"status": "ok", "message": data["text"]}, 200
@@ -95,8 +95,7 @@ class TTS(Base):
                 self._last_spoken_text, iterations
             )
 
-            self.log("Repeating over TTS: {0}".format(final_string))
-
+            self.log("Repeating over TTS: %s", final_string)
             self.speak(final_string)
 
     def speak(self, text: str, iterations: int = 1) -> None:
@@ -111,7 +110,7 @@ class TTS(Base):
         if self.living_room_tv.current_activity_id:
             self.living_room_tv.pause()
 
-        self.log("Speaking over TTS: {0}".format(final_string))
+        self.log("Speaking over TTS: %s", final_string)
 
         self.run_in(
             self._on_speak,
