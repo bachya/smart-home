@@ -287,8 +287,8 @@ class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
     ) -> None:
         """Respond to 'ALARM_CHANGE' events."""
         # Guard against running when the alarm changes in general – it should
-        # only respond if we've started a cycle:
-        if not self._start_time:
+        # only respond if we're running a cycle:
+        if self.app.state == self.app.States.docked:
             return
 
         state = self.app.States(self.get_state(self.app.entity_ids[CONF_VACUUM]))
