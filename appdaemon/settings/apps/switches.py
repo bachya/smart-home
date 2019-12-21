@@ -20,6 +20,7 @@ from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 from helpers.scheduler import run_on_days
 
+CONF_OPPOSITE = "opposite"
 CONF_RETURN_DELAY = "return_delay"
 CONF_RUN_ON_DAYS = "run_on_days"
 CONF_SCHEDULE_TIME = "schedule_time"
@@ -415,6 +416,7 @@ class ToggleOnState(BaseSwitch):
                 {
                     vol.Required(CONF_STATE): vol.In(TOGGLE_STATES),
                     vol.Required(CONF_TARGET_STATE): str,
+                    vol.Optional(CONF_OPPOSITE): bool,
                     vol.Optional(CONF_DELAY): int,
                     vol.Optional(CONF_RETURN_DELAY): int,
                 },
@@ -439,7 +441,10 @@ class ToggleOnState(BaseSwitch):
         if old == new:
             return
 
-        if new == self.properties[CONF_TARGET_STATE]:
+        opposite = self.properties.get(CONF_OPPOSITE, False)
+        if (not opposite and new == self.properties[CONF_TARGET_STATE]) or (
+            opposite and new != self.properties[CONF_TARGET_STATE]
+        ):
             if CONF_DELAY in self.properties:
                 self.handles[HANDLE_TOGGLE_STATE] = self.run_in(
                     self._on_schedule_toggle,

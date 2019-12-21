@@ -22,7 +22,8 @@ garage_lights_on_garage_open_sundown_automation:
     target: cover.garage_door
   properties:
     state: "on"
-    target_state: "open"
+    target_state: "closed"
+    opposite: true
   constraints:
     constraints:
       constrain_sun: "down"
