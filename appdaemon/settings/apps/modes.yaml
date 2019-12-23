@@ -27,28 +27,28 @@ blackout_mode_schedule:
         - v: "off"
 
 blackout_mode_off_when_vacation_mode_on_automation:
-  module: switches
-  class: ToggleOnEvent
+  module: services
+  class: ServiceAtEvent
   dependencies:
     - presence_manager
-  entity_ids:
-    switch: input_boolean.blackout_schedule_automation
+  service: "input_boolean/turn_off"
+  service_data:
+    entity_id: input_boolean.blackout_schedule_automation
   properties:
-    state: "off"
     event: MODE_CHANGE
     event_data:
       name: vacation_mode
       state: "on"
 
 blackout_mode_on_when_vacation_mode_off_automation:
-  module: switches
-  class: ToggleOnEvent
+  module: services
+  class: ServiceAtEvent
   dependencies:
     - presence_manager
-  entity_ids:
-    switch: input_boolean.blackout_schedule_automation
+  service: "input_boolean/turn_on"
+  service_data:
+    entity_id: input_boolean.blackout_schedule_automation
   properties:
-    state: "on"
     event: MODE_CHANGE
     event_data:
       name: vacation_mode
@@ -63,28 +63,28 @@ vacation_mode:
   class: Mode
 
 vacation_mode_off_scene_automation:
-  module: switches
-  class: ToggleOnEvent
+  module: services
+  class: ServiceAtEvent
   dependencies:
     - presence_manager
-  entity_ids:
-    switch: scene.vacation_mode_off
+  service: "scene/turn_on"
+  service_data:
+    entity_id: scene.vacation_mode_off
   properties:
-    state: "on"
     event: MODE_CHANGE
     event_data:
       name: vacation_mode
       state: "off"
 
 vacation_mode_on_scene_automation:
-  module: switches
-  class: ToggleOnEvent
+  module: services
+  class: ServiceAtEvent
   dependencies:
     - presence_manager
-  entity_ids:
-    switch: scene.vacation_mode_on
+  service: "scene/turn_on"
+  service_data:
+    entity_id: scene.vacation_mode_on
   properties:
-    state: "on"
     event: MODE_CHANGE
     event_data:
       name: vacation_mode
