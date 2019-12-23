@@ -18,12 +18,9 @@ from const import (
 )
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
-from helpers.scheduler import run_on_days
 
 CONF_OPPOSITE = "opposite"
 CONF_RETURN_DELAY = "return_delay"
-CONF_RUN_ON_DAYS = "run_on_days"
-CONF_SCHEDULE_TIME = "schedule_time"
 CONF_SWITCH = "switch"
 CONF_TARGET = "target"
 CONF_TARGET_STATE = "target_state"
@@ -250,47 +247,6 @@ class SleepTimer(BaseSwitch):
         self.log("Sleep timer over; turning switch off")
 
         self.set_value(self.entity_ids[CONF_TIMER_SLIDER], 0)
-
-
-class ToggleAtTime(BaseSwitch):
-    """Define a feature to toggle a switch at a certain time."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            CONF_ENTITY_IDS: vol.Schema(
-                {vol.Required(CONF_SWITCH): cv.entity_id}, extra=vol.ALLOW_EXTRA
-            ),
-            CONF_PROPERTIES: vol.Schema(
-                {
-                    vol.Required(CONF_SCHEDULE_TIME): str,
-                    vol.Required(CONF_STATE): vol.In(TOGGLE_STATES),
-                    vol.Optional(CONF_RUN_ON_DAYS): cv.ensure_list,
-                },
-                extra=vol.ALLOW_EXTRA,
-            ),
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        kwargs = {"state": self.properties[CONF_STATE], "constrain_enabled": True}
-
-        if self.properties.get(CONF_RUN_ON_DAYS):
-            run_on_days(
-                self,
-                self._on_schedule_toggle,
-                self.properties[CONF_RUN_ON_DAYS],
-                self.parse_time(self.properties[CONF_SCHEDULE_TIME]),
-                auto_constraints=True,
-                **kwargs,
-            )
-        else:
-            self.run_daily(
-                self._on_schedule_toggle,
-                self.parse_time(self.properties[CONF_SCHEDULE_TIME]),
-                auto_constraints=True,
-                **kwargs,
-            )
 
 
 class ToggleOnEvent(BaseSwitch):

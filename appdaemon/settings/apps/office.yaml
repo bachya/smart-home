@@ -9,17 +9,13 @@ office_lights_sleep_timer_automation:
     timer_slider: input_number.office_salt_lamp_timer
 
 office_lights_off_at_10pm_automation:
-  module: switches
-  class: ToggleAtTime
-  dependencies:
-    - guest_mode
-    - presence_manager
-    - vacation_mode
-  entity_ids:
-    switch: switch.office_salt_lamp
+  module: services
+  class: ServiceAtTime
+  service: "switch/turn_off"
+  service_data:
+    entity_id: switch.office_salt_lamp
   properties:
     schedule_time: "22:00:00"
-    state: "off"
   state_changes:
     - disable:
         event: MODE_CHANGE
