@@ -6,6 +6,7 @@ wolfie:
     - security_manager
   entity_ids:
     bin_state: input_select.wolfie_bin_status
+    run_time: sensor.vacuum_cleaning_time
     vacuum: vacuum.xiaomi_vacuum_cleaner
 
 wolfie_notify_when_consumable_low_automation:
