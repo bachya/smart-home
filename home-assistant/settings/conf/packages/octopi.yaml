@@ -1,16 +1,16 @@
 ---
-camera:
-  - platform: mjpeg
-    name: OctoPrint
-    still_image_url: http://octopi.phil.iot/webcam/?action=snapshot
-    mjpeg_url: http://octopi.phil.iot/webcam/?action=stream
-
-octoprint:
-  host: octopi.phil.iot
-  api_key: !secret octoprint_api_key
-  name: Ender 3
-  bed: true
-  number_of_tools: 1
+binary_sensor:
+  - platform: mqtt
+    name: Ender 3 Error State
+    state_topic: "octoPrint/progress/printing"
+    value_template: >
+      {{ value_json.printer_data.state.flags.error }}
+    payload_off: false
+    payload_on: true
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    device_class: problem
 
 sensor:
   - platform: command_line
@@ -29,3 +29,85 @@ sensor:
       bachya@octopi.phil.iot
       cat /proc/uptime | awk \'{ print $1 / 86400 }\' | cut -f1 -d"."
     unit_of_measurement: "days"
+
+  - platform: mqtt
+    name: Ender 3 Bed Temperature (Actual)
+    unit_of_measurement: "°F"
+    state_topic: "octoPrint/temperature/bed"
+    value_template: "{{ value_json.actual }}"
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:home-thermometer
+
+  - platform: mqtt
+    name: Ender 3 Bed Temperature (Target)
+    unit_of_measurement: "°F"
+    state_topic: "octoPrint/temperature/bed"
+    value_template: "{{ value_json.target }}"
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:home-thermometer
+
+  - platform: mqtt
+    name: Ender 3 Extruder Temperature (Actual)
+    unit_of_measurement: "°F"
+    state_topic: "octoPrint/temperature/tool0"
+    value_template: "{{ value_json.actual }}"
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:home-thermometer
+
+  - platform: mqtt
+    name: Ender 3 Extruder Temperature (Target)
+    unit_of_measurement: "°F"
+    state_topic: "octoPrint/temperature/tool0"
+    value_template: "{{ value_json.target }}"
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:home-thermometer
+
+  - platform: mqtt
+    name: Ender 3 Total Print Time Elapsed
+    unit_of_measurement: "seconds"
+    state_topic: "octoPrint/progress/printing"
+    value_template: >
+      {{ value_json.printer_data.progress.printTime | int }}
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:timer
+
+  - platform: mqtt
+    name: Ender 3 Total Print Time Remaining
+    unit_of_measurement: "seconds"
+    state_topic: "octoPrint/progress/printing"
+    value_template: >
+      {{ value_json.printer_data.progress.printTimeLeft | int }}
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:timer
+
+  - platform: mqtt
+    name: Ender 3 Percent Complete
+    unit_of_measurement: "%"
+    state_topic: "octoPrint/progress/printing"
+    value_template: >
+      {{ value_json.printer_data.progress.completion | round(2) }}
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:progress-clock
+
+  - platform: mqtt
+    name: Ender 3 State
+    state_topic: "octoPrint/event/PrinterStateChanged"
+    value_template: "{{ value_json.state_string }}"
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:printer-3d
