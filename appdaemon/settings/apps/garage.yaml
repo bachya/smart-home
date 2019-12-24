@@ -1,29 +1,27 @@
 ---
 garage_lights_off_after_garage_close_automation:
-  module: switches
-  class: ToggleOnState
-  dependencies:
-    - presence_manager
+  module: services
+  class: ServiceOnState
+  service: "switch/turn_off"
+  service_data:
+    entity_id: switch.garage_lights
   entity_ids:
-    switch: switch.garage_lights
-    target: cover.garage_door
+    target_entity_id: cover.garage_door
   properties:
     delay: 600
-    state: "off"
-    target_state: "closed"
+    target_state: closed
 
 garage_lights_on_garage_open_sundown_automation:
-  module: switches
-  class: ToggleOnState
-  dependencies:
-    - presence_manager
+  module: services
+  class: ServiceOnState
+  service: "switch/turn_on"
+  service_data:
+    entity_id: switch.garage_lights
   entity_ids:
-    switch: switch.garage_lights
-    target: cover.garage_door
+    target_entity_id: cover.garage_door
   properties:
-    state: "on"
-    target_state: "closed"
     opposite: true
+    target_state: closed
   constraints:
     constraints:
       constrain_sun: "down"

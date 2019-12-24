@@ -5,23 +5,20 @@ from typing import Callable, Union
 
 import voluptuous as vol
 from const import (
-    CONF_DELAY,
     CONF_DURATION,
     CONF_END_TIME,
     CONF_ENTITY_IDS,
     CONF_PROPERTIES,
     CONF_START_TIME,
     CONF_STATE,
+    CONF_TARGET_ENTITY_ID,
     TOGGLE_STATES,
 )
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 
-CONF_OPPOSITE = "opposite"
 CONF_RETURN_DELAY = "return_delay"
 CONF_SWITCH = "switch"
-CONF_TARGET = "target"
-CONF_TARGET_STATE = "target_state"
 CONF_TIMER_SLIDER = "timer_slider"
 CONF_WINDOW = "window"
 CONF_ZWAVE_DEVICE = "zwave_device"
@@ -135,7 +132,7 @@ class DoubleTapToggleSwitch(BaseZwaveSwitch):
         {
             CONF_ENTITY_IDS: vol.Schema(
                 {
-                    vol.Required(CONF_TARGET): cv.entity_id,
+                    vol.Required(CONF_TARGET_ENTITY_ID): cv.entity_id,
                     vol.Required(CONF_ZWAVE_DEVICE): cv.entity_id,
                 },
                 extra=vol.ALLOW_EXTRA,
@@ -148,11 +145,11 @@ class DoubleTapToggleSwitch(BaseZwaveSwitch):
 
     def on_double_tap_down(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Turn off the target switch with a double down tap."""
-        self.turn_off(self.entity_ids[CONF_TARGET])
+        self.turn_off(self.entity_ids[CONF_TARGET_ENTITY_ID])
 
     def on_double_tap_up(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Turn on the target switch with a double up tap."""
-        self.turn_on(self.entity_ids[CONF_TARGET])
+        self.turn_on(self.entity_ids[CONF_TARGET_ENTITY_ID])
 
 
 class PresenceFailsafe(BaseSwitch):
@@ -319,76 +316,6 @@ class ToggleOnInterval(BaseSwitch):
             self.cancel_timer(name)
 
         self.toggle(opposite_of=self.properties[CONF_STATE])
-
-
-class ToggleOnState(BaseSwitch):
-    """Define a feature to toggle the switch when an entity enters a state."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            CONF_ENTITY_IDS: vol.Schema(
-                {
-                    vol.Required(CONF_SWITCH): cv.entity_id,
-                    vol.Required(CONF_TARGET): cv.entity_id,
-                },
-                extra=vol.ALLOW_EXTRA,
-            ),
-            CONF_PROPERTIES: vol.Schema(
-                {
-                    vol.Required(CONF_STATE): vol.In(TOGGLE_STATES),
-                    vol.Required(CONF_TARGET_STATE): str,
-                    vol.Optional(CONF_OPPOSITE): bool,
-                    vol.Optional(CONF_DELAY): int,
-                    vol.Optional(CONF_RETURN_DELAY): int,
-                },
-                extra=vol.ALLOW_EXTRA,
-            ),
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_state(
-            self._on_state_change,
-            self.entity_ids[CONF_TARGET],
-            auto_constraints=True,
-            constrain_enabled=True,
-        )
-
-    def _on_state_change(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Toggle the switch depending on the target entity's state."""
-        if old == new:
-            return
-
-        opposite = self.properties.get(CONF_OPPOSITE, False)
-        if (not opposite and new == self.properties[CONF_TARGET_STATE]) or (
-            opposite and new != self.properties[CONF_TARGET_STATE]
-        ):
-            if CONF_DELAY in self.properties:
-                self.handles[HANDLE_TOGGLE_STATE] = self.run_in(
-                    self._on_schedule_toggle,
-                    self.properties[CONF_DELAY],
-                    state=self.properties[CONF_STATE],
-                )
-            else:
-                self.toggle(state=self.properties[CONF_STATE])
-
-            if CONF_RETURN_DELAY in self.properties:
-                self.handles[HANDLE_TOGGLE_STATE_RETURN] = self.run_in(
-                    self._on_schedule_toggle,
-                    self.properties[CONF_RETURN_DELAY],
-                    state=self.properties[CONF_STATE],
-                    opposite=True,
-                )
-        else:
-            if HANDLE_TOGGLE_STATE in self.handles:
-                handle = self.handles.pop(HANDLE_TOGGLE_STATE)
-                self.cancel_timer(handle)
-            if HANDLE_TOGGLE_STATE_RETURN in self.handles:
-                handle = self.handles.pop(HANDLE_TOGGLE_STATE_RETURN)
-                self.cancel_timer(handle)
 
 
 class VacationMode(BaseSwitch):

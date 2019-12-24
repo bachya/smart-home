@@ -7,6 +7,7 @@ CONF_PROPERTIES = "properties"
 CONF_DEVICE_TRACKERS = "device_trackers"
 CONF_ENTITY_ID = "entity_id"
 CONF_ICON = "icon"
+CONF_TARGET_ENTITY_ID = "tatget_entity_id"
 
 # Name-related config keys:
 CONF_FRIENDLY_NAME = "friendly_name"
@@ -15,7 +16,6 @@ CONF_FRIENDLY_NAME = "friendly_name"
 CONF_STATE = "state"
 
 # Time-related config keys:
-CONF_DELAY = "delay"
 CONF_DURATION = "duration"
 CONF_END_TIME = "end_time"
 CONF_START_TIME = "start_time"

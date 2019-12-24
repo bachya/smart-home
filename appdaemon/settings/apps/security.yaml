@@ -149,30 +149,62 @@ security_manager:
         state: disarmed
 
 turn_on_front_patio_light_when_nighttime_person_detected_automation:
-  module: switches
-  class: ToggleOnState
+  module: services
+  class: ServiceOnState
+  service: "switch/turn_on"
+  service_data:
+    entity_id: switch.front_patio_light
   entity_ids:
-    switch: switch.front_patio_light
-    target: binary_sensor.front_door_camera_person_detected
+    target_entity_id: binary_sensor.front_door_camera_person_detected
   properties:
-    state: "on"
     target_state: "on"
-    return_delay: 300
+  enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
+  constraints:
+    constraints:
+      constrain_in_bed: true
+
+turn_off_front_patio_light_when_nighttime_person_leaves_automation:
+  module: services
+  class: ServiceOnState
+  service: "switch/turn_off"
+  service_data:
+    entity_id: switch.front_patio_light
+  entity_ids:
+    target_entity_id: binary_sensor.front_door_camera_person_detected
+  properties:
+    delay: 300
+    target_state: "off"
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
   constraints:
     constraints:
       constrain_in_bed: true
 
 turn_on_living_room_lights_when_nighttime_person_detected_automation:
-  module: switches
-  class: ToggleOnState
+  module: services
+  class: ServiceOnState
+  service: "homeassistant/turn_on"
+  service_data:
+    entity_id: group.living_room_lights
   entity_ids:
-    switch: group.living_room_lights
-    target: binary_sensor.front_door_camera_person_detected
+    target_entity_id: binary_sensor.front_door_camera_person_detected
   properties:
-    state: "on"
     target_state: "on"
-    return_delay: 300
+  enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
+  constraints:
+    constraints:
+      constrain_in_bed: true
+
+turn_off_living_room_lights_when_nighttime_person_leaves_automation:
+  module: services
+  class: ServiceOnState
+  service: "homeassistant/turn_off"
+  service_data:
+    entity_id: group.living_room_lights
+  entity_ids:
+    target_entity_id: binary_sensor.front_door_camera_person_detected
+  properties:
+    delay: 300
+    target_state: "off"
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
   constraints:
     constraints:

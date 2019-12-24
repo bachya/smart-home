@@ -1,20 +1,14 @@
 ---
 bar_cart_on_at_sunset_automation:
-  module: switches
-  class: ToggleOnState
-  dependencies:
-    - guest_mode
-    - presence_manager
-    - vacation_mode
+  module: services
+  class: ServiceOnState
+  service: "switch/turn_on"
+  service_data:
+    entity_id: switch.bar_cart
   entity_ids:
-    switch: switch.bar_cart
-    target: sun.sun
+    target_entity_id: sun.sun
   properties:
-    state: "on"
-    target_state: "below_horizon"
-  constraints:
-    constraints:
-      constrain_anyone: home,just_arrived
+    target_state: below_horizon
   state_changes:
     - disable:
         event: MODE_CHANGE
@@ -38,21 +32,18 @@ bar_cart_on_at_sunset_automation:
           state: "off"
 
 bar_cart_on_upon_arrival_automation:
-  module: switches
-  class: ToggleOnState
-  dependencies:
-    - guest_mode
-    - presence_manager
-    - vacation_mode
+  module: services
+  class: ServiceOnState
+  service: "switch/turn_on"
+  service_data:
+    entity_id: switch.bar_cart
   entity_ids:
-    switch: switch.bar_cart
-    target: sensor.proximity_zone
+    target_entity_id: sensor.proximity_zone.sun
   properties:
-    state: "on"
     target_state: Home
   constraints:
     constraints:
-      constrain_sun: "down"
+      constrain_sun: down
   state_changes:
     - disable:
         event: MODE_CHANGE
