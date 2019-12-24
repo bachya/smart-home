@@ -22,7 +22,7 @@ class ServiceBase(Base):  # pylint: disable=too-few-public-methods
         self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
 
 
-class ServiceAtEvent(ServiceBase):  # pylint: disable=too-few-public-methods
+class ServiceOnEvent(ServiceBase):  # pylint: disable=too-few-public-methods
     """Define an automation to call a service upon seeing an specific event/payload."""
 
     APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
@@ -44,7 +44,7 @@ class ServiceAtEvent(ServiceBase):  # pylint: disable=too-few-public-methods
         )
 
 
-class ServiceAtTime(ServiceBase):  # pylint: disable=too-few-public-methods
+class ServiceOnTime(ServiceBase):  # pylint: disable=too-few-public-methods
     """Define an automation to call a service at a specific time."""
 
     APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(

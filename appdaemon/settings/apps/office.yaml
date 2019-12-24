@@ -10,7 +10,7 @@ office_lights_sleep_timer_automation:
 
 office_lights_off_at_10pm_automation:
   module: services
-  class: ServiceAtTime
+  class: ServiceOnTime
   service: "switch/turn_off"
   service_data:
     entity_id: switch.office_salt_lamp

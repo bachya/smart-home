@@ -28,7 +28,7 @@ blackout_mode_schedule:
 
 blackout_mode_off_when_vacation_mode_on_automation:
   module: services
-  class: ServiceAtEvent
+  class: ServiceOnEvent
   dependencies:
     - presence_manager
   service: "input_boolean/turn_off"
@@ -42,7 +42,7 @@ blackout_mode_off_when_vacation_mode_on_automation:
 
 blackout_mode_on_when_vacation_mode_off_automation:
   module: services
-  class: ServiceAtEvent
+  class: ServiceOnEvent
   dependencies:
     - presence_manager
   service: "input_boolean/turn_on"
@@ -64,7 +64,7 @@ vacation_mode:
 
 vacation_mode_off_scene_automation:
   module: services
-  class: ServiceAtEvent
+  class: ServiceOnEvent
   dependencies:
     - presence_manager
   service: "scene/turn_on"
@@ -78,7 +78,7 @@ vacation_mode_off_scene_automation:
 
 vacation_mode_on_scene_automation:
   module: services
-  class: ServiceAtEvent
+  class: ServiceOnEvent
   dependencies:
     - presence_manager
   service: "scene/turn_on"
