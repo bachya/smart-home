@@ -82,12 +82,12 @@ class ServiceOnState(ServiceBase):
         """Configure."""
         kwargs = {"constrain_enabled": True, "auto_constraints": True}
 
-        if self.properties[CONF_OPPOSITE]:
+        if CONF_OPPOSITE in self.properties:
             kwargs["old"] = self.properties[CONF_TARGET_STATE]
         else:
             kwargs["new"] = self.properties[CONF_TARGET_STATE]
 
-        if self.properties[CONF_DELAY]:
+        if CONF_DELAY in self.properties:
             kwargs["duration"] = self.properties[CONF_DELAY]
 
         self.listen_state(
@@ -96,10 +96,17 @@ class ServiceOnState(ServiceBase):
             **kwargs,
         )
 
-    async def _on_target_state_observed(
+    def _on_target_state_observed(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Call the service when the target state is observed."""
+        # In some cases – like the sun.sun entity – state change updates are published
+        # even if the state value itself does not change; these events can cause this to
+        # trigger unnecessarily. So, return if the old and new state values equal one
+        # another:
+        if new == old:
+            return
+
         self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
 
 

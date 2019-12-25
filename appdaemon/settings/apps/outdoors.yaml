@@ -51,4 +51,4 @@ kitchen_patio_light_double_tap_backyard_lights_automation:
     - presence_manager
   entity_ids:
     zwave_device: zwave.kitchen_patio_light
-    target: switch.backyard_lights
+    target_entity_id: switch.backyard_lights

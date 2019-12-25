@@ -38,7 +38,7 @@ bar_cart_on_upon_arrival_automation:
   service_data:
     entity_id: switch.bar_cart
   entity_ids:
-    target_entity_id: sensor.proximity_zone.sun
+    target_entity_id: sensor.proximity_zone
   properties:
     target_state: Home
   constraints:
