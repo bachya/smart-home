@@ -61,7 +61,7 @@ class Base(Hass):
         try:
             self.APP_SCHEMA(self.args)
         except vol.Invalid as err:
-            self.error("Invalid app schema: %s", err)
+            self.log("Invalid app schema: %s", err, level="ERROR")
             return
 
         # Define a holding place for HASS entity IDs:
