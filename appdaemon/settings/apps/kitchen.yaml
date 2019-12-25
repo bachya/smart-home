@@ -8,7 +8,7 @@ bar_cart_on_at_sunset_automation:
   entity_ids:
     target_entity_id: sun.sun
   properties:
-    target_state: below_horizon
+    new_target_state: below_horizon
   state_changes:
     - disable:
         event: MODE_CHANGE
@@ -40,7 +40,7 @@ bar_cart_on_upon_arrival_automation:
   entity_ids:
     target_entity_id: sensor.proximity_zone
   properties:
-    target_state: Home
+    new_target_state: Home
   constraints:
     constraints:
       constrain_sun: down

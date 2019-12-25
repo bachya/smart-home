@@ -20,8 +20,8 @@ CONF_SERVICE = "service"
 CONF_SERVICE_DATA = "service_data"
 
 CONF_DELAY = "delay"
-CONF_OPPOSITE = "opposite"
-CONF_TARGET_STATE = "target_state"
+CONF_NEW_TARGET_STATE = "new_target_state"
+CONF_OLD_TARGET_STATE = "old_target_state"
 
 SERVICE_CALL_SCHEMA = APP_SCHEMA.extend(
     {vol.Required(CONF_SERVICE): str, vol.Required(CONF_SERVICE_DATA): dict}
@@ -67,13 +67,16 @@ class ServiceOnState(ServiceBase):
                 {vol.Required(CONF_TARGET_ENTITY_ID): cv.entity_id},
                 extra=vol.ALLOW_EXTRA,
             ),
-            CONF_PROPERTIES: vol.Schema(
-                {
-                    vol.Required(CONF_TARGET_STATE): str,
-                    vol.Optional(CONF_OPPOSITE): bool,
-                    vol.Optional(CONF_DELAY): int,
-                },
-                extra=vol.ALLOW_EXTRA,
+            CONF_PROPERTIES: vol.All(
+                vol.Schema(
+                    {
+                        vol.Optional(CONF_NEW_TARGET_STATE): str,
+                        vol.Optional(CONF_OLD_TARGET_STATE): str,
+                        vol.Optional(CONF_DELAY): int,
+                    },
+                    extra=vol.ALLOW_EXTRA,
+                ),
+                cv.has_at_least_one_key(CONF_NEW_TARGET_STATE, CONF_OLD_TARGET_STATE),
             ),
         }
     )
@@ -82,10 +85,10 @@ class ServiceOnState(ServiceBase):
         """Configure."""
         kwargs = {"constrain_enabled": True, "auto_constraints": True}
 
-        if CONF_OPPOSITE in self.properties:
-            kwargs["old"] = self.properties[CONF_TARGET_STATE]
+        if CONF_NEW_TARGET_STATE in self.properties:
+            kwargs["new"] = self.properties[CONF_NEW_TARGET_STATE]
         else:
-            kwargs["new"] = self.properties[CONF_TARGET_STATE]
+            kwargs["old"] = self.properties[CONF_OLD_TARGET_STATE]
 
         if CONF_DELAY in self.properties:
             kwargs["duration"] = self.properties[CONF_DELAY]
@@ -116,7 +119,7 @@ class ServiceOnTime(ServiceBase):  # pylint: disable=too-few-public-methods
     APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
         {
             CONF_PROPERTIES: vol.Schema(
-                {vol.Required(CONF_SCHEDULE_TIME): str}, extra=vol.ALLOW_EXTRA,
+                {vol.Required(CONF_SCHEDULE_TIME): str}, extra=vol.ALLOW_EXTRA
             )
         }
     )

@@ -47,7 +47,7 @@ office_lights_on_at_sunset_automation:
   entity_ids:
     target_entity_id: sun.sun
   properties:
-    target_state: "below_horizon"
+    new_target_state: "below_horizon"
   state_changes:
     - disable:
         event: MODE_CHANGE

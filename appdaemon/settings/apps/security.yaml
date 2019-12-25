@@ -157,7 +157,7 @@ turn_on_front_patio_light_when_nighttime_person_detected_automation:
   entity_ids:
     target_entity_id: binary_sensor.front_door_camera_person_detected
   properties:
-    target_state: "on"
+    new_target_state: "on"
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
   constraints:
     constraints:
@@ -173,7 +173,7 @@ turn_off_front_patio_light_when_nighttime_person_leaves_automation:
     target_entity_id: binary_sensor.front_door_camera_person_detected
   properties:
     delay: 300
-    target_state: "off"
+    new_target_state: "off"
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
   constraints:
     constraints:
@@ -188,7 +188,7 @@ turn_on_living_room_lights_when_nighttime_person_detected_automation:
   entity_ids:
     target_entity_id: binary_sensor.front_door_camera_person_detected
   properties:
-    target_state: "on"
+    new_target_state: "on"
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
   constraints:
     constraints:
@@ -204,7 +204,7 @@ turn_off_living_room_lights_when_nighttime_person_leaves_automation:
     target_entity_id: binary_sensor.front_door_camera_person_detected
   properties:
     delay: 300
-    target_state: "off"
+    new_target_state: "off"
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
   constraints:
     constraints:

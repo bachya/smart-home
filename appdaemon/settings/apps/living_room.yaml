@@ -28,7 +28,7 @@ living_room_lights_on_at_sunset_automation:
   entity_ids:
     target_entity_id: sun.sun
   properties:
-    target_state: below_horizon
+    new_target_state: below_horizon
   state_changes:
     - disable:
         event: MODE_CHANGE
@@ -60,7 +60,7 @@ living_room_lights_on_upon_arrival_automation:
   entity_ids:
     target_entity_id: sensor.proximity_zone
   properties:
-    target_state: Home
+    new_target_state: Home
   constraints:
     constraints:
       constrain_sun: "down"
@@ -111,40 +111,4 @@ powder_room_fan_auto_turn_on_automation:
     target_entity_id: switch.powder_room_fan
   properties:
     delay: 60
-    target_state: "off"
-
-reading_lamp_cloudy_morning_automation:
-  module: switches
-  class: ToggleAtTime
-  dependencies:
-    - guest_mode
-    - vacation_mode
-  entity_ids:
-    switch: switch.reading_lamp
-  properties:
-    schedule_time: sunrise
-    state: "on"
-  constraints:
-    constraints:
-      constrain_dark_outside: true
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
+    new_target_state: "off"
