@@ -28,15 +28,7 @@ SERVICE_CALL_SCHEMA = APP_SCHEMA.extend(
 )
 
 
-class ServiceBase(Base):  # pylint: disable=too-few-public-methods
-    """Define a base automation for calling services."""
-
-    def service_callback(self, kwargs: dict) -> None:
-        """Define a AppDaemon runtime callback to call the service with its data."""
-        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
-
-
-class ServiceOnEvent(ServiceBase):  # pylint: disable=too-few-public-methods
+class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
     """Define an automation to call a service upon seeing an specific event/payload."""
 
     APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
@@ -51,11 +43,15 @@ class ServiceOnEvent(ServiceBase):  # pylint: disable=too-few-public-methods
     def configure(self) -> None:
         """Configure."""
         self.listen_event(
-            self.service_callback,
+            self._on_event_heard,
             self.properties[CONF_EVENT],
             **self.properties.get(CONF_EVENT_DATA, {}),
             constrain_enabled=True,
         )
+    
+    def _on_event_heard(self, event_name: str, data: dict, kwargs: dict) -> None:
+        """Call the service."""
+        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
 
 
 class ServiceOnState(ServiceBase):
@@ -102,7 +98,7 @@ class ServiceOnState(ServiceBase):
     def _on_target_state_observed(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
-        """Call the service when the target state is observed."""
+        """Call the service."""
         # In some cases – like the sun.sun entity – state change updates are published
         # even if the state value itself does not change; these events can cause this to
         # trigger unnecessarily. So, return if the old and new state values equal one
@@ -127,8 +123,12 @@ class ServiceOnTime(ServiceBase):  # pylint: disable=too-few-public-methods
     def configure(self) -> None:
         """Configure."""
         self.run_daily(
-            self.service_callback,
+            self._on_time_reached,
             self.parse_time(self.properties[CONF_SCHEDULE_TIME]),
             constrain_enabled=True,
             auto_constraints=True,
         )
+        
+    def _on_time_reached(self, kwargs: dict) -> None:
+        """Call the service."""
+        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
