@@ -48,7 +48,7 @@ class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
             **self.properties.get(CONF_EVENT_DATA, {}),
             constrain_enabled=True,
         )
-    
+
     def _on_event_heard(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Call the service."""
         self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
@@ -128,7 +128,7 @@ class ServiceOnTime(ServiceBase):  # pylint: disable=too-few-public-methods
             constrain_enabled=True,
             auto_constraints=True,
         )
-        
+
     def _on_time_reached(self, kwargs: dict) -> None:
         """Call the service."""
         self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
