@@ -31,13 +31,9 @@ SERVICE_CALL_SCHEMA = APP_SCHEMA.extend(
 class ServiceBase(Base):  # pylint: disable=too-few-public-methods
     """Define a base automation for calling services."""
 
-    def call_service_with_data(self) -> None:
-        """Call the service with the provided service data."""
-        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
-
     def service_callback(self, kwargs: dict) -> None:
         """Define a AppDaemon runtime callback to call the service with its data."""
-        self.call_service_with_data()
+        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
 
 
 class ServiceOnEvent(ServiceBase):  # pylint: disable=too-few-public-methods
@@ -104,7 +100,7 @@ class ServiceOnState(ServiceBase):
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Call the service when the target state is observed."""
-        self.call_service_with_data()
+        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
 
 
 class ServiceOnTime(ServiceBase):  # pylint: disable=too-few-public-methods
