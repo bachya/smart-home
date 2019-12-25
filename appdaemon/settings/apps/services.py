@@ -54,7 +54,7 @@ class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
         self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
 
 
-class ServiceOnState(ServiceBase):
+class ServiceOnState(Base):
     """Define a feature to toggle the switch when an entity enters a state."""
 
     APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
@@ -109,7 +109,7 @@ class ServiceOnState(ServiceBase):
         self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
 
 
-class ServiceOnTime(ServiceBase):  # pylint: disable=too-few-public-methods
+class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
     """Define an automation to call a service at a specific time."""
 
     APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
