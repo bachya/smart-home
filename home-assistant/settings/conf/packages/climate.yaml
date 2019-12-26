@@ -152,7 +152,6 @@ sensor:
     type: "mean"
     round_digits: 1
     entity_ids:
-      - sensor.fiddle_leaf_fig_temperature
       - sensor.guest_bedroom_sensor_temperature
       - sensor.kitchen_sensor_temperature
       - sensor.kitchen_sink_sensor_temperature
