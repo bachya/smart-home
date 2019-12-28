@@ -12,6 +12,14 @@ binary_sensor:
     payload_not_available: disconnected
     device_class: problem
 
+rest_command:
+  turn_off_octopi:
+    url: "http://octopi.phil.iot/api/system/commands/core/shutdown"
+    method: post
+    headers:
+      Host: octopi.phil.iot
+      X-Api-Key: !secret octoprint_api_key
+
 sensor:
   - platform: command_line
     name: OctoPi CPU Temperature
@@ -111,3 +119,25 @@ sensor:
     payload_available: connected
     payload_not_available: disconnected
     icon: mdi:printer-3d
+
+switch:
+  - platform: template
+    switches:
+      toggle_3d_printer:
+        friendly_name: Power
+        value_template: >
+          {{
+            states("sensor.ender_3_state") != "unavailable"
+            and states("switch.3d_printer") == "on"
+          }}
+        turn_off:
+          - service: rest_command.turn_off_octopi
+          - wait_template: >
+              {{ states("sensor.ender_3_state") == "unavailable" }}
+          - service: switch.turn_off
+            data:
+              entity_id: switch.3d_printer
+        turn_on:
+          service: switch.turn_on
+          data:
+            entity_id: switch.3d_printer
