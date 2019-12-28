@@ -9,7 +9,6 @@ from const import (
     CONF_ENTITY_IDS,
     CONF_NOTIFICATION_INTERVAL_SLIDER,
     CONF_PROPERTIES,
-    EVENT_ALARM_CHANGE,
 )
 from helpers import config_validation as cv
 from notification import send_notification
@@ -249,97 +248,6 @@ class NotifyWhenStuck(Base):
             self._start_notification_cycle()
 
 
-class ScheduledCycle(Base):  # pylint: disable=too-few-public-methods
-    """Define a feature to run the vacuum on a schedule."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            CONF_ENTITY_IDS: vol.Schema(
-                {vol.Required(CONF_CALENDAR): cv.entity_id}, extra=vol.ALLOW_EXTRA
-            ),
-            CONF_PROPERTIES: vol.Schema(
-                {vol.Required(CONF_IOS_EMPTIED_KEY): str}, extra=vol.ALLOW_EXTRA
-            ),
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_event(
-            self._on_security_system_change, EVENT_ALARM_CHANGE, constrain_enabled=True
-        )
-        self.listen_state(
-            self._on_vacuum_cycle_done,
-            self.app.entity_ids[CONF_VACUUM],
-            old=self.app.States.returning.value,
-            new=self.app.States.docked.value,
-            constrain_enabled=True,
-        )
-        self.listen_state(
-            self._on_vacuum_cycle_start,
-            self.entity_ids[CONF_CALENDAR],
-            new="on",
-            constrain_enabled=True,
-        )
-
-    def _on_security_system_change(
-        self, event_name: str, data: dict, kwargs: dict
-    ) -> None:
-        """Respond to 'ALARM_CHANGE' events."""
-        # Guard against running when the alarm changes in general – it should
-        # only respond if we're running a cycle:
-        if self.app.state == self.app.States.docked:
-            return
-
-        state = self.app.States(self.get_state(self.app.entity_ids[CONF_VACUUM]))
-
-        # Scenario 1: Vacuum is charging and is told to start:
-        if (
-            state == self.app.States.docked
-            and data["state"] == self.security_manager.AlarmStates.home.value
-        ):
-            self.log("Activating vacuum (post-security)")
-            self.app.start()
-
-        # Scenario 2: Vacuum is running when alarm is set to "Away":
-        elif (
-            state == self.app.States.cleaning
-            and data["state"] == self.security_manager.AlarmStates.away.value
-        ):
-            self.log('Security mode is "Away"; pausing until "Home"')
-            self.app.pause()
-            self.security_manager.set_alarm(self.security_manager.AlarmStates.home)
-
-        # Scenario 3: Vacuum is paused when alarm is set to "Home":
-        elif (
-            state == self.app.States.paused
-            and data["state"] == self.security_manager.AlarmStates.home.value
-        ):
-            self.log('Alarm in "Home"; resuming')
-            self.app.start()
-
-    def _on_vacuum_cycle_start(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Start cleaning via the schedule."""
-        self.app.start()
-
-    def _on_vacuum_cycle_done(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Re-arm security (if needed) when done."""
-        self.log("Vacuuming cycle all done")
-        if self.presence_manager.noone(
-            self.presence_manager.HomeStates.just_arrived,
-            self.presence_manager.HomeStates.home,
-        ):
-            self.log('Changing alarm state to "away"')
-            self.security_manager.set_alarm(self.security_manager.AlarmStates.away)
-
-        if self.app.run_time >= self.properties[CONF_FULL_THRESHOLD_MINUTES]:
-            self.app.bin_state = self.app.BinStates.full
-
-
 class Vacuum(Base):
     """Define an app to represent a vacuum-type appliance."""
 
@@ -371,6 +279,22 @@ class Vacuum(Base):
         paused = "paused"
         returning = "returning"
 
+    def configure(self) -> None:
+        """Configure."""
+        self.listen_state(
+            self._on_cycle_done,
+            self.entity_ids[CONF_VACUUM],
+            old=self.States.returning.value,
+            new=self.States.docked.value,
+        )
+
+        self.listen_state(
+            self._on_schedule_start,
+            self.entity_ids[CONF_CALENDAR],
+            new="on",
+            constrain_enabled=True,
+        )
+
     @property
     def bin_state(self) -> "BinStates":
         """Define a property to get the bin state."""
@@ -390,6 +314,27 @@ class Vacuum(Base):
     def state(self) -> "States":
         """Define a property to get the state."""
         return self.States(self.get_state(self.entity_ids[CONF_VACUUM]))
+
+    def _on_cycle_done(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Re-arm security (if needed) when done."""
+        self.log("Vacuuming cycle all done")
+        if self.presence_manager.noone(
+            self.presence_manager.HomeStates.just_arrived,
+            self.presence_manager.HomeStates.home,
+        ):
+            self.log('Changing alarm state to "away"')
+            self.security_manager.set_alarm(self.security_manager.AlarmStates.away)
+
+        if self.run_time >= self.properties[CONF_FULL_THRESHOLD_MINUTES]:
+            self.bin_state = self.BinStates.full
+
+    def _on_schedule_start(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Start cleaning via the schedule."""
+        self.start()
 
     def pause(self) -> None:
         """Pause the cleaning cycle."""
