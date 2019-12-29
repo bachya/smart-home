@@ -4,10 +4,10 @@ from typing import Union
 import voluptuous as vol
 
 from const import (
+    COMPARITORS,
     CONF_ABOVE,
     CONF_BELOW,
     CONF_COMPARITOR,
-    CONF_COMPARITORS,
     CONF_ENTITY_ID,
     CONF_ENTITY_IDS,
     CONF_EVENT,
@@ -34,7 +34,7 @@ CONF_OLD_TARGET_STATE = "old_target_state"
 ENTITY_THRESHOLD_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_ENTITY_ID): cv.entity_id,
-        vol.Required(CONF_COMPARITOR): vol.All(str, vol.In(CONF_COMPARITORS)),
+        vol.Required(CONF_COMPARITOR): vol.All(str, vol.In(COMPARITORS)),
         vol.Required(CONF_TARGET_VALUE): vol.Any(int, float),
     }
 )
