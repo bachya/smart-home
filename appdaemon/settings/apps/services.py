@@ -101,7 +101,6 @@ class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
             kwargs["new"] = self.properties[CONF_NEW_TARGET_STATE]
         if CONF_OLD_TARGET_STATE in self.properties:
             kwargs["old"] = self.properties[CONF_OLD_TARGET_STATE]
-
         if CONF_DELAY in self.properties:
             kwargs["duration"] = self.properties[CONF_DELAY]
 
