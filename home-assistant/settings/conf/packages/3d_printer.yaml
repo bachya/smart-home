@@ -79,6 +79,16 @@ sensor:
     icon: mdi:home-thermometer
 
   - platform: mqtt
+    name: Ender 3 Filename
+    state_topic: "octoPrint/progress/printing"
+    value_template: >
+      {{ value_json.printer_data.job.file.name }}
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:file
+
+  - platform: mqtt
     name: Ender 3 Total Print Time Elapsed
     unit_of_measurement: "seconds"
     state_topic: "octoPrint/progress/printing"
