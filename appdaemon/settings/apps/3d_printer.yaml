@@ -1,0 +1,24 @@
+---
+notify_when_3d_print_completes_automation:
+  module: services
+  class: ServiceOnState
+  service: "notify/slack"
+  service_data:
+    message: 3D print completed
+  entity_ids:
+    target_entity_id: sensor.ender_3_state
+  properties:
+    new_target_state: Operational
+    old_target_state: Printing
+
+notify_when_3d_print_starts_automation:
+  module: services
+  class: ServiceOnState
+  service: "notify/slack"
+  service_data:
+    message: "3D print started: {{ states('sensor.ender_3_filename') }}"
+  entity_ids:
+    target_entity_id: sensor.ender_3_state
+  properties:
+    new_target_state: Printing
+    old_target_state: Operational
