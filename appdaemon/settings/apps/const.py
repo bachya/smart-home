@@ -32,6 +32,7 @@ CONF_TITLE = "title"
 # Comparison-related config keys:
 CONF_ABOVE = "above"
 CONF_BELOW = "below"
+CONF_COMPARITOR = "comparitor"
 CONF_EQUAL_TO = "equal_to"
 COMPARITORS = (CONF_ABOVE, CONF_BELOW, CONF_EQUAL_TO)
 

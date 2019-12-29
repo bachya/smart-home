@@ -4,6 +4,11 @@ from typing import Union
 import voluptuous as vol
 
 from const import (
+    CONF_ABOVE,
+    CONF_BELOW,
+    CONF_COMPARITOR,
+    CONF_COMPARITORS,
+    CONF_ENTITY_ID,
     CONF_ENTITY_IDS,
     CONF_EVENT,
     CONF_EVENT_DATA,
@@ -19,9 +24,20 @@ CONF_SCHEDULE_TIME = "schedule_time"
 CONF_SERVICE = "service"
 CONF_SERVICE_DATA = "service_data"
 
+CONF_ENTITY_THRESHOLDS = "entity_thresholds"
+CONF_TARGET_VALUE = "target_value"
+
 CONF_DELAY = "delay"
 CONF_NEW_TARGET_STATE = "new_target_state"
 CONF_OLD_TARGET_STATE = "old_target_state"
+
+ENTITY_THRESHOLD_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_ENTITY_ID): cv.entity_id,
+        vol.Required(CONF_COMPARITOR): vol.All(str, vol.In(CONF_COMPARITORS)),
+        vol.Required(CONF_TARGET_VALUE): vol.Any(int, float),
+    }
+)
 
 SERVICE_CALL_SCHEMA = APP_SCHEMA.extend(
     {vol.Required(CONF_SERVICE): str, vol.Required(CONF_SERVICE_DATA): dict}
@@ -107,6 +123,51 @@ class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
             return
 
         self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
+
+
+class ServiceOnThreshold(Base):  # pylint: disable=too-few-public-methods
+    """Define an automation to call a service at a specific time."""
+
+    APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
+        {
+            vol.Required(CONF_ENTITY_THRESHOLDS): vol.All(
+                cv.ensure_list, [ENTITY_THRESHOLD_SCHEMA]
+            )
+        }
+    )
+
+    def configure(self) -> None:
+        """Configure."""
+        self.register_constraint("constrain_thresholds_met")
+
+        for entity_threshold in self.args[CONF_ENTITY_THRESHOLDS]:
+            self.listen_state(
+                self._on_threshold_entity_change,
+                entity_threshold[CONF_ENTITY_ID],
+                constrain_enabled=True,
+                constrain_thresholds_met=True,
+            )
+
+    def _on_threshold_entity_change(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Respond when all thresholds are met."""
+        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
+
+    def constrain_thresholds_met(self) -> bool:
+        """Define a constraint to ensure that entity threshold comparisons are true."""
+        for entity_threshold in self.args[CONF_ENTITY_THRESHOLDS]:
+            state = self.get_state(entity_threshold[CONF_ENTITY_ID])
+            if entity_threshold[CONF_COMPARITOR] == CONF_ABOVE:
+                result = state > entity_threshold[CONF_TARGET_VALUE]
+            elif entity_threshold[CONF_COMPARITOR] == CONF_BELOW:
+                result = state < entity_threshold[CONF_TARGET_VALUE]
+            else:
+                result = state == entity_threshold[CONF_TARGET_VALUE]
+
+            if not result:
+                return False
+        return True
 
 
 class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
