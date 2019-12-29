@@ -71,7 +71,7 @@ class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
 
 
 class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
-    """Define a feature to toggle the switch when an entity enters a state."""
+    """Define an automation to call a service upon seeing an entity in a state."""
 
     APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
         {
