@@ -176,6 +176,9 @@ subaru_legacy_notify_low_fuel_automation:
   icon: mdi:gas-station
   initial: true
   name: Notify of low fuel
+turn_3d_printer_off_when_print_complete_automation:
+  icon: mdi:gas-station
+  name: "Turn off 3D printer when print complete"
 vacation_mode_lighting:
   icon: mdi:beach
   name: Vacation mode lighting

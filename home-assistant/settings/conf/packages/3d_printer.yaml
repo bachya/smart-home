@@ -12,6 +12,12 @@ binary_sensor:
     payload_not_available: disconnected
     device_class: problem
 
+input_boolean:
+  turn_off_when_3d_print_complete:
+    icon: "mdi:power-plug-off"
+    initial: true
+    name: Blackout Mode
+
 rest_command:
   turn_off_octopi:
     url: "http://octopi.phil.iot/api/system/commands/core/shutdown"

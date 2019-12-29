@@ -22,3 +22,18 @@ notify_when_3d_print_starts_automation:
   properties:
     new_target_state: Printing
     old_target_state: Operational
+
+turn_3d_printer_off_when_print_complete_automation:
+  module: services
+  class: ServiceOnThreshold
+  constrain_input_boolean: input_boolean.turn_off_when_3d_print_complete
+  service: "switch/turn_off"
+  service_data:
+    entity_id: switch.toggle_3d_printer
+  entity_thresholds:
+    - entity_id: sensor.ender_3_bed_temperature_actual
+      comparitor: below
+      target_value: 40
+    - entity_id: sensor.ender_3_extruder_temperature_actual
+      comparitor: below
+      target_value: 90
