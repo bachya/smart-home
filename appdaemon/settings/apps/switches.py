@@ -239,7 +239,6 @@ class SleepTimer(BaseSwitch):
     def _on_timer_complete(self, kwargs: dict) -> None:
         """Turn off a switch at the end of sleep timer."""
         self.log("Sleep timer over; turning switch off")
-
         self.set_value(self.entity_ids[CONF_TIMER_SLIDER], 0)
 
 
