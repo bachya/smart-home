@@ -50,16 +50,8 @@ kitchen_patio_light_double_tap_backyard_lights_automation:
   service_up: "switch/turn_on"
   service_up_data:
     entity_id: switch.backyard_lights
-  entity_ids:
-    zwave_device: zwave.kitchen_patio_light
-
-kitchen_patio_light_double_tap_backyard_lights_down_automation:
-  module: services
-  class: ServiceOnZWaveSwitchDoubleTap
   service_down: "switch/turn_off"
   service_down_data:
     entity_id: switch.backyard_lights
   entity_ids:
     zwave_device: zwave.kitchen_patio_light
-  enabled_toggle_entity_id: >
-    kitchen_patio_light_double_tap_backyard_lights_automation
