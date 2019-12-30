@@ -74,9 +74,7 @@
       state: true
     input_boolean.notify_ps4_left_on_automation:
       state: true
-    input_boolean.notify_when_3d_print_completes_automation:
-      state: true
-    input_boolean.notify_when_3d_print_starts_automation:
+    input_boolean.3d_printer_notifications_automation:
       state: true
     input_boolean.notify_when_absent_insecure_automation:
       state: true
@@ -95,6 +93,8 @@
     input_boolean.powder_room_fan_auto_turn_on_automation:
       state: true
     input_boolean.subaru_legacy_notify_low_fuel_automation:
+      state: true
+    input_boolean.turn_3d_printer_off_when_print_complete_automation:
       state: true
     input_boolean.vacation_mode_lighting:
       state: false
@@ -132,9 +132,7 @@
       state: false
     input_boolean.notify_ps4_left_on_automation:
       state: false
-    input_boolean.notify_when_3d_print_completes_automation:
-      state: false
-    input_boolean.notify_when_3d_print_starts_automation:
+    input_boolean.3d_printer_notifications_automation:
       state: false
     input_boolean.subaru_legacy_notify_low_fuel_automation:
       state: false
@@ -290,9 +288,7 @@
       state: false
     input_boolean.notify_ps4_left_on_automation:
       state: false
-    input_boolean.notify_when_3d_print_completes_automation:
-      state: false
-    input_boolean.notify_when_3d_print_starts_automation:
+    input_boolean.3d_printer_notifications_automation:
       state: false
     input_boolean.notify_when_absent_insecure_automation:
       state: false
@@ -340,9 +336,7 @@
       state: false
     input_boolean.notify_of_trash_pickup_automation:
       state: false
-    input_boolean.notify_when_3d_print_completes_automation:
-      state: false
-    input_boolean.notify_when_3d_print_starts_automation:
+    input_boolean.3d_printer_notifications_automation:
       state: false
     input_boolean.notify_when_person_on_camera:
       state: true
