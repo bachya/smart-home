@@ -9,27 +9,6 @@ bar_cart_on_at_sunset_automation:
     target_entity_id: sun.sun
   properties:
     new_target_state: below_horizon
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
 
 bar_cart_on_upon_arrival_automation:
   module: services
@@ -44,27 +23,6 @@ bar_cart_on_upon_arrival_automation:
   constraints:
     constraints:
       constrain_sun: down
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
 
 kitchen_sink_leak_detected_automation:
   module: systems

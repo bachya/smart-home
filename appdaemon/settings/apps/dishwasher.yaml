@@ -21,32 +21,3 @@ dishwasher_cycle_automation:
     drying_threshold: 3.0
     ios_emptied_key: DISHWASHER_EMPTIED
     running_threshold: 10.0
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "off"
-    - disable:
-        event: PROXIMITY_CHANGE
-        event_data:
-          old: home
-      enable:
-        event: PROXIMITY_CHANGE
-        event_data:
-          new: home

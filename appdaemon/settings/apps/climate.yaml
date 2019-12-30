@@ -5,17 +5,6 @@ adjust_climate_on_proximity_automation:
   dependencies:
     - climate_manager
     - presence_manager
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "off"
 
 climate_manager:
   module: climate
@@ -38,35 +27,6 @@ lightning_detected_automation:
   class: LightningDetected
   properties:
     notification_window_seconds: 1200
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "off"
-    - disable:
-        event: PROXIMITY_CHANGE
-        event_data:
-          old: home
-      enable:
-        event: PROXIMITY_CHANGE
-        event_data:
-          new: home
 
 notify_bad_aqi_automation:
   module: climate
@@ -78,35 +38,6 @@ notify_bad_aqi_automation:
     aqi: sensor.us_air_quality_index
   properties:
     aqi_threshold: 100
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "off"
-    - disable:
-        event: PROXIMITY_CHANGE
-        event_data:
-          old: home
-      enable:
-        event: PROXIMITY_CHANGE
-        event_data:
-          new: home
 
 thermostat_schedule:
   module: hass_apps_loader

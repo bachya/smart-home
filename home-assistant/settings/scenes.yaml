@@ -14,7 +14,21 @@
       state: true
     input_boolean.auto_nighttime_lockup_automation:
       state: true
+    input_boolean.auto_vacation_mode_alterations_automation:
+      state: true
+    input_boolean.bad_login_notifications_automation:
+      state: true
+    input_boolean.bar_cart_on_at_sunset_automation:
+      state: true
+    input_boolean.bar_cart_on_upon_arrival_automation:
+      state: true
     input_boolean.blackout_schedule_automation:
+      state: true
+    input_boolean.dishwasher_cycle_automation:
+      state: true
+    input_boolean.fiddle_leaf_fig_low_moisture_automation:
+      state: true
+    input_boolean.fireplace_failsafe_automation:
       state: true
     input_boolean.garage_lights_off_after_garage_close_automation:
       state: true
@@ -54,6 +68,10 @@
       state: true
     input_boolean.notify_of_low_batteries_automation:
       state: true
+    input_boolean.notify_of_new_versions:
+      state: true
+    input_boolean.notify_of_trash_pickup_automation:
+      state: true
     input_boolean.notify_ps4_left_on_automation:
       state: true
     input_boolean.notify_when_3d_print_completes_automation:
@@ -66,9 +84,17 @@
       state: false
     input_boolean.notify_when_status_changes_automation:
       state: false
+    input_boolean.office_lights_off_at_10pm_automation:
+      state: true
+    input_boolean.office_lights_on_at_sunset_automation:
+      state: true
+    input_boolean.office_lights_sleep_timer_automation:
+      state: true
     input_boolean.outdoor_lights_schedule_automation:
       state: true
-    input_boolean.reading_lamp_cloudy_morning_automation:
+    input_boolean.powder_room_fan_auto_turn_on_automation:
+      state: true
+    input_boolean.subaru_legacy_notify_low_fuel_automation:
       state: true
     input_boolean.vacation_mode_lighting:
       state: false
@@ -80,6 +106,46 @@
       state: true
     input_boolean.wolfie_notify_when_stuck_automation:
       state: true
+    switch.water_main:
+      state: true
+
+- id: blackout_mode
+  name: Blackout Mode
+  entities:
+    input_boolean.bad_login_notifications_automation:
+      state: false
+    input_boolean.fiddle_leaf_fig_low_moisture_automation:
+      state: false
+    input_boolean.lightning_detected_automation:
+      state: false
+    input_boolean.master_bedroom_lights_on_at_sunset_automation:
+      state: false
+    input_boolean.notify_bad_aqi_automation:
+      state: false
+    input_boolean.notify_media_center_left_on_automation:
+      state: false
+    input_boolean.notify_of_dead_zwave_devices_automation:
+      state: false
+    input_boolean.notify_of_low_batteries_automation:
+      state: false
+    input_boolean.notify_of_new_versions:
+      state: false
+    input_boolean.notify_ps4_left_on_automation:
+      state: false
+    input_boolean.notify_when_3d_print_completes_automation:
+      state: false
+    input_boolean.notify_when_3d_print_starts_automation:
+      state: false
+    input_boolean.subaru_legacy_notify_low_fuel_automation:
+      state: false
+    input_boolean.wolfie:
+      state: false
+    input_boolean.wolfie_notify_when_consumable_low_automation:
+      state: false
+    input_boolean.wolfie_notify_when_cycle_complete_automation:
+      state: false
+    input_boolean.wolfie_notify_when_stuck_automation:
+      state: false
 
 - id: depart_home
   name: Depart Home
@@ -109,6 +175,28 @@
     switch.garage_lights:
       state: false
     switch.fireplace:
+      state: false
+    input_boolean.dishwasher_cycle_automation:
+      state: false
+    input_boolean.fiddle_leaf_fig_low_moisture_automation:
+      state: false
+    input_boolean.master_bedroom_lights_on_at_sunset_automation:
+      state: false
+    input_boolean.master_toilet_fan_toggle_automation:
+      state: false
+    input_boolean.notify_bad_aqi_automation:
+      state: false
+    input_boolean.notify_of_dead_zwave_devices_automation:
+      state: false
+    input_boolean.notify_of_low_batteries_automation:
+      state: false
+    input_boolean.notify_when_person_on_camera:
+      state: true
+    input_boolean.wolfie_notify_when_consumable_low_automation:
+      state: false
+    input_boolean.wolfie_notify_when_cycle_complete_automation:
+      state: false
+    input_boolean.wolfie_notify_when_stuck_automation:
       state: false
 
 - id: drive_home
@@ -155,15 +243,125 @@
     switch.fireplace:
       state: false
 
-- id: vacation_mode_off
-  name: "Vacation Mode Off"
+- id: guest_mode
+  name: Guest Mode
   entities:
-    switch.water_main:
-      state: true
+    input_boolean.adjust_climate_on_proximity_automation:
+      state: false
+    input_boolean.auto_departure_lockup_automation:
+      state: false
+    input_boolean.auto_nighttime_lockup_automation:
+      state: false
+    input_boolean.auto_vacation_mode_alterations_automation:
+      state: false
+    input_boolean.bar_cart_on_at_sunset_automation:
+      state: false
+    input_boolean.bar_cart_on_upon_arrival_automation:
+      state: false
+    input_boolean.blackout_schedule_automation:
+      state: false
+    input_boolean.fiddle_leaf_fig_low_moisture_automation:
+      state: false
+    input_boolean.fireplace_failsafe_automation:
+      state: false
+    input_boolean.lightning_detected_automation:
+      state: false
+    input_boolean.living_room_lights_on_at_sunset_automation:
+      state: false
+    input_boolean.living_room_lights_on_upon_arrival_automation:
+      state: false
+    input_boolean.master_bedroom_lights_on_at_sunset_automation:
+      state: false
+    input_boolean.master_toilet_fan_toggle_automation:
+      state: false
+    input_boolean.notify_bad_aqi_automation:
+      state: false
+    input_boolean.notify_media_center_left_on_automation:
+      state: false
+    input_boolean.notify_of_dead_zwave_devices_automation:
+      state: false
+    input_boolean.notify_of_garage_open_automation:
+      state: false
+    input_boolean.notify_of_low_batteries_automation:
+      state: false
+    input_boolean.notify_of_new_versions:
+      state: false
+    input_boolean.notify_of_trash_pickup_automation:
+      state: false
+    input_boolean.notify_ps4_left_on_automation:
+      state: false
+    input_boolean.notify_when_3d_print_completes_automation:
+      state: false
+    input_boolean.notify_when_3d_print_starts_automation:
+      state: false
+    input_boolean.notify_when_absent_insecure_automation:
+      state: false
+    input_boolean.notify_when_person_on_camera:
+      state: false
+    input_boolean.office_lights_off_at_10pm_automation:
+      state: false
+    input_boolean.office_lights_on_at_sunset_automation:
+      state: false
+    input_boolean.outdoor_lights_schedule_automation:
+      state: false
+    input_boolean.wolfie:
+      state: false
+    input_boolean.wolfie_notify_when_consumable_low_automation:
+      state: false
+    input_boolean.wolfie_notify_when_cycle_complete_automation:
+      state: false
+    input_boolean.wolfie_notify_when_stuck_automation:
+      state: false
 
-- id: vacation_mode_on
-  name: "Vacation Mode On"
+- id: vacation_mode
+  name: Vacation Mode
   entities:
+    input_boolean.bar_cart_on_at_sunset_automation:
+      state: false
+    input_boolean.bar_cart_on_upon_arrival_automation:
+      state: false
+    input_boolean.blackout_schedule_automation:
+      state: false
+    input_boolean.fiddle_leaf_fig_low_moisture_automation:
+      state: false
+    input_boolean.lightning_detected_automation:
+      state: false
+    input_boolean.master_bedroom_lights_on_at_sunset_automation:
+      state: false
+    input_boolean.master_toilet_fan_toggle_automation:
+      state: false
+    input_boolean.notify_bad_aqi_automation:
+      state: false
+    input_boolean.notify_of_dead_zwave_devices_automation:
+      state: false
+    input_boolean.notify_of_low_batteries_automation:
+      state: false
+    input_boolean.notify_of_new_versions:
+      state: false
+    input_boolean.notify_of_trash_pickup_automation:
+      state: false
+    input_boolean.notify_when_3d_print_completes_automation:
+      state: false
+    input_boolean.notify_when_3d_print_starts_automation:
+      state: false
+    input_boolean.notify_when_person_on_camera:
+      state: true
+    input_boolean.notify_when_status_changes_automation:
+      state: true
+    input_boolean.office_lights_off_at_10pm_automation:
+      state: false
+    input_boolean.office_lights_on_at_sunset_automation:
+      state: false
+    input_boolean.vacation_mode_lighting:
+      state: true
+    input_boolean.wolfie:
+      state: false
+    input_boolean.wolfie_notify_when_consumable_low_automation:
+      state: false
+    input_boolean.wolfie_notify_when_cycle_complete_automation:
+      state: false
+    input_boolean.wolfie_notify_when_stuck_automation:
+      state: false
     switch.water_main:
       state: false
 

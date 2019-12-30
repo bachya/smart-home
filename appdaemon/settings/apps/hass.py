@@ -2,7 +2,7 @@
 from typing import Callable, Optional
 import voluptuous as vol
 
-from const import CONF_ENTITY_IDS, EVENT_PRESENCE_CHANGE
+from const import CONF_ENTITY_IDS
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 from notification import send_notification
@@ -10,38 +10,6 @@ from notification import send_notification
 CONF_BAD_LOGIN = "bad_login"
 CONF_BLACKOUT_SWITCH = "blackout_switch"
 CONF_IP_BAN = "ip_ban"
-
-
-class AutoVacationMode(Base):  # pylint: disable=too-few-public-methods
-    """Define automated alterations to vacation mode."""
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_event(
-            self._on_presence_change,
-            EVENT_PRESENCE_CHANGE,
-            new=self.presence_manager.HomeStates.extended_away.value,
-            first=False,
-            action="on",
-            constrain_enabled=True,
-        )
-        self.listen_event(
-            self._on_presence_change,
-            EVENT_PRESENCE_CHANGE,
-            new=self.presence_manager.HomeStates.just_arrived.value,
-            first=True,
-            action="off",
-            constrain_enabled=True,
-        )
-
-    def _on_presence_change(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Alter Vacation Mode based on presence."""
-        if kwargs["action"] == "on" and not self.vacation_mode.enabled:
-            self.log('Setting vacation mode to "on"')
-            self.vacation_mode.enable()
-        elif kwargs["action"] == "off" and self.vacation_mode.enabled:
-            self.log('Setting vacation mode to "off"')
-            self.vacation_mode.disable()
 
 
 class BadLoginNotification(Base):  # pylint: disable=too-few-public-methods

@@ -1,4 +1,37 @@
 ---
+base_modes_when_returning_home:
+  module: services
+  class: ServiceOnState
+  service: "scene/turn_on"
+  service_data:
+    entity_id: scene.base
+  entity_ids:
+    target_entity_id: sensor.proximity_zone
+  properties:
+    new_target_state: Home
+
+blackout_mode_off:
+  module: services
+  class: ServiceOnState
+  service: "scene/turn_on"
+  service_data:
+    entity_id: scene.base
+  entity_ids:
+    target_entity_id: input_boolean.blackout_mode
+  properties:
+    new_target_state: "off"
+
+blackout_mode_on:
+  module: services
+  class: ServiceOnState
+  service: "scene/turn_on"
+  service_data:
+    entity_id: scene.blackout_mode
+  entity_ids:
+    target_entity_id: input_boolean.blackout_mode
+  properties:
+    new_target_state: "on"
+
 blackout_mode_schedule:
   module: hass_apps_loader
   class: SchedyApp
@@ -22,58 +55,46 @@ blackout_mode_schedule:
             - {start: "22:00", end: "09:00", weekdays: 5-6}
         - v: "off"
 
-blackout_mode_off_when_vacation_mode_on_automation:
+guest_mode_off:
   module: services
-  class: ServiceOnEvent
-  dependencies:
-    - presence_manager
-  service: "input_boolean/turn_off"
-  service_data:
-    entity_id: input_boolean.blackout_schedule_automation
-  properties:
-    event: MODE_CHANGE
-    event_data:
-      name: vacation_mode
-      state: "on"
-
-blackout_mode_on_when_vacation_mode_off_automation:
-  module: services
-  class: ServiceOnEvent
-  dependencies:
-    - presence_manager
-  service: "input_boolean/turn_on"
-  service_data:
-    entity_id: input_boolean.blackout_schedule_automation
-  properties:
-    event: MODE_CHANGE
-    event_data:
-      name: vacation_mode
-      state: "off"
-
-vacation_mode_off_scene_automation:
-  module: services
-  class: ServiceOnEvent
-  dependencies:
-    - presence_manager
+  class: ServiceOnState
   service: "scene/turn_on"
   service_data:
-    entity_id: scene.vacation_mode_off
+    entity_id: scene.base
+  entity_ids:
+    target_entity_id: input_boolean.guest_mode
   properties:
-    event: MODE_CHANGE
-    event_data:
-      name: vacation_mode
-      state: "off"
+    new_target_state: "off"
 
-vacation_mode_on_scene_automation:
+guest_mode_on:
   module: services
-  class: ServiceOnEvent
-  dependencies:
-    - presence_manager
+  class: ServiceOnState
   service: "scene/turn_on"
   service_data:
-    entity_id: scene.vacation_mode_on
+    entity_id: scene.guest_mode
+  entity_ids:
+    target_entity_id: input_boolean.guest_mode
   properties:
-    event: MODE_CHANGE
-    event_data:
-      name: vacation_mode
-      state: "on"
+    new_target_state: "on"
+
+vacation_mode_off:
+  module: services
+  class: ServiceOnState
+  service: "scene/turn_on"
+  service_data:
+    entity_id: scene.base
+  entity_ids:
+    target_entity_id: input_boolean.vacation_mode
+  properties:
+    new_target_state: "off"
+
+vacation_mode_on:
+  module: services
+  class: ServiceOnState
+  service: "scene/turn_on"
+  service_data:
+    entity_id: scene.vacation_mode
+  entity_ids:
+    target_entity_id: input_boolean.vacation_mode
+  properties:
+    new_target_state: "on"

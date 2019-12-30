@@ -104,8 +104,7 @@ class AutoDepartureLockup(Base):  # pylint: disable=too-few-public-methods
             and data["old"] == self.presence_manager.ProximityZones.home.value
             and data["new"] != self.presence_manager.ProximityZones.home.value
         ):
-            self.log("Everyone has left; locking up")
-
+            self.log('Setting "Depart Home" since everyone has left')
             self.turn_on("scene.depart_home")
 
 

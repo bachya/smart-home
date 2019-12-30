@@ -6,17 +6,6 @@ auto_departure_lockup_automation:
     - guest_mode
     - presence_manager
     - security_manager
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "off"
 
 auto_nighttime_lockup_automation:
   module: security
@@ -25,17 +14,6 @@ auto_nighttime_lockup_automation:
     - guest_mode
     - presence_manager
     - security_manager
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "off"
 
 notify_of_garage_open_automation:
   module: security
@@ -59,17 +37,6 @@ notify_when_absent_insecure_automation:
     - security_manager
   entity_ids:
     state: sensor.secure_status
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "off"
 
 notify_when_status_changes_automation:
   module: security
@@ -78,17 +45,6 @@ notify_when_status_changes_automation:
     - presence_manager
   entity_ids:
     state: sensor.secure_status
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
 
 notify_when_person_on_camera:
   module: security
@@ -106,25 +62,6 @@ notify_when_person_on_camera:
   properties:
     hit_threshold: 5
     window_seconds: 60
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "off"
-    - disable:
-        event: PROXIMITY_CHANGE
-        event_data:
-          new: home
-      enable:
-        event: PROXIMITY_CHANGE
-        event_data:
-          old: home
 
 security_manager:
   module: security

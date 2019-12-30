@@ -16,27 +16,6 @@ office_lights_off_at_10pm_automation:
     entity_id: switch.office_salt_lamp
   properties:
     schedule_time: "22:00:00"
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
 
 office_lights_on_at_sunset_automation:
   module: services
@@ -48,24 +27,3 @@ office_lights_on_at_sunset_automation:
     target_entity_id: sun.sun
   properties:
     new_target_state: "below_horizon"
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: guest_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"

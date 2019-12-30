@@ -26,14 +26,3 @@ basement_lights_vacation_mode_automation:
     end_time: "23:30:00"
     start_time: "sunset"
   enabled_toggle_entity_id: input_boolean.vacation_mode_lighting
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"

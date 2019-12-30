@@ -10,14 +10,3 @@ subaru_legacy_notify_low_fuel_automation:
     friendly_name: Aaron's car
     fuel_threshold: 10
     notification_target: "person:Aaron"
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "off"

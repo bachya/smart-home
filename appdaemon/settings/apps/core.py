@@ -7,8 +7,6 @@ from appdaemon.plugins.hass.hassapi import Hass  # pylint: disable=no-name-in-mo
 
 from const import (
     CONF_ENTITY_IDS,
-    CONF_EVENT,
-    CONF_EVENT_DATA,
     CONF_PROPERTIES,
     OPERATOR_ALL,
     OPERATORS,
@@ -74,9 +72,6 @@ class Base(Hass):
         # Define a holding place for key/value properties for this app:
         self.properties = self.args.get(CONF_PROPERTIES, {})
 
-        # Define a holding place for any mode alterations for this app:
-        self.state_changes = self.args.get(CONF_STATE_CHANGES, [])
-
         # Take every dependecy and create a reference to it:
         for app in self.args.get(CONF_DEPENDENCIES, []):
             if not getattr(self, app, None):
@@ -104,21 +99,7 @@ class Base(Hass):
         self.register_constraint("constrain_noone")
         self.register_constraint("constrain_sun")
 
-        # Set up connections to the automation being disabled/enabled:
         if self.enabled_entity_exists:
-            # Listen and track mode changes so that the app can respond as needed:
-            for state_change in self.state_changes:
-                self.listen_event(
-                    self._on_state_change_disable,
-                    state_change[CONF_DISABLE][CONF_EVENT],
-                    **state_change[CONF_DISABLE][CONF_EVENT_DATA],
-                )
-                self.listen_event(
-                    self._on_state_change_enable,
-                    state_change[CONF_ENABLE][CONF_EVENT],
-                    **state_change[CONF_ENABLE][CONF_EVENT_DATA],
-                )
-
             # If the app has defined callbacks fror when the app is enabled or disabled,
             # attach them to listeners. Note that we utilize `_on_*` here
             # (leading underscore) – we do this so automations don't have to remember
@@ -185,18 +166,6 @@ class Base(Hass):
     ) -> None:
         """Set a listener for when the automation is enabled."""
         self.on_enable()
-
-    def _on_state_change_disable(
-        self, event_name: str, data: dict, kwargs: dict
-    ) -> None:
-        """Disable the automation based upon a state change event."""
-        self.disable()
-
-    def _on_state_change_enable(
-        self, event_name: str, data: dict, kwargs: dict
-    ) -> None:
-        """Enable the automation based upon a state change event."""
-        self.enable()
 
     def constrain_anyone(self, value: str) -> bool:
         """Constrain execution to whether anyone is in a state."""

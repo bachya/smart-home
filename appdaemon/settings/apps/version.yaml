@@ -16,27 +16,6 @@ new_appdaemon_version_automation:
     image_name: acockburn/appdaemon
     update_interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "off"
 
 new_esphome_version_automation:
   module: version
@@ -57,27 +36,6 @@ new_esphome_version_automation:
     icon: mdi:chip
     update_interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "off"
 
 new_hass_version_automation:
   module: version
@@ -90,27 +48,6 @@ new_hass_version_automation:
   properties:
     app_name: Home Assistant
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "off"
 
 new_vernemq_version_automation:
   module: version
@@ -129,27 +66,6 @@ new_vernemq_version_automation:
     image_name: docker-vernemq
     update_interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "off"
 
 new_portainer_version_automation:
   module: version
@@ -168,27 +84,6 @@ new_portainer_version_automation:
     image_name: portainer/portainer
     update_interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "off"
 
 new_yi_hack_version_automation:
   module: version
@@ -201,24 +96,3 @@ new_yi_hack_version_automation:
   properties:
     app_name: Yi Hack
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
-  state_changes:
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: vacation_mode
-          state: "off"
-    - disable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "on"
-      enable:
-        event: MODE_CHANGE
-        event_data:
-          name: blackout_mode
-          state: "off"
