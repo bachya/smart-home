@@ -10,6 +10,7 @@ notify_when_3d_print_completes_automation:
   properties:
     new_target_state: Operational
     old_target_state: Printing
+  enabled_toggle_entity_id: input_boolean.3d_printer_notifications_automation
 
 notify_when_3d_print_starts_automation:
   module: services
@@ -22,6 +23,7 @@ notify_when_3d_print_starts_automation:
   properties:
     new_target_state: Printing
     old_target_state: Operational
+  enabled_toggle_entity_id: input_boolean.3d_printer_notifications_automation
 
 turn_3d_printer_off_when_print_complete_automation:
   module: services
