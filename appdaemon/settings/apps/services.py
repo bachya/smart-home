@@ -207,7 +207,10 @@ class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-met
     APP_SCHEMA = vol.All(
         APP_SCHEMA.extend(
             {
-                vol.Required(CONF_ZWAVE_DEVICE): cv.entity_id,
+                CONF_ENTITY_IDS: vol.Schema(
+                    {vol.Required(CONF_ZWAVE_DEVICE): cv.entity_id},
+                    extra=vol.ALLOW_EXTRA,
+                ),
                 vol.Inclusive(CONF_SERVICE_UP, "up"): str,
                 vol.Inclusive(CONF_SERVICE_UP_DATA, "up"): dict,
                 vol.Inclusive(CONF_SERVICE_DOWN, "down"): str,
