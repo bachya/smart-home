@@ -7,8 +7,11 @@
 .ps4-wake.credentials.json
 .tile.conf
 Pipfile.lock
+backup
+docs/
 emulated_hue_ids.json
 entity_registry.yaml
+google_calendars.yaml
 harmony_living_room_tv.conf
 home-assistant/settings/.storage
 home-assistant/settings/conf/hass/.HA_VERSION
@@ -28,5 +31,3 @@ sonoff
 tags*
 zwave_device_config.yaml
 zwcfg_*
-docs/
-backup
