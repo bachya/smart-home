@@ -1,6 +1,7 @@
 """Define an app for working with Alexa."""
 from typing import Tuple
 
+from const import CONF_PEOPLE
 from core import Base
 from helpers import grammatical_list_join, relative_search_dict
 from util.string import camel_to_underscore
@@ -97,3 +98,22 @@ class Alexa(Base):
             speech = "Time to go home, vacuum hero!"
             self.wolfie.stop()
         return speech, speech, "Wolfie"
+
+    def where_is_intent(self, data: dict) -> Tuple[str, str, str]:
+        """Define a handler for the WhereIsIntent intent."""
+        first_name = self.get_alexa_slot_value(data, "People")
+
+        try:
+            person = next(
+                (
+                    person
+                    for person in self.global_vars[CONF_PEOPLE]
+                    if person.first_name == first_name
+                )
+            )
+        except StopIteration:
+            speech = f"I couldn't find a person named {first_name}."
+        else:
+            speech = f"{person.first_name} is near {person.geocoded_location}."
+
+        return speech, speech, "Where Is?"
