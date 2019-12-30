@@ -108,7 +108,7 @@ class Alexa(Base):
                 (
                     person
                     for person in self.global_vars[CONF_PEOPLE]
-                    if person.first_name == first_name
+                    if person.first_name.lower() == first_name.lower()
                 )
             )
         except StopIteration:
