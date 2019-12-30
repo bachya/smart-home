@@ -16,6 +16,7 @@ from helpers import config_validation as cv
 if TYPE_CHECKING:
     from presence import PresenceManager
 
+CONF_GEOCODED_LOCATION = "geocoded_location"
 CONF_PERSON = "person"
 CONF_PRESENCE_STATUS_SENSOR = "presence_status_sensor"
 CONF_PUSH_DEVICE_ID = "push_device_id"
@@ -71,6 +72,11 @@ class Person(Base):
     def first_name(self) -> str:
         """Return the person's name."""
         return self.name.title()
+
+    @property
+    def geocoded_location(self) -> str:
+        """Return the person's reverse-geocoded address."""
+        return self.get_state(self.entity_ids[CONF_GEOCODED_LOCATION])
 
     @property
     def non_binary_state(self) -> "PresenceManager.HomeStates":
@@ -193,5 +199,6 @@ class Person(Base):
             attributes={
                 "friendly_name": self.first_name,
                 "entity_picture": f"/local/{self.name}-{picture_state}.png",
+                "geocoded_location": self.geocoded_location,
             },
         )

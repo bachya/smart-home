@@ -6,9 +6,10 @@ aaron:
     - presence_manager
   priority: 10
   entity_ids:
-    person: person.aaron
+    geocoded_location: sensor.aarons_geocoded_location
     notifiers:
       - mobile_app_aarons_iphone
+    person: person.aaron
     presence_status_sensor: sensor.aaron_presence_status
 
 britt:
@@ -18,7 +19,8 @@ britt:
     - presence_manager
   priority: 10
   entity_ids:
-    person: person.britt
+    geocoded_location: sensor.britts_geocoded_location
     notifiers:
       - mobile_app_brittany_bachs_iphone
+    person: person.britt
     presence_status_sensor: sensor.britt_presence_status
