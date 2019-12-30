@@ -149,10 +149,10 @@ office_lights_sleep_timer_automation:
   name: Enable sleep timer
 office_lights_schedule_automation:
   icon: mdi:lightbulb
-  name: Automation schedule
+  name: Office Schedule
 outdoor_lights_schedule_automation:
   icon: mdi:lightbulb
-  name: Automatic schedule
+  name: Outdoor Schedule
 powder_room_fan_auto_turn_on_automation:
   icon: mdi:fan
   initial: true
