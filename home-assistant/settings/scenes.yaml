@@ -82,9 +82,7 @@
       state: false
     input_boolean.notify_when_status_changes_automation:
       state: false
-    input_boolean.office_lights_off_at_10pm_automation:
-      state: true
-    input_boolean.office_lights_on_at_sunset_automation:
+    input_boolean.office_lights_schedule_automation:
       state: true
     input_boolean.office_lights_sleep_timer_automation:
       state: true
@@ -294,9 +292,7 @@
       state: false
     input_boolean.notify_when_person_on_camera:
       state: false
-    input_boolean.office_lights_off_at_10pm_automation:
-      state: false
-    input_boolean.office_lights_on_at_sunset_automation:
+    input_boolean.office_lights_schedule_automation:
       state: false
     input_boolean.outdoor_lights_schedule_automation:
       state: false
@@ -342,9 +338,7 @@
       state: true
     input_boolean.notify_when_status_changes_automation:
       state: true
-    input_boolean.office_lights_off_at_10pm_automation:
-      state: false
-    input_boolean.office_lights_on_at_sunset_automation:
+    input_boolean.office_lights_schedule_automation:
       state: false
     input_boolean.vacation_mode_lighting:
       state: true
