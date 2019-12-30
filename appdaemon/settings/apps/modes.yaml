@@ -1,8 +1,4 @@
 ---
-blackout_mode:
-  module: mode
-  class: Mode
-
 blackout_mode_schedule:
   module: hass_apps_loader
   class: SchedyApp
@@ -53,14 +49,6 @@ blackout_mode_on_when_vacation_mode_off_automation:
     event_data:
       name: vacation_mode
       state: "off"
-
-guest_mode:
-  module: mode
-  class: Mode
-
-vacation_mode:
-  module: mode
-  class: Mode
 
 vacation_mode_off_scene_automation:
   module: services
