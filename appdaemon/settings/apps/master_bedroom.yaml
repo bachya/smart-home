@@ -20,15 +20,14 @@ master_bedroom_lights_on_at_sunset_automation:
     new_target_state: below_horizon
 
 master_bathroom_fan_double_tap_timer_automation:
-  module: switches
-  class: DoubleTapTimerSwitch
-  dependencies:
-    - presence_manager
+  module: services
+  class: ServiceOnZWaveSwitchDoubleTap
+  service_up: "input_number/set_value"
+  service_up_data:
+    entity_id: input_number.master_bathroom_fan_timer
+    value: 60
   entity_ids:
-    timer_slider: input_number.master_bathroom_fan_timer
     zwave_device: zwave.master_bathroom_fan
-  properties:
-    duration: 3600
 
 master_bathroom_fan_sleep_timer_automation:
   module: switches
@@ -40,15 +39,14 @@ master_bathroom_fan_sleep_timer_automation:
     timer_slider: input_number.master_bathroom_fan_timer
 
 master_toilet_fan_double_tap_timer_automation:
-  module: switches
-  class: DoubleTapTimerSwitch
-  dependencies:
-    - presence_manager
+  module: services
+  class: ServiceOnZWaveSwitchDoubleTap
+  service_up: "input_number/set_value"
+  service_up_data:
+    entity_id: input_number.master_bathroom_toilet_fan_timer
+    value: 10
   entity_ids:
-    timer_slider: input_number.master_bathroom_toilet_fan_timer
     zwave_device: zwave.master_toilet_fan
-  properties:
-    duration: 600
 
 master_toilet_fan_toggle_automation:
   module: switches

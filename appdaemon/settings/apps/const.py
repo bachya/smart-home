@@ -7,7 +7,6 @@ CONF_PROPERTIES = "properties"
 CONF_DEVICE_TRACKERS = "device_trackers"
 CONF_ENTITY_ID = "entity_id"
 CONF_ICON = "icon"
-CONF_TARGET_ENTITY_ID = "target_entity_id"
 
 # Name-related config keys:
 CONF_FRIENDLY_NAME = "friendly_name"

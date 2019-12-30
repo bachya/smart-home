@@ -11,7 +11,6 @@ from const import (
     CONF_PROPERTIES,
     CONF_START_TIME,
     CONF_STATE,
-    CONF_TARGET_ENTITY_ID,
     TOGGLE_STATES,
 )
 from core import APP_SCHEMA, Base
@@ -21,7 +20,6 @@ CONF_RETURN_DELAY = "return_delay"
 CONF_SWITCH = "switch"
 CONF_TIMER_SLIDER = "timer_slider"
 CONF_WINDOW = "window"
-CONF_ZWAVE_DEVICE = "zwave_device"
 
 HANDLE_TIMER = "timer"
 HANDLE_TOGGLE_IN_WINDOW = "in_window"
@@ -97,59 +95,6 @@ class BaseZwaveSwitch(BaseSwitch):
     def on_double_tap_up(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Stub out method signature."""
         pass
-
-
-class DoubleTapTimerSwitch(BaseZwaveSwitch):
-    """Define a feature to double tap a switch on for a time."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            CONF_ENTITY_IDS: vol.Schema(
-                {
-                    vol.Required(CONF_TIMER_SLIDER): cv.entity_id,
-                    vol.Required(CONF_ZWAVE_DEVICE): cv.entity_id,
-                },
-                extra=vol.ALLOW_EXTRA,
-            ),
-            CONF_PROPERTIES: vol.Schema(
-                {vol.Required(CONF_DURATION): int}, extra=vol.ALLOW_EXTRA
-            ),
-        }
-    )
-
-    def on_double_tap_up(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Turn on the target timer slider with a double up tap."""
-        self.set_value(
-            self.entity_ids[CONF_TIMER_SLIDER],
-            round(self.properties[CONF_DURATION] / 60),
-        )
-
-
-class DoubleTapToggleSwitch(BaseZwaveSwitch):
-    """Define a feature to toggle a switch with a double tab of this switch."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            CONF_ENTITY_IDS: vol.Schema(
-                {
-                    vol.Required(CONF_TARGET_ENTITY_ID): cv.entity_id,
-                    vol.Required(CONF_ZWAVE_DEVICE): cv.entity_id,
-                },
-                extra=vol.ALLOW_EXTRA,
-            ),
-            CONF_PROPERTIES: vol.Schema(
-                {vol.Required(CONF_DURATION): int}, extra=vol.ALLOW_EXTRA
-            ),
-        }
-    )
-
-    def on_double_tap_down(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Turn off the target switch with a double down tap."""
-        self.turn_off(self.entity_ids[CONF_TARGET_ENTITY_ID])
-
-    def on_double_tap_up(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Turn on the target switch with a double up tap."""
-        self.turn_on(self.entity_ids[CONF_TARGET_ENTITY_ID])
 
 
 class PresenceFailsafe(BaseSwitch):

@@ -13,10 +13,11 @@ from const import (
     CONF_EVENT,
     CONF_EVENT_DATA,
     CONF_PROPERTIES,
-    CONF_TARGET_ENTITY_ID,
 )
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
+
+CONF_TARGET_ENTITY_ID = "target_entity_id"
 
 CONF_RUN_ON_DAYS = "run_on_days"
 CONF_SCHEDULE_TIME = "schedule_time"
@@ -30,6 +31,12 @@ CONF_TARGET_VALUE = "target_value"
 CONF_DELAY = "delay"
 CONF_NEW_TARGET_STATE = "new_target_state"
 CONF_OLD_TARGET_STATE = "old_target_state"
+
+CONF_SERVICE_DOWN = "service_down"
+CONF_SERVICE_DOWN_DATA = "service_down_data"
+CONF_SERVICE_UP = "service_up"
+CONF_SERVICE_UP_DATA = "service_up_data"
+CONF_ZWAVE_DEVICE = "zwave_device"
 
 ENTITY_THRESHOLD_SCHEMA = vol.Schema(
     {
@@ -192,3 +199,49 @@ class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
     def _on_time_reached(self, kwargs: dict) -> None:
         """Call the service."""
         self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
+
+
+class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-methods
+    """Define an automation to call a service when a Z-Wave switch double-tap occurs."""
+
+    APP_SCHEMA = vol.All(
+        APP_SCHEMA.extend(
+            {
+                vol.Required(CONF_ZWAVE_DEVICE): cv.entity_id,
+                vol.Inclusive(CONF_SERVICE_UP, "up"): str,
+                vol.Inclusive(CONF_SERVICE_UP_DATA, "up"): dict,
+                vol.Inclusive(CONF_SERVICE_DOWN, "down"): str,
+                vol.Inclusive(CONF_SERVICE_DOWN_DATA, "down"): dict,
+            }
+        ),
+        cv.has_at_least_one_key(CONF_SERVICE_UP, CONF_SERVICE_DOWN),
+        extra=vol.ALLOW_EXTRA,
+    )
+
+    def configure(self) -> None:
+        """Configure."""
+        self.listen_event(
+            self._on_double_tap_up,
+            "zwave.node_event",
+            entity_id=self.entity_ids[CONF_ZWAVE_DEVICE],
+            basic_level=255,
+            constrain_enabled=True,
+        )
+
+        self.listen_event(
+            self._on_double_tap_down,
+            "zwave.node_event",
+            entity_id=self.entity_ids[CONF_ZWAVE_DEVICE],
+            basic_level=0,
+            constrain_enabled=True,
+        )
+
+    def _on_double_tap_down(self, event_name: str, data: dict, kwargs: dict) -> None:
+        """Call the "down" service."""
+        self.call_service(
+            self.args[CONF_SERVICE_DOWN], **self.args[CONF_SERVICE_DOWN_DATA]
+        )
+
+    def _on_double_tap_up(self, event_name: str, data: dict, kwargs: dict) -> None:
+        """Call the "up" service."""
+        self.call_service(self.args[CONF_SERVICE_UP], **self.args[CONF_SERVICE_UP_DATA])
