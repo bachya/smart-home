@@ -178,7 +178,6 @@ class PresenceFailsafe(BaseSwitch):
     ) -> None:
         """Turn the switch off if no one is home."""
         self.log("No one home; not allowing switch to activate")
-
         self.toggle(state="off")
 
 
