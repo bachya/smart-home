@@ -1,4 +1,86 @@
 ---
+- id: base
+  name: Base
+  entities:
+    automation.slack_interactive_command_home_assistant_app:
+      state: true
+    automation.slack_slash_command_home_assistant_app:
+      state: true
+    automation.update_openuv_every_30_minutes_during_the_daytime:
+      state: true
+    input_boolean.adjust_climate_on_proximity_automation:
+      state: true
+    input_boolean.auto_departure_lockup_automation:
+      state: true
+    input_boolean.auto_nighttime_lockup_automation:
+      state: true
+    input_boolean.blackout_schedule_automation:
+      state: true
+    input_boolean.garage_lights_off_after_garage_close_automation:
+      state: true
+    input_boolean.garage_lights_on_garage_open_sundown_automation:
+      state: true
+    input_boolean.kitchen_patio_light_double_tap_backyard_lights_automation:
+      state: true
+    input_boolean.lightning_detected_automation:
+      state: true
+    input_boolean.lights_on_night_doorbell_automation:
+      state: true
+    input_boolean.living_room_lights_on_at_sunset_automation:
+      state: true
+    input_boolean.living_room_lights_on_upon_arrival_automation:
+      state: true
+    input_boolean.master_bathroom_fan_double_tap_timer_automation:
+      state: true
+    input_boolean.master_bathroom_fan_sleep_timer_automation:
+      state: true
+    input_boolean.master_bedroom_lights_on_at_sunset_automation:
+      state: true
+    input_boolean.master_bedroom_lights_sleep_timer_automation:
+      state: true
+    input_boolean.master_toilet_fan_double_tap_timer_automation:
+      state: true
+    input_boolean.master_toilet_fan_sleep_timer_automation:
+      state: true
+    input_boolean.master_toilet_fan_toggle_automation:
+      state: true
+    input_boolean.notify_bad_aqi_automation:
+      state: true
+    input_boolean.notify_media_center_left_on_automation:
+      state: true
+    input_boolean.notify_of_dead_zwave_devices_automation:
+      state: true
+    input_boolean.notify_of_garage_open_automation:
+      state: true
+    input_boolean.notify_of_low_batteries_automation:
+      state: true
+    input_boolean.notify_ps4_left_on_automation:
+      state: true
+    input_boolean.notify_when_3d_print_completes_automation:
+      state: true
+    input_boolean.notify_when_3d_print_starts_automation:
+      state: true
+    input_boolean.notify_when_absent_insecure_automation:
+      state: true
+    input_boolean.notify_when_person_on_camera:
+      state: false
+    input_boolean.notify_when_status_changes_automation:
+      state: false
+    input_boolean.outdoor_lights_schedule_automation:
+      state: true
+    input_boolean.reading_lamp_cloudy_morning_automation:
+      state: true
+    input_boolean.vacation_mode_lighting:
+      state: false
+    input_boolean.wolfie:
+      state: true
+    input_boolean.wolfie_notify_when_consumable_low_automation:
+      state: true
+    input_boolean.wolfie_notify_when_cycle_complete_automation:
+      state: true
+    input_boolean.wolfie_notify_when_stuck_automation:
+      state: true
+
 - id: depart_home
   name: Depart Home
   entities:
