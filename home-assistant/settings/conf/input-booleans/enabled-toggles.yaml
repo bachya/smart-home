@@ -143,18 +143,13 @@ notify_when_status_changes_automation:
   icon: mdi:shield-half-full
   initial: false
   name: Notify when state changes
-office_lights_off_at_10pm_automation:
-  icon: mdi:lightbulb
-  initial: true
-  name: Turn off at 10pm
-office_lights_on_at_sunset_automation:
-  icon: mdi:weather-sunset-down
-  initial: true
-  name: Turn on at sunset
 office_lights_sleep_timer_automation:
   icon: mdi:sleep
   initial: true
   name: Enable sleep timer
+office_lights_schedule_automation:
+  icon: mdi:lightbulb
+  name: Automation schedule
 outdoor_lights_schedule_automation:
   icon: mdi:lightbulb
   name: Automatic schedule
