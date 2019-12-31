@@ -1,4 +1,12 @@
 ---
+input_boolean:
+  bar_cart_on_at_sunset_automation:
+    icon: mdi:weather-sunset-down
+    name: Turn on at sunset
+  bar_cart_on_upon_arrival_automation:
+    icon: mdi:car
+    name: Turn on upon arrival
+
 sensor:
   - platform: template
     sensors:

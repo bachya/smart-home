@@ -31,6 +31,11 @@ binary_sensor:
             "sensor.recollect_waste", "pickup_types"
           ) }}
 
+input_boolean:
+  notify_of_trash_pickup_automation:
+    icon: mdi:delete
+    name: Notify of pickups
+
 sensor:
   - platform: recollect_waste
     place_id: !secret recollect_place_id

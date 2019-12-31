@@ -6,6 +6,23 @@ group:
       - switch.reading_lamp
       - switch.sofa_lamp
 
+input_boolean:
+  fiddle_leaf_fig_low_moisture_automation:
+    icon: mdi:flower
+    name: Notify of low moisture
+  fireplace_failsafe_automation:
+    icon: mdi:fire
+    name: Disable fireplace when away
+  living_room_lights_on_at_sunset_automation:
+    icon: mdi:weather-sunset-down
+    name: Turn on at sunset
+  living_room_lights_on_upon_arrival_automation:
+    icon: mdi:car
+    name: Turn on upon arrival
+  powder_room_fan_auto_turn_on_automation:
+    icon: mdi:fan
+    name: Turn on if turned off
+
 remote:
   - platform: harmony
     name: Living Room TV

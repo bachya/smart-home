@@ -10,3 +10,20 @@ group:
     entities:
       - switch.front_patio_light
       - switch.kitchen_patio_light
+
+input_boolean:
+  kitchen_patio_light_double_tap_backyard_lights_automation:
+    icon: mdi:lightbulb
+    name: Kitchen patio controls backyard lights
+  lightning_detected_automation:
+    icon: mdi:flash
+    name: Notify when lightning detected
+  lights_on_night_doorbell_automation:
+    icon: mdi:motion-sensor
+    name: Turn on lights when doorbell sees person at night
+  notify_bad_aqi_automation:
+    icon: mdi:weather-windy
+    name: Bad AQI notifications
+  outdoor_lights_schedule_automation:
+    icon: mdi:lightbulb
+    name: Automatic schedule

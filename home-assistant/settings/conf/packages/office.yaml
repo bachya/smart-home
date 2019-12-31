@@ -1,4 +1,12 @@
 ---
+input_boolean:
+  office_lights_sleep_timer_automation:
+    icon: mdi:sleep
+    name: Enable sleep timer
+  office_lights_schedule_automation:
+    icon: mdi:lightbulb
+    name: Automatic schedule
+
 input_number:
   office_salt_lamp_timer:
     name: Sleep Timer

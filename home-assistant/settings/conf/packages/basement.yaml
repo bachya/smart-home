@@ -7,6 +7,11 @@ apple_tv:
     name: Basement Apple TV
     start_off: true
 
+input_boolean:
+  notify_media_center_left_on_automation:
+    icon: mdi:server
+    name: Media Center left on
+
 remote:
   - platform: harmony
     name: Basement TV

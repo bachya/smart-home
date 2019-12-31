@@ -26,6 +26,29 @@ binary_sensor:
         to_state: "off"
         prob_given_true: 0.65
 
+input_boolean:
+  master_bathroom_fan_double_tap_timer_automation:
+    icon: mdi:timer
+    name: "Bathroom: double tap 10-minute timer"
+  master_bathroom_fan_sleep_timer_automation:
+    icon: mdi:sleep
+    name: "Bathroom: enable sleep timer"
+  master_bedroom_lights_on_at_sunset_automation:
+    icon: mdi:weather-sunset-down
+    name: Turn on at sunset
+  master_bedroom_lights_sleep_timer_automation:
+    icon: mdi:sleep
+    name: Enable sleep timer
+  master_toilet_fan_double_tap_timer_automation:
+    icon: mdi:timer
+    name: "Toilet: double tap 10-minute timer"
+  master_toilet_fan_sleep_timer_automation:
+    icon: mdi:sleep
+    name: "Toilet: enable sleep timer"
+  master_toilet_fan_toggle_automation:
+    icon: mdi:fan
+    name: Toggle toilet fan every 15 minutes
+
 input_number:
   master_bathroom_fan_timer:
     name: Sleep Timer

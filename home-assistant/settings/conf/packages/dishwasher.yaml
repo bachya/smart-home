@@ -1,4 +1,9 @@
 ---
+input_boolean:
+  dishwasher_cycle_automation:
+    icon: mdi:washing-machine
+    name: Notifications when clean
+
 input_number:
   dishwasher_notification_interval:
     name: Notification Interval

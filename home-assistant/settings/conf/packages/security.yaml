@@ -1,4 +1,27 @@
 ---
+input_boolean:
+  auto_departure_lockup_automation:
+    icon: mdi:car-side
+    name: Automatic departure lock up
+  auto_nighttime_lockup_automation:
+    icon: mdi:clock
+    name: Automatically lock up at night
+  bad_login_notifications_automation:
+    icon: mdi:alert-circle
+    name: Bad login notifications
+  notify_when_absent_insecure_automation:
+    icon: mdi:lock-open
+    name: Absent & insecure alerts
+  notify_when_person_on_camera:
+    icon: mdi:cctv
+    name: Strange person detected
+  notify_when_status_changes_automation:
+    icon: mdi:shield-half-full
+    name: Notify when state changes
+  vacation_mode_lighting:
+    icon: mdi:beach
+    name: Vacation mode lighting
+
 sensor:
   - platform: mqtt
     state_topic: "stat/fail2ban"

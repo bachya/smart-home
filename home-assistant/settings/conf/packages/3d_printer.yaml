@@ -13,6 +13,9 @@ binary_sensor:
     device_class: problem
 
 input_boolean:
+  3d_printer_notifications_automation:
+    icon: mdi:printer-3d
+    name: 3D print notifications
   turn_3d_printer_off_when_print_complete_automation:
     icon: mdi:power
     initial: true

@@ -1,4 +1,18 @@
 ---
+input_boolean:
+  notify_of_dead_zwave_devices_automation:
+    icon: mdi:z-wave
+    name: Notify of dead Z-Wave devices
+  notify_of_low_batteries_automation:
+    icon: mdi:battery
+    name: Notify of low batteries
+  notify_of_new_versions:
+    icon: mdi:home-assistant
+    name: Notify of new versions
+  notify_ps4_left_on_automation:
+    icon: mdi:playstation
+    name: PS4 left on
+
 sensor:
   - platform: command_line
     name: AppDaemon Available
