@@ -204,6 +204,10 @@ class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-met
 
     def _on_double_tap_down(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Call the "down" service."""
+        if not self.args.get(CONF_SERVICE_DOWN):
+            self.log("No service defined for double-tap down")
+            return
+
         self.log(
             "Calling service (%s, %s) from double tab down (%s)",
             self.args[CONF_SERVICE_DOWN],
@@ -216,6 +220,10 @@ class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-met
 
     def _on_double_tap_up(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Call the "up" service."""
+        if not self.args.get(CONF_SERVICE_UP):
+            self.log("No service defined for double-tap up")
+            return
+
         self.log(
             "Calling service (%s, %s) from double tab up (%s)",
             self.args[CONF_SERVICE_UP],
