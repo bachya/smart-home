@@ -132,8 +132,8 @@ sensor:
 
   - platform: mqtt
     name: Ender 3 State
-    state_topic: "octoPrint/event/PrinterStateChanged"
-    value_template: "{{ value_json.state_string }}"
+    state_topic: "octoPrint/progress/printing"
+    value_template: "{{ value_json.printer_data.state.text }}"
     availability_topic: "octoPrint/mqtt"
     payload_available: connected
     payload_not_available: disconnected
