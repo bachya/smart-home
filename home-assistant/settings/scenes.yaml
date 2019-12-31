@@ -176,8 +176,6 @@
       state: false
     input_boolean.fiddle_leaf_fig_low_moisture_automation:
       state: false
-    input_boolean.master_bedroom_lights_on_at_sunset_automation:
-      state: false
     input_boolean.master_toilet_fan_toggle_automation:
       state: false
     input_boolean.notify_bad_aqi_automation:
