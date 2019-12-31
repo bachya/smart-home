@@ -150,6 +150,26 @@
       state: armed_away
     cover.garage_door:
       state: closed
+    input_boolean.dishwasher_cycle_automation:
+      state: false
+    input_boolean.fiddle_leaf_fig_low_moisture_automation:
+      state: false
+    input_boolean.master_toilet_fan_toggle_automation:
+      state: false
+    input_boolean.notify_bad_aqi_automation:
+      state: false
+    input_boolean.notify_of_dead_zwave_devices_automation:
+      state: false
+    input_boolean.notify_of_low_batteries_automation:
+      state: false
+    input_boolean.notify_when_person_on_camera:
+      state: true
+    input_boolean.wolfie_notify_when_consumable_low_automation:
+      state: false
+    input_boolean.wolfie_notify_when_cycle_complete_automation:
+      state: false
+    input_boolean.wolfie_notify_when_stuck_automation:
+      state: false
     lock.front_door:
       state: locked
     lock.garage_fire_door:
@@ -171,26 +191,6 @@
     switch.garage_lights:
       state: false
     switch.fireplace:
-      state: false
-    input_boolean.dishwasher_cycle_automation:
-      state: false
-    input_boolean.fiddle_leaf_fig_low_moisture_automation:
-      state: false
-    input_boolean.master_toilet_fan_toggle_automation:
-      state: false
-    input_boolean.notify_bad_aqi_automation:
-      state: false
-    input_boolean.notify_of_dead_zwave_devices_automation:
-      state: false
-    input_boolean.notify_of_low_batteries_automation:
-      state: false
-    input_boolean.notify_when_person_on_camera:
-      state: true
-    input_boolean.wolfie_notify_when_consumable_low_automation:
-      state: false
-    input_boolean.wolfie_notify_when_cycle_complete_automation:
-      state: false
-    input_boolean.wolfie_notify_when_stuck_automation:
       state: false
 
 - id: drive_home
