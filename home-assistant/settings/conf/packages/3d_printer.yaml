@@ -14,7 +14,7 @@ binary_sensor:
 
 input_boolean:
   turn_3d_printer_off_when_print_complete_automation:
-    icon: "mdi:power"
+    icon: mdi:power
     initial: true
     name: "Turn off when print complete"
 
