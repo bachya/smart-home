@@ -13,10 +13,10 @@ binary_sensor:
     device_class: problem
 
 input_boolean:
-  turn_off_when_3d_print_complete:
+  turn_3d_printer_off_when_print_complete_automation:
     icon: "mdi:power-plug-off"
     initial: true
-    name: Blackout Mode
+    name: "Turn off when print complete"
 
 rest_command:
   turn_off_octopi:
