@@ -206,8 +206,8 @@ class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-met
         """Call the "down" service."""
         self.log(
             "Calling service (%s, %s) from double tab down (%s)",
-            self.args[CONF_SERVICE],
-            self.args[CONF_SERVICE_DATA],
+            self.args[CONF_SERVICE_UP],
+            self.args[CONF_SERVICE_UP_DATA],
             self.entity_ids[CONF_ZWAVE_DEVICE],
         )
         self.call_service(
@@ -218,8 +218,8 @@ class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-met
         """Call the "up" service."""
         self.log(
             "Calling service (%s, %s) from double tab up (%s)",
-            self.args[CONF_SERVICE],
-            self.args[CONF_SERVICE_DATA],
+            self.args[CONF_SERVICE_DOWN],
+            self.args[CONF_SERVICE_DOWN_DATA],
             self.entity_ids[CONF_ZWAVE_DEVICE],
         )
         self.call_service(self.args[CONF_SERVICE_UP], **self.args[CONF_SERVICE_UP_DATA])
