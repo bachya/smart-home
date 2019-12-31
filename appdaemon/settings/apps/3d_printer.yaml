@@ -34,6 +34,6 @@ turn_3d_printer_off_when_print_complete_automation:
   entity_ids:
     target_entity_id: sensor.ender_3_state
   properties:
-    new_target_state: Printing
-    old_target_state: Operational
+    new_target_state: Operational
+    old_target_state: Printing
     delay: 600
