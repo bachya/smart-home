@@ -6,13 +6,6 @@ from core import Base
 from helpers import grammatical_list_join, relative_search_dict
 from util.string import camel_to_underscore
 
-WHERE_IS_LOOKUP_MAP = {
-    "aaron": "Aaron",
-    "brit": "Britt",
-    "britt": "Britt",
-    "brittany": "Britt",
-}
-
 
 class Alexa(Base):
     """Define a class to represent the app."""
@@ -108,15 +101,22 @@ class Alexa(Base):
 
     def where_is_intent(self, data: dict) -> Tuple[str, str, str]:
         """Define a handler for the WhereIsIntent intent."""
-        slot_value = self.get_alexa_slot_value(data, "First_Name").lower()
-        _, first_name = relative_search_dict(WHERE_IS_LOOKUP_MAP, slot_value)
+        person_map = {
+            "Aaron": "Aaron",
+            "Brit": "Britt",
+            "Britt": "Britt",
+            "Brittany": "Britt",
+        }
+
+        slot_value = self.get_alexa_slot_value(data, "First_Name")
+        _, first_name = relative_search_dict(person_map, slot_value)
 
         try:
             person = next(
                 (
                     person
                     for person in self.global_vars[CONF_PEOPLE]
-                    if person.first_name.lower() == first_name
+                    if person.first_name.lower() == first_name.lower()
                 )
             )
         except StopIteration:
