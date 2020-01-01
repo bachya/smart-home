@@ -28,7 +28,7 @@ notify_when_3d_print_starts_automation:
 turn_3d_printer_off_when_print_complete_automation:
   module: services
   class: ServiceOnState
-  service: "service/turn_off"
+  service: "switch/turn_off"
   service_data:
     entity_id: switch.toggle_3d_printer
   entity_ids:
