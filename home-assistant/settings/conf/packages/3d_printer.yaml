@@ -143,7 +143,6 @@ switch:
   - platform: mqtt
     name: MQTT State
     command_topic: octoPrint/mqtt
-    payload_off: disconnected
     payload_on: connected
     state_topic: octoPrint/mqtt
     state_off: disconnected
