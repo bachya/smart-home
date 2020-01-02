@@ -224,15 +224,6 @@ class Base(Hass):
 
         self.turn_on(self._enabled_toggle_entity_id)
 
-    def listen_ios_event(self, callback: Callable, action: str) -> None:
-        """Register a callback for an iOS event."""
-        self.listen_event(
-            callback,
-            "ios.notification_action_fired",
-            actionName=action,
-            constrain_enabled=True,
-        )
-
     def listen_event(self, callback, event=None, **kwargs):
         """Wrap AppDaemon's `listen_event` with the constraint mechanism."""
         return self._attach_constraints(super().listen_event, callback, event, **kwargs)
@@ -246,16 +237,6 @@ class Base(Hass):
     def run_daily(self, callback, start, **kwargs):
         """Wrap AppDaemon's `run_daily` with the constraint mechanism."""
         return self._attach_constraints(super().run_daily, callback, start, **kwargs)
-
-    def run_at_sunrise(self, callback, *args, **kwargs):
-        """Wrap AppDaemon's `run_at_sunrise` with the constraint mechanism."""
-        return self._attach_constraints(super().run_at_sunrise, callback, **kwargs)
-
-    def run_at_sunset(
-        self, callback: Callable[..., None], *args: list, **kwargs: dict,
-    ):
-        """Wrap AppDaemon's `run_at_sunset` with the constraint mechanism."""
-        return self._attach_constraints(super().run_at_sunset, callback, **kwargs)
 
     def run_every(self, callback, start, interval, **kwargs):
         """Wrap AppDaemon's `run_every` with the constraint mechanism."""
