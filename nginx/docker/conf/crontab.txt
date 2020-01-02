@@ -1,3 +1,5 @@
+MAILTO=bachya1208@gmail.com
+
 # Download the latest GeoLite DB on the first Wednesday
 # (since the release occurs on each first Tuesday):
-5 9 * * 3 [ $(date +\%d) -le 7 ] && /usr/local/bin/geolite-download
+17 2 * * 3 /usr/local/bin/geolite-download

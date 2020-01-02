@@ -1,6 +1,6 @@
 FROM alpine:3.10.1
 
-ARG maxminddb_version
+ARG libmaxminddb_version
 ARG nginx_version
 ARG ngx_http_geoip2_module_version
 
@@ -9,37 +9,39 @@ RUN apk update \
     && apk add --no-cache --virtual build-dependencies \
       apk-cron \
       build-base \
-      ca-certificates \
       linux-headers \
       openssl-dev \
       pcre-dev \
       zlib-dev \
     && apk add --update \
+      ca-certificates \
       gzip \
       openssl \
       pcre \
       perl \
+      rsyslog \
       supervisor \
       tzdata \
       wget \
       zlib \
+    && update-ca-certificates \
     && mkdir /tmp/src \
-    && wget -N -P /tmp/src https://github.com/maxmind/libmaxminddb/releases/download/${maxminddb_version}/libmaxminddb-${maxminddb_version}.tar.gz \
-    && tar xzvf /tmp/src/libmaxminddb-${maxminddb_version}.tar.gz -C /tmp/src \
-    && cd /tmp/src/libmaxminddb-${maxminddb_version} \
+    && wget -O /tmp/src/libmaxminddb.tar.gz "https://github.com/maxmind/libmaxminddb/releases/download/${libmaxminddb_version}/libmaxminddb-${libmaxminddb_version}.tar.gz" \
+    && tar xzvf /tmp/src/libmaxminddb.tar.gz -C /tmp/src \
+    && cd /tmp/src/libmaxminddb-${libmaxminddb_version} \
     && ./configure \
     && make \
     && make check \
     && make install \
     && ldconfig /usr/local/lib \
     && mkdir -p /usr/local/share/GeoIP/ \
-    && wget -N -P /tmp/src https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz \
+    && wget -O /tmp/src/GeoLite2-Country.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&license_key=fCICsoZwXeb3gTO9&suffix=tar.gz" \
     && tar xzvf /tmp/src/GeoLite2-Country.tar.gz -C /tmp/src --strip-components=1 \
     && mv /tmp/src/GeoLite2-Country.mmdb /usr/local/share/GeoIP \
-    && wget -N -P /tmp/src https://github.com/leev/ngx_http_geoip2_module/archive/${ngx_http_geoip2_module_version}.tar.gz \
-    && tar xzvf /tmp/src/${ngx_http_geoip2_module_version}.tar.gz -C /tmp/src \
-    && wget -N -P /tmp/src http://nginx.org/download/nginx-${nginx_version}.tar.gz \
-    && tar -zxvf /tmp/src/nginx-${nginx_version}.tar.gz -C /tmp/src \
+    && wget -O /tmp/src/ngx_http_geoip2_module.tar.gz "https://github.com/leev/ngx_http_geoip2_module/archive/${ngx_http_geoip2_module_version}.tar.gz" \
+    && tar xzvf /tmp/src/ngx_http_geoip2_module.tar.gz -C /tmp/src \
+    && wget -O /tmp/src/nginx.tar.gz "http://nginx.org/download/nginx-${nginx_version}.tar.gz" \
+    && tar -zxvf /tmp/src/nginx.tar.gz -C /tmp/src \
     && cd /tmp/src/nginx-${nginx_version} \
     && ./configure \
       --add-module=/tmp/src/ngx_http_geoip2_module-${ngx_http_geoip2_module_version} \
