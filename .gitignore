@@ -7,7 +7,7 @@
 .ps4-wake.credentials.json
 .tile.conf
 Pipfile.lock
-backup
+backup/
 docs/
 emulated_hue_ids.json
 entity_registry.yaml
