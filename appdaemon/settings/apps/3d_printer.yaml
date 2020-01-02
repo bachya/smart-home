@@ -4,7 +4,7 @@ notify_when_3d_print_completes_automation:
   class: ServiceOnState
   service: "notify/slack"
   service_data:
-    message: 3D print completed
+    message: "3D print completed: {{ states('sensor.ender_3_filename') }}"
   entity_ids:
     target_entity_id: sensor.ender_3_state
   properties:
