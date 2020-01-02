@@ -96,6 +96,7 @@ class Base(Hass):
         self.register_constraint("constrain_everyone")
         self.register_constraint("constrain_in_bed")
         self.register_constraint("constrain_in_blackout")
+        self.register_constraint("constrain_mode_on")
         self.register_constraint("constrain_noone")
         self.register_constraint("constrain_sun")
 
@@ -197,6 +198,10 @@ class Base(Hass):
     def constrain_in_blackout(self, state: str) -> bool:
         """Constrain execution based on blackout state."""
         return bool(state) and self.get_state("input_boolean.blackout_mode") == "on"
+
+    def constrain_mode_on(self, mode: str) -> bool:
+        """Constrain execution to whether a mode is on."""
+        return self.get_state(f"input_boolean.{mode}") == "on"
 
     def constrain_noone(self, value: str) -> bool:
         """Constrain execution to whether no one is in a state."""
