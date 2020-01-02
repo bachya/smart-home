@@ -5,15 +5,14 @@ ARG nginx_version
 ARG ngx_http_geoip2_module_version
 
 # Update, install, and clean up packages all in one step:
-RUN apk update \
-    && apk add --no-cache --virtual build-dependencies \
+RUN apk add --no-cache --virtual build-dependencies \
       apk-cron \
       build-base \
       linux-headers \
       openssl-dev \
       pcre-dev \
       zlib-dev \
-    && apk add --update \
+    && apk add --no-cache \
       ca-certificates \
       gzip \
       openssl \
@@ -64,8 +63,7 @@ RUN apk update \
     && make \
     && make install \
     && apk del build-dependencies \
-    && rm -rf /tmp/src \
-    && rm -rf /var/cache/apk/*
+    && rm -rf /tmp/src
 
 # Get timezone stuff set up correctly:
 ENV TZ=America/Denver
