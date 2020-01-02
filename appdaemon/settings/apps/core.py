@@ -233,59 +233,39 @@ class Base(Hass):
             constrain_enabled=True,
         )
 
-    def listen_event(self, callback, event=None, auto_constraints=False, **kwargs):
+    def listen_event(self, callback, event=None, **kwargs):
         """Wrap AppDaemon's `listen_event` with the constraint mechanism."""
-        if not auto_constraints:
-            return super().listen_event(callback, event, **kwargs)
-
         return self._attach_constraints(super().listen_event, callback, event, **kwargs)
 
-    def listen_state(self, callback, entity=None, auto_constraints=False, **kwargs):
+    def listen_state(self, callback, entity=None, **kwargs):
         """Wrap AppDaemon's `listen_state` with the constraint mechanism."""
-        if not auto_constraints:
-            return super().listen_state(callback, entity, **kwargs)
-
         return self._attach_constraints(
             super().listen_state, callback, entity, **kwargs
         )
 
-    def run_daily(self, callback, start, auto_constraints=False, **kwargs):
+    def run_daily(self, callback, start, **kwargs):
         """Wrap AppDaemon's `run_daily` with the constraint mechanism."""
-        if not auto_constraints:
-            return super().run_daily(callback, start, **kwargs)
-
         return self._attach_constraints(super().run_daily, callback, start, **kwargs)
 
-    def run_at_sunrise(self, callback, *args, auto_constraints=False, **kwargs):
+    def run_at_sunrise(self, callback, *args, **kwargs):
         """Wrap AppDaemon's `run_at_sunrise` with the constraint mechanism."""
-        if not auto_constraints:
-            return super().run_at_sunrise(callback, **kwargs)
-
         return self._attach_constraints(super().run_at_sunrise, callback, **kwargs)
 
     def run_at_sunset(
-        self,
-        callback: Callable[..., None],
-        *args: list,
-        auto_constraints=False,
-        **kwargs: dict,
+        self, callback: Callable[..., None], *args: list, **kwargs: dict,
     ):
         """Wrap AppDaemon's `run_at_sunset` with the constraint mechanism."""
-        if not auto_constraints:
-            return super().run_at_sunset(callback, **kwargs)
-
         return self._attach_constraints(super().run_at_sunset, callback, **kwargs)
 
-    def run_every(self, callback, start, interval, auto_constraints=False, **kwargs):
+    def run_every(self, callback, start, interval, **kwargs):
         """Wrap AppDaemon's `run_every` with the constraint mechanism."""
         # Since AD4 has microsecond resolution, these wrapped calls will fail because
         # `start` will technically be in the past. So, to be safe, bump out the start
         # time by a second
-        start = start + timedelta(seconds=1)
-
-        if not auto_constraints:
-            return super().run_every(callback, start, interval, **kwargs)
-
         return self._attach_constraints(
-            super().run_every, callback, start, interval, **kwargs
+            super().run_every,
+            callback,
+            start + timedelta(seconds=1),
+            interval,
+            **kwargs,
         )
