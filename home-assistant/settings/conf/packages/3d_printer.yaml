@@ -140,6 +140,16 @@ sensor:
     icon: mdi:printer-3d
 
 switch:
+  - platform: mqtt
+    name: MQTT State
+    command_topic: octoPrint/mqtt
+    payload_off: disconnected
+    payload_on: connected
+    state_topic: octoPrint/mqtt
+    state_off: disconnected
+    state_on: connected
+    icon: mdi:recycle
+
   - platform: template
     switches:
       toggle_3d_printer:
