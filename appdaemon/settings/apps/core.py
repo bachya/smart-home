@@ -49,7 +49,7 @@ APP_SCHEMA = vol.Schema(
 )
 
 
-class Base(Hass):
+class Base(Hass):  # pylint: disable=too-many-public-methods
     """Define a base app/automation object."""
 
     APP_SCHEMA = APP_SCHEMA.extend({})
@@ -243,6 +243,38 @@ class Base(Hass):
         return self._attach_constraints(
             super().listen_state, callback, entity, **kwargs
         )
+
+    def run_at_sunrise(self, callback, **kwargs):
+        """Create a more accurate, timely callback runner for sunrise."""
+
+        def _on_sunrise(
+            entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+        ) -> None:
+            """Run the callback at sunset."""
+            # The sun.sun entity publishes state updates anytime any of its attributes
+            # are changed (even if the state value itself does not change). To prevent
+            # spurious triggers, check the old an new state values first:
+            if old == new:
+                return
+            callback(kwargs)
+
+        self.listen_state(_on_sunrise, "sun.sun", new="above_horizon", **kwargs)
+
+    def run_at_sunset(self, callback, **kwargs):
+        """Create a more accurate, timely callback runner for sunset."""
+
+        def _on_sunset(
+            entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+        ) -> None:
+            """Run the callback at sunset."""
+            # The sun.sun entity publishes state updates anytime any of its attributes
+            # are changed (even if the state value itself does not change). To prevent
+            # spurious triggers, check the old an new state values first:
+            if old == new:
+                return
+            callback(kwargs)
+
+        self.listen_state(_on_sunset, "sun.sun", new="below_horizon", **kwargs)
 
     def run_daily(self, callback, start, **kwargs):
         """Wrap AppDaemon's `run_daily` with the constraint mechanism."""
