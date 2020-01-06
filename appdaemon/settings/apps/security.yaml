@@ -20,7 +20,7 @@ disable_simplisafe_chime_in_blackout_automation:
   class: ServiceOnState
   service: "simplisafe/set_volume_property"
   service_data:
-    system_id: !secret simplisafe_account_id
+    system_id: !secret simplisafe_system_id
     volume_property: chime
     volume: "off"
   entity_ids:
@@ -35,7 +35,7 @@ disable_simplisafe_voice_prompt_in_blackout_automation:
   class: ServiceOnState
   service: "simplisafe/set_volume_property"
   service_data:
-    system_id: !secret simplisafe_account_id
+    system_id: !secret simplisafe_system_id
     volume_property: voice_prompt
     volume: "off"
   entity_ids:
@@ -50,7 +50,7 @@ enable_simplisafe_chime_in_blackout_automation:
   class: ServiceOnState
   service: "simplisafe/set_volume_property"
   service_data:
-    system_id: !secret simplisafe_account_id
+    system_id: !secret simplisafe_system_id
     volume_property: chime
     volume: medium
   entity_ids:
@@ -65,7 +65,7 @@ enable_simplisafe_voice_prompt_in_blackout_automation:
   class: ServiceOnState
   service: "simplisafe/set_volume_property"
   service_data:
-    system_id: !secret simplisafe_account_id
+    system_id: !secret simplisafe_system_id
     volume_property: voice_prompt
     volume: medium
   entity_ids:
