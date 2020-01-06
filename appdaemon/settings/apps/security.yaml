@@ -15,6 +15,66 @@ auto_nighttime_lockup_automation:
     - presence_manager
     - security_manager
 
+disable_simplisafe_chime_in_blackout_automation:
+  module: services
+  class: ServiceOnState
+  service: "simplisafe/set_volume_property"
+  service_data:
+    system_id: !secret simplisafe_account_id
+    volume_property: chime
+    volume: "off"
+  entity_ids:
+    target_entity_id: input_boolean.blackout_mode
+  properties:
+    new_target_state: "on"
+  enabled_toggle_entity_id: >
+    input_boolean.simplisafe_sounds_blackout_automation
+
+disable_simplisafe_voice_prompt_in_blackout_automation:
+  module: services
+  class: ServiceOnState
+  service: "simplisafe/set_volume_property"
+  service_data:
+    system_id: !secret simplisafe_account_id
+    volume_property: voice_prompt
+    volume: "off"
+  entity_ids:
+    target_entity_id: input_boolean.blackout_mode
+  properties:
+    new_target_state: "on"
+  enabled_toggle_entity_id: >
+    input_boolean.simplisafe_sounds_blackout_automation
+
+enable_simplisafe_chime_in_blackout_automation:
+  module: services
+  class: ServiceOnState
+  service: "simplisafe/set_volume_property"
+  service_data:
+    system_id: !secret simplisafe_account_id
+    volume_property: chime
+    volume: medium
+  entity_ids:
+    target_entity_id: input_boolean.blackout_mode
+  properties:
+    new_target_state: "off"
+  enabled_toggle_entity_id: >
+    input_boolean.simplisafe_sounds_blackout_automation
+
+enable_simplisafe_voice_prompt_in_blackout_automation:
+  module: services
+  class: ServiceOnState
+  service: "simplisafe/set_volume_property"
+  service_data:
+    system_id: !secret simplisafe_account_id
+    volume_property: voice_prompt
+    volume: medium
+  entity_ids:
+    target_entity_id: input_boolean.blackout_mode
+  properties:
+    new_target_state: "off"
+  enabled_toggle_entity_id: >
+    input_boolean.simplisafe_sounds_blackout_automation
+
 notify_of_garage_open_automation:
   module: security
   class: GarageLeftOpen

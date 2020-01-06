@@ -18,6 +18,9 @@ input_boolean:
   notify_when_status_changes_automation:
     icon: mdi:shield-half-full
     name: Notify when state changes
+  simplisafe_sounds_blackout_automation:
+    icon: mdi:shield-home
+    name: Disable SimpliSafe sounds during blackout
   vacation_mode_lighting:
     icon: mdi:beach
     name: Vacation mode lighting
