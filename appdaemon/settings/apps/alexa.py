@@ -41,6 +41,19 @@ class Alexa(Base):
 
         return response, 200
 
+    def clean_full_intent(self, data: dict) -> Tuple[str, str, str]:
+        """Define a handler for the CleanFullIntent."""
+        container = self.get_alexa_slot_value(data, "Container")
+
+        if container in ("Wolfie", "the vacuum"):
+            speech = f"Wolfie's bin is {self.wolfie.bin_state.value}."
+        elif container == "the dishwasher":
+            speech = f"The dishwasher is {self.dishwasher.state.value}."
+        else:
+            speech = f"I don't know what {container} is."
+
+        return speech, speech, f"What state is {container}?"
+
     def in_next_trash_pickup_intent(self, data: dict) -> Tuple[str, str, str]:
         """Define a handler for the InNextTrashPickupIntent intent."""
         _, speech = self.trash_manager.in_next_pickup_str()
