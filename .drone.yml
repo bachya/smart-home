@@ -15,10 +15,11 @@ steps:
       - pip3 install black
       - black --check --fast ./appdaemon/settings/apps/
   - name: Linting
-    image: python:3
+    image: labhackercd/alpine-python3-nodejs:latest
     commands:
-      - pip3 install flake8 pylint yamllint
       - flake8 ./appdaemon/settings/apps/
+      - pip3 install flake8 pylint yamllint
+      - prettier --check '**/*.{yaml,json}'
       - pylint --rcfile ./appdaemon/settings/pylintrc appdaemon/settings/apps/
       - yamllint ./appdaemon/settings/
       - yamllint ./esphome/
