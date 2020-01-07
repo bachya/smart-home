@@ -59,8 +59,8 @@ thermostat_schedule:
     cooling_season:
       - v: 72
         rules:
-          - { start: "20:30", end: "07:00", weekdays: "1-4, 7" }
-          - { start: "20:30", end: "08:30", weekdays: "5-6" }
+          - {start: "20:30", end: "07:00", weekdays: "1-4, 7"}
+          - {start: "20:30", end: "08:30", weekdays: "5-6"}
       - v: 75
     heating_season:
       - x: "68 if in_bed() else Next()"

@@ -52,8 +52,8 @@ blackout_mode_schedule:
       schedule:
         - v: "on"
           rules:
-            - { start: "21:00", end: "07:00", weekdays: "1-4, 7" }
-            - { start: "22:00", end: "09:00", weekdays: 5-6 }
+            - {start: "21:00", end: "07:00", weekdays: "1-4, 7"}
+            - {start: "22:00", end: "09:00", weekdays: 5-6}
         - v: "off"
 
 guest_mode_off:

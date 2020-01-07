@@ -31,5 +31,6 @@ repos:
     hooks:
       - id: prettier
         args:
+          - --no-bracket-spacing
           - --write
         files: .+\.(json|yaml)

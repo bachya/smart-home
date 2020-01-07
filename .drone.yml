@@ -25,7 +25,7 @@ steps:
       - yamllint ./esphome/
       - yamllint ./home-assistant/settings/
       - yamllint ./zigbee2mqtt/settings/
-      - prettier --check '**/*.{yaml,json}'
+      - prettier --check --no-bracket-spacing '**/*.{yaml,json}'
   - name: Typing
     image: python:3
     commands:
