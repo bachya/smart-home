@@ -17,14 +17,14 @@ steps:
   - name: Linting
     image: labhackercd/alpine-python3-nodejs:latest
     commands:
-      - flake8 ./appdaemon/settings/apps/
       - pip3 install flake8 pylint yamllint
-      - prettier --check '**/*.{yaml,json}'
+      - flake8 ./appdaemon/settings/apps/
       - pylint --rcfile ./appdaemon/settings/pylintrc appdaemon/settings/apps/
       - yamllint ./appdaemon/settings/
       - yamllint ./esphome/
       - yamllint ./home-assistant/settings/
       - yamllint ./zigbee2mqtt/settings/
+      - prettier --check '**/*.{yaml,json}'
   - name: Typing
     image: python:3
     commands:
