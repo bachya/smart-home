@@ -1,19 +1,19 @@
 {
-    "config": {
-        "error": {
-            "identifier_exists": "Username already registered",
-            "invalid_credentials": "Invalid username or password",
-            "unknown_error": "An unknown error occurred"
+  "config": {
+    "error": {
+      "identifier_exists": "Username already registered",
+      "invalid_credentials": "Invalid username or password",
+      "unknown_error": "An unknown error occurred"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "password": "Password",
+          "username": "Email Address"
         },
-        "step": {
-            "user": {
-                "data": {
-                    "password": "Password",
-                    "username": "Email Address"
-                },
-                "title": "Fill in your information"
-            }
-        },
-        "title": "Eufy Security"
-    }
+        "title": "Fill in your information"
+      }
+    },
+    "title": "Eufy Security"
+  }
 }

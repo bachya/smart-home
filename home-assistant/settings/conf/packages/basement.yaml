@@ -3,7 +3,7 @@ apple_tv:
   - host: 172.16.10.64
     login_id: 00000000-1012-d722-4d49-70717fb642c1
     credentials: "242C1C557B5DD7F5:0018F0AA80A42DCA62364861F4ED6BCDB4F\
-                  D3E25683444DED1E26AB409A493D6"
+      D3E25683444DED1E26AB409A493D6"
     name: Basement Apple TV
     start_off: true
 
@@ -19,7 +19,7 @@ remote:
     activity: 37549209
 
 shell_command:
-  turn_off_media_center: 'ssh bachya@media-center.phil.lan sudo /sbin/poweroff'
+  turn_off_media_center: "ssh bachya@media-center.phil.lan sudo /sbin/poweroff"
 
 switch:
   - platform: wake_on_lan

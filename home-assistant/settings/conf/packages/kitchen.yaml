@@ -13,8 +13,6 @@ sensor:
       garage_fire_door_lock_battery:
         friendly_name: Garage Fire Door Lock
         value_template: >
-          {% if states('zwave.garage_door') == 'ready' %}
-            {{ states.zwave.garage_door.attributes.battery_level }}
-          {% endif %}
-        unit_of_measurement: '%'
+          {{ state_attr("zwave.garage_door", "battery_level") }}
+        unit_of_measurement: "%"
         device_class: battery
