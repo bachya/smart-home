@@ -18,6 +18,7 @@ steps:
     image: labhackercd/alpine-python3-nodejs:latest
     commands:
       - pip3 install flake8 pylint yamllint
+      - npm install --global prettier
       - flake8 ./appdaemon/settings/apps/
       - pylint --rcfile ./appdaemon/settings/pylintrc appdaemon/settings/apps/
       - yamllint ./appdaemon/settings/
