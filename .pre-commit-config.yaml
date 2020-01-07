@@ -26,3 +26,10 @@ repos:
           - --format=custom
           - --configfile=.bandit.yaml
         files: ^(appdaemon/settings/apps/.+)?[^/]+\.py$
+  - repo: https://github.com/prettier/prettier
+    rev: 1.19.1
+    hooks:
+      - id: prettier
+        args:
+          - --write
+        files: .+\.(json|yaml)
