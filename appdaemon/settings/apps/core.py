@@ -287,12 +287,12 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
 
     def run_every(self, callback, start, interval, **kwargs):
         """Wrap AppDaemon's `run_every` with the constraint mechanism."""
-        # Since AD4 has microsecond resolution, these wrapped calls will fail because
-        # `start` will technically be in the past. So, to be safe, bump out the start
-        # time by a second:
         return self._attach_constraints(
             super().run_every,
             callback,
+            # Since AD4 has microsecond resolution, these wrapped calls will fail
+            # because `start` will technically be in the past. So, to be safe, bump out
+            # the start time by a second:
             start + timedelta(seconds=1),
             interval,
             **kwargs,
