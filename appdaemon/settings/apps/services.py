@@ -98,6 +98,7 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
                 self.properties[CONF_RANDOM_TICK_LOWER_END],
                 self.properties[CONF_RANDOM_TICK_UPPER_END],
             ),
+            constrain_enabled=True,
         )
 
     def _on_tick(self, kwargs: dict) -> None:
