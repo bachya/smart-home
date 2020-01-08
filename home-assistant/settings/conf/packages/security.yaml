@@ -21,7 +21,7 @@ input_boolean:
   simplisafe_sounds_blackout_automation:
     icon: mdi:shield-home
     name: Disable SimpliSafe sounds during blackout
-  vacation_mode_lighting:
+  randomized_lighting:
     icon: mdi:beach
     name: Vacation mode lighting
 

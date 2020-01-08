@@ -94,7 +94,7 @@
       state: true
     input_boolean.turn_3d_printer_off_when_print_complete_automation:
       state: true
-    input_boolean.vacation_mode_lighting:
+    input_boolean.randomized_lighting:
       state: false
     input_boolean.wolfie:
       state: true
@@ -338,7 +338,7 @@
       state: true
     input_boolean.office_lights_schedule_automation:
       state: false
-    input_boolean.vacation_mode_lighting:
+    input_boolean.randomized_lighting:
       state: true
     input_boolean.wolfie:
       state: false
