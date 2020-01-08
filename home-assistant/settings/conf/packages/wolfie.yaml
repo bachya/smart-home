@@ -3,6 +3,9 @@ input_boolean:
   wolfie:
     icon: mdi:robot-vacuum
     name: Automatic schedule
+  wolfie_notify_before_run_automation:
+    icon: mdi:robot-vacuum
+    name: Notify before run
   wolfie_notify_when_consumable_low_automation:
     icon: mdi:robot-vacuum
     name: Notify when consumable low

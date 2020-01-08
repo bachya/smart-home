@@ -13,6 +13,14 @@ wolfie:
   properties:
     full_threshold_minutes: 5
 
+wolfie_notify_before_run_automation:
+  module: robot_vacuum
+  class: NotifyBeforeRun
+  dependencies:
+    - presence_manager
+    - wolfie
+  app: wolfie
+
 wolfie_notify_when_consumable_low_automation:
   module: robot_vacuum
   class: MonitorConsumables

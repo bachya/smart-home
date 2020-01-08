@@ -1,4 +1,5 @@
 """Define automations for robot vacuums."""
+from datetime import timedelta
 from enum import Enum
 from typing import Callable, List, Optional, Union
 
@@ -25,6 +26,7 @@ CONF_CALENDAR = "calendar"
 CONF_IOS_EMPTIED_KEY = "ios_emptied_key"
 
 HANDLE_BIN_FULL = "bin_full"
+HANDLE_NEXT_RUN_NOTIFICATION = "next_run_notification"
 HANDLE_STUCK = "stuck"
 
 
@@ -92,6 +94,35 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
         if self._send_notification_func:
             self._send_notification_func()
             self._send_notification_func = None
+
+
+class NotifyBeforeRun(Base):  # pylint: disable=too-few-public-methods
+    """Define a feature to notify before Wolfie runs."""
+
+    def configure(self) -> None:
+        """Configure."""
+        self.listen_state(
+            self._on_next_run_datetime_change,
+            self.app.entity_ids[CONF_CALENDAR],
+            attribute="start_time",
+            constrain_enabled=True,
+        )
+
+    def _on_next_run_datetime_change(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Schedule a notification for an hour before the next run."""
+        if HANDLE_NEXT_RUN_NOTIFICATION in self.handles:
+            handle = self.handles.pop(HANDLE_NEXT_RUN_NOTIFICATION)
+            self.cancel_timer(handle)
+
+        self.handles[HANDLE_NEXT_RUN_NOTIFICATION] = send_notification(
+            self,
+            "presence:home",
+            "Make sure to pull the boundaries out!",
+            title="Wolfie runs in 1 hour",
+            when=self.parse_datetime(new) - timedelta(hours=1),
+        )
 
 
 class NotifyWhenRunComplete(Base):
