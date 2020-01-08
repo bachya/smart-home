@@ -13,7 +13,6 @@ from const import (
     CONF_PROPERTIES,
     CONF_STATE,
     EVENT_ALARM_CHANGE,
-    EVENT_PROXIMITY_CHANGE,
 )
 from helpers import config_validation as cv
 from notification import send_notification
@@ -85,26 +84,6 @@ class AbsentInsecure(Base):  # pylint: disable=too-few-public-methods
         if self._send_notification_func:
             self._send_notification_func()
             self._send_notification_func = None
-
-
-class AutoDepartureLockup(Base):  # pylint: disable=too-few-public-methods
-    """Define a feature to automatically lock up when we leave."""
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_event(
-            self._on_everyone_gone, EVENT_PROXIMITY_CHANGE, constrain_enabled=True
-        )
-
-    def _on_everyone_gone(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Respond to 'PROXIMITY_CHANGE' events."""
-        if (
-            not self.security_manager.secure
-            and data["old"] == self.presence_manager.ProximityZones.home.value
-            and data["new"] != self.presence_manager.ProximityZones.home.value
-        ):
-            self.log('Setting "Depart Home" since everyone has left')
-            self.turn_on("scene.depart_home")
 
 
 class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods
