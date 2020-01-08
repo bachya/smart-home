@@ -9,16 +9,12 @@ trigger:
     - refs/tags/*
 
 steps:
-  - name: Formatting
-    image: python:3
-    commands:
-      - pip3 install black
-      - black --check --fast ./appdaemon/settings/apps/
   - name: Linting
     image: labhackercd/alpine-python3-nodejs:latest
     commands:
-      - pip3 install flake8 pylint yamllint
+      - pip3 install black flake8 pylint yamllint
       - npm install --global prettier
+      - black --check --fast ./appdaemon/settings/apps/
       - flake8 ./appdaemon/settings/apps/
       - pylint --rcfile ./appdaemon/settings/pylintrc appdaemon/settings/apps/
       - yamllint ./appdaemon/settings/
