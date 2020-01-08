@@ -35,7 +35,7 @@ basement_lights_vacation_mode_start_automation:
 
 basement_lights_vacation_mode_stop_automation:
   module: services
-  class: ServiceOnState
+  class: ServiceOnTime
   service: "switch/turn_off"
   service_data:
     entity_id: switch.basement_lights

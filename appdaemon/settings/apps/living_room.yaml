@@ -55,7 +55,7 @@ living_room_lights_vacation_mode_start_automation:
 
 living_room_lights_vacation_mode_stop_automation:
   module: services
-  class: ServiceOnState
+  class: ServiceOnTime
   service: "switch/turn_off"
   service_data:
     entity_id: group.living_room_lights
