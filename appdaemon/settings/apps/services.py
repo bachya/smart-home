@@ -130,7 +130,7 @@ class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        kwargs = {"constrain_enabled": True, "auto_constraints": True}
+        kwargs = {"constrain_enabled": True}
 
         if CONF_NEW_TARGET_STATE in self.properties:
             kwargs["new"] = self.properties[CONF_NEW_TARGET_STATE]
@@ -184,7 +184,6 @@ class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
             self._on_time_reached,
             self.parse_time(self.properties[CONF_SCHEDULE_TIME]),
             constrain_enabled=True,
-            auto_constraints=True,
         )
 
     def _on_time_reached(self, kwargs: dict) -> None:
