@@ -306,8 +306,6 @@
 - id: vacation_mode
   name: Vacation Mode
   entities:
-    input_boolean.bar_cart_on_at_sunset_automation:
-      state: false
     input_boolean.bar_cart_on_upon_arrival_automation:
       state: false
     input_boolean.blackout_schedule_automation:

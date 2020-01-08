@@ -20,18 +20,11 @@ basement_lights_vacation_mode_random_tick_automation:
   service_data:
     entity_id: switch.basement_lights
   enabled_toggle_entity_id: input_boolean.randomized_lighting
-
-basement_lights_vacation_mode_start_automation:
-  module: services
-  class: ServiceOnState
-  service: "switch/turn_on"
-  service_data:
-    entity_id: switch.basement_lights
-  entity_ids:
-    target_entity_id: sun.sun
-  properties:
-    new_target_state: below_horizon
-  enabled_toggle_entity_id: input_boolean.randomized_lighting
+  constraints:
+    operator: all
+    constraints:
+      constrain_before_time: "23:30:00"
+      constrain_sun: down
 
 basement_lights_vacation_mode_stop_automation:
   module: services
