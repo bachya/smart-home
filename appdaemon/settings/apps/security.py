@@ -1,5 +1,4 @@
 """Define automations for security."""
-from datetime import time
 from enum import Enum
 from threading import Lock
 from typing import Callable, Optional, Union
@@ -106,25 +105,6 @@ class AutoDepartureLockup(Base):  # pylint: disable=too-few-public-methods
         ):
             self.log('Setting "Depart Home" since everyone has left')
             self.turn_on("scene.depart_home")
-
-
-class AutoNighttimeLockup(Base):  # pylint: disable=too-few-public-methods
-    """Define a feature to automatically lock up at night."""
-
-    def configure(self) -> None:
-        """Configure."""
-        self.run_daily(
-            self._on_midnight_reached,
-            time(0, 0, 0),
-            constrain_enabled=True,
-            constrain_anyone="home",
-        )
-
-    def _on_midnight_reached(self, kwargs: dict) -> None:
-        """Lock up the house at _on_midnight_reached."""
-        self.log('Activating "Good Night"')
-
-        self.call_service("scene/turn_on", entity_id="scene.good_night")
 
 
 class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods

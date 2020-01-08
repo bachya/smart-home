@@ -8,12 +8,16 @@ auto_departure_lockup_automation:
     - security_manager
 
 auto_nighttime_lockup_automation:
-  module: security
-  class: AutoNighttimeLockup
-  dependencies:
-    - guest_mode
-    - presence_manager
-    - security_manager
+  module: services
+  class: ServiceOnTime
+  service: "scene/turn_on"
+  service_data:
+    entity_id: scene.good_night
+  properties:
+    schedule_time: "00:00:00"
+  constraints:
+    constraints:
+      constrain_anyone: home
 
 disable_simplisafe_sounds_in_blackout_automation:
   module: services
