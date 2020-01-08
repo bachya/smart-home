@@ -21,8 +21,8 @@ disable_simplisafe_sounds_in_blackout_automation:
   service: "simplisafe/set_system_properties"
   service_data:
     system_id: !secret simplisafe_system_id
-    chime_volume: "off"
-    voice_prompt_volume: "off"
+    chime_volume: 0
+    voice_prompt_volume: 0
   entity_ids:
     target_entity_id: input_boolean.blackout_mode
   properties:
@@ -36,8 +36,8 @@ enable_simplisafe_sounds_in_blackout_automation:
   service: "simplisafe/set_volume_property"
   service_data:
     system_id: !secret simplisafe_system_id
-    chime_volume: medium
-    voice_prompt_volume: medium
+    chime_volume: 2
+    voice_prompt_volume: 2
   entity_ids:
     target_entity_id: input_boolean.blackout_mode
   properties:
