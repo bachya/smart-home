@@ -13,16 +13,32 @@ basement_leak_detected_automation:
       - "person:Britt"
     state: "on"
 
-basement_lights_vacation_mode_automation:
-  module: switches
-  class: VacationMode
-  dependencies:
-    - guest_mode
-    - presence_manager
-    - vacation_mode
+basement_lights_vacation_mode_random_tick_automation:
+  module: services
+  class: ServiceOnRandomTick
+  service: "switch/toggle"
+  service_data:
+    entity_id: switch.basement_lights
+  enabled_toggle_entity_id: input_boolean.vacation_mode_lighting
+
+basement_lights_vacation_mode_start_automation:
+  module: services
+  class: ServiceOnState
+  service: "switch/turn_on"
+  service_data:
+    entity_id: switch.basement_lights
   entity_ids:
-    switch: switch.basement_lights
+    target_entity_id: sun.sun
   properties:
-    end_time: "23:30:00"
-    start_time: "sunset"
+    new_target_state: below_horizon
+  enabled_toggle_entity_id: input_boolean.vacation_mode_lighting
+
+basement_lights_vacation_mode_stop_automation:
+  module: services
+  class: ServiceOnState
+  service: "switch/turn_off"
+  service_data:
+    entity_id: switch.basement_lights
+  properties:
+    schedule_time: "23:30:00"
   enabled_toggle_entity_id: input_boolean.vacation_mode_lighting
