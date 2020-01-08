@@ -90,7 +90,7 @@
       state: true
     input_boolean.powder_room_fan_auto_turn_on_automation:
       state: true
-    input_boolean.randomized_lighting:
+    input_boolean.randomize_nighttime_lighting:
       state: false
     input_boolean.subaru_legacy_notify_low_fuel_automation:
       state: true
@@ -166,7 +166,7 @@
       state: false
     input_boolean.notify_when_person_on_camera:
       state: true
-    input_boolean.randomized_lighting:
+    input_boolean.randomize_nighttime_lighting:
       state: true
     input_boolean.wolfie_notify_when_consumable_low_automation:
       state: false

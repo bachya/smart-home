@@ -19,7 +19,7 @@ basement_lights_vacation_mode_random_tick_automation:
   service: "switch/toggle"
   service_data:
     entity_id: switch.basement_lights
-  enabled_toggle_entity_id: input_boolean.randomized_lighting
+  enabled_toggle_entity_id: input_boolean.randomize_nighttime_lighting
   constraints:
     operator: all
     constraints:
