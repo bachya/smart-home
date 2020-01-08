@@ -91,8 +91,9 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
 
     def _start_ticking(self) -> None:
         """Start the "ticking" process."""
-        self.handles[HANDLE_TICK] = self.run_in(
+        self.handles[HANDLE_TICK] = self.run_every(
             self._on_tick,
+            self.datetime(),
             randint(  # nosec
                 self.properties.get(CONF_RANDOM_TICK_LOWER_END, 5 * 60),
                 self.properties.get(CONF_RANDOM_TICK_UPPER_END, 60 * 60),
