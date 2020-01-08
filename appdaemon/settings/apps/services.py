@@ -1,4 +1,5 @@
 """Define automations to call services in specific scenarios."""
+from random import randint
 from typing import Union
 
 import voluptuous as vol
@@ -26,6 +27,9 @@ CONF_TARGET_VALUE = "target_value"
 CONF_DELAY = "delay"
 CONF_NEW_TARGET_STATE = "new_target_state"
 CONF_OLD_TARGET_STATE = "old_target_state"
+
+CONF_RANDOM_TICK_LOWER_END = "lower_end"
+CONF_RANDOM_TICK_UPPER_END = "upper_end"
 
 CONF_SERVICE_DOWN = "service_down"
 CONF_SERVICE_DOWN_DATA = "service_down_data"
@@ -68,6 +72,36 @@ class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
             self.properties[CONF_EVENT],
             self.properties.get(CONF_EVENT_DATA, {}),
         )
+        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
+
+
+class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
+    """Define an automation to call a service at random moments."""
+
+    APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
+        {
+            CONF_PROPERTIES: vol.Schema(
+                {
+                    vol.Optional(CONF_RANDOM_TICK_LOWER_END, default=5 * 60): int,
+                    vol.Optional(CONF_RANDOM_TICK_UPPER_END, default=60 * 60): int,
+                },
+                extra=vol.ALLOW_EXTRA,
+            )
+        }
+    )
+
+    def configure(self) -> None:
+        """Configure."""
+        self.run_in(
+            self._on_tick,
+            randint(  # nosec
+                self.properties[CONF_RANDOM_TICK_LOWER_END],
+                self.properties[CONF_RANDOM_TICK_UPPER_END],
+            ),
+        )
+
+    def _on_tick(self, kwargs: dict) -> None:
+        """Fire the event when the tick occurs."""
         self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
 
 

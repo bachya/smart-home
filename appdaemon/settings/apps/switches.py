@@ -1,7 +1,6 @@
 """Define automations for switches."""
 from datetime import timedelta
-from random import randint
-from typing import Callable, Union
+from typing import Union
 
 import voluptuous as vol
 from const import (
@@ -259,69 +258,3 @@ class ToggleOnInterval(BaseSwitch):
             self.cancel_timer(name)
 
         self.toggle(opposite_of=self.properties[CONF_STATE])
-
-
-class VacationMode(BaseSwitch):
-    """Define a feature to simulate craziness when we're out of town."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            CONF_ENTITY_IDS: vol.Schema(
-                {vol.Required(CONF_SWITCH): cv.entity_id}, extra=vol.ALLOW_EXTRA
-            ),
-            CONF_PROPERTIES: vol.Schema(
-                {
-                    vol.Required(CONF_START_TIME): vol.Any(str, vol.In(SOLAR_EVENTS)),
-                    vol.Required(CONF_END_TIME): vol.Any(str, vol.In(SOLAR_EVENTS)),
-                },
-                extra=vol.ALLOW_EXTRA,
-            ),
-        }
-    )
-
-    def _cancel_automation(self) -> None:
-        """Cancel the handle (if it exists)."""
-        if HANDLE_VACATION_MODE in self.handles:
-            handle = self.handles.pop(HANDLE_VACATION_MODE)
-            self.cancel_timer(handle)
-
-    def configure(self) -> None:
-        """Configure."""
-        self.set_schedule(self.properties[CONF_START_TIME], self._on_start_cycle)
-        self.set_schedule(self.properties[CONF_END_TIME], self._on_stop_cycle)
-
-    def _on_start_cycle(self, kwargs: dict) -> None:
-        """Start the toggle cycle."""
-        self._on_toggle_and_run({"state": "on"})
-
-    def _on_stop_cycle(self, kwargs: dict) -> None:
-        """Stop the toggle cycle."""
-        self._cancel_automation()
-        self.toggle(state="off")
-
-    def _on_toggle_and_run(self, kwargs: dict) -> None:
-        """Toggle the swtich and randomize the next toggle."""
-        self.toggle(state=kwargs[CONF_STATE])
-
-        if kwargs[CONF_STATE] == "on":
-            state = "off"
-        else:
-            state = "on"
-
-        self.handles[HANDLE_VACATION_MODE] = self.run_in(
-            self._on_toggle_and_run, randint(5 * 60, 60 * 60), state=state  # nosec
-        )
-
-    def on_disable(self) -> None:
-        """Perform steps to cancel the automation if the automation is disabled."""
-        self._cancel_automation()
-
-    def set_schedule(self, time: str, handler: Callable, **kwargs) -> None:
-        """Set the appropriate schedulers based on the passed in time."""
-        if time in ("sunrise", "sunset"):
-            method = getattr(self, f"run_at_{time}")
-            method(handler, **kwargs, constrain_enabled=True)
-        else:
-            self.run_daily(
-                handler, self.parse_time(time), **kwargs, constrain_enabled=True
-            )
