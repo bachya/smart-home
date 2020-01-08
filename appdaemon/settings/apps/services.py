@@ -77,8 +77,8 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
         {
             CONF_PROPERTIES: vol.Schema(
                 {
-                    vol.Optional(CONF_RANDOM_TICK_LOWER_END, default=5 * 60): int,
-                    vol.Optional(CONF_RANDOM_TICK_UPPER_END, default=60 * 60): int,
+                    vol.Optional(CONF_RANDOM_TICK_LOWER_END): int,
+                    vol.Optional(CONF_RANDOM_TICK_UPPER_END): int,
                 },
                 extra=vol.ALLOW_EXTRA,
             )
@@ -94,8 +94,8 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
         self.handles[HANDLE_TICK] = self.run_in(
             self._on_tick,
             randint(  # nosec
-                self.properties[CONF_RANDOM_TICK_LOWER_END],
-                self.properties[CONF_RANDOM_TICK_UPPER_END],
+                self.properties.get(CONF_RANDOM_TICK_LOWER_END, 5 * 60),
+                self.properties.get(CONF_RANDOM_TICK_UPPER_END, 60 * 60),
             ),
             constrain_enabled=True,
         )
