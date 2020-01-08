@@ -22,8 +22,8 @@ input_boolean:
     icon: mdi:shield-home
     name: Disable SimpliSafe sounds during blackout
   randomized_lighting:
-    icon: mdi:beach
-    name: Vacation mode lighting
+    icon: mdi:timer
+    name: Randomize lighting
 
 sensor:
   - platform: mqtt
