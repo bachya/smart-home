@@ -37,6 +37,8 @@ CONF_SERVICE_UP = "service_up"
 CONF_SERVICE_UP_DATA = "service_up_data"
 CONF_ZWAVE_DEVICE = "zwave_device"
 
+HANDLE_TICK = "tick"
+
 SERVICE_CALL_SCHEMA = APP_SCHEMA.extend(
     {vol.Required(CONF_SERVICE): str, vol.Required(CONF_SERVICE_DATA): dict}
 )
@@ -92,7 +94,11 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        self.run_in(
+        self._start_ticking()
+
+    def _start_ticking(self) -> None:
+        """Start the "ticking" process."""
+        self.handles[HANDLE_TICK] = self.run_in(
             self._on_tick,
             randint(  # nosec
                 self.properties[CONF_RANDOM_TICK_LOWER_END],
@@ -101,9 +107,23 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
             constrain_enabled=True,
         )
 
+    def _stop_ticking(self) -> None:
+        """Stop the "ticking" process."""
+        if HANDLE_TICK in self.handles:
+            handle = self.handles.pop(HANDLE_TICK)
+            self.cancel_timer(handle)
+
     def _on_tick(self, kwargs: dict) -> None:
         """Fire the event when the tick occurs."""
         self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
+
+    def on_disable(self) -> None:
+        """Stop ticking when the automation is disabled."""
+        self._stop_ticking()
+
+    def on_enable(self) -> None:
+        """Start ticking when the automation is enabled."""
+        self._start_ticking()
 
 
 class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
