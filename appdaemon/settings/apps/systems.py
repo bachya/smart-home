@@ -44,7 +44,7 @@ class AaronAccountability(Base):
             self._on_disconnect,
             self.entity_ids[CONF_AARON_ROUTER_TRACKER],
             new="not_home",
-            constrain_in_blackout=True,
+            constrain_mode_on="blackout",
             constrain_anyone="home",
         )
 
@@ -242,7 +242,7 @@ class NotifyOfDeadZwaveDevices(Base):  # pylint: disable=too-few-public-methods
                 self._on_dead_device_found,
                 entity_id,
                 new="dead",
-                constrain_in_blackout=True,
+                constrain_mode_on="blackout",
             )
 
     def _on_dead_device_found(

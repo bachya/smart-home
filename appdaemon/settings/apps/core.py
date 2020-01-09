@@ -95,7 +95,6 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
         self.register_constraint("constrain_dark_outside")
         self.register_constraint("constrain_enabled")
         self.register_constraint("constrain_everyone")
-        self.register_constraint("constrain_in_blackout")
         self.register_constraint("constrain_mode_off")
         self.register_constraint("constrain_mode_on")
         self.register_constraint("constrain_noone")
@@ -195,10 +194,6 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
     def constrain_everyone(self, value: str) -> bool:
         """Constrain execution to whether everyone is in a state."""
         return self._constrain_presence("everyone", value)
-
-    def constrain_in_blackout(self, state: str) -> bool:
-        """Constrain execution based on blackout state."""
-        return bool(state) and self.get_state("input_boolean.blackout_mode") == "on"
 
     def constrain_mode_off(self, mode: str) -> bool:
         """Constrain execution to whether a mode is off."""
