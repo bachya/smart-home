@@ -164,6 +164,8 @@
       state: false
     input_boolean.notify_when_person_on_camera:
       state: true
+    input_boolean.randomize_nighttime_lighting:
+      state: true
     input_boolean.wolfie_notify_when_consumable_low_automation:
       state: false
     input_boolean.wolfie_notify_when_cycle_complete_automation:
