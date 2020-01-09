@@ -34,4 +34,4 @@ basement_lights_vacation_mode_stop_automation:
     entity_id: switch.basement_lights
   properties:
     schedule_time: "23:30:00"
-  enabled_toggle_entity_id: input_boolean.randomized_lighting
+  enabled_toggle_entity_id: input_boolean.randomize_nighttime_lighting
