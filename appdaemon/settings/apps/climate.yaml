@@ -49,21 +49,18 @@ thermostat_schedule:
     def away_mode():
       return state("input_boolean.climate_away_mode")
 
+    def in_blackout():
+      return state("input_boolean.blackout_mode") == "on"
+
     def hvac_mode():
       return state("climate.thermostat")
 
-    def in_bed():
-      return state("binary_sensor.in_bed") == "on"
-
   schedule_snippets:
     cooling_season:
-      - v: 72
-        rules:
-          - {start: "20:30", end: "07:00", weekdays: "1-4, 7"}
-          - {start: "20:30", end: "08:30", weekdays: "5-6"}
+      - x: "72 if in_blackout() else Next()"
       - v: 75
     heating_season:
-      - x: "68 if in_bed() else Next()"
+      - x: "68 if in_blackout() else Next()"
       - v: 69
 
   rooms:
@@ -83,6 +80,6 @@ thermostat_schedule:
             if hvac_mode() == 'heat' and away_mode() == 'off' else Next()"
 
   watched_entities:
-    - binary_sensor.in_bed
     - climate.thermostat
     - input_boolean.climate_away_mode
+    - input_boolean.in_blackout

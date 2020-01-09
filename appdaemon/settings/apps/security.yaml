@@ -135,7 +135,7 @@ turn_on_front_patio_light_when_nighttime_person_detected_automation:
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
   constraints:
     constraints:
-      constrain_in_bed: true
+      constrain_sun: down
 
 turn_off_front_patio_light_when_nighttime_person_leaves_automation:
   module: services
@@ -151,7 +151,7 @@ turn_off_front_patio_light_when_nighttime_person_leaves_automation:
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
   constraints:
     constraints:
-      constrain_in_bed: true
+      constrain_sun: down
 
 turn_on_living_room_lights_when_nighttime_person_detected_automation:
   module: services
@@ -166,7 +166,7 @@ turn_on_living_room_lights_when_nighttime_person_detected_automation:
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
   constraints:
     constraints:
-      constrain_in_bed: true
+      constrain_sun: down
 
 turn_off_living_room_lights_when_nighttime_person_leaves_automation:
   module: services
@@ -182,4 +182,4 @@ turn_off_living_room_lights_when_nighttime_person_leaves_automation:
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
   constraints:
     constraints:
-      constrain_in_bed: true
+      constrain_sun: down
