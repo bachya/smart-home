@@ -9,9 +9,6 @@ base_modes_when_returning_home:
     target_entity_id: sensor.proximity_zone
   properties:
     new_target_state: Home
-  constraints:
-    constraints:
-      constrain_mode_off: "blackout_mode"
 
 blackout_mode_off:
   module: services
