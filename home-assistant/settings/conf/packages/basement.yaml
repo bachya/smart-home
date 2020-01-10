@@ -19,7 +19,8 @@ remote:
     activity: 37549209
 
 shell_command:
-  turn_off_media_center: "ssh bachya@media-center.phil.lan sudo /sbin/poweroff"
+  turn_off_media_center: >
+    ssh -i /config/id_ed25519 hass@media-center.phil.lan /sbin/poweroff
 
 switch:
   - platform: wake_on_lan
