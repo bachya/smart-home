@@ -38,12 +38,13 @@ blackout_mode_when_triggering_good_night:
   service: "scene/turn_on"
   service_data:
     entity_id: scene.blackout_mode
-  event: call_service
-  event_data:
-    domain: scene
-    service: turn_on
-    service_data:
-      entity_id: scene.good_night
+  properties:
+    event: call_service
+    event_data:
+      domain: scene
+      service: turn_on
+      service_data:
+        entity_id: scene.good_night
 
 blackout_mode_schedule:
   module: hass_apps_loader
