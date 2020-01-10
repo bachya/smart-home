@@ -62,6 +62,26 @@ notify_of_dead_zwave_devices_automation:
   dependencies:
     - presence_manager
 
+power_off_media_center_for_backup_automation:
+  module: services
+  class: ServiceOnTime
+  service: "switch/turn_off"
+  service_data:
+    entity_id: switch.media_center
+  properties:
+    schedule_time: "02:00:00"
+  enabled_toggle_entity_id: input_boolean.media_center_backup_automation
+
+power_on_media_center_for_backup_automation:
+  module: services
+  class: ServiceOnTime
+  service: "switch/turn_off"
+  service_data:
+    entity_id: switch.media_center
+  properties:
+    schedule_time: "01:00:00"
+  enabled_toggle_entity_id: input_boolean.media_center_backup_automation
+
 start_homekit_on_zwave_ready_automation:
   module: systems
   class: StartHomeKitOnZwaveReady

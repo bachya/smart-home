@@ -1,5 +1,8 @@
 ---
 input_boolean:
+  media_center_backup_automation:
+    icon: mdi:backup-restore
+    name: Daily media center backup
   notify_of_dead_zwave_devices_automation:
     icon: mdi:z-wave
     name: Notify of dead Z-Wave devices
