@@ -273,7 +273,7 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
 
     def run_daily(self, callback, start, **kwargs):
         """Wrap AppDaemon's `run_daily` with the constraint mechanism."""
-        return self.run_every(callback, start, 60 * 60 * 24, **kwargs)
+        return self._attach_constraints(super().run_daily, callback, start, **kwargs)
 
     def run_every(self, callback, start, interval, **kwargs):
         """Wrap AppDaemon's `run_every` with the constraint mechanism."""
