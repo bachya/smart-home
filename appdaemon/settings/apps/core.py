@@ -199,10 +199,6 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
         # Since AD4 has microsecond resolution, calls with a start value of
         # self.datetime() will technically be in the past. So, to be safe, bump out the
         # start time by a second:
-        return self._attach_constraints(
-            super().run_every,
-            callback,
-            start + timedelta(seconds=1),
-            interval,
-            **kwargs,
+        return super().run_every(
+            callback, start + timedelta(seconds=1), interval, **kwargs
         )
