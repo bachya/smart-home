@@ -1,16 +1,8 @@
 """Define automations for switches."""
-from datetime import timedelta
 from typing import Union
 
 import voluptuous as vol
-from const import (
-    CONF_DURATION,
-    CONF_END_TIME,
-    CONF_ENTITY_IDS,
-    CONF_PROPERTIES,
-    CONF_START_TIME,
-    CONF_STATE,
-)
+from const import CONF_ENTITY_IDS
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 
@@ -176,73 +168,3 @@ class SleepTimer(BaseSwitch):
         """Turn off a switch at the end of sleep timer."""
         self.log("Sleep timer over; turning switch off")
         self.set_value(self.entity_ids[CONF_TIMER_SLIDER], 0)
-
-
-class ToggleOnInterval(BaseSwitch):
-    """Define a feature to toggle the switch at intervals."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            CONF_ENTITY_IDS: vol.Schema(
-                {vol.Required(CONF_SWITCH): cv.entity_id}, extra=vol.ALLOW_EXTRA
-            ),
-            CONF_PROPERTIES: vol.Schema(
-                {
-                    vol.Required(CONF_STATE): vol.In(TOGGLE_STATES),
-                    vol.Required(CONF_START_TIME): str,
-                    vol.Required(CONF_END_TIME): str,
-                    vol.Required(CONF_DURATION): int,
-                    vol.Required(CONF_WINDOW): int,
-                },
-                extra=vol.ALLOW_EXTRA,
-            ),
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self.run_daily(
-            self._on_start_cycle, self.parse_time(self.properties[CONF_START_TIME]),
-        )
-
-        self.run_daily(
-            self._on_stop_cycle, self.parse_time(self.properties[CONF_END_TIME]),
-        )
-
-        if (
-            self.now_is_between(
-                self.properties[CONF_START_TIME], self.properties[CONF_END_TIME]
-            )
-            and self.enabled
-        ):
-            self._on_start_cycle({})
-
-    def on_disable(self) -> None:
-        """Kill any existing handles if the app is disabled."""
-        self._on_stop_cycle({})
-
-    def _on_start_cycle(self, kwargs: dict) -> None:
-        """Start the toggle cycle."""
-        self.handles[HANDLE_TOGGLE_IN_WINDOW] = self.run_every(
-            self._on_schedule_toggle,
-            self.datetime(),
-            self.properties[CONF_WINDOW],
-            state=self.properties[CONF_STATE],
-        )
-        self.handles[HANDLE_TOGGLE_OUT_WINDOW] = self.run_every(
-            self._on_schedule_toggle,
-            self.datetime() + timedelta(seconds=self.properties[CONF_DURATION]),
-            self.properties[CONF_WINDOW],
-            state=self.properties[CONF_STATE],
-            opposite=True,
-        )
-
-    def _on_stop_cycle(self, kwargs: dict) -> None:
-        """Stop the toggle cycle."""
-        for handle in (HANDLE_TOGGLE_IN_WINDOW, HANDLE_TOGGLE_OUT_WINDOW):
-            if handle not in self.handles:
-                continue
-            name = self.handles.pop(handle)
-            self.cancel_timer(name)
-
-        self.toggle(opposite_of=self.properties[CONF_STATE])

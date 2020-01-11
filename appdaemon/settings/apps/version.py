@@ -11,8 +11,8 @@ from const import (
     CONF_ENTITY_IDS,
     CONF_FRIENDLY_NAME,
     CONF_ICON,
+    CONF_INTERVAL,
     CONF_PROPERTIES,
-    CONF_UPDATE_INTERVAL,
 )
 from helpers import config_validation as cv
 from notification import send_notification
@@ -51,7 +51,7 @@ DYNAMIC_APP_SCHEMA = VERSION_APP_SCHEMA.extend(
                 vol.Required(CONF_CREATED_ENTITY_ID): cv.entity_id,
                 vol.Required(CONF_FRIENDLY_NAME): str,
                 vol.Required(CONF_ICON): str,
-                vol.Required(CONF_UPDATE_INTERVAL): int,
+                vol.Required(CONF_INTERVAL): int,
             }
         )
     }
@@ -109,10 +109,7 @@ class DynamicSensor(NewVersionNotification):
     def configure(self) -> None:
         """Configure."""
         super().configure()
-
-        self.run_every(
-            self._on_update, self.datetime(), self.properties[CONF_UPDATE_INTERVAL]
-        )
+        self.run_every(self._on_update, self.datetime(), self.properties[CONF_INTERVAL])
 
     @property
     def sensor_value(self) -> Optional[str]:

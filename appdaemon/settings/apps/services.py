@@ -8,33 +8,28 @@ from const import (
     CONF_ENTITY_IDS,
     CONF_EVENT,
     CONF_EVENT_DATA,
+    CONF_INTERVAL,
     CONF_PROPERTIES,
 )
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 
-CONF_TARGET_ENTITY_ID = "target_entity_id"
-
-CONF_RUN_ON_DAYS = "run_on_days"
-CONF_SCHEDULE_TIME = "schedule_time"
-
-CONF_SERVICE = "service"
-CONF_SERVICE_DATA = "service_data"
-
-CONF_ENTITY_THRESHOLDS = "entity_thresholds"
-CONF_TARGET_VALUE = "target_value"
-
 CONF_DELAY = "delay"
+CONF_ENTITY_THRESHOLDS = "entity_thresholds"
 CONF_NEW_TARGET_STATE = "new_target_state"
 CONF_OLD_TARGET_STATE = "old_target_state"
-
 CONF_RANDOM_TICK_LOWER_END = "lower_end"
 CONF_RANDOM_TICK_UPPER_END = "upper_end"
-
+CONF_RUN_ON_DAYS = "run_on_days"
+CONF_SCHEDULE_TIME = "schedule_time"
+CONF_SERVICE = "service"
+CONF_SERVICE_DATA = "service_data"
 CONF_SERVICE_DOWN = "service_down"
 CONF_SERVICE_DOWN_DATA = "service_down_data"
 CONF_SERVICE_UP = "service_up"
 CONF_SERVICE_UP_DATA = "service_up_data"
+CONF_TARGET_ENTITY_ID = "target_entity_id"
+CONF_TARGET_VALUE = "target_value"
 CONF_ZWAVE_DEVICE = "zwave_device"
 
 HANDLE_TICK = "tick"
@@ -65,6 +60,28 @@ class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
         )
 
     def _on_event_heard(self, event_name: str, data: dict, kwargs: dict) -> None:
+        """Call the service."""
+        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
+
+
+class ServiceOnInterval(Base):  # pylint: disable=too-few-public-methods
+    """Define an automation to call a service every X seconds."""
+
+    APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
+        {
+            CONF_PROPERTIES: vol.Schema(
+                {vol.Required(CONF_INTERVAL): int}, extra=vol.ALLOW_EXTRA
+            )
+        }
+    )
+
+    def configure(self) -> None:
+        """Configure."""
+        self.run_every(
+            self._on_interval_reached, self.datetime(), self.properties[CONF_INTERVAL]
+        )
+
+    def _on_interval_reached(self, kwargs: dict) -> None:
         """Call the service."""
         self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
 

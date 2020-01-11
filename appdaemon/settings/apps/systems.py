@@ -5,7 +5,6 @@ import voluptuous as vol
 
 from core import APP_SCHEMA, Base
 from const import (
-    CONF_DURATION,
     CONF_ENTITY_ID,
     CONF_ENTITY_IDS,
     CONF_NOTIFICATION_INTERVAL,
@@ -17,10 +16,9 @@ from helpers import config_validation as cv
 from notification import send_notification
 
 CONF_AARON_ROUTER_TRACKER = "aaron_router_tracker"
-
 CONF_BATTERIES_TO_MONITOR = "batteries_to_monitor"
 CONF_BATTERY_LEVEL_THRESHOLD = "battery_level_threshold"
-
+CONF_DURATION = "duration"
 CONF_EXPIRY_THRESHOLD = "expiry_threshold"
 
 HANDLE_BATTERY_LOW = "battery_low"

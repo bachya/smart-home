@@ -15,10 +15,7 @@ CONF_FRIENDLY_NAME = "friendly_name"
 CONF_STATE = "state"
 
 # Time-related config keys:
-CONF_DURATION = "duration"
-CONF_END_TIME = "end_time"
-CONF_START_TIME = "start_time"
-CONF_UPDATE_INTERVAL = "update_interval"
+CONF_INTERVAL = "interval"
 
 # Notification-related config keys:
 CONF_MESSAGE = "message"

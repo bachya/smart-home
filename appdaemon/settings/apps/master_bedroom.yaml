@@ -54,20 +54,17 @@ master_toilet_fan_double_tap_timer_automation:
     zwave_device: zwave.master_toilet_fan
 
 master_toilet_fan_toggle_automation:
-  module: switches
-  class: ToggleOnInterval
+  module: services
+  class: ServiceOnInterval
   constrain_enabled: true
-  dependencies:
-    - guest_mode
-    - vacation_mode
-  entity_ids:
-    switch: switch.master_toilet_fan
+  constrain_end_time: "17:00:00"
+  constrain_start_time: "10:00:00"
+  service: "input_number/set_value"
+  service_data:
+    entity_id: input_number.master_bathroom_toilet_fan_timer
+    value: 15
   properties:
-    end_time: "17:00:00"
-    duration: 900
-    state: "on"
-    start_time: "10:00:00"
-    window: 3600
+    interval: 3600
 
 master_toilet_fan_sleep_timer_automation:
   module: switches
