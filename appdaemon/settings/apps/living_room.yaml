@@ -37,9 +37,9 @@ living_room_lights_on_upon_arrival_automation:
 living_room_lights_vacation_mode_random_tick_automation:
   module: services
   class: ServiceOnRandomTick
-  constrain_before_time: "23:30:00"
   constrain_enabled: true
-  constrain_sun: down
+  constrain_end_time: "23:30:00"
+  constrain_start_time: sunset
   service: "switch/toggle"
   service_data:
     entity_id: group.living_room_lights

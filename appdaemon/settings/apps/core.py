@@ -77,7 +77,6 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
 
         # Register custom constraints:
         self.register_constraint("constrain_anyone")
-        self.register_constraint("constrain_before_time")
         self.register_constraint("constrain_dark_outside")
         self.register_constraint("constrain_enabled")
         self.register_constraint("constrain_everyone")
@@ -140,10 +139,6 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
     def constrain_anyone(self, value: str) -> bool:
         """Constrain execution to whether anyone is in a state."""
         return self._constrain_presence("anyone", value)
-
-    def constrain_before_time(self, time: str) -> bool:
-        """Constrain execution to whether the current time is before a given time."""
-        return self.time() < self.parse_time(time)
 
     def constrain_dark_outside(self, value: bool) -> bool:
         """Constrain execution based whether it's dark outside or not."""
