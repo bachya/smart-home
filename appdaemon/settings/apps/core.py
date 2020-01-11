@@ -1,4 +1,5 @@
 """Define a generic object which  all apps/automations inherit from."""
+from datetime import timedelta
 from typing import Callable, Dict, Union
 
 import voluptuous as vol
@@ -192,3 +193,16 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
             return
 
         self.turn_on(self._enabled_toggle_entity_id)
+
+    def run_every(self, callback, start, interval, **kwargs):
+        """Wrap AppDaemon's `run_every` with the constraint mechanism."""
+        # Since AD4 has microsecond resolution, calls with a start value of
+        # self.datetime() will technically be in the past. So, to be safe, bump out the
+        # start time by a second:
+        return self._attach_constraints(
+            super().run_every,
+            callback,
+            start + timedelta(seconds=1),
+            interval,
+            **kwargs,
+        )
