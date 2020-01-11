@@ -77,7 +77,7 @@ power_off_media_center_for_backup_automation:
   service_data:
     entity_id: switch.media_center
   properties:
-    schedule_time: "02:00:00"
+    schedule_time: "01:30:00"
   enabled_toggle_entity_id: input_boolean.media_center_backup_automation
 
 power_on_media_center_for_backup_automation:
