@@ -44,8 +44,6 @@ class AaronAccountability(Base):
             self._on_disconnect,
             self.entity_ids[CONF_AARON_ROUTER_TRACKER],
             new="not_home",
-            constrain_mode_on="blackout",
-            constrain_anyone="home",
         )
 
     @property

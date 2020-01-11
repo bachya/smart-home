@@ -72,6 +72,7 @@ notify_when_absent_insecure_automation:
   module: security
   class: AbsentInsecure
   constrain_enabled: true
+  constrain_noone: "just_arrived,home"
   dependencies:
     - guest_mode
     - presence_manager

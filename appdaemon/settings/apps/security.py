@@ -50,7 +50,6 @@ class AbsentInsecure(Base):  # pylint: disable=too-few-public-methods
             self.entity_ids[CONF_STATE],
             new="Open",
             duration=60 * 5,
-            constrain_noone="just_arrived,home",
         )
 
     def _on_house_insecure(
