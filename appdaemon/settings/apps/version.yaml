@@ -15,7 +15,7 @@ new_appdaemon_version_automation:
     friendly_name: AppDaemon Installed
     icon: mdi:language-python
     image_name: acockburn/appdaemon
-    update_interval: 300
+    interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
 
 new_esphome_version_automation:
@@ -36,7 +36,7 @@ new_esphome_version_automation:
     created_entity_id: sensor.esphome_installed
     friendly_name: ESPHome Installed
     icon: mdi:chip
-    update_interval: 300
+    interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
 
 new_hass_version_automation:
@@ -68,7 +68,7 @@ new_vernemq_version_automation:
     friendly_name: VerneMQ Installed
     icon: mdi:wifi
     image_name: docker-vernemq
-    update_interval: 300
+    interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
 
 new_portainer_version_automation:
@@ -87,7 +87,7 @@ new_portainer_version_automation:
     friendly_name: Portainer Installed
     icon: mdi:server
     image_name: portainer/portainer
-    update_interval: 300
+    interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
 
 new_yi_hack_version_automation:
