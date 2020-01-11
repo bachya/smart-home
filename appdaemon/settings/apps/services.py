@@ -62,7 +62,6 @@ class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
             self._on_event_heard,
             self.properties[CONF_EVENT],
             **self.properties.get(CONF_EVENT_DATA, {}),
-            constrain_enabled=True,
         )
 
     def _on_event_heard(self, event_name: str, data: dict, kwargs: dict) -> None:
@@ -98,7 +97,6 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
                 self.properties.get(CONF_RANDOM_TICK_LOWER_END, 5 * 60),
                 self.properties.get(CONF_RANDOM_TICK_UPPER_END, 60 * 60),
             ),
-            constrain_enabled=True,
         )
 
     def _stop_ticking(self) -> None:
@@ -145,7 +143,7 @@ class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        kwargs = {"constrain_enabled": True}
+        kwargs = {}
 
         if CONF_NEW_TARGET_STATE in self.properties:
             kwargs["new"] = self.properties[CONF_NEW_TARGET_STATE]
@@ -187,9 +185,7 @@ class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
     def configure(self) -> None:
         """Configure."""
         self.run_daily(
-            self._on_time_reached,
-            self.parse_time(self.properties[CONF_SCHEDULE_TIME]),
-            constrain_enabled=True,
+            self._on_time_reached, self.parse_time(self.properties[CONF_SCHEDULE_TIME]),
         )
 
     def _on_time_reached(self, kwargs: dict) -> None:
@@ -224,7 +220,6 @@ class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-met
             "zwave.node_event",
             entity_id=self.entity_ids[CONF_ZWAVE_DEVICE],
             basic_level=255,
-            constrain_enabled=True,
         )
 
         self.listen_event(
@@ -232,7 +227,6 @@ class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-met
             "zwave.node_event",
             entity_id=self.entity_ids[CONF_ZWAVE_DEVICE],
             basic_level=0,
-            constrain_enabled=True,
         )
 
     def _on_double_tap_down(self, event_name: str, data: dict, kwargs: dict) -> None:

@@ -2,6 +2,7 @@
 garage_lights_off_after_garage_close_automation:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
   service: "switch/turn_off"
   service_data:
     entity_id: switch.garage_lights
@@ -14,6 +15,8 @@ garage_lights_off_after_garage_close_automation:
 garage_lights_on_garage_open_sundown_automation:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
+  constrain_sun: "down"
   service: "switch/turn_on"
   service_data:
     entity_id: switch.garage_lights
@@ -21,6 +24,3 @@ garage_lights_on_garage_open_sundown_automation:
     target_entity_id: cover.garage_door
   properties:
     old_target_state: closed
-  constraints:
-    constraints:
-      constrain_sun: "down"

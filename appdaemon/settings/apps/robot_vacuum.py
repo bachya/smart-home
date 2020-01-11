@@ -55,7 +55,6 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
                 self._on_consumable_change,
                 self.app.entity_ids[CONF_VACUUM],
                 attribute=consumable,
-                constrain_enabled=True,
             )
 
     def _on_consumable_change(
@@ -105,7 +104,6 @@ class NotifyBeforeRun(Base):  # pylint: disable=too-few-public-methods
             self._on_next_run_datetime_change,
             self.app.entity_ids[CONF_CALENDAR],
             attribute="start_time",
-            constrain_enabled=True,
         )
 
     def _on_next_run_datetime_change(
@@ -320,10 +318,7 @@ class Vacuum(Base):
         )
 
         self.listen_state(
-            self._on_schedule_start,
-            self.entity_ids[CONF_CALENDAR],
-            new="on",
-            constrain_enabled=True,
+            self._on_schedule_start, self.entity_ids[CONF_CALENDAR], new="on",
         )
 
     @property

@@ -2,6 +2,7 @@
 bar_cart_on_at_sunset_automation:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
   service: "switch/turn_on"
   service_data:
     entity_id: switch.bar_cart
@@ -13,6 +14,8 @@ bar_cart_on_at_sunset_automation:
 bar_cart_on_upon_arrival_automation:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
+  constrain_sun: down
   service: "switch/turn_on"
   service_data:
     entity_id: switch.bar_cart
@@ -20,13 +23,11 @@ bar_cart_on_upon_arrival_automation:
     target_entity_id: sensor.proximity_zone
   properties:
     new_target_state: Home
-  constraints:
-    constraints:
-      constrain_sun: down
 
 kitchen_sink_leak_detected_automation:
   module: systems
   class: LeftInState
+  constrain_enabled: true
   dependencies:
     - presence_manager
   entity_ids:

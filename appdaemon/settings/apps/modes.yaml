@@ -2,6 +2,7 @@
 base_modes_when_returning_home:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
   service: "scene/turn_on"
   service_data:
     entity_id: scene.base
@@ -13,6 +14,7 @@ base_modes_when_returning_home:
 blackout_mode_off:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
   service: "scene/turn_on"
   service_data:
     entity_id: scene.base
@@ -24,6 +26,7 @@ blackout_mode_off:
 blackout_mode_on:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
   service: "scene/turn_on"
   service_data:
     entity_id: scene.blackout_mode
@@ -35,6 +38,7 @@ blackout_mode_on:
 blackout_mode_when_triggering_good_night:
   module: services
   class: ServiceOnEvent
+  constrain_enabled: true
   service: "scene/turn_on"
   service_data:
     entity_id: scene.blackout_mode
@@ -70,6 +74,7 @@ blackout_mode_schedule:
 guest_mode_off:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
   service: "scene/turn_on"
   service_data:
     entity_id: scene.base
@@ -81,6 +86,7 @@ guest_mode_off:
 guest_mode_on:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
   service: "scene/turn_on"
   service_data:
     entity_id: scene.guest_mode
@@ -92,6 +98,7 @@ guest_mode_on:
 vacation_mode_off:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
   service: "scene/turn_on"
   service_data:
     entity_id: scene.base
@@ -103,6 +110,7 @@ vacation_mode_off:
 vacation_mode_on:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
   service: "scene/turn_on"
   service_data:
     entity_id: scene.vacation_mode

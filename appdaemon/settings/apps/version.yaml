@@ -2,6 +2,7 @@
 new_appdaemon_version_automation:
   module: version
   class: NewPortainerVersionNotification
+  constrain_enabled: true
   dependencies:
     - presence_manager
   entity_ids:
@@ -20,6 +21,7 @@ new_appdaemon_version_automation:
 new_esphome_version_automation:
   module: version
   class: NewMultiSensorVersionNotification
+  constrain_enabled: true
   dependencies:
     - presence_manager
   entity_ids:
@@ -40,6 +42,7 @@ new_esphome_version_automation:
 new_hass_version_automation:
   module: version
   class: NewVersionNotification
+  constrain_enabled: true
   dependencies:
     - presence_manager
   entity_ids:
@@ -52,6 +55,7 @@ new_hass_version_automation:
 new_vernemq_version_automation:
   module: version
   class: NewPortainerVersionNotification
+  constrain_enabled: true
   dependencies:
     - presence_manager
   entity_ids:
@@ -70,6 +74,7 @@ new_vernemq_version_automation:
 new_portainer_version_automation:
   module: version
   class: NewPortainerVersionNotification
+  constrain_enabled: true
   dependencies:
     - presence_manager
   entity_ids:
@@ -88,6 +93,7 @@ new_portainer_version_automation:
 new_yi_hack_version_automation:
   module: version
   class: NewVersionNotification
+  constrain_enabled: true
   dependencies:
     - presence_manager
   entity_ids:

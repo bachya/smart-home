@@ -2,6 +2,7 @@
 basement_leak_detected_automation:
   module: systems
   class: LeftInState
+  constrain_enabled: true
   dependencies:
     - presence_manager
   entity_ids:
@@ -16,19 +17,18 @@ basement_leak_detected_automation:
 basement_lights_vacation_mode_random_tick_automation:
   module: services
   class: ServiceOnRandomTick
+  constrain_before_time: "23:30:00"
+  constrain_enabled: true
+  constrain_sun: down
   service: "switch/toggle"
   service_data:
     entity_id: switch.basement_lights
   enabled_toggle_entity_id: input_boolean.randomize_nighttime_lighting
-  constraints:
-    operator: all
-    constraints:
-      constrain_before_time: "23:30:00"
-      constrain_sun: down
 
 basement_lights_vacation_mode_stop_automation:
   module: services
   class: ServiceOnTime
+  constrain_enabled: true
   service: "switch/turn_off"
   service_data:
     entity_id: switch.basement_lights

@@ -1,21 +1,14 @@
 """Define a generic object which  all apps/automations inherit from."""
-from datetime import timedelta
 from typing import Callable, Dict, Union
 
 import voluptuous as vol
 from appdaemon.plugins.hass.hassapi import Hass  # pylint: disable=no-name-in-module
 
-from const import (
-    CONF_ENTITY_IDS,
-    CONF_PROPERTIES,
-    OPERATOR_ALL,
-    OPERATORS,
-)
+from const import CONF_ENTITY_IDS, CONF_PROPERTIES
 from helpers import config_validation as cv
 
 CONF_APP = "app"
 CONF_CLASS = "class"
-CONF_CONSTRAINTS = "constraints"
 CONF_DEPENDENCIES = "dependencies"
 CONF_DISABLE = "disable"
 CONF_ENABLE = "enable"
@@ -23,7 +16,6 @@ CONF_ENABLED_TOGGLE_ENTITY_ID = "enabled_toggle_entity_id"
 CONF_INITIAL = "initial"
 CONF_MODULE = "module"
 CONF_NAME = "name"
-CONF_OPERATOR = "operator"
 CONF_STATE_CHANGES = "state_changes"
 
 DEFAULT_OUTDOOR_BRIGHTNESS_THRESHOLD = 80
@@ -36,12 +28,6 @@ APP_SCHEMA = vol.Schema(
         vol.Required(CONF_CLASS): str,
         vol.Optional(CONF_DEPENDENCIES): cv.ensure_list,
         vol.Optional(CONF_APP): str,
-        vol.Optional(CONF_CONSTRAINTS): vol.Schema(
-            {
-                vol.Optional(CONF_OPERATOR, default=OPERATOR_ALL): vol.In(OPERATORS),
-                vol.Required(CONF_CONSTRAINTS): dict,
-            }
-        ),
         vol.Optional(CONF_ENABLED_TOGGLE_ENTITY_ID): str,
         vol.Optional(CONF_STATE_CHANGES): list,
     },
@@ -130,23 +116,6 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
         """Return True if the enabled entity exists."""
         return self.entity_exists(self._enabled_toggle_entity_id)
 
-    def _attach_constraints(
-        self, method: Callable, callback: Callable, *args: list, **kwargs: dict
-    ) -> Union[str, list]:
-        """Attach the constraint mechanism to an AppDaemon listener."""
-        if not self.args.get(CONF_CONSTRAINTS):
-            return method(callback, *args, **kwargs)
-
-        constraints = self.args[CONF_CONSTRAINTS][CONF_CONSTRAINTS]
-
-        if self.args[CONF_CONSTRAINTS].get(CONF_OPERATOR) == OPERATOR_ALL:
-            return method(callback, *args, **constraints, **kwargs)
-
-        return [
-            method(callback, *args, **{name: value}, **kwargs)
-            for name, value in constraints.items()
-        ]
-
     def _constrain_presence(self, method: str, value: Union[str, None]) -> bool:
         """Constrain presence in a generic fashion."""
         if not value:
@@ -228,62 +197,3 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
             return
 
         self.turn_on(self._enabled_toggle_entity_id)
-
-    def listen_event(self, callback, event=None, **kwargs):
-        """Wrap AppDaemon's `listen_event` with the constraint mechanism."""
-        return self._attach_constraints(super().listen_event, callback, event, **kwargs)
-
-    def listen_state(self, callback, entity=None, **kwargs):
-        """Wrap AppDaemon's `listen_state` with the constraint mechanism."""
-        return self._attach_constraints(
-            super().listen_state, callback, entity, **kwargs
-        )
-
-    def run_at_sunrise(self, callback, **kwargs):
-        """Create a more accurate, timely callback runner for sunrise."""
-
-        def _on_sunrise(
-            entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-        ) -> None:
-            """Run the callback at sunset."""
-            # The sun.sun entity publishes state updates anytime any of its attributes
-            # are changed (even if the state value itself does not change). To prevent
-            # spurious triggers, check the old an new state values first:
-            if old == new:
-                return
-            callback(kwargs)
-
-        self.listen_state(_on_sunrise, "sun.sun", new="above_horizon", **kwargs)
-
-    def run_at_sunset(self, callback, **kwargs):
-        """Create a more accurate, timely callback runner for sunset."""
-
-        def _on_sunset(
-            entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-        ) -> None:
-            """Run the callback at sunset."""
-            # The sun.sun entity publishes state updates anytime any of its attributes
-            # are changed (even if the state value itself does not change). To prevent
-            # spurious triggers, check the old an new state values first:
-            if old == new:
-                return
-            callback(kwargs)
-
-        self.listen_state(_on_sunset, "sun.sun", new="below_horizon", **kwargs)
-
-    def run_daily(self, callback, start, **kwargs):
-        """Wrap AppDaemon's `run_daily` with the constraint mechanism."""
-        return self._attach_constraints(super().run_daily, callback, start, **kwargs)
-
-    def run_every(self, callback, start, interval, **kwargs):
-        """Wrap AppDaemon's `run_every` with the constraint mechanism."""
-        return self._attach_constraints(
-            super().run_every,
-            callback,
-            # Since AD4 has microsecond resolution, these wrapped calls will fail
-            # because `start` will technically be in the past. So, to be safe, bump out
-            # the start time by a second:
-            start + timedelta(seconds=1),
-            interval,
-            **kwargs,
-        )

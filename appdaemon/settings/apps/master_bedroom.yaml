@@ -2,6 +2,7 @@
 master_bedroom_lights_sleep_timer_automation:
   module: switches
   class: SleepTimer
+  constrain_enabled: true
   dependencies:
     - presence_manager
   entity_ids:
@@ -11,6 +12,7 @@ master_bedroom_lights_sleep_timer_automation:
 master_bedroom_lights_on_at_sunset_automation:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
   service: "switch/turn_on"
   service_data:
     entity_id: switch.master_bedroom_salt_lamp
@@ -22,6 +24,7 @@ master_bedroom_lights_on_at_sunset_automation:
 master_bathroom_fan_double_tap_timer_automation:
   module: services
   class: ServiceOnZWaveSwitchDoubleTap
+  constrain_enabled: true
   service_up: "input_number/set_value"
   service_up_data:
     entity_id: input_number.master_bathroom_fan_timer
@@ -32,6 +35,7 @@ master_bathroom_fan_double_tap_timer_automation:
 master_bathroom_fan_sleep_timer_automation:
   module: switches
   class: SleepTimer
+  constrain_enabled: true
   dependencies:
     - presence_manager
   entity_ids:
@@ -41,6 +45,7 @@ master_bathroom_fan_sleep_timer_automation:
 master_toilet_fan_double_tap_timer_automation:
   module: services
   class: ServiceOnZWaveSwitchDoubleTap
+  constrain_enabled: true
   service_up: "input_number/set_value"
   service_up_data:
     entity_id: input_number.master_bathroom_toilet_fan_timer
@@ -51,6 +56,7 @@ master_toilet_fan_double_tap_timer_automation:
 master_toilet_fan_toggle_automation:
   module: switches
   class: ToggleOnInterval
+  constrain_enabled: true
   dependencies:
     - guest_mode
     - vacation_mode
@@ -66,6 +72,7 @@ master_toilet_fan_toggle_automation:
 master_toilet_fan_sleep_timer_automation:
   module: switches
   class: SleepTimer
+  constrain_enabled: true
   dependencies:
     - presence_manager
   entity_ids:

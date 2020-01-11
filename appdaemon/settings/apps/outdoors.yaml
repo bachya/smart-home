@@ -44,6 +44,7 @@ outdoor_lights_schedule:
 kitchen_patio_light_double_tap_backyard_lights_automation:
   module: services
   class: ServiceOnZWaveSwitchDoubleTap
+  constrain_enabled: true
   service_up: "switch/turn_on"
   service_up_data:
     entity_id: switch.backyard_lights

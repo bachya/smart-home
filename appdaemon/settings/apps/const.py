@@ -28,19 +28,6 @@ CONF_NOTIFICATION_TARGET = "notification_target"
 CONF_NOTIFIERS = "notifiers"
 CONF_TITLE = "title"
 
-# Comparison-related config keys:
-CONF_ABOVE = "above"
-CONF_BELOW = "below"
-CONF_COMPARITOR = "comparitor"
-CONF_EQUAL_TO = "equal_to"
-COMPARITORS = (CONF_ABOVE, CONF_BELOW, CONF_EQUAL_TO)
-
-# Collections of valid inputs:
-OPERATOR_ALL = "all"
-OPERATOR_ANY = "any"
-OPERATORS = (OPERATOR_ALL, OPERATOR_ANY)
-TOGGLE_STATES = ("closed", "off", "on", "open")
-
 # Misc. config keys:
 CONF_PEOPLE = "people"
 

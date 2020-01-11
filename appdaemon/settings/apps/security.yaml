@@ -2,6 +2,7 @@
 auto_departure_lockup_automation:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
   service: "scene/turn_on"
   service_data:
     entity_id: scene.depart_home
@@ -13,18 +14,18 @@ auto_departure_lockup_automation:
 auto_nighttime_lockup_automation:
   module: services
   class: ServiceOnTime
+  constrain_anyone: home
+  constrain_enabled: true
   service: "scene/turn_on"
   service_data:
     entity_id: scene.good_night
   properties:
     schedule_time: "00:00:00"
-  constraints:
-    constraints:
-      constrain_anyone: home
 
 disable_simplisafe_sounds_in_blackout_automation:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
   service: "simplisafe/set_system_properties"
   service_data:
     system_id: !secret simplisafe_system_id
@@ -40,6 +41,7 @@ disable_simplisafe_sounds_in_blackout_automation:
 enable_simplisafe_sounds_out_of_blackout_automation:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
   service: "simplisafe/set_system_properties"
   service_data:
     system_id: !secret simplisafe_system_id
@@ -55,6 +57,7 @@ enable_simplisafe_sounds_out_of_blackout_automation:
 notify_of_garage_open_automation:
   module: security
   class: GarageLeftOpen
+  constrain_enabled: true
   dependencies:
     - presence_manager
     - security_manager
@@ -68,6 +71,7 @@ notify_of_garage_open_automation:
 notify_when_absent_insecure_automation:
   module: security
   class: AbsentInsecure
+  constrain_enabled: true
   dependencies:
     - guest_mode
     - presence_manager
@@ -78,6 +82,7 @@ notify_when_absent_insecure_automation:
 notify_when_status_changes_automation:
   module: security
   class: NotifyOnChange
+  constrain_enabled: true
   dependencies:
     - presence_manager
   entity_ids:
@@ -86,6 +91,7 @@ notify_when_status_changes_automation:
 notify_when_person_on_camera:
   module: security
   class: PersonDetectedOnCamera
+  constrain_enabled: true
   dependencies:
     - presence_manager
   entity_ids:
@@ -125,6 +131,8 @@ security_manager:
 turn_on_front_patio_light_when_nighttime_person_detected_automation:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
+  constrain_sun: down
   service: "switch/turn_on"
   service_data:
     entity_id: switch.front_patio_light
@@ -133,13 +141,12 @@ turn_on_front_patio_light_when_nighttime_person_detected_automation:
   properties:
     new_target_state: "on"
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
-  constraints:
-    constraints:
-      constrain_sun: down
 
 turn_off_front_patio_light_when_nighttime_person_leaves_automation:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
+  constrain_sun: down
   service: "switch/turn_off"
   service_data:
     entity_id: switch.front_patio_light
@@ -149,13 +156,12 @@ turn_off_front_patio_light_when_nighttime_person_leaves_automation:
     delay: 300
     new_target_state: "off"
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
-  constraints:
-    constraints:
-      constrain_sun: down
 
 turn_on_living_room_lights_when_nighttime_person_detected_automation:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
+  constrain_sun: down
   service: "homeassistant/turn_on"
   service_data:
     entity_id: group.living_room_lights
@@ -164,13 +170,12 @@ turn_on_living_room_lights_when_nighttime_person_detected_automation:
   properties:
     new_target_state: "on"
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
-  constraints:
-    constraints:
-      constrain_sun: down
 
 turn_off_living_room_lights_when_nighttime_person_leaves_automation:
   module: services
   class: ServiceOnState
+  constrain_enabled: true
+  constrain_sun: down
   service: "homeassistant/turn_off"
   service_data:
     entity_id: group.living_room_lights
@@ -180,6 +185,3 @@ turn_off_living_room_lights_when_nighttime_person_leaves_automation:
     delay: 300
     new_target_state: "off"
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
-  constraints:
-    constraints:
-      constrain_sun: down

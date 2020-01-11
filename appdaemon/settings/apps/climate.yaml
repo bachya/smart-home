@@ -2,6 +2,7 @@
 adjust_climate_on_proximity_automation:
   module: climate
   class: AdjustOnProximity
+  constrain_enabled: true
   dependencies:
     - climate_manager
     - presence_manager
@@ -25,12 +26,14 @@ climate_manager:
 lightning_detected_automation:
   module: climate
   class: LightningDetected
+  constrain_enabled: true
   properties:
     notification_window_seconds: 1200
 
 notify_bad_aqi_automation:
   module: climate
   class: NotifyBadAqi
+  constrain_enabled: true
   dependencies:
     - climate_manager
     - vacation_mode

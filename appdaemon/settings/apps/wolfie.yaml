@@ -16,6 +16,7 @@ wolfie:
 wolfie_notify_before_run_automation:
   module: robot_vacuum
   class: NotifyBeforeRun
+  constrain_enabled: true
   dependencies:
     - presence_manager
     - wolfie
@@ -24,6 +25,7 @@ wolfie_notify_before_run_automation:
 wolfie_notify_when_consumable_low_automation:
   module: robot_vacuum
   class: MonitorConsumables
+  constrain_enabled: true
   dependencies:
     - presence_manager
     - wolfie
@@ -39,6 +41,7 @@ wolfie_notify_when_consumable_low_automation:
 wolfie_notify_when_cycle_complete_automation:
   module: robot_vacuum
   class: NotifyWhenRunComplete
+  constrain_enabled: true
   dependencies:
     - presence_manager
     - wolfie
@@ -49,6 +52,7 @@ wolfie_notify_when_cycle_complete_automation:
 wolfie_notify_when_stuck_automation:
   module: robot_vacuum
   class: NotifyWhenStuck
+  constrain_enabled: true
   dependencies:
     - presence_manager
     - wolfie

@@ -10,7 +10,6 @@ from const import (
     CONF_PROPERTIES,
     CONF_START_TIME,
     CONF_STATE,
-    TOGGLE_STATES,
 )
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
@@ -28,6 +27,7 @@ HANDLE_TOGGLE_STATE_RETURN = "toggle_state_return"
 HANDLE_VACATION_MODE = "vacation_mode"
 
 SOLAR_EVENTS = ("sunrise", "sunset")
+TOGGLE_STATES = ("closed", "off", "on", "open")
 
 
 class BaseSwitch(Base):
@@ -76,7 +76,6 @@ class BaseZwaveSwitch(BaseSwitch):
             "zwave.node_event",
             entity_id=self.entity_ids["zwave_device"],
             basic_level=255,
-            constrain_enabled=True,
         )
 
         self.listen_event(
@@ -84,7 +83,6 @@ class BaseZwaveSwitch(BaseSwitch):
             "zwave.node_event",
             entity_id=self.entity_ids["zwave_device"],
             basic_level=0,
-            constrain_enabled=True,
         )
 
     def on_double_tap_down(self, event_name: str, data: dict, kwargs: dict) -> None:
@@ -114,7 +112,6 @@ class PresenceFailsafe(BaseSwitch):
             self.entity_ids[CONF_SWITCH],
             new="on",
             constrain_noone="just_arrived,home",
-            constrain_enabled=True,
         )
 
     def _on_switch_activate(
@@ -143,15 +140,10 @@ class SleepTimer(BaseSwitch):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self._on_switch_turned_off,
-            self.entity_ids[CONF_SWITCH],
-            new="off",
-            constrain_enabled=True,
+            self._on_switch_turned_off, self.entity_ids[CONF_SWITCH], new="off",
         )
         self.listen_state(
-            self._on_timer_change,
-            self.entity_ids[CONF_TIMER_SLIDER],
-            constrain_enabled=True,
+            self._on_timer_change, self.entity_ids[CONF_TIMER_SLIDER],
         )
 
     def _on_timer_change(
@@ -210,15 +202,11 @@ class ToggleOnInterval(BaseSwitch):
     def configure(self) -> None:
         """Configure."""
         self.run_daily(
-            self._on_start_cycle,
-            self.parse_time(self.properties[CONF_START_TIME]),
-            constrain_enabled=True,
+            self._on_start_cycle, self.parse_time(self.properties[CONF_START_TIME]),
         )
 
         self.run_daily(
-            self._on_stop_cycle,
-            self.parse_time(self.properties[CONF_END_TIME]),
-            constrain_enabled=True,
+            self._on_stop_cycle, self.parse_time(self.properties[CONF_END_TIME]),
         )
 
         if (

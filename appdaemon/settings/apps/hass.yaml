@@ -2,6 +2,7 @@
 bad_login_notifications_automation:
   module: hass
   class: BadLoginNotification
+  constrain_enabled: true
   dependencies:
     - presence_manager
   entity_ids:

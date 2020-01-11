@@ -2,6 +2,7 @@
 fiddle_leaf_fig_low_moisture_automation:
   module: plants
   class: LowMoisture
+  constrain_enabled: true
   dependencies:
     - presence_manager
     - vacation_mode

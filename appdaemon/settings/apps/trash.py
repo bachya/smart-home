@@ -22,7 +22,6 @@ class NotifyOfPickup(Base):  # pylint: disable=too-few-public-methods
             self._on_notify,
             ["Sunday"],
             datetime.time(20, 0, 0),
-            constrain_enabled=True,
             constrain_anyone="home",
         )
 

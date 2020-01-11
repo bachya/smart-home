@@ -2,6 +2,7 @@
 notify_of_trash_pickup_automation:
   module: trash
   class: NotifyOfPickup
+  constrain_enabled: true
   dependencies:
     - presence_manager
     - trash_manager

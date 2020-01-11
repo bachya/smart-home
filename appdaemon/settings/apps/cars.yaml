@@ -2,6 +2,7 @@
 subaru_legacy_notify_low_fuel_automation:
   module: car
   class: NotifyLowFuel
+  constrain_enabled: true
   dependencies:
     - presence_manager
   entity_ids:

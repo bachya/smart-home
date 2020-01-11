@@ -58,10 +58,10 @@ class AdjustOnProximity(Base):  # pylint: disable=too-few-public-methods
             EVENT_PRESENCE_CHANGE,
             new=self.presence_manager.HomeStates.just_arrived.value,
             first=True,
-            constrain_enabled=True,
         )
+
         self.listen_event(
-            self._on_proximity_change, EVENT_PROXIMITY_CHANGE, constrain_enabled=True
+            self._on_proximity_change, EVENT_PROXIMITY_CHANGE,
         )
 
     def _on_arrive_home(self, event_name: str, data: dict, kwargs: dict) -> None:
@@ -376,9 +376,7 @@ class LightningDetected(Base):  # pylint: disable=too-few-public-methods
         self._lock = Lock()
 
         self.listen_event(
-            self._on_lightning_detected,
-            EVENT_LIGHTNING_DETECTED,
-            constrain_enabled=True,
+            self._on_lightning_detected, EVENT_LIGHTNING_DETECTED,
         )
 
     def _on_lightning_detected(self, event_name: str, data: dict, kwargs: dict) -> None:

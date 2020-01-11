@@ -50,7 +50,6 @@ class AbsentInsecure(Base):  # pylint: disable=too-few-public-methods
             self.entity_ids[CONF_STATE],
             new="Open",
             duration=60 * 5,
-            constrain_enabled=True,
             constrain_noone="just_arrived,home",
         )
 
@@ -235,7 +234,6 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
                 camera[CONF_PRESENCE_DETECTOR_ENTITY_ID],
                 new="on",
                 attribute="all",
-                constrain_enabled=True,
                 camera_entity_id=camera[CONF_CAMERA_ENTITY_ID],
             )
 
@@ -243,7 +241,6 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
             self._on_window_expiration,
             self.datetime(),
             self.properties[CONF_WINDOW_SECONDS],
-            constrain_enabled=True,
         )
 
     def _on_detection(

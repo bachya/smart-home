@@ -33,10 +33,7 @@ class BadLoginNotification(Base):  # pylint: disable=too-few-public-methods
 
         for notification_type in self.entity_ids.values():
             self.listen_state(
-                self._on_bad_login,
-                notification_type,
-                attribute="all",
-                constrain_enabled=True,
+                self._on_bad_login, notification_type, attribute="all",
             )
 
     def _on_bad_login(
