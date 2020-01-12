@@ -194,10 +194,6 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
     ) -> None:
         """Notify when the threshold is reached."""
 
-        def _turn_off() -> None:
-            """Turn the entity off."""
-            self.turn_off(self.entity_ids[CONF_ENTITY_ID])
-
         def _send_notification() -> None:
             """Send a notification."""
             friendly_name = self.get_state(
