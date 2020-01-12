@@ -3,7 +3,12 @@ from typing import Tuple
 
 from const import CONF_PEOPLE
 from core import Base
-from helpers import grammatical_list_join, relative_search_dict
+from helpers import (
+    grammatical_list_join,
+    relative_search_dict,
+    relative_search_list,
+    random_affirmative_response,
+)
 from util.string import camel_to_underscore
 
 
@@ -54,6 +59,24 @@ class Alexa(Base):
 
         if name:
             speech = f"{name} is {state.lower()}."
+        else:
+            speech = f"I don't know what {container} is."
+
+        return speech, speech, f"What state is {container}?"
+
+    def empty_container_intent(self, data: dict) -> Tuple[str, str, str]:
+        """Define a handler for the EmptyContainerIntent."""
+        containers = ["Wolfie", "The vacuum", "The dishwasher"]
+
+        container = self.get_alexa_slot_value(data, "Container")
+        name = relative_search_list(containers, container)
+
+        if name in ("Wolfie", "The vacuum"):
+            self.wolfie.bin_state = self.wolfie.BinStates.empty
+            speech = random_affirmative_response()
+        elif name == "The dishwasher":
+            self.dishwasher.state = self.dishwasher.States.dirty
+            speech = random_affirmative_response()
         else:
             speech = f"I don't know what {container} is."
 
