@@ -43,10 +43,6 @@ class Alexa(Base):
 
     def clean_full_intent(self, data: dict) -> Tuple[str, str, str]:
         """Define a handler for the CleanFullIntent."""
-        # container = self.get_alexa_slot_value(data, "Container")
-
-        # self.log(container)
-
         containers = {
             "Wolfie": self.wolfie.bin_state.value,
             "The vacuum": self.wolfie.bin_state.value,
