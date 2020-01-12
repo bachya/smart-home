@@ -84,5 +84,5 @@ thermostat_schedule:
 
   watched_entities:
     - climate.thermostat
+    - input_boolean.blackout_mode
     - input_boolean.climate_away_mode
-    - input_boolean.in_blackout
