@@ -92,11 +92,11 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
             # (leading underscore) – we do this so automations don't have to remember
             # callback method signatures:
             if hasattr(self, "on_disable"):
-                super().listen_state(
+                self.listen_state(
                     self._on_disable, self._enabled_toggle_entity_id, new="off"
                 )
             if hasattr(self, "on_enable"):
-                super().listen_state(
+                self.listen_state(
                     self._on_enable, self._enabled_toggle_entity_id, new="on"
                 )
 
