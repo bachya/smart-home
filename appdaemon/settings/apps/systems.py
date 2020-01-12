@@ -209,7 +209,7 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
                 title="Entity Alert",
             )
 
-        # If the automation is enabled when a battery is low, send a notification;
+        # If the automation is enabled when the limit is reached, send a notification;
         # if not, remember that we should send the notification when the automation
         # becomes enabled:
         if self.enabled:
