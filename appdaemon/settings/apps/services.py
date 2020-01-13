@@ -121,12 +121,6 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
             ),
         )
 
-    def _stop_ticking(self) -> None:
-        """Stop the "ticking" process."""
-        if HANDLE_TICK in self.handles:
-            handle = self.handles.pop(HANDLE_TICK)
-            self.cancel_timer(handle)
-
     def _on_tick(self, kwargs: dict) -> None:
         """Fire the event when the tick occurs."""
         self._count += 1
@@ -140,7 +134,9 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
 
     def on_disable(self) -> None:
         """Stop ticking when the automation is disabled."""
-        self._stop_ticking()
+        if HANDLE_TICK in self.handles:
+            handle = self.handles.pop(HANDLE_TICK)
+            self.cancel_timer(handle)
 
     def on_enable(self) -> None:
         """Start ticking when the automation is enabled."""
