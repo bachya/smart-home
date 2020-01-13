@@ -133,7 +133,7 @@ turn_on_front_patio_light_when_nighttime_person_detected_automation:
   module: services
   class: ServiceOnState
   constrain_enabled: true
-  constrain_sun: down
+  constrain_in_bed: true
   service: "switch/turn_on"
   service_data:
     entity_id: switch.front_patio_light
@@ -147,7 +147,7 @@ turn_off_front_patio_light_when_nighttime_person_leaves_automation:
   module: services
   class: ServiceOnState
   constrain_enabled: true
-  constrain_sun: down
+  constrain_in_bed: true
   service: "switch/turn_off"
   service_data:
     entity_id: switch.front_patio_light
@@ -162,7 +162,7 @@ turn_on_living_room_lights_when_nighttime_person_detected_automation:
   module: services
   class: ServiceOnState
   constrain_enabled: true
-  constrain_sun: down
+  constrain_in_bed: true
   service: "homeassistant/turn_on"
   service_data:
     entity_id: group.living_room_lights
@@ -176,7 +176,7 @@ turn_off_living_room_lights_when_nighttime_person_leaves_automation:
   module: services
   class: ServiceOnState
   constrain_enabled: true
-  constrain_sun: down
+  constrain_in_bed: true
   service: "homeassistant/turn_off"
   service_data:
     entity_id: group.living_room_lights
