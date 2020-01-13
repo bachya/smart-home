@@ -19,10 +19,6 @@ CONF_MODULE = "module"
 CONF_NAME = "name"
 CONF_STATE_CHANGES = "state_changes"
 
-DEFAULT_OUTDOOR_BRIGHTNESS_THRESHOLD = 80
-
-OUTDOOR_BRIGHTNESS_SENSOR = "sensor.filtered_outdoor_brightness"
-
 APP_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_MODULE): str,
@@ -144,10 +140,8 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
 
     def constrain_dark_outside(self, value: bool) -> bool:
         """Constrain execution based whether it's dark outside or not."""
-        brightness = float(self.get_state(OUTDOOR_BRIGHTNESS_SENSOR))
-        if (value and brightness <= DEFAULT_OUTDOOR_BRIGHTNESS_THRESHOLD) or (
-            not value and brightness > DEFAULT_OUTDOOR_BRIGHTNESS_THRESHOLD
-        ):
+        brightness = float(self.get_state("sensor.filtered_outdoor_brightness"))
+        if (value and brightness <= 70) or (not value and brightness > 70):
             return True
         return False
 
