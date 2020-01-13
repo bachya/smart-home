@@ -13,7 +13,6 @@ binary_sensor:
         platform: state
         to_state: home
         prob_given_true: 0.90
-        # Aaron's Phone
       - entity_id: sensor.battery_state_7
         platform: state
         to_state: Charging
