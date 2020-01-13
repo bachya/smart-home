@@ -12,6 +12,7 @@ docs/
 emulated_hue_ids.json
 entity_registry.yaml
 google_calendars.yaml
+harmony_basement_tv.conf
 harmony_living_room_tv.conf
 home-assistant/settings/.storage
 home-assistant/settings/conf/hass/.HA_VERSION
