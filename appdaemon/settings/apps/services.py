@@ -129,21 +129,11 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
         """Fire the event when the tick occurs."""
         self._count += 1
         if self.args.get(CONF_SERVICE_ALTERNATE) and self._count % 2 == 0:
-            self.log(
-                "Calling alternate service from random tick: %s (data: %s)",
-                self.args[CONF_SERVICE_ALTERNATE],
-                self.args.get(CONF_SERVICE_DATA_ALTERNATE, {}),
-            )
             self.call_service(
                 self.args[CONF_SERVICE_ALTERNATE],
                 **self.args.get(CONF_SERVICE_DATA_ALTERNATE, {}),
             )
         else:
-            self.log(
-                "Calling service from random tick: %s (data: %s)",
-                self.args[CONF_SERVICE],
-                self.args.get(CONF_SERVICE_DATA, {}),
-            )
             self.call_service(
                 self.args[CONF_SERVICE], **self.args.get(CONF_SERVICE_DATA, {})
             )
