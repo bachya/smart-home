@@ -155,7 +155,7 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
         """Constrain execution to whether everyone is in a state."""
         return self._constrain_presence("everyone", value)
 
-    def constrain_in_bed(self, value: str) -> bool:
+    def constrain_in_bed(self, value: bool) -> bool:
         """Constrain execution to whether we're in bed."""
         return value and self.get_state("binary_sensor.in_bed") == "on"
 
