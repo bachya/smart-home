@@ -14,7 +14,7 @@ basement_leak_detected_automation:
       - "person:Britt"
     state: "on"
 
-basement_lights_vacation_mode_random_tick_automation:
+basement_lights_randomize_automation::
   module: services
   class: ServiceOnRandomTick
   constrain_enabled: true
@@ -23,15 +23,4 @@ basement_lights_vacation_mode_random_tick_automation:
   service: "switch/toggle"
   service_data:
     entity_id: switch.basement_lights
-  enabled_toggle_entity_id: input_boolean.randomize_nighttime_lighting
-
-basement_lights_vacation_mode_stop_automation:
-  module: services
-  class: ServiceOnTime
-  constrain_enabled: true
-  service: "switch/turn_off"
-  service_data:
-    entity_id: switch.basement_lights
-  properties:
-    schedule_time: "23:30:00"
   enabled_toggle_entity_id: input_boolean.randomize_nighttime_lighting
