@@ -24,6 +24,9 @@ input_boolean:
   randomize_nighttime_lighting:
     icon: mdi:timer
     name: Randomize nighttime lighting
+  randomize_nighttime_tvs:
+    icon: mdi:timer
+    name: Randomize nighttime TVs
 
 sensor:
   - platform: mqtt

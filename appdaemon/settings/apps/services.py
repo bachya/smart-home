@@ -37,7 +37,7 @@ CONF_ZWAVE_DEVICE = "zwave_device"
 HANDLE_TICK = "tick"
 
 SERVICE_CALL_SCHEMA = APP_SCHEMA.extend(
-    {vol.Required(CONF_SERVICE): str, vol.Required(CONF_SERVICE_DATA): dict}
+    {vol.Required(CONF_SERVICE): str, vol.Optional(CONF_SERVICE_DATA): dict}
 )
 
 
@@ -63,7 +63,9 @@ class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
 
     def _on_event_heard(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Call the service."""
-        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
+        self.call_service(
+            self.args[CONF_SERVICE], **self.args.get(CONF_SERVICE_DATA, {})
+        )
 
 
 class ServiceOnInterval(Base):  # pylint: disable=too-few-public-methods
@@ -85,7 +87,9 @@ class ServiceOnInterval(Base):  # pylint: disable=too-few-public-methods
 
     def _on_interval_reached(self, kwargs: dict) -> None:
         """Call the service."""
-        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
+        self.call_service(
+            self.args[CONF_SERVICE], **self.args.get(CONF_SERVICE_DATA, {})
+        )
 
 
 class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
@@ -93,8 +97,8 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
         {
-            vol.Inclusive(CONF_SERVICE_ALTERNATE, "alternate"): str,
-            vol.Inclusive(CONF_SERVICE_DATA_ALTERNATE, "alternate"): dict,
+            vol.Optional(CONF_SERVICE_ALTERNATE): str,
+            vol.Optional(CONF_SERVICE_DATA_ALTERNATE): dict,
             CONF_PROPERTIES: vol.Schema(
                 {
                     vol.Optional(CONF_RANDOM_TICK_LOWER_END): int,
@@ -128,19 +132,21 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
             self.log(
                 "Calling alternate service from random tick: %s (data: %s)",
                 self.args[CONF_SERVICE_ALTERNATE],
-                self.args[CONF_SERVICE_DATA_ALTERNATE],
+                self.args.get(CONF_SERVICE_DATA_ALTERNATE, {}),
             )
             self.call_service(
                 self.args[CONF_SERVICE_ALTERNATE],
-                **self.args[CONF_SERVICE_DATA_ALTERNATE],
+                **self.args.get(CONF_SERVICE_DATA_ALTERNATE, {}),
             )
         else:
             self.log(
                 "Calling service from random tick: %s (data: %s)",
                 self.args[CONF_SERVICE],
-                self.args[CONF_SERVICE_DATA_ALTERNATE],
+                self.args.get(CONF_SERVICE_DATA, {}),
             )
-            self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
+            self.call_service(
+                self.args[CONF_SERVICE], **self.args.get(CONF_SERVICE_DATA, {})
+            )
 
     def on_disable(self) -> None:
         """Stop ticking when the automation is disabled."""
@@ -203,7 +209,9 @@ class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
         # another:
         if new == old:
             return
-        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
+        self.call_service(
+            self.args[CONF_SERVICE], **self.args.get(CONF_SERVICE_DATA, {})
+        )
 
 
 class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
@@ -225,7 +233,9 @@ class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
 
     def _on_time_reached(self, kwargs: dict) -> None:
         """Call the service."""
-        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
+        self.call_service(
+            self.args[CONF_SERVICE], **self.args.get(CONF_SERVICE_DATA, {})
+        )
 
 
 class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-methods
