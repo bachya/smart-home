@@ -1,4 +1,11 @@
 ---
+group:
+  people:
+    name: People
+    entities:
+      - person.aaron
+      - person.britt
+
 input_number:
   edge_radius:
     name: Edge Radius
