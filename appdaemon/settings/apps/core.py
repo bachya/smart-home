@@ -204,10 +204,12 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
         return super().run_at(callback, start + timedelta(seconds=1), **kwargs)
 
     def run_every(self, callback, start, interval, **kwargs):
-        """Wrap AppDaemon's `run_every` with the constraint mechanism."""
-        # Since AD4 has microsecond resolution, calls with a start value of
-        # self.datetime() will technically be in the past. So, to be safe, bump out the
-        # start time by a second:
+        """Wrap AppDaemon's `run_every` with a version that handles microsecond resolution.
+
+        Since AD4 has microsecond resolution, calls with a start value of
+        self.datetime() will technically be in the past. So, to be safe, bump out the
+        start time by a second.
+        """
         return super().run_every(
             callback, start + timedelta(seconds=1), interval, **kwargs
         )
