@@ -41,3 +41,15 @@ basement_tv_randomize_automation:
   properties:
     lower_end: 600
   enabled_toggle_entity_id: input_boolean.randomize_nighttime_tvs
+
+basement_tv_randomize_off_automation:
+  module: services
+  class: ServiceOnState
+  constrain_enabled: true
+  service: "remote/turn_off"
+  service_data:
+    entity_id: remote.basement_tv
+  entity_ids:
+    target_entity_id: input_boolean.randomize_nighttime_tvs
+  properties:
+    new_target_state: "off"
