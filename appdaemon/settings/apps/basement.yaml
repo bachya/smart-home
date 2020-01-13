@@ -24,3 +24,18 @@ basement_lights_randomize_automation::
   service_data:
     entity_id: switch.basement_lights
   enabled_toggle_entity_id: input_boolean.randomize_nighttime_lighting
+
+basement_tv_randomize_automation:
+  module: services
+  class: ServiceOnRandomTick
+  constrain_enabled: true
+  constrain_end_time: "23:30:00"
+  constrain_start_time: sunset
+  service: "remote/turn_on"
+  service_data:
+    entity_id: remote.basement_tv
+    activity: Watch TV
+  service_alternate: "remote/turn_off"
+  service_data_alternate:
+    entity_id: remote.basement_tv
+  enabled_toggle_entity_id: input_boolean.randomize_nighttime_tvs
