@@ -92,6 +92,8 @@
       state: true
     input_boolean.randomize_nighttime_lighting:
       state: false
+    input_boolean.randomize_nighttime_tvs:
+      state: false
     input_boolean.subaru_legacy_notify_low_fuel_automation:
       state: true
     input_boolean.turn_3d_printer_off_when_print_complete_automation:
@@ -165,6 +167,8 @@
     input_boolean.notify_when_person_on_camera:
       state: true
     input_boolean.randomize_nighttime_lighting:
+      state: true
+    input_boolean.randomize_nighttime_tvs:
       state: true
     input_boolean.wolfie_notify_when_consumable_low_automation:
       state: false
@@ -339,6 +343,8 @@
     input_boolean.office_lights_schedule_automation:
       state: false
     input_boolean.randomize_nighttime_lighting:
+      state: true
+    input_boolean.randomize_nighttime_tvs:
       state: true
     input_boolean.wolfie:
       state: false
