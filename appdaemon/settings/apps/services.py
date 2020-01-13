@@ -23,7 +23,9 @@ CONF_RANDOM_TICK_UPPER_END = "upper_end"
 CONF_RUN_ON_DAYS = "run_on_days"
 CONF_SCHEDULE_TIME = "schedule_time"
 CONF_SERVICE = "service"
+CONF_SERVICE_ALTERNATE = "service_alternate"
 CONF_SERVICE_DATA = "service_data"
+CONF_SERVICE_DATA_ALTERNATE = "service_data_alternate"
 CONF_SERVICE_DOWN = "service_down"
 CONF_SERVICE_DOWN_DATA = "service_down_data"
 CONF_SERVICE_UP = "service_up"
@@ -91,18 +93,21 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
         {
+            vol.Inclusive(CONF_SERVICE_ALTERNATE, "alternate"): str,
+            vol.Inclusive(CONF_SERVICE_DATA_ALTERNATE, "alternate"): dict,
             CONF_PROPERTIES: vol.Schema(
                 {
                     vol.Optional(CONF_RANDOM_TICK_LOWER_END): int,
                     vol.Optional(CONF_RANDOM_TICK_UPPER_END): int,
                 },
                 extra=vol.ALLOW_EXTRA,
-            )
+            ),
         }
     )
 
     def configure(self) -> None:
         """Configure."""
+        self._count = 0
         self._start_ticking()
 
     def _start_ticking(self) -> None:
@@ -124,7 +129,14 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
 
     def _on_tick(self, kwargs: dict) -> None:
         """Fire the event when the tick occurs."""
-        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
+        self._count += 1
+        if self.args.get(CONF_SERVICE_ALTERNATE) and self._count % 2 == 0:
+            self.call_service(
+                self.args[CONF_SERVICE_ALTERNATE],
+                **self.args[CONF_SERVICE_DATA_ALTERNATE],
+            )
+        else:
+            self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
 
     def on_disable(self) -> None:
         """Stop ticking when the automation is disabled."""
