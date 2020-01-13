@@ -38,4 +38,6 @@ basement_tv_randomize_automation:
   service_alternate: "remote/turn_off"
   service_data_alternate:
     entity_id: remote.basement_tv
+  properties:
+    lower_end: 600
   enabled_toggle_entity_id: input_boolean.randomize_nighttime_tvs

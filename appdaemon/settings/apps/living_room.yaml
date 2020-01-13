@@ -53,6 +53,8 @@ living_room_tv_randomize_automation:
   constrain_start_time: sunset
   service: "script/start_random_youtube_video_on_roku"
   service_alternate: "script/stop_random_youtube_video_on_roku"
+  properties:
+    lower_end: 600
   enabled_toggle_entity_id: input_boolean.randomize_nighttime_tvs
 
 powder_room_fan_auto_turn_on_automation:
