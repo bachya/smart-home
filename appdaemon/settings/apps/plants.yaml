@@ -5,7 +5,6 @@ fiddle_leaf_fig_low_moisture_automation:
   constrain_enabled: true
   dependencies:
     - presence_manager
-    - vacation_mode
   current_moisture: sensor.fiddle_leaf_fig_moisture
   friendly_name: Fred
   moisture_threshold: 15

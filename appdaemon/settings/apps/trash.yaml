@@ -7,7 +7,6 @@ notify_of_trash_pickup_automation:
   dependencies:
     - presence_manager
     - trash_manager
-    - vacation_mode
 
 trash_manager:
   module: trash

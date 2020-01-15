@@ -34,7 +34,6 @@ notify_bad_aqi_automation:
   constrain_enabled: true
   dependencies:
     - climate_manager
-    - vacation_mode
   aqi: sensor.us_air_quality_index
   aqi_threshold: 100
 

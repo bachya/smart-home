@@ -8,7 +8,6 @@ aaron_accountability_automation:
   dependencies:
     - aaron
     - presence_manager
-    - blackout_mode
   aaron_router_tracker: device_tracker.aarons_iphone
 
 notify_of_low_batteries_automation:

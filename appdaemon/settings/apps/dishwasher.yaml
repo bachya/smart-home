@@ -12,7 +12,6 @@ dishwasher_cycle_automation:
   dependencies:
     - dishwasher
     - presence_manager
-    - vacation_mode
   app: dishwasher
   notification_interval_slider: input_number.dishwasher_notification_interval
   clean_threshold: 0.0

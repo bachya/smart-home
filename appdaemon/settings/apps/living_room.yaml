@@ -4,7 +4,6 @@ fireplace_failsafe_automation:
   class: PresenceFailsafe
   constrain_enabled: true
   dependencies:
-    - guest_mode
     - presence_manager
   switch: switch.fireplace
 
