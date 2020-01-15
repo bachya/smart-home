@@ -46,7 +46,7 @@ def has_at_least_one_key(*keys: str) -> Callable:
     return validate
 
 
-def icon(value: any) -> str:
+def icon(value: Any) -> str:
     """Validate that the value is a valid icon string."""
     str_value = str(value)
 
@@ -56,7 +56,7 @@ def icon(value: any) -> str:
     raise vol.invalid('icons should be specified in the form "prefix:name"')
 
 
-def notification_target(value: any) -> str:
+def notification_target(value: Any) -> str:
     """Validate that the value is a valid notification manager target."""
     str_value = str(value)
 
