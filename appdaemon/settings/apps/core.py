@@ -40,7 +40,9 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
     def initialize(self) -> None:
         """Initialize."""
         try:
-            validated_args = self.APP_SCHEMA(self.args)
+            validated_args = self.APP_SCHEMA(
+                self.args  # pylint: disable=access-member-before-definition
+            )
         except vol.Invalid as err:
             self.log("Invalid app schema: %s", err, level="ERROR")
             return
