@@ -22,7 +22,9 @@ APP_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_MODULE): str,
         vol.Required(CONF_CLASS): str,
-        vol.Optional(CONF_DEPENDENCIES): cv.ensure_list,
+        vol.Optional(CONF_DEPENDENCIES, default=[]): cv.ensure_list,
+        vol.Optional(CONF_ENTITY_IDS, default={}): dict,
+        vol.Optional(CONF_PROPERTIES, default={}): dict,
         vol.Optional(CONF_APP): str,
         vol.Optional(CONF_ENABLED_TOGGLE_ENTITY_ID): str,
     },
@@ -38,35 +40,37 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
     def initialize(self) -> None:
         """Initialize."""
         try:
-            self.APP_SCHEMA(self.args)
+            validated_args = self.APP_SCHEMA(self.args)
         except vol.Invalid as err:
             self.log("Invalid app schema: %s", err, level="ERROR")
             return
 
         # Define a holding place for HASS entity IDs:
-        self.entity_ids = self.args.get(CONF_ENTITY_IDS, {})
+        self.entity_ids = validated_args[CONF_ENTITY_IDS]
 
         # Define a holding place for any scheduler handles that the app wants to keep
         # track of:
         self.handles = {}  # type: Dict[str, Callable]
 
         # Define a holding place for key/value properties for this app:
-        self.properties = self.args.get(CONF_PROPERTIES, {})
+        self.properties = validated_args[CONF_PROPERTIES]
 
         # Take every dependecy and create a reference to it:
-        for app in self.args.get(CONF_DEPENDENCIES, []):
+        for app in validated_args[CONF_DEPENDENCIES]:
             if not getattr(self, app, None):
                 setattr(self, app, self.get_app(app))
 
         # Define a reference to the "manager app" – for example, a trash-
         # related app might carry a reference to TrashManager:
-        if self.args.get(CONF_APP):
-            self.app = getattr(self, self.args[CONF_APP])
+        if validated_args.get(CONF_APP):
+            self.app = getattr(self, validated_args[CONF_APP])
 
         # Set the entity ID of the input boolean that will control whether
         # this app is enabled or not:
-        if self.args.get(CONF_ENABLED_TOGGLE_ENTITY_ID):
-            self._enabled_toggle_entity_id = self.args[CONF_ENABLED_TOGGLE_ENTITY_ID]
+        if validated_args.get(CONF_ENABLED_TOGGLE_ENTITY_ID):
+            self._enabled_toggle_entity_id = validated_args[
+                CONF_ENABLED_TOGGLE_ENTITY_ID
+            ]
         else:
             self._enabled_toggle_entity_id = f"input_boolean.{self.name}"
 
