@@ -34,7 +34,10 @@ DEFAULT_RANDOM_TICK_UPPER_END = 60 * 60
 HANDLE_TICK = "tick"
 
 SERVICE_CALL_SCHEMA = APP_SCHEMA.extend(
-    {vol.Required(CONF_SERVICE): str, vol.Optional(CONF_SERVICE_DATA, default={}): dict}
+    {
+        vol.Required(CONF_SERVICE): cv.string,
+        vol.Optional(CONF_SERVICE_DATA, default={}): dict,
+    }
 )
 
 
