@@ -32,7 +32,7 @@ class AaronAccountability(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self._on_disconnect, self.args[CONF_AARON_ROUTER_TRACKER], new="not_home",
+            self._on_disconnect, self.args[CONF_AARON_ROUTER_TRACKER], new="not_home"
         )
 
     @property
@@ -63,7 +63,9 @@ class LowBatteries(Base):  # pylint: disable=too-few-public-methods
         {
             vol.Required(CONF_BATTERIES_TO_MONITOR): cv.ensure_list,
             vol.Required(CONF_BATTERY_LEVEL_THRESHOLD): cv.positive_int,
-            vol.Required(CONF_NOTIFICATION_INTERVAL): cv.time_period,
+            vol.Required(CONF_NOTIFICATION_INTERVAL): vol.All(
+                cv.time_period, lambda value: value.seconds
+            ),
         }
     )
 
@@ -152,7 +154,9 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             vol.Required(CONF_ENTITY_ID): cv.entity_id,
-            vol.Required(CONF_DURATION): cv.time_period,
+            vol.Required(CONF_DURATION): vol.All(
+                cv.time_period, lambda value: value.seconds
+            ),
             vol.Required(CONF_STATE): cv.string,
             vol.Required(CONF_NOTIFICATION_TARGET): vol.All(
                 cv.ensure_list, [cv.notification_target]

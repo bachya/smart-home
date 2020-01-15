@@ -32,7 +32,9 @@ DYNAMIC_APP_SCHEMA = VERSION_APP_SCHEMA.extend(
         vol.Required(CONF_CREATED_ENTITY_ID): cv.entity_id,
         vol.Required(CONF_FRIENDLY_NAME): cv.string,
         vol.Required(CONF_ICON): cv.icon,
-        vol.Required(CONF_INTERVAL): cv.time_period,
+        vol.Required(CONF_INTERVAL): vol.All(
+            cv.time_period, lambda value: value.seconds
+        ),
     }
 )
 

@@ -51,7 +51,7 @@ class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
     def configure(self) -> None:
         """Configure."""
         self.listen_event(
-            self._on_event_heard, self.args[CONF_EVENT], **self.args[CONF_EVENT_DATA],
+            self._on_event_heard, self.args[CONF_EVENT], **self.args[CONF_EVENT_DATA]
         )
 
     def _on_event_heard(self, event_name: str, data: dict, kwargs: dict) -> None:
@@ -63,7 +63,11 @@ class ServiceOnInterval(Base):  # pylint: disable=too-few-public-methods
     """Define an automation to call a service every X seconds."""
 
     APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
-        {vol.Required(CONF_INTERVAL): cv.time_period}
+        {
+            vol.Required(CONF_INTERVAL): vol.All(
+                cv.time_period, lambda value: value.seconds
+            )
+        }
     )
 
     def configure(self) -> None:
@@ -85,10 +89,10 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
             vol.Optional(CONF_SERVICE_ALTERNATE): cv.string,
             vol.Optional(CONF_SERVICE_DATA_ALTERNATE, default={}): dict,
             vol.Optional(
-                CONF_RANDOM_TICK_LOWER_END, default=DEFAULT_RANDOM_TICK_LOWER_END,
+                CONF_RANDOM_TICK_LOWER_END, default=DEFAULT_RANDOM_TICK_LOWER_END
             ): cv.positive_int,
             vol.Optional(
-                CONF_RANDOM_TICK_UPPER_END, default=DEFAULT_RANDOM_TICK_UPPER_END,
+                CONF_RANDOM_TICK_UPPER_END, default=DEFAULT_RANDOM_TICK_UPPER_END
             ): cv.positive_int,
         }
     )
@@ -140,10 +144,12 @@ class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
                 vol.Required(CONF_TARGET_ENTITY_ID): cv.entity_id,
                 vol.Optional(CONF_NEW_TARGET_STATE): cv.string,
                 vol.Optional(CONF_OLD_TARGET_STATE): cv.string,
-                vol.Optional(CONF_DELAY): cv.time_period,
+                vol.Optional(CONF_DELAY): vol.All(
+                    cv.time_period, lambda value: value.seconds
+                ),
             },
             cv.has_at_least_one_key(CONF_NEW_TARGET_STATE, CONF_OLD_TARGET_STATE),
-        ),
+        )
     )
 
     def configure(self) -> None:
@@ -158,7 +164,7 @@ class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
             kwargs["duration"] = self.args[CONF_DELAY]
 
         self.listen_state(
-            self._on_target_state_observed, self.args[CONF_TARGET_ENTITY_ID], **kwargs,
+            self._on_target_state_observed, self.args[CONF_TARGET_ENTITY_ID], **kwargs
         )
 
     def _on_target_state_observed(
@@ -181,9 +187,7 @@ class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        self.run_daily(
-            self._on_time_reached, self.parse_time(self.args[CONF_SCHEDULE_TIME])
-        )
+        self.run_daily(self._on_time_reached, self.args[CONF_SCHEDULE_TIME])
 
     def _on_time_reached(self, kwargs: dict) -> None:
         """Call the service."""
@@ -198,9 +202,9 @@ class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-met
             {
                 vol.Required(CONF_ZWAVE_DEVICE): cv.entity_id,
                 vol.Inclusive(CONF_SERVICE_UP, "up"): cv.string,
-                vol.Inclusive(CONF_SERVICE_UP_DATA, "up", default={}): dict,
+                vol.Inclusive(CONF_SERVICE_UP_DATA, "up"): dict,
                 vol.Inclusive(CONF_SERVICE_DOWN, "down"): cv.string,
-                vol.Inclusive(CONF_SERVICE_DOWN_DATA, "down", default={}): dict,
+                vol.Inclusive(CONF_SERVICE_DOWN_DATA, "down"): dict,
             }
         ),
         cv.has_at_least_one_key(CONF_SERVICE_UP, CONF_SERVICE_DOWN),
