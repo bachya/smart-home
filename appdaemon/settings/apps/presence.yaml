@@ -2,9 +2,6 @@
 presence_manager:
   module: presence
   class: PresenceManager
-  dependencies:
-    - aaron
-    - britt
   edge_threshold: input_select.edge_radius
   home_threshold: input_select.home_radius
   nearby_threshold: input_select.nearby_radius
