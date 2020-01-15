@@ -2,6 +2,9 @@
 presence_manager:
   module: presence
   class: PresenceManager
+  dependencies:
+    - aaron
+    - britt
   entity_ids:
     edge_threshold: input_select.edge_radius
     home_threshold: input_select.home_radius
