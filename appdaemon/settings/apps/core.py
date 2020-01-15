@@ -40,42 +40,35 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
     def initialize(self) -> None:
         """Initialize."""
         try:
-            validated_args = self.APP_SCHEMA(
-                self.args  # pylint: disable=access-member-before-definition, # type: ignore
-            )
+            self.args = self.APP_SCHEMA(self.args)
         except vol.Invalid as err:
             self.log("Invalid app schema: %s", err, level="ERROR")
             return
 
-        # Save the validated args over the raw ones:
-        self.args = validated_args
-
         # Define a holding place for HASS entity IDs:
-        self.entity_ids = validated_args[CONF_ENTITY_IDS]
+        self.entity_ids = self.args[CONF_ENTITY_IDS]
 
         # Define a holding place for any scheduler handles that the app wants to keep
         # track of:
         self.handles = {}  # type: Dict[str, Callable]
 
         # Define a holding place for key/value properties for this app:
-        self.properties = validated_args[CONF_PROPERTIES]
+        self.properties = self.args[CONF_PROPERTIES]
 
         # Take every dependecy and create a reference to it:
-        for app in validated_args[CONF_DEPENDENCIES]:
+        for app in self.args[CONF_DEPENDENCIES]:
             if not getattr(self, app, None):
                 setattr(self, app, self.get_app(app))
 
         # Define a reference to the "manager app" – for example, a trash-
         # related app might carry a reference to TrashManager:
-        if validated_args.get(CONF_APP):
-            self.app = getattr(self, validated_args[CONF_APP])
+        if self.args.get(CONF_APP):
+            self.app = getattr(self, self.args[CONF_APP])
 
         # Set the entity ID of the input boolean that will control whether
         # this app is enabled or not:
-        if validated_args.get(CONF_ENABLED_TOGGLE_ENTITY_ID):
-            self._enabled_toggle_entity_id = validated_args[
-                CONF_ENABLED_TOGGLE_ENTITY_ID
-            ]
+        if self.args.get(CONF_ENABLED_TOGGLE_ENTITY_ID):
+            self._enabled_toggle_entity_id = self.args[CONF_ENABLED_TOGGLE_ENTITY_ID]
         else:
             self._enabled_toggle_entity_id = f"input_boolean.{self.name}"
 
