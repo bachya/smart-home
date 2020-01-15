@@ -40,7 +40,7 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
     def initialize(self) -> None:
         """Initialize."""
         try:
-            self.args = self.APP_SCHEMA(self.args)
+            self.args = self.APP_SCHEMA(self.args)  # type: ignore
         except vol.Invalid as err:
             self.log("Invalid app schema: %s", err, level="ERROR")
             return
