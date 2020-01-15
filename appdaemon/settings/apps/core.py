@@ -17,7 +17,6 @@ CONF_ENABLED_TOGGLE_ENTITY_ID = "enabled_toggle_entity_id"
 CONF_INITIAL = "initial"
 CONF_MODULE = "module"
 CONF_NAME = "name"
-CONF_STATE_CHANGES = "state_changes"
 
 APP_SCHEMA = vol.Schema(
     {
@@ -26,7 +25,6 @@ APP_SCHEMA = vol.Schema(
         vol.Optional(CONF_DEPENDENCIES): cv.ensure_list,
         vol.Optional(CONF_APP): str,
         vol.Optional(CONF_ENABLED_TOGGLE_ENTITY_ID): str,
-        vol.Optional(CONF_STATE_CHANGES): list,
     },
     extra=vol.ALLOW_EXTRA,
 )
