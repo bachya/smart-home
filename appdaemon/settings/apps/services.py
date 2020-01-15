@@ -69,9 +69,7 @@ class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
 
     def _on_event_heard(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Call the service."""
-        self.call_service(
-            self.validated_args[CONF_SERVICE], **self.validated_args[CONF_SERVICE_DATA],
-        )
+        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
 
 
 class ServiceOnInterval(Base):  # pylint: disable=too-few-public-methods
@@ -93,9 +91,7 @@ class ServiceOnInterval(Base):  # pylint: disable=too-few-public-methods
 
     def _on_interval_reached(self, kwargs: dict) -> None:
         """Call the service."""
-        self.call_service(
-            self.validated_args[CONF_SERVICE], **self.validated_args[CONF_SERVICE_DATA],
-        )
+        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
 
 
 class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
@@ -140,16 +136,13 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
     def _on_tick(self, kwargs: dict) -> None:
         """Fire the event when the tick occurs."""
         self._count += 1
-        if CONF_SERVICE_ALTERNATE in self.validated_args and self._count % 2 == 0:
+        if CONF_SERVICE_ALTERNATE in self.args and self._count % 2 == 0:
             self.call_service(
-                self.validated_args[CONF_SERVICE_ALTERNATE],
-                **self.validated_args[CONF_SERVICE_DATA_ALTERNATE],
+                self.args[CONF_SERVICE_ALTERNATE],
+                **self.args[CONF_SERVICE_DATA_ALTERNATE],
             )
         else:
-            self.call_service(
-                self.validated_args[CONF_SERVICE],
-                **self.validated_args[CONF_SERVICE_DATA],
-            )
+            self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
 
     def on_disable(self) -> None:
         """Stop ticking when the automation is disabled."""
@@ -212,9 +205,7 @@ class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
         # another:
         if new == old:
             return
-        self.call_service(
-            self.validated_args[CONF_SERVICE], **self.validated_args[CONF_SERVICE_DATA],
-        )
+        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
 
 
 class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
@@ -231,14 +222,12 @@ class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
     def configure(self) -> None:
         """Configure."""
         self.run_daily(
-            self._on_time_reached, self.parse_time(self.properties[CONF_SCHEDULE_TIME]),
+            self._on_time_reached, self.parse_time(self.properties[CONF_SCHEDULE_TIME])
         )
 
     def _on_time_reached(self, kwargs: dict) -> None:
         """Call the service."""
-        self.call_service(
-            self.validated_args[CONF_SERVICE], **self.validated_args[CONF_SERVICE_DATA],
-        )
+        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
 
 
 class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-methods
@@ -279,22 +268,18 @@ class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-met
 
     def _on_double_tap_down(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Call the "down" service."""
-        if CONF_SERVICE_DOWN not in self.validated_args:
+        if CONF_SERVICE_DOWN not in self.args:
             self.log("No service defined for double-tap down")
             return
 
         self.call_service(
-            self.validated_args[CONF_SERVICE_DOWN],
-            **self.validated_args[CONF_SERVICE_DOWN_DATA],
+            self.args[CONF_SERVICE_DOWN], **self.args[CONF_SERVICE_DOWN_DATA]
         )
 
     def _on_double_tap_up(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Call the "up" service."""
-        if CONF_SERVICE_UP not in self.validated_args:
+        if CONF_SERVICE_UP not in self.args:
             self.log("No service defined for double-tap up")
             return
 
-        self.call_service(
-            self.validated_args[CONF_SERVICE_UP],
-            **self.validated_args[CONF_SERVICE_UP_DATA],
-        )
+        self.call_service(self.args[CONF_SERVICE_UP], **self.args[CONF_SERVICE_UP_DATA])

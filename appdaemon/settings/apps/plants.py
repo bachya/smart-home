@@ -44,7 +44,7 @@ class LowMoisture(Base):
         self._low_moisture_detected = False
 
         self.listen_state(
-            self._on_moisture_change, self.entity_ids[CONF_CURRENT_MOISTURE],
+            self._on_moisture_change, self.entity_ids[CONF_CURRENT_MOISTURE]
         )
 
     @property

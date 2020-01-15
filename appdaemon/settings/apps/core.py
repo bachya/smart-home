@@ -45,6 +45,9 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
             self.log("Invalid app schema: %s", err, level="ERROR")
             return
 
+        # Save the validated args over the raw ones:
+        self.args = validated_args
+
         # Define a holding place for HASS entity IDs:
         self.entity_ids = validated_args[CONF_ENTITY_IDS]
 
@@ -54,9 +57,6 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
 
         # Define a holding place for key/value properties for this app:
         self.properties = validated_args[CONF_PROPERTIES]
-
-        # Save the Voluptuous-validated args:
-        self.validated_args = validated_args
 
         # Take every dependecy and create a reference to it:
         for app in validated_args[CONF_DEPENDENCIES]:

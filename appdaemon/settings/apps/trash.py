@@ -17,9 +17,7 @@ class NotifyOfPickup(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        run_on_days(
-            self, self._on_notify, ["Sunday"], datetime.time(20, 0, 0),
-        )
+        run_on_days(self, self._on_notify, ["Sunday"], datetime.time(20, 0, 0))
 
     def _on_notify(self, kwargs: dict) -> None:
         """Schedule the next pickup notification."""

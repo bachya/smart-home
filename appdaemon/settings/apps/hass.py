@@ -32,9 +32,7 @@ class BadLoginNotification(Base):  # pylint: disable=too-few-public-methods
         self._send_notification_func = None  # type: Optional[Callable]
 
         for notification_type in self.entity_ids.values():
-            self.listen_state(
-                self._on_bad_login, notification_type, attribute="all",
-            )
+            self.listen_state(self._on_bad_login, notification_type, attribute="all")
 
     def _on_bad_login(
         self, entity: str, attribute: str, old: str, new: dict, kwargs: dict

@@ -43,7 +43,7 @@ class NotifyLowFuel(Base):  # pylint: disable=too-few-public-methods
         self.registered = False
 
         self.listen_state(
-            self._on_low_fuel, self.entity_ids[CONF_CAR], attribute="fuel_level",
+            self._on_low_fuel, self.entity_ids[CONF_CAR], attribute="fuel_level"
         )
 
     def _on_low_fuel(

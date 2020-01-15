@@ -60,9 +60,7 @@ class AdjustOnProximity(Base):  # pylint: disable=too-few-public-methods
             first=True,
         )
 
-        self.listen_event(
-            self._on_proximity_change, EVENT_PROXIMITY_CHANGE,
-        )
+        self.listen_event(self._on_proximity_change, EVENT_PROXIMITY_CHANGE)
 
     def _on_arrive_home(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Last ditch: turn the thermostat to home when someone arrives."""
@@ -375,9 +373,7 @@ class LightningDetected(Base):  # pylint: disable=too-few-public-methods
         self._active = False
         self._lock = Lock()
 
-        self.listen_event(
-            self._on_lightning_detected, EVENT_LIGHTNING_DETECTED,
-        )
+        self.listen_event(self._on_lightning_detected, EVENT_LIGHTNING_DETECTED)
 
     def _on_lightning_detected(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond to "LIGHTNING_DETECTED" events."""

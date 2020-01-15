@@ -6,11 +6,7 @@ from typing import Callable, List, Optional, Union
 import voluptuous as vol
 
 from core import APP_SCHEMA, Base
-from const import (
-    CONF_ENTITY_IDS,
-    CONF_NOTIFICATION_INTERVAL_SLIDER,
-    CONF_PROPERTIES,
-)
+from const import CONF_ENTITY_IDS, CONF_NOTIFICATION_INTERVAL_SLIDER, CONF_PROPERTIES
 from helpers import config_validation as cv
 from notification import send_notification
 
@@ -318,7 +314,7 @@ class Vacuum(Base):
         )
 
         self.listen_state(
-            self._on_schedule_start, self.entity_ids[CONF_CALENDAR], new="on",
+            self._on_schedule_start, self.entity_ids[CONF_CALENDAR], new="on"
         )
 
     @property

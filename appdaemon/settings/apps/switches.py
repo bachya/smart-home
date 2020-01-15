@@ -132,11 +132,9 @@ class SleepTimer(BaseSwitch):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self._on_switch_turned_off, self.entity_ids[CONF_SWITCH], new="off",
+            self._on_switch_turned_off, self.entity_ids[CONF_SWITCH], new="off"
         )
-        self.listen_state(
-            self._on_timer_change, self.entity_ids[CONF_TIMER_SLIDER],
-        )
+        self.listen_state(self._on_timer_change, self.entity_ids[CONF_TIMER_SLIDER])
 
     def _on_timer_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
