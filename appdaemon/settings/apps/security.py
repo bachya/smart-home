@@ -100,8 +100,8 @@ class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods
 
     def _cancel_notification_cycle(self) -> None:
         """Cancel any active notification."""
-        if HANDLE_GARAGE_OPEN in self.handles:
-            cancel = self.handles.pop(HANDLE_GARAGE_OPEN)
+        if HANDLE_GARAGE_OPEN in self.data:
+            cancel = self.data.pop(HANDLE_GARAGE_OPEN)
             cancel()
 
     def _on_closed(
@@ -123,7 +123,7 @@ class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods
         """Start the notification cycle."""
         message = "The garage has been left open. Want to close it?"
 
-        self.handles[HANDLE_GARAGE_OPEN] = send_notification(
+        self.data[HANDLE_GARAGE_OPEN] = send_notification(
             self,
             ["person:Aaron", "person:Britt"],
             message,

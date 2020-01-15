@@ -47,8 +47,8 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
 
     def _cancel_notification_cycle(self) -> None:
         """Cancel any active notification."""
-        if HANDLE_CLEAN in self.handles:
-            cancel = self.handles.pop(HANDLE_CLEAN)
+        if HANDLE_CLEAN in self.data:
+            cancel = self.data.pop(HANDLE_CLEAN)
             cancel()
 
     def _on_notification_interval_change(
@@ -96,7 +96,7 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
         """Start the repeating notification sequence."""
         self._cancel_notification_cycle()
 
-        self.handles[HANDLE_CLEAN] = send_notification(
+        self.data[HANDLE_CLEAN] = send_notification(
             self,
             "presence:home",
             "Empty it now and you won't have to do it later!",

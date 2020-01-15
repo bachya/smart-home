@@ -1,6 +1,6 @@
 """Define a generic object which  all apps/automations inherit from."""
 from datetime import timedelta
-from typing import Callable, Dict, Union
+from typing import Any, Dict, Union
 
 import voluptuous as vol
 from appdaemon.plugins.hass.hassapi import Hass  # pylint: disable=no-name-in-module
@@ -44,9 +44,8 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
             self.log("Invalid app schema: %s", err, level="ERROR")
             return
 
-        # Define a holding place for any scheduler handles that the app wants to keep
-        # track of:
-        self.handles = {}  # type: Dict[str, Callable]
+        # Define an attribute for the app to store data in:
+        self.data = {}  # type: Dict[str, Any]
 
         # Take every dependecy and create a reference to it:
         for app in self.args[CONF_DEPENDENCIES]:

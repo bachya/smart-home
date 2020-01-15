@@ -107,7 +107,7 @@ class LowBatteries(Base):  # pylint: disable=too-few-public-methods
 
         def _send_notification():
             """Send the notification."""
-            self.handles[notification_handle] = send_notification(
+            self.data[notification_handle] = send_notification(
                 self,
                 "slack",
                 f"{name} has low batteries ({value}%). Replace them ASAP!",
@@ -135,8 +135,8 @@ class LowBatteries(Base):  # pylint: disable=too-few-public-methods
             try:
                 self._registered.remove(name)
                 self._send_notification_func = None
-                if notification_handle in self.handles:
-                    cancel = self.handles.pop(notification_handle)
+                if notification_handle in self.data:
+                    cancel = self.data.pop(notification_handle)
                     cancel()
             except ValueError:
                 return

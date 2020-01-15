@@ -101,11 +101,11 @@ class NotifyBeforeRun(Base):  # pylint: disable=too-few-public-methods
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Schedule a notification for an hour before the next run."""
-        if HANDLE_NEXT_RUN_NOTIFICATION in self.handles:
-            handle = self.handles.pop(HANDLE_NEXT_RUN_NOTIFICATION)
+        if HANDLE_NEXT_RUN_NOTIFICATION in self.data:
+            handle = self.data.pop(HANDLE_NEXT_RUN_NOTIFICATION)
             self.cancel_timer(handle)
 
-        self.handles[HANDLE_NEXT_RUN_NOTIFICATION] = send_notification(
+        self.data[HANDLE_NEXT_RUN_NOTIFICATION] = send_notification(
             self,
             "presence:home",
             "Make sure to pull the boundaries out!",
@@ -134,8 +134,8 @@ class NotifyWhenRunComplete(Base):
 
     def _cancel_notification_cycle(self) -> None:
         """Cancel any active notification."""
-        if HANDLE_BIN_FULL in self.handles:
-            cancel = self.handles.pop(HANDLE_BIN_FULL)
+        if HANDLE_BIN_FULL in self.data:
+            cancel = self.data.pop(HANDLE_BIN_FULL)
             cancel()
 
     def _on_notification_interval_change(
@@ -159,7 +159,7 @@ class NotifyWhenRunComplete(Base):
         """Start a repeating notification sequence."""
         self._cancel_notification_cycle()
 
-        self.handles[HANDLE_BIN_FULL] = send_notification(
+        self.data[HANDLE_BIN_FULL] = send_notification(
             self,
             "presence:home",
             "Empty him now and you won't have to do it later!",
@@ -203,8 +203,8 @@ class NotifyWhenStuck(Base):
 
     def _cancel_notification_cycle(self) -> None:
         """Cancel any active notification."""
-        if HANDLE_STUCK in self.handles:
-            cancel = self.handles.pop(HANDLE_STUCK)
+        if HANDLE_STUCK in self.data:
+            cancel = self.data.pop(HANDLE_STUCK)
             cancel()
 
     def _on_error_change(
@@ -228,7 +228,7 @@ class NotifyWhenStuck(Base):
         """Start a repeating notification sequence."""
         self._cancel_notification_cycle()
 
-        self.handles[HANDLE_STUCK] = send_notification(
+        self.data[HANDLE_STUCK] = send_notification(
             self,
             "presence:home",
             "Help him get back on track or home.",

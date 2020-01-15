@@ -44,8 +44,8 @@ class LowMoisture(Base):
 
     def _cancel_notification_cycle(self) -> None:
         """Cancel any active notification."""
-        if HANDLE_LOW_MOISTURE in self.handles:
-            cancel = self.handles.pop(HANDLE_LOW_MOISTURE)
+        if HANDLE_LOW_MOISTURE in self.data:
+            cancel = self.data.pop(HANDLE_LOW_MOISTURE)
             cancel()
 
     def _on_moisture_change(
@@ -68,7 +68,7 @@ class LowMoisture(Base):
 
     def _start_notification_cycle(self) -> None:
         """Start a repeating notification."""
-        self.handles[HANDLE_LOW_MOISTURE] = send_notification(
+        self.data[HANDLE_LOW_MOISTURE] = send_notification(
             self,
             "presence:home",
             (

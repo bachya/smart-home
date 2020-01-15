@@ -152,7 +152,7 @@ class PIN(Base):  # pylint: disable=too-many-instance-attributes
             self.log("Starting date/time for scheduled PIN can't be in the past")
             self.schedule_start = now
         else:
-            self.handles[HANDLE_SCHEDULED_START] = self.run_at(
+            self.data[HANDLE_SCHEDULED_START] = self.run_at(
                 self._set_scheduled_pin_cb, self.schedule_start
             )
 
@@ -160,7 +160,7 @@ class PIN(Base):  # pylint: disable=too-many-instance-attributes
             self.log("Ending date/time for scheduled PIN can't be in the past")
             return
 
-        self.handles[HANDLE_SCHEDULED_END] = self.run_at(
+        self.data[HANDLE_SCHEDULED_END] = self.run_at(
             self._remove_scheduled_pin_cb, self.schedule_end
         )
 
@@ -223,13 +223,13 @@ class PIN(Base):  # pylint: disable=too-many-instance-attributes
 
     def clear_handles(self) -> None:
         """Clear any Scheduled or One-Time handles."""
-        if HANDLE_SCHEDULED_START in self.handles:
+        if HANDLE_SCHEDULED_START in self.data:
             for handle in (HANDLE_SCHEDULED_START, HANDLE_SCHEDULED_END):
-                timer = self.handles.pop(handle)
+                timer = self.data.pop(handle)
                 self.cancel_timer(timer)
 
-        for handle in [handle for handle in self.handles if "one_time" in handle]:
-            timer = self.handles.pop(handle)
+        for handle in [handle for handle in self.data if "one_time" in handle]:
+            timer = self.data.pop(handle)
             self.cancel_listen_state(timer)
 
     def remove_pin(self) -> None:
@@ -269,7 +269,7 @@ class SimpliSafePIN(PIN):
 
     def _listen_for_otp_use(self) -> None:
         """Listen for the use of a one-time PIN."""
-        self.handles[HANDLE_ONE_TIME_STUB.format(self.name)] = self.listen_state(
+        self.data[HANDLE_ONE_TIME_STUB.format(self.name)] = self.listen_state(
             self._on_otp_used, SIMPLISAFE_ENTITY_ID, attribute="changed_by"
         )
 
@@ -318,9 +318,7 @@ class ZWaveLockPIN(PIN):
     def _listen_for_otp_use(self) -> None:
         """Listen for the use of a one-time PIN."""
         for _, name, attrs in self._get_locks():
-            self.handles[
-                HANDLE_ONE_TIME_STUB.format(slugify(name))
-            ] = self.listen_state(
+            self.data[HANDLE_ONE_TIME_STUB.format(slugify(name))] = self.listen_state(
                 self._on_otp_used, attrs[CONF_ENTITY_ID], attribute="lock_status"
             )
 

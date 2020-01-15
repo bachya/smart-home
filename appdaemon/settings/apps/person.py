@@ -124,28 +124,28 @@ class Person(Base):
 
         # Cancel any old timers:
         for handle_key in (HANDLE_5_MINUTE_TIMER, HANDLE_24_HOUR_TIMER):
-            if handle_key not in self.handles:
+            if handle_key not in self.data:
                 continue
-            handle = self.handles.pop(handle_key)
+            handle = self.data.pop(handle_key)
             self.cancel_timer(handle)
 
         # Set the home state and schedule transition checks (Just Left -> Away,
         # for example) for various points in the future:
         if new == "home":
             self.non_binary_state = self.presence_manager.HomeStates.just_arrived
-            self.handles[HANDLE_5_MINUTE_TIMER] = self.run_in(
+            self.data[HANDLE_5_MINUTE_TIMER] = self.run_in(
                 self._on_transition_state,
                 TRANSITION_DURATION_JUST_ARRIVED,
                 current_state=self.presence_manager.HomeStates.just_arrived,
             )
         elif old == "home":
             self.non_binary_state = self.presence_manager.HomeStates.just_left
-            self.handles[HANDLE_5_MINUTE_TIMER] = self.run_in(
+            self.data[HANDLE_5_MINUTE_TIMER] = self.run_in(
                 self._on_transition_state,
                 TRANSITION_DURATION_JUST_LEFT,
                 current_state=self.presence_manager.HomeStates.just_left,
             )
-            self.handles[HANDLE_24_HOUR_TIMER] = self.run_in(
+            self.data[HANDLE_24_HOUR_TIMER] = self.run_in(
                 self._on_transition_state,
                 TRANSITION_DURATION_AWAY,
                 current_state=self.presence_manager.HomeStates.away,

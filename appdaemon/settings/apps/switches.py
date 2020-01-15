@@ -132,15 +132,13 @@ class SleepTimer(BaseSwitch):
             self.log("Deactivating sleep timer")
             self.toggle(state="off")
 
-            if HANDLE_TIMER in self.handles:
-                cancel = self.handles.pop(HANDLE_TIMER)
+            if HANDLE_TIMER in self.data:
+                cancel = self.data.pop(HANDLE_TIMER)
                 self.cancel_timer(cancel)
         else:
             self.log("Activating sleep timer: %s minutes", minutes)
             self.toggle(state="on")
-            self.handles[HANDLE_TIMER] = self.run_in(
-                self._on_timer_complete, minutes * 60
-            )
+            self.data[HANDLE_TIMER] = self.run_in(self._on_timer_complete, minutes * 60)
 
     def _on_switch_turned_off(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict

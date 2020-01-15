@@ -248,7 +248,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
         self.set_mode_off()
 
-        self.handles[HANDLE_ECO_MODE] = self.listen_state(
+        self.data[HANDLE_ECO_MODE] = self.listen_state(
             self._on_eco_temp_change, self.args[CONF_INDOOR_TEMPERATURE_SENSOR]
         )
 
@@ -268,7 +268,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         """Put the thermostat in "Home" mode."""
         self.log('Setting thermostat to "Home" mode')
 
-        handle = self.handles.pop(HANDLE_ECO_MODE)
+        handle = self.data.pop(HANDLE_ECO_MODE)
         self.cancel_listen_state(handle)
 
         # If the thermostat isn't doing anything, set it to the previous settings
