@@ -44,7 +44,7 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
         for consumable in self.args[CONF_CONSUMABLES]:
             self.listen_state(
                 self._on_consumable_change,
-                self.app.entity_ids[CONF_VACUUM],
+                self.app.args[CONF_VACUUM],
                 attribute=consumable,
             )
 
@@ -93,7 +93,7 @@ class NotifyBeforeRun(Base):  # pylint: disable=too-few-public-methods
         """Configure."""
         self.listen_state(
             self._on_next_run_datetime_change,
-            self.app.entity_ids[CONF_CALENDAR],
+            self.app.args[CONF_CALENDAR],
             attribute="start_time",
         )
 
@@ -130,9 +130,7 @@ class NotifyWhenRunComplete(Base):
             self._on_notification_interval_change,
             self.args[CONF_NOTIFICATION_INTERVAL_SLIDER],
         )
-        self.listen_state(
-            self._on_vacuum_bin_change, self.app.entity_ids[CONF_BIN_STATE]
-        )
+        self.listen_state(self._on_vacuum_bin_change, self.app.args[CONF_BIN_STATE])
 
     def _cancel_notification_cycle(self) -> None:
         """Cancel any active notification."""
@@ -197,7 +195,7 @@ class NotifyWhenStuck(Base):
         if self.enabled and self.app.state == self.app.States.error:
             self._start_notification_cycle()
 
-        self.listen_state(self._on_error_change, self.app.entity_ids[CONF_VACUUM])
+        self.listen_state(self._on_error_change, self.app.args[CONF_VACUUM])
         self.listen_state(
             self._on_notification_interval_change,
             self.args[CONF_NOTIFICATION_INTERVAL_SLIDER],

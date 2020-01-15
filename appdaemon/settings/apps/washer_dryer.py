@@ -42,8 +42,8 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
             self._on_notification_interval_change,
             self.args[CONF_NOTIFICATION_INTERVAL_SLIDER],
         )
-        self.listen_state(self._on_power_change, self.app.entity_ids[CONF_POWER])
-        self.listen_state(self._on_status_change, self.app.entity_ids[CONF_STATUS])
+        self.listen_state(self._on_power_change, self.app.args[CONF_POWER])
+        self.listen_state(self._on_status_change, self.app.args[CONF_STATUS])
 
     def _cancel_notification_cycle(self) -> None:
         """Cancel any active notification."""
