@@ -206,7 +206,7 @@ class NotifyWhenStuck(Base):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_PROPERTIES: vol.Schema(
+            CONF_ENTITY_IDS: vol.Schema(
                 {vol.Required(CONF_NOTIFICATION_INTERVAL_SLIDER): cv.entity_id},
                 extra=vol.ALLOW_EXTRA,
             )

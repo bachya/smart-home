@@ -34,7 +34,7 @@ class Person(Base):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {
                     vol.Required(CONF_PERSON): cv.entity_id,
                     vol.Required(CONF_NOTIFIERS): cv.ensure_list,
@@ -42,7 +42,7 @@ class Person(Base):
                 },
                 extra=vol.ALLOW_EXTRA,
             ),
-            CONF_PROPERTIES: vol.Schema(
+            vol.Optional(CONF_PROPERTIES, default={}): vol.Schema(
                 {vol.Optional(CONF_PUSH_DEVICE_ID): str}, extra=vol.ALLOW_EXTRA
             ),
         }

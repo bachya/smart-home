@@ -105,7 +105,7 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
         {
             vol.Optional(CONF_SERVICE_ALTERNATE): str,
             vol.Optional(CONF_SERVICE_DATA_ALTERNATE, default={}): dict,
-            CONF_PROPERTIES: vol.Schema(
+            vol.Optional(CONF_PROPERTIES, default={}): vol.Schema(
                 {
                     vol.Optional(
                         CONF_RANDOM_TICK_LOWER_END,
