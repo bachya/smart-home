@@ -34,10 +34,13 @@ CONF_TARGET_ENTITY_ID = "target_entity_id"
 CONF_TARGET_VALUE = "target_value"
 CONF_ZWAVE_DEVICE = "zwave_device"
 
+DEFAULT_RANDOM_TICK_LOWER_END = 5 * 60
+DEFAULT_RANDOM_TICK_UPPER_END = 60 * 60
+
 HANDLE_TICK = "tick"
 
 SERVICE_CALL_SCHEMA = APP_SCHEMA.extend(
-    {vol.Required(CONF_SERVICE): str, vol.Optional(CONF_SERVICE_DATA): dict}
+    {vol.Required(CONF_SERVICE): str, vol.Optional(CONF_SERVICE_DATA, default={}): dict}
 )
 
 
@@ -47,7 +50,10 @@ class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
     APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
         {
             CONF_PROPERTIES: vol.Schema(
-                {vol.Required(CONF_EVENT): str, vol.Optional(CONF_EVENT_DATA): dict},
+                {
+                    vol.Required(CONF_EVENT): str,
+                    vol.Optional(CONF_EVENT_DATA, default={}): dict,
+                },
                 extra=vol.ALLOW_EXTRA,
             )
         }
@@ -58,13 +64,13 @@ class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
         self.listen_event(
             self._on_event_heard,
             self.properties[CONF_EVENT],
-            **self.properties.get(CONF_EVENT_DATA, {}),
+            **self.properties[CONF_EVENT_DATA],
         )
 
     def _on_event_heard(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Call the service."""
         self.call_service(
-            self.args[CONF_SERVICE], **self.args.get(CONF_SERVICE_DATA, {})
+            self.validated_args[CONF_SERVICE], **self.validated_args[CONF_SERVICE_DATA],
         )
 
 
@@ -88,7 +94,7 @@ class ServiceOnInterval(Base):  # pylint: disable=too-few-public-methods
     def _on_interval_reached(self, kwargs: dict) -> None:
         """Call the service."""
         self.call_service(
-            self.args[CONF_SERVICE], **self.args.get(CONF_SERVICE_DATA, {})
+            self.validated_args[CONF_SERVICE], **self.validated_args[CONF_SERVICE_DATA],
         )
 
 
@@ -98,11 +104,17 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
     APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
         {
             vol.Optional(CONF_SERVICE_ALTERNATE): str,
-            vol.Optional(CONF_SERVICE_DATA_ALTERNATE): dict,
+            vol.Optional(CONF_SERVICE_DATA_ALTERNATE, default={}): dict,
             CONF_PROPERTIES: vol.Schema(
                 {
-                    vol.Optional(CONF_RANDOM_TICK_LOWER_END): int,
-                    vol.Optional(CONF_RANDOM_TICK_UPPER_END): int,
+                    vol.Optional(
+                        CONF_RANDOM_TICK_LOWER_END,
+                        default=DEFAULT_RANDOM_TICK_LOWER_END,
+                    ): int,
+                    vol.Optional(
+                        CONF_RANDOM_TICK_UPPER_END,
+                        default=DEFAULT_RANDOM_TICK_UPPER_END,
+                    ): int,
                 },
                 extra=vol.ALLOW_EXTRA,
             ),
@@ -120,22 +132,23 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
             self._on_tick,
             self.datetime(),
             randint(  # nosec
-                self.properties.get(CONF_RANDOM_TICK_LOWER_END, 5 * 60),
-                self.properties.get(CONF_RANDOM_TICK_UPPER_END, 60 * 60),
+                self.properties[CONF_RANDOM_TICK_LOWER_END],
+                self.properties[CONF_RANDOM_TICK_UPPER_END],
             ),
         )
 
     def _on_tick(self, kwargs: dict) -> None:
         """Fire the event when the tick occurs."""
         self._count += 1
-        if self.args.get(CONF_SERVICE_ALTERNATE) and self._count % 2 == 0:
+        if CONF_SERVICE_ALTERNATE in self.validated_args and self._count % 2 == 0:
             self.call_service(
-                self.args[CONF_SERVICE_ALTERNATE],
-                **self.args.get(CONF_SERVICE_DATA_ALTERNATE, {}),
+                self.validated_args[CONF_SERVICE_ALTERNATE],
+                **self.validated_args[CONF_SERVICE_DATA_ALTERNATE],
             )
         else:
             self.call_service(
-                self.args[CONF_SERVICE], **self.args.get(CONF_SERVICE_DATA, {})
+                self.validated_args[CONF_SERVICE],
+                **self.validated_args[CONF_SERVICE_DATA],
             )
 
     def on_disable(self) -> None:
@@ -200,7 +213,7 @@ class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
         if new == old:
             return
         self.call_service(
-            self.args[CONF_SERVICE], **self.args.get(CONF_SERVICE_DATA, {})
+            self.validated_args[CONF_SERVICE], **self.validated_args[CONF_SERVICE_DATA],
         )
 
 
@@ -224,7 +237,7 @@ class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
     def _on_time_reached(self, kwargs: dict) -> None:
         """Call the service."""
         self.call_service(
-            self.args[CONF_SERVICE], **self.args.get(CONF_SERVICE_DATA, {})
+            self.validated_args[CONF_SERVICE], **self.validated_args[CONF_SERVICE_DATA],
         )
 
 
@@ -266,18 +279,22 @@ class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-met
 
     def _on_double_tap_down(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Call the "down" service."""
-        if not self.args.get(CONF_SERVICE_DOWN):
+        if CONF_SERVICE_DOWN not in self.validated_args:
             self.log("No service defined for double-tap down")
             return
 
         self.call_service(
-            self.args[CONF_SERVICE_DOWN], **self.args[CONF_SERVICE_DOWN_DATA]
+            self.validated_args[CONF_SERVICE_DOWN],
+            **self.validated_args[CONF_SERVICE_DOWN_DATA],
         )
 
     def _on_double_tap_up(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Call the "up" service."""
-        if not self.args.get(CONF_SERVICE_UP):
+        if CONF_SERVICE_UP not in self.validated_args:
             self.log("No service defined for double-tap up")
             return
 
-        self.call_service(self.args[CONF_SERVICE_UP], **self.args[CONF_SERVICE_UP_DATA])
+        self.call_service(
+            self.validated_args[CONF_SERVICE_UP],
+            **self.validated_args[CONF_SERVICE_UP_DATA],
+        )
