@@ -40,7 +40,7 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
 
         self.listen_state(
             self._on_notification_interval_change,
-            self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER],
+            self.args[CONF_NOTIFICATION_INTERVAL_SLIDER],
         )
         self.listen_state(self._on_power_change, self.app.entity_ids[CONF_POWER])
         self.listen_state(self._on_status_change, self.app.entity_ids[CONF_STATUS])
@@ -66,19 +66,19 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
         power = float(new)
         if (
             self.app.state != self.app.States.running
-            and power >= self.properties[CONF_RUNNING_THRESHOLD]
+            and power >= self.args[CONF_RUNNING_THRESHOLD]
         ):
             self.log('Setting dishwasher to "Running"')
             self.app.state = self.app.States.running
         elif (
             self.app.state == self.app.States.running
-            and power <= self.properties[CONF_DRYING_THRESHOLD]
+            and power <= self.args[CONF_DRYING_THRESHOLD]
         ):
             self.log('Setting dishwasher to "Drying"')
             self.app.state = self.app.States.drying
         elif (
             self.app.state == self.app.States.drying
-            and power == self.properties[CONF_CLEAN_THRESHOLD]
+            and power == self.args[CONF_CLEAN_THRESHOLD]
         ):
             self.log('Setting dishwasher to "Clean"')
             self.app.state = self.app.States.clean
@@ -103,9 +103,7 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
             title="Dishwasher Clean 🍽",
             when=self.datetime() + timedelta(minutes=15),
             interval=int(
-                float(
-                    self.get_state(self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER])
-                )
+                float(self.get_state(self.args[CONF_NOTIFICATION_INTERVAL_SLIDER]))
             )
             * 60
             * 60,
@@ -143,9 +141,9 @@ class WasherDryer(Base):  # pylint: disable=too-few-public-methods
     @property
     def state(self) -> "States":
         """Get the state."""
-        return self.States(self.get_state(self.entity_ids[CONF_STATUS]))
+        return self.States(self.get_state(self.args[CONF_STATUS]))
 
     @state.setter
     def state(self, value: "States") -> None:
         """Set the state."""
-        self.select_option(self.entity_ids[CONF_STATUS], value.value)
+        self.select_option(self.args[CONF_STATUS], value.value)

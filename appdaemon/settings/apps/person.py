@@ -50,7 +50,7 @@ class Person(Base):
         self.global_vars[CONF_PEOPLE].append(self)
 
         # Listen to state changes for the `person` entity:
-        self.listen_state(self._on_person_state_change, self.entity_ids[CONF_PERSON])
+        self.listen_state(self._on_person_state_change, self.args[CONF_PERSON])
 
         # # Render the initial state of the presence sensor:
         self._render_presence_status_sensor()
@@ -63,7 +63,7 @@ class Person(Base):
     @property
     def geocoded_location(self) -> str:
         """Return the person's reverse-geocoded address."""
-        return self.get_state(self.entity_ids[CONF_GEOCODED_LOCATION])
+        return self.get_state(self.args[CONF_GEOCODED_LOCATION])
 
     @property
     def non_binary_state(self) -> "PresenceManager.HomeStates":
@@ -80,12 +80,12 @@ class Person(Base):
     @property
     def notifiers(self) -> list:
         """Return the notifiers associated with the person."""
-        return self.entity_ids[CONF_NOTIFIERS]
+        return self.args[CONF_NOTIFIERS]
 
     @property
     def state(self) -> str:
         """Get the person's raw entity state."""
-        return self.get_state(self.entity_ids[CONF_PERSON])
+        return self.get_state(self.args[CONF_PERSON])
 
     def _fire_presence_change_event(
         self, old: "PresenceManager.HomeStates", new: "PresenceManager.HomeStates"
@@ -181,7 +181,7 @@ class Person(Base):
             state = self.state
 
         self.set_state(
-            self.entity_ids[CONF_PRESENCE_STATUS_SENSOR],
+            self.args[CONF_PRESENCE_STATUS_SENSOR],
             state=state,
             attributes={
                 "friendly_name": self.first_name,

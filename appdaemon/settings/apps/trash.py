@@ -39,11 +39,11 @@ class TrashManager(Base):
     def in_next_pickup(self) -> Tuple[datetime.datetime, list]:
         """Return a list of pickup types in the next pickup."""
         pickup_datetime = datetime.datetime.strptime(
-            self.get_state(self.entity_ids[CONF_NEXT_PICKUP_SENSOR]), "%Y-%m-%d"
+            self.get_state(self.args[CONF_NEXT_PICKUP_SENSOR]), "%Y-%m-%d"
         )
         pickup_types = [
             pickup_type
-            for pickup_type, sensor in self.entity_ids[CONF_TRASH_TYPE_SENSORS].items()
+            for pickup_type, sensor in self.args[CONF_TRASH_TYPE_SENSORS].items()
             if self.get_state(sensor) == "on"
         ]
 

@@ -51,9 +51,7 @@ class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
     def configure(self) -> None:
         """Configure."""
         self.listen_event(
-            self._on_event_heard,
-            self.properties[CONF_EVENT],
-            **self.properties[CONF_EVENT_DATA],
+            self._on_event_heard, self.args[CONF_EVENT], **self.args[CONF_EVENT_DATA],
         )
 
     def _on_event_heard(self, event_name: str, data: dict, kwargs: dict) -> None:
@@ -71,7 +69,7 @@ class ServiceOnInterval(Base):  # pylint: disable=too-few-public-methods
     def configure(self) -> None:
         """Configure."""
         self.run_every(
-            self._on_interval_reached, self.datetime(), self.properties[CONF_INTERVAL]
+            self._on_interval_reached, self.datetime(), self.args[CONF_INTERVAL]
         )
 
     def _on_interval_reached(self, kwargs: dict) -> None:
@@ -106,8 +104,8 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
             self._on_tick,
             self.datetime(),
             randint(  # nosec
-                self.properties[CONF_RANDOM_TICK_LOWER_END],
-                self.properties[CONF_RANDOM_TICK_UPPER_END],
+                self.args[CONF_RANDOM_TICK_LOWER_END],
+                self.args[CONF_RANDOM_TICK_UPPER_END],
             ),
         )
 
@@ -152,17 +150,15 @@ class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
         """Configure."""
         kwargs = {}
 
-        if CONF_NEW_TARGET_STATE in self.properties:
-            kwargs["new"] = self.properties[CONF_NEW_TARGET_STATE]
-        if CONF_OLD_TARGET_STATE in self.properties:
-            kwargs["old"] = self.properties[CONF_OLD_TARGET_STATE]
-        if CONF_DELAY in self.properties:
-            kwargs["duration"] = self.properties[CONF_DELAY]
+        if CONF_NEW_TARGET_STATE in self.args:
+            kwargs["new"] = self.args[CONF_NEW_TARGET_STATE]
+        if CONF_OLD_TARGET_STATE in self.args:
+            kwargs["old"] = self.args[CONF_OLD_TARGET_STATE]
+        if CONF_DELAY in self.args:
+            kwargs["duration"] = self.args[CONF_DELAY]
 
         self.listen_state(
-            self._on_target_state_observed,
-            self.entity_ids[CONF_TARGET_ENTITY_ID],
-            **kwargs,
+            self._on_target_state_observed, self.args[CONF_TARGET_ENTITY_ID], **kwargs,
         )
 
     def _on_target_state_observed(
@@ -186,7 +182,7 @@ class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
     def configure(self) -> None:
         """Configure."""
         self.run_daily(
-            self._on_time_reached, self.parse_time(self.properties[CONF_SCHEDULE_TIME])
+            self._on_time_reached, self.parse_time(self.args[CONF_SCHEDULE_TIME])
         )
 
     def _on_time_reached(self, kwargs: dict) -> None:
@@ -215,14 +211,14 @@ class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-met
         self.listen_event(
             self._on_double_tap_up,
             "zwave.node_event",
-            entity_id=self.entity_ids[CONF_ZWAVE_DEVICE],
+            arg=self.args[CONF_ZWAVE_DEVICE],
             basic_level=255,
         )
 
         self.listen_event(
             self._on_double_tap_down,
             "zwave.node_event",
-            entity_id=self.entity_ids[CONF_ZWAVE_DEVICE],
+            arg=self.args[CONF_ZWAVE_DEVICE],
             basic_level=0,
         )
 

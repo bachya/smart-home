@@ -38,10 +38,7 @@ class AbsentInsecure(Base):  # pylint: disable=too-few-public-methods
         self._send_notification_func = None  # type: Optional[Callable]
 
         self.listen_state(
-            self._on_house_insecure,
-            self.entity_ids[CONF_STATE],
-            new="Open",
-            duration=60 * 5,
+            self._on_house_insecure, self.args[CONF_STATE], new="Open", duration=60 * 5,
         )
 
     def _on_house_insecure(
@@ -89,14 +86,12 @@ class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        self.listen_state(
-            self._on_closed, self.entity_ids[CONF_GARAGE_DOOR], new="closed"
-        )
+        self.listen_state(self._on_closed, self.args[CONF_GARAGE_DOOR], new="closed")
         self.listen_state(
             self._on_left_open,
-            self.entity_ids[CONF_GARAGE_DOOR],
+            self.args[CONF_GARAGE_DOOR],
             new="open",
-            duration=self.properties[CONF_TIME_LEFT_OPEN],
+            duration=self.args[CONF_TIME_LEFT_OPEN],
         )
 
     def _cancel_notification_cycle(self) -> None:
@@ -130,7 +125,7 @@ class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods
             message,
             title="Garage Open 🚗",
             when=self.datetime(),
-            interval=self.properties[CONF_NOTIFICATION_INTERVAL],
+            interval=self.args[CONF_NOTIFICATION_INTERVAL],
             data={"push": {"category": "garage"}},
         )
 
@@ -152,7 +147,7 @@ class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods
 
     def on_enable(self) -> None:
         """Send the notification once the automation is enabled."""
-        if self.get_state(self.entity_ids[CONF_GARAGE_DOOR]) == "open":
+        if self.get_state(self.args[CONF_GARAGE_DOOR]) == "open":
             self._start_notification_cycle()
 
 
@@ -165,7 +160,7 @@ class NotifyOnChange(Base):  # pylint: disable=too-few-public-methods
         """Configure."""
         self._send_notification_func = None  # type: Optional[Callable]
 
-        self.listen_state(self._on_security_system_change, self.entity_ids[CONF_STATE])
+        self.listen_state(self._on_security_system_change, self.args[CONF_STATE])
 
     def _on_security_system_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
@@ -206,7 +201,7 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
         else:
             self.disable()
 
-        for camera in self.entity_ids[CONF_CAMERAS]:
+        for camera in self.args[CONF_CAMERAS]:
             self.listen_state(
                 self._on_detection,
                 camera[CONF_PRESENCE_DETECTOR_ENTITY_ID],
@@ -216,9 +211,7 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
             )
 
         self.run_every(
-            self._on_window_expiration,
-            self.datetime(),
-            self.properties[CONF_WINDOW_SECONDS],
+            self._on_window_expiration, self.datetime(), self.args[CONF_WINDOW_SECONDS],
         )
 
     def _on_detection(
@@ -227,7 +220,7 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
         """Respond to any hit, no matter the duration."""
         with self._lock:
             self._hits += 1
-            if self._hits >= self.properties[CONF_HIT_THRESHOLD]:
+            if self._hits >= self.args[CONF_HIT_THRESHOLD]:
                 self._send_and_reset(kwargs[CONF_CAMERA_ENTITY_ID])
 
     def _on_window_expiration(self, kwargs: dict) -> None:
@@ -277,19 +270,17 @@ class SecurityManager(Base):
     @property
     def alarm_state(self) -> "AlarmStates":
         """Return the current state of the security system."""
-        return self.AlarmStates(
-            self.get_state(self.entity_ids[CONF_ALARM_CONTROL_PANEL])
-        )
+        return self.AlarmStates(self.get_state(self.args[CONF_ALARM_CONTROL_PANEL]))
 
     @property
     def secure(self) -> bool:
         """Return whether the house is secure or not."""
-        return self.get_state(self.entity_ids[CONF_OVERALL_SECURITY_STATUS]) == "Secure"
+        return self.get_state(self.args[CONF_OVERALL_SECURITY_STATUS]) == "Secure"
 
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self._on_security_system_change, self.entity_ids[CONF_ALARM_CONTROL_PANEL]
+            self._on_security_system_change, self.args[CONF_ALARM_CONTROL_PANEL]
         )
 
     def _on_security_system_change(
@@ -303,15 +294,13 @@ class SecurityManager(Base):
         """Close the garage."""
         self.log("Closing the garage door")
 
-        self.call_service(
-            "cover/close_cover", entity_id=self.entity_ids[CONF_GARAGE_DOOR]
-        )
+        self.call_service("cover/close_cover", entity_id=self.args[CONF_GARAGE_DOOR])
 
     def get_insecure_entities(self) -> list:
         """Return a list of insecure entities."""
         return [
             entity[CONF_FRIENDLY_NAME]
-            for entity in self.properties["secure_status_mapping"]
+            for entity in self.args["secure_status_mapping"]
             if self.get_state(entity["entity_id"]) == entity[CONF_STATE]
         ]
 
@@ -319,9 +308,7 @@ class SecurityManager(Base):
         """Open the garage."""
         self.log("Closing the garage door")
 
-        self.call_service(
-            "cover.open_cover", entity_id=self.entity_ids[CONF_GARAGE_DOOR]
-        )
+        self.call_service("cover.open_cover", entity_id=self.args[CONF_GARAGE_DOOR])
 
     def set_alarm(self, new: "AlarmStates") -> None:
         """Set the security system."""
@@ -330,14 +317,14 @@ class SecurityManager(Base):
 
             self.call_service(
                 "alarm_control_panel/alarm_disarm",
-                entity_id=self.entity_ids[CONF_ALARM_CONTROL_PANEL],
+                entity_id=self.args[CONF_ALARM_CONTROL_PANEL],
             )
         elif new in (self.AlarmStates.away, self.AlarmStates.home):
             self.log('Arming the security system: "%s"', new.name)
 
             self.call_service(
                 f'alarm_control_panel/alarm_arm_{new.value.split("_")[1]}',
-                entity_id=self.entity_ids[CONF_ALARM_CONTROL_PANEL],
+                entity_id=self.args[CONF_ALARM_CONTROL_PANEL],
             )
         else:
             raise AttributeError(f"Unknown security state: {new}")

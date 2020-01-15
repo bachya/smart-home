@@ -32,15 +32,13 @@ class AaronAccountability(Base):
     def configure(self) -> None:
         """Configure."""
         self.listen_state(
-            self._on_disconnect,
-            self.entity_ids[CONF_AARON_ROUTER_TRACKER],
-            new="not_home",
+            self._on_disconnect, self.args[CONF_AARON_ROUTER_TRACKER], new="not_home",
         )
 
     @property
     def router_tracker_state(self) -> str:
         """Return the state of Aaron's Unifi tracker."""
-        return self.get_state(self.entity_ids[CONF_AARON_ROUTER_TRACKER])
+        return self.get_state(self.args[CONF_AARON_ROUTER_TRACKER])
 
     def _on_disconnect(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
@@ -74,7 +72,7 @@ class LowBatteries(Base):  # pylint: disable=too-few-public-methods
         self._registered = []  # type: List[str]
         self._send_notification_func = None  # type: Optional[Callable]
 
-        for entity in self.entity_ids[CONF_BATTERIES_TO_MONITOR]:
+        for entity in self.args[CONF_BATTERIES_TO_MONITOR]:
             if entity.split(".")[0] == "binary_sensor":
                 self.listen_state(
                     self._on_battery_change, entity, new="on", attribute="all"
@@ -112,10 +110,10 @@ class LowBatteries(Base):  # pylint: disable=too-few-public-methods
                 "slack",
                 f"{name} has low batteries ({value}%). Replace them ASAP!",
                 when=self.datetime(),
-                interval=self.properties[CONF_NOTIFICATION_INTERVAL],
+                interval=self.args[CONF_NOTIFICATION_INTERVAL],
             )
 
-        if value < self.properties[CONF_BATTERY_LEVEL_THRESHOLD]:
+        if value < self.args[CONF_BATTERY_LEVEL_THRESHOLD]:
             # If we've already registered that the battery is low, don't repeatedly
             # register it:
             if name in self._registered:
@@ -168,9 +166,9 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
 
         self.listen_state(
             self._on_limit,
-            self.entity_ids[CONF_ENTITY_ID],
-            new=self.properties[CONF_STATE],
-            duration=self.properties[CONF_DURATION],
+            self.args[CONF_ENTITY_ID],
+            new=self.args[CONF_STATE],
+            duration=self.args[CONF_DURATION],
         )
 
     def _on_limit(
@@ -181,14 +179,14 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
         def _send_notification() -> None:
             """Send a notification."""
             friendly_name = self.get_state(
-                self.entity_ids[CONF_ENTITY_ID], attribute="friendly_name"
+                self.args[CONF_ENTITY_ID], attribute="friendly_name"
             )
             send_notification(
                 self,
-                self.properties[CONF_NOTIFICATION_TARGET],
+                self.args[CONF_NOTIFICATION_TARGET],
                 (
-                    f"{friendly_name} -> {self.properties[CONF_STATE]} "
-                    f"({self.properties[CONF_DURATION]} seconds)"
+                    f"{friendly_name} -> {self.args[CONF_STATE]} "
+                    f"({self.args[CONF_DURATION]} seconds)"
                 ),
                 title="Entity Alert",
             )
@@ -241,7 +239,7 @@ class StartHomeKitOnZwaveReady(Base):
         zwave_devices = [
             v
             for k, v in self.get_state("zwave").items()
-            if k not in self.entity_ids["to_exclude"]
+            if k not in self.args["to_exclude"]
         ]
         for attrs in zwave_devices:
             try:

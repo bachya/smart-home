@@ -151,10 +151,10 @@ class SlackApp(Base):
 
         self.listen_event(
             self._on_interactive_command_received,
-            self.properties["interactive_command_event"],
+            self.args["interactive_command_event"],
         )
         self.listen_event(
-            self._on_slash_command_received, self.properties["slash_command_event"]
+            self._on_slash_command_received, self.args["slash_command_event"]
         )
 
     def _on_interactive_command_received(

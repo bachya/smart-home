@@ -110,77 +110,77 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         if self.away_mode:
             self._set_away()
 
-        self.listen_state(self._on_away_mode_change, self.entity_ids[CONF_AWAY_MODE])
+        self.listen_state(self._on_away_mode_change, self.args[CONF_AWAY_MODE])
 
     @property
     def away_mode(self) -> bool:
         """Return the state of away mode."""
-        return self.get_state(self.entity_ids[CONF_AWAY_MODE]) == "on"
+        return self.get_state(self.args[CONF_AWAY_MODE]) == "on"
 
     @property
     def eco_high_temperature(self) -> float:
         """Return the upper limit of eco mode."""
-        return float(self.get_state(self.entity_ids[CONF_ECO_HIGH_THRESHOLD]))
+        return float(self.get_state(self.args[CONF_ECO_HIGH_THRESHOLD]))
 
     @eco_high_temperature.setter
     def eco_high_temperature(self, value: int) -> None:
         """Set the upper limit of eco mode."""
-        self.set_value(self.entity_ids[CONF_ECO_HIGH_THRESHOLD], value)
+        self.set_value(self.args[CONF_ECO_HIGH_THRESHOLD], value)
 
     @property
     def eco_low_temperature(self) -> float:
         """Return the lower limit of eco mode."""
-        return float(self.get_state(self.entity_ids[CONF_ECO_LOW_THRESHOLD]))
+        return float(self.get_state(self.args[CONF_ECO_LOW_THRESHOLD]))
 
     @eco_low_temperature.setter
     def eco_low_temperature(self, value: int) -> None:
         """Set the upper limit of eco mode."""
-        self.set_value(self.entity_ids[CONF_ECO_LOW_THRESHOLD], value)
+        self.set_value(self.args[CONF_ECO_LOW_THRESHOLD], value)
 
     @property
     def fan_mode(self) -> str:
         """Return the current fan mode."""
-        return self.get_state(self.entity_ids[CONF_THERMOSTAT], attribute="fan_mode")
+        return self.get_state(self.args[CONF_THERMOSTAT], attribute="fan_mode")
 
     @property
     def indoor_humidity(self) -> float:
         """Return the average indoor humidity."""
-        return float(self.get_state(self.entity_ids[CONF_HUMIDITY_SENSOR]))
+        return float(self.get_state(self.args[CONF_HUMIDITY_SENSOR]))
 
     @property
     def indoor_temperature(self) -> float:
         """Return the average indoor temperature."""
-        return float(self.get_state(self.entity_ids[CONF_INDOOR_TEMPERATURE_SENSOR]))
+        return float(self.get_state(self.args[CONF_INDOOR_TEMPERATURE_SENSOR]))
 
     @property
     def hvac_mode(self) -> str:
         """Return the current operating mode."""
-        return self.get_state(self.entity_ids[CONF_THERMOSTAT])
+        return self.get_state(self.args[CONF_THERMOSTAT])
 
     @property
     def outdoor_brightness(self) -> float:
         """Return the outdoor brightness in lux."""
-        return float(self.get_state(self.entity_ids[CONF_BRIGHTNESS_SENSOR]))
+        return float(self.get_state(self.args[CONF_BRIGHTNESS_SENSOR]))
 
     @property
     def outdoor_brightness_percentage(self) -> float:
         """Return the human-perception of brightness percentage."""
-        return float(self.get_state(self.entity_ids[CONF_BRIGHTNESS_PERCENT_SENSOR]))
+        return float(self.get_state(self.args[CONF_BRIGHTNESS_PERCENT_SENSOR]))
 
     @property
     def outdoor_high_temperature(self) -> float:
         """Return the upper limit of "extreme" outdoor temperatures."""
-        return float(self.get_state(self.entity_ids[CONF_OUTDOOR_HIGH_THRESHOLD]))
+        return float(self.get_state(self.args[CONF_OUTDOOR_HIGH_THRESHOLD]))
 
     @property
     def outdoor_low_temperature(self) -> float:
         """Return the lower limit of "extreme" outdoor temperatures."""
-        return float(self.get_state(self.entity_ids[CONF_OUTDOOR_LOW_THRESHOLD]))
+        return float(self.get_state(self.args[CONF_OUTDOOR_LOW_THRESHOLD]))
 
     @property
     def outdoor_temperature(self) -> float:
         """Return the outdoor temperature."""
-        return float(self.get_state(self.entity_ids[CONF_OUTDOOR_TEMPERATURE_SENSOR]))
+        return float(self.get_state(self.args[CONF_OUTDOOR_TEMPERATURE_SENSOR]))
 
     @property
     def outdoor_temperature_extreme(self) -> float:
@@ -195,9 +195,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         """Return the temperature the thermostat is currently set to."""
         try:
             return float(
-                self.get_state(
-                    self.entity_ids[CONF_THERMOSTAT], attribute="temperature"
-                )
+                self.get_state(self.args[CONF_THERMOSTAT], attribute="temperature")
             )
         except TypeError:
             return 0.0
@@ -251,7 +249,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         self.set_mode_off()
 
         self.handles[HANDLE_ECO_MODE] = self.listen_state(
-            self._on_eco_temp_change, self.entity_ids[CONF_INDOOR_TEMPERATURE_SENSOR]
+            self._on_eco_temp_change, self.args[CONF_INDOOR_TEMPERATURE_SENSOR]
         )
 
     def _set_fan_mode(self, fan_mode: str) -> None:
@@ -262,7 +260,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         self.log('Setting fan mode to "%s"', fan_mode.title())
         self.call_service(
             "climate/set_fan_mode",
-            entity_id=self.entity_ids[CONF_THERMOSTAT],
+            entity_id=self.args[CONF_THERMOSTAT],
             fan_mode=fan_mode,
         )
 
@@ -288,7 +286,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         self.log('Setting operation mode to "%s"', hvac_mode.title())
         self.call_service(
             "climate/set_hvac_mode",
-            entity_id=self.entity_ids[CONF_THERMOSTAT],
+            entity_id=self.args[CONF_THERMOSTAT],
             hvac_mode=hvac_mode,
         )
 
@@ -300,7 +298,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
     def set_away(self) -> None:
         """Set the thermostat to away."""
-        self.turn_on(self.entity_ids[CONF_AWAY_MODE])
+        self.turn_on(self.args[CONF_AWAY_MODE])
 
     def set_fan_auto_low(self) -> None:
         """Set the fan mode to auto_low."""
@@ -316,7 +314,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
     def set_home(self) -> None:
         """Set the thermostat to home."""
-        self.turn_off(self.entity_ids[CONF_AWAY_MODE])
+        self.turn_off(self.args[CONF_AWAY_MODE])
 
     def set_mode_auto(self) -> None:
         """Set the operation mode to auto."""
@@ -344,7 +342,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
         self.call_service(
             "climate/set_temperature",
-            entity_id=self.entity_ids[CONF_THERMOSTAT],
+            entity_id=self.args[CONF_THERMOSTAT],
             temperature=str(int(temperature)),
         )
 
@@ -380,7 +378,7 @@ class LightningDetected(Base):  # pylint: disable=too-few-public-methods
             )
 
             self._active = True
-            self.run_in(self._on_reset, self.properties[CONF_LIGHTNING_WINDOW])
+            self.run_in(self._on_reset, self.args[CONF_LIGHTNING_WINDOW])
 
     def _on_reset(self, kwargs: dict) -> None:
         """Reset the notification window."""
@@ -403,7 +401,7 @@ class NotifyBadAqi(Base):
         self._good_notification_sent = True
         self._send_notification_func = None  # type: Optional[Callable]
 
-        self.listen_state(self._on_aqi_change, self.entity_ids[CONF_AQI_SENSOR])
+        self.listen_state(self._on_aqi_change, self.args[CONF_AQI_SENSOR])
 
     def _on_aqi_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
@@ -432,7 +430,7 @@ class NotifyBadAqi(Base):
                 title="Better AQI 😅",
             )
 
-        if current_aqi > self.properties[CONF_AQI_THRESHOLD]:
+        if current_aqi > self.args[CONF_AQI_THRESHOLD]:
             if self._bad_notification_sent:
                 return
 

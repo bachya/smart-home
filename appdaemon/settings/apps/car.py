@@ -31,7 +31,7 @@ class NotifyLowFuel(Base):  # pylint: disable=too-few-public-methods
         self.registered = False
 
         self.listen_state(
-            self._on_low_fuel, self.entity_ids[CONF_CAR], attribute="fuel_level"
+            self._on_low_fuel, self.args[CONF_CAR], attribute="fuel_level"
         )
 
     def _on_low_fuel(
@@ -39,19 +39,19 @@ class NotifyLowFuel(Base):  # pylint: disable=too-few-public-methods
     ) -> None:
         """Send a notification when my car is low on gas."""
         try:
-            if int(new) < self.properties["fuel_threshold"]:
+            if int(new) < self.args["fuel_threshold"]:
                 if self.registered:
                     return
 
                 self.registered = True
 
-                self.log("Low fuel detected detected: %s", self.entity_ids[CONF_CAR])
+                self.log("Low fuel detected detected: %s", self.args[CONF_CAR])
 
                 send_notification(
                     self,
-                    self.properties[CONF_NOTIFICATION_TARGET],
-                    f"{self.properties[CONF_FRIENDLY_NAME]} needs gas; fill 'er up!.",
-                    title=f"{self.properties[CONF_FRIENDLY_NAME]} is low ⛽",
+                    self.args[CONF_NOTIFICATION_TARGET],
+                    f"{self.args[CONF_FRIENDLY_NAME]} needs gas; fill 'er up!.",
+                    title=f"{self.args[CONF_FRIENDLY_NAME]} is low ⛽",
                 )
             else:
                 self.registered = False

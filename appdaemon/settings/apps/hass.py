@@ -25,7 +25,7 @@ class BadLoginNotification(Base):  # pylint: disable=too-few-public-methods
         """Configure."""
         self._send_notification_func = None  # type: Optional[Callable]
 
-        for notification_type in self.entity_ids.values():
+        for notification_type in self.args.values():
             self.listen_state(self._on_bad_login, notification_type, attribute="all")
 
     def _on_bad_login(
@@ -35,7 +35,7 @@ class BadLoginNotification(Base):  # pylint: disable=too-few-public-methods
         if not new:
             return
 
-        if entity == self.entity_ids[CONF_BAD_LOGIN]:
+        if entity == self.args[CONF_BAD_LOGIN]:
             title = "Unauthorized Access Attempt"
         else:
             title = "IP Ban"

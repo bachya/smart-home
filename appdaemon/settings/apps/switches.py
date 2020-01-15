@@ -27,7 +27,7 @@ class BaseSwitch(Base):
     @property
     def state(self) -> bool:
         """Return the current state of the switch."""
-        return self.get_state(self.entity_ids["switch"])
+        return self.get_state(self.args["switch"])
 
     def _on_schedule_toggle(self, kwargs: dict) -> None:
         """Turn off the switch at a certain time."""
@@ -50,11 +50,11 @@ class BaseSwitch(Base):
             _state = "off"
 
         if self.state == "off" and _state == "on":
-            self.log("Turning on: %s", self.entity_ids["switch"])
-            self.turn_on(self.entity_ids["switch"])
+            self.log("Turning on: %s", self.args["switch"])
+            self.turn_on(self.args["switch"])
         elif self.state == "on" and _state == "off":
-            self.log("Turning off: %s", self.entity_ids["switch"])
-            self.turn_off(self.entity_ids["switch"])
+            self.log("Turning off: %s", self.args["switch"])
+            self.turn_off(self.args["switch"])
 
 
 class BaseZwaveSwitch(BaseSwitch):
@@ -65,14 +65,14 @@ class BaseZwaveSwitch(BaseSwitch):
         self.listen_event(
             self.on_double_tap_up,
             "zwave.node_event",
-            entity_id=self.entity_ids["zwave_device"],
+            entity_id=self.args["zwave_device"],
             basic_level=255,
         )
 
         self.listen_event(
             self.on_double_tap_down,
             "zwave.node_event",
-            entity_id=self.entity_ids["zwave_device"],
+            entity_id=self.args["zwave_device"],
             basic_level=0,
         )
 
@@ -94,7 +94,7 @@ class PresenceFailsafe(BaseSwitch):
         """Configure."""
         self.listen_state(
             self._on_switch_activate,
-            self.entity_ids[CONF_SWITCH],
+            self.args[CONF_SWITCH],
             new="on",
             constrain_noone="just_arrived,home",
         )
@@ -119,10 +119,8 @@ class SleepTimer(BaseSwitch):
 
     def configure(self) -> None:
         """Configure."""
-        self.listen_state(
-            self._on_switch_turned_off, self.entity_ids[CONF_SWITCH], new="off"
-        )
-        self.listen_state(self._on_timer_change, self.entity_ids[CONF_TIMER_SLIDER])
+        self.listen_state(self._on_switch_turned_off, self.args[CONF_SWITCH], new="off")
+        self.listen_state(self._on_timer_change, self.args[CONF_TIMER_SLIDER])
 
     def _on_timer_change(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
@@ -148,9 +146,9 @@ class SleepTimer(BaseSwitch):
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Reset the sleep timer when the switch turns off."""
-        self.set_value(self.entity_ids[CONF_TIMER_SLIDER], 0)
+        self.set_value(self.args[CONF_TIMER_SLIDER], 0)
 
     def _on_timer_complete(self, kwargs: dict) -> None:
         """Turn off a switch at the end of sleep timer."""
         self.log("Sleep timer over; turning switch off")
-        self.set_value(self.entity_ids[CONF_TIMER_SLIDER], 0)
+        self.set_value(self.args[CONF_TIMER_SLIDER], 0)

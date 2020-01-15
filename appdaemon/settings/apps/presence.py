@@ -48,7 +48,7 @@ class PresenceManager(Base):
         ):
             self.listen_state(
                 self._on_proximity_zone_change,
-                self.entity_ids[CONF_PROXIMITY_ZONE_SENSOR],
+                self.args[CONF_PROXIMITY_ZONE_SENSOR],
                 new=new_state.value,
                 duration=60,
             )
@@ -57,7 +57,7 @@ class PresenceManager(Base):
     def edge_threshold(self) -> int:
         """Return the number of feet away from home when "edge" starts."""
         try:
-            return int(self.get_state(self.entity_ids[CONF_EDGE_THRESHOLD])) * 5280
+            return int(self.get_state(self.args[CONF_EDGE_THRESHOLD])) * 5280
         except TypeError:
             return DEFAULT_EDGE_THRESHOLD
 
@@ -65,7 +65,7 @@ class PresenceManager(Base):
     def home_threshold(self) -> int:
         """Return the number of feet away from home when "home" starts."""
         try:
-            return int(self.get_state(self.entity_ids[CONF_HOME_THRESHOLD])) * 5280
+            return int(self.get_state(self.args[CONF_HOME_THRESHOLD])) * 5280
         except TypeError:
             return DEFAULT_HOME_THRESHOLD
 
@@ -73,7 +73,7 @@ class PresenceManager(Base):
     def nearby_threshold(self) -> int:
         """Return the number of feet away from home when "nearby" starts."""
         try:
-            return int(self.get_state(self.entity_ids[CONF_NEARBY_THRESHOLD])) * 5280
+            return int(self.get_state(self.args[CONF_NEARBY_THRESHOLD])) * 5280
         except TypeError:
             return DEFAULT_NEARBY_THRESHOLD
 
@@ -81,7 +81,7 @@ class PresenceManager(Base):
     def proximity_zone(self) -> "ProximityZones":
         """Return the current proximity zone."""
         return self.ProximityZones(
-            self.get_state(self.entity_ids[CONF_PROXIMITY_ZONE_SENSOR])
+            self.get_state(self.args[CONF_PROXIMITY_ZONE_SENSOR])
         )
 
     def _on_proximity_zone_change(

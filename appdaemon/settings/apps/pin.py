@@ -265,7 +265,7 @@ class SimpliSafePIN(PIN):
         """Configure."""
         super().configure()
 
-        self._system_id = self.properties[CONF_SYSTEM_ID]
+        self._system_id = self.args[CONF_SYSTEM_ID]
 
     def _listen_for_otp_use(self) -> None:
         """Listen for the use of a one-time PIN."""
@@ -300,7 +300,7 @@ class ZWaveLockPIN(PIN):
         """Configure."""
         super().configure()
 
-        self._code_slot = self.properties[CONF_CODE_SLOT]
+        self._code_slot = self.args[CONF_CODE_SLOT]
 
         self.run_daily(self._on_midnight_reached, time(0, 0, 0))
 

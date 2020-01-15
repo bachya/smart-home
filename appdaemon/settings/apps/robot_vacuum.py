@@ -41,7 +41,7 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
         self._consumables_met: List[str] = []
         self._send_notification_func: Optional[Callable] = None
 
-        for consumable in self.properties[CONF_CONSUMABLES]:
+        for consumable in self.args[CONF_CONSUMABLES]:
             self.listen_state(
                 self._on_consumable_change,
                 self.app.entity_ids[CONF_VACUUM],
@@ -59,7 +59,7 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
                 self, "slack:@aaron", f"Order a new Wolfie consumable: {attribute}"
             )
 
-        if int(new) < self.properties[CONF_CONSUMABLE_THRESHOLD]:
+        if int(new) < self.args[CONF_CONSUMABLE_THRESHOLD]:
             if attribute in self._consumables_met:
                 return
 
@@ -128,7 +128,7 @@ class NotifyWhenRunComplete(Base):
 
         self.listen_state(
             self._on_notification_interval_change,
-            self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER],
+            self.args[CONF_NOTIFICATION_INTERVAL_SLIDER],
         )
         self.listen_state(
             self._on_vacuum_bin_change, self.app.entity_ids[CONF_BIN_STATE]
@@ -168,9 +168,7 @@ class NotifyWhenRunComplete(Base):
             title="Wolfie Full 🤖",
             when=self.datetime(),
             interval=int(
-                float(
-                    self.get_state(self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER])
-                )
+                float(self.get_state(self.args[CONF_NOTIFICATION_INTERVAL_SLIDER]))
             )
             * 60
             * 60,
@@ -202,7 +200,7 @@ class NotifyWhenStuck(Base):
         self.listen_state(self._on_error_change, self.app.entity_ids[CONF_VACUUM])
         self.listen_state(
             self._on_notification_interval_change,
-            self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER],
+            self.args[CONF_NOTIFICATION_INTERVAL_SLIDER],
         )
 
     def _cancel_notification_cycle(self) -> None:
@@ -239,9 +237,7 @@ class NotifyWhenStuck(Base):
             title="Wolfie Stuck 😢",
             when=self.datetime(),
             interval=int(
-                float(
-                    self.get_state(self.entity_ids[CONF_NOTIFICATION_INTERVAL_SLIDER])
-                )
+                float(self.get_state(self.args[CONF_NOTIFICATION_INTERVAL_SLIDER]))
             )
             * 60
             * 60,
@@ -288,34 +284,32 @@ class Vacuum(Base):
         """Configure."""
         self.listen_state(
             self._on_cycle_done,
-            self.entity_ids[CONF_VACUUM],
+            self.args[CONF_VACUUM],
             old=self.States.returning.value,
             new=self.States.docked.value,
         )
 
-        self.listen_state(
-            self._on_schedule_start, self.entity_ids[CONF_CALENDAR], new="on"
-        )
+        self.listen_state(self._on_schedule_start, self.args[CONF_CALENDAR], new="on")
 
     @property
     def bin_state(self) -> "BinStates":
         """Define a property to get the bin state."""
-        return self.BinStates(self.get_state(self.entity_ids[CONF_BIN_STATE]))
+        return self.BinStates(self.get_state(self.args[CONF_BIN_STATE]))
 
     @bin_state.setter
     def bin_state(self, value: "BinStates") -> None:
         """Set the bin state."""
-        self.select_option(self.entity_ids[CONF_BIN_STATE], value.value)
+        self.select_option(self.args[CONF_BIN_STATE], value.value)
 
     @property
     def run_time(self) -> int:
         """Return the most recent amount of running time."""
-        return int(self.get_state(self.entity_ids[CONF_RUN_TIME]))
+        return int(self.get_state(self.args[CONF_RUN_TIME]))
 
     @property
     def state(self) -> "States":
         """Define a property to get the state."""
-        return self.States(self.get_state(self.entity_ids[CONF_VACUUM]))
+        return self.States(self.get_state(self.args[CONF_VACUUM]))
 
     def _on_cycle_done(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
@@ -329,7 +323,7 @@ class Vacuum(Base):
             self.log('Changing alarm state to "away"')
             self.security_manager.set_alarm(self.security_manager.AlarmStates.away)
 
-        if self.run_time >= self.properties[CONF_FULL_THRESHOLD_MINUTES]:
+        if self.run_time >= self.args[CONF_FULL_THRESHOLD_MINUTES]:
             self.bin_state = self.BinStates.full
 
     def _on_schedule_start(
@@ -340,7 +334,7 @@ class Vacuum(Base):
 
     def pause(self) -> None:
         """Pause the cleaning cycle."""
-        self.call_service("vacuum/pause", entity_id=self.entity_ids[CONF_VACUUM])
+        self.call_service("vacuum/pause", entity_id=self.args[CONF_VACUUM])
 
     def start(self) -> None:
         """Start a cleaning cycle."""
@@ -350,11 +344,9 @@ class Vacuum(Base):
             self.security_manager.set_alarm(self.security_manager.AlarmStates.home)
         else:
             self.log("Activating vacuum")
-            self.call_service("vacuum/start", entity_id=self.entity_ids[CONF_VACUUM])
+            self.call_service("vacuum/start", entity_id=self.args[CONF_VACUUM])
 
     def stop(self) -> None:
         """Stop a vacuuming cycle."""
         self.log("Stopping vacuuming cycle")
-        self.call_service(
-            "vacuum/return_to_base", entity_id=self.entity_ids[CONF_VACUUM]
-        )
+        self.call_service("vacuum/return_to_base", entity_id=self.args[CONF_VACUUM])

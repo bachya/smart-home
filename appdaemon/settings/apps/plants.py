@@ -30,15 +30,13 @@ class LowMoisture(Base):
         """Configure."""
         self._low_moisture_detected = False
 
-        self.listen_state(
-            self._on_moisture_change, self.entity_ids[CONF_CURRENT_MOISTURE]
-        )
+        self.listen_state(self._on_moisture_change, self.args[CONF_CURRENT_MOISTURE])
 
     @property
     def current_moisture(self) -> int:
         """Define a property to get the current moisture."""
         try:
-            return int(self.get_state(self.entity_ids[CONF_CURRENT_MOISTURE]))
+            return int(self.get_state(self.args[CONF_CURRENT_MOISTURE]))
         except ValueError:
             return 100
 
@@ -52,14 +50,14 @@ class LowMoisture(Base):
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Notify when the plant's moisture is low."""
-        if self.enabled and int(new) < self.properties[CONF_MOISTURE_THRESHOLD]:
+        if self.enabled and int(new) < self.args[CONF_MOISTURE_THRESHOLD]:
             if self._low_moisture_detected:
                 return
 
-            self.log("%s has low moisture", self.properties[CONF_FRIENDLY_NAME])
+            self.log("%s has low moisture", self.args[CONF_FRIENDLY_NAME])
             self._start_notification_cycle()
             self._low_moisture_detected = True
-        elif self.enabled and int(new) >= self.properties[CONF_MOISTURE_THRESHOLD]:
+        elif self.enabled and int(new) >= self.args[CONF_MOISTURE_THRESHOLD]:
             if not self._low_moisture_detected:
                 return
 
@@ -72,12 +70,12 @@ class LowMoisture(Base):
             self,
             "presence:home",
             (
-                f"{self.properties[CONF_FRIENDLY_NAME]} is at {self.current_moisture}% "
+                f"{self.args[CONF_FRIENDLY_NAME]} is at {self.current_moisture}% "
                 "moisture and needs water."
             ),
-            title=f"{self.properties[CONF_FRIENDLY_NAME]} is Dry 💧",
+            title=f"{self.args[CONF_FRIENDLY_NAME]} is Dry 💧",
             when=self.datetime(),
-            interval=self.properties[CONF_NOTIFICATION_INTERVAL],
+            interval=self.args[CONF_NOTIFICATION_INTERVAL],
         )
 
     def on_disable(self) -> None:
@@ -87,7 +85,7 @@ class LowMoisture(Base):
     def on_enable(self) -> None:
         """Start notifications (as necessary) when the automation is enabled."""
         try:
-            if self.current_moisture < self.properties[CONF_MOISTURE_THRESHOLD]:
+            if self.current_moisture < self.args[CONF_MOISTURE_THRESHOLD]:
                 self._start_notification_cycle()
         except TypeError:
             self.error("Can't parse non-integer moisture level")

@@ -14,46 +14,40 @@ class SonosSpeaker(Base):
 
     def __str__(self) -> str:
         """Define a string representation of the speaker."""
-        return self.entity_ids["speaker"]
+        return self.args["speaker"]
 
     @property
     def default_volume(self) -> float:
         """Return the audio player's default volume."""
-        return self.properties["default_volume"]
+        return self.args["default_volume"]
 
     @property
     def volume(self) -> float:
         """Retrieve the audio player's volume."""
-        return float(
-            self.get_state(self.entity_ids["speaker"], attribute="volume_level")
-        )
+        return float(self.get_state(self.args["speaker"], attribute="volume_level"))
 
     @volume.setter
     def volume(self, value: float) -> None:
         """Set the audio player's volume."""
         self.call_service(
             "media_player/volume_set",
-            entity_id=self.entity_ids["speaker"],
+            entity_id=self.args["speaker"],
             volume_level=value,
         )
 
     def pause(self) -> None:
         """Pause."""
-        self.call_service(
-            "media_player/media_pause", entity_id=self.entity_ids["speaker"]
-        )
+        self.call_service("media_player/media_pause", entity_id=self.args["speaker"])
 
     def play(self) -> None:
         """Play."""
-        self.call_service(
-            "media_player/media_play", entity_id=self.entity_ids["speaker"]
-        )
+        self.call_service("media_player/media_play", entity_id=self.args["speaker"])
 
     def play_file(self, url: str) -> None:
         """Play an audio file at a defined URL."""
         self.call_service(
             "media_player/play_media",
-            entity_id=self.entity_ids["speaker"],
+            entity_id=self.args["speaker"],
             media_content_id=url,
             media_content_type="MUSIC",
         )
@@ -62,7 +56,7 @@ class SonosSpeaker(Base):
         """Restore the previous snapshot of this entity."""
         self.call_service(
             "media_player/sonos_restore",
-            entity_id=self.entity_ids["speaker"],
+            entity_id=self.args["speaker"],
             with_group=self._last_snapshot_included_group,
         )
 
@@ -71,7 +65,7 @@ class SonosSpeaker(Base):
         self._last_snapshot_included_group = include_grouping
         self.call_service(
             "media_player/sonos_snapshot",
-            entity_id=self.entity_ids["speaker"],
+            entity_id=self.args["speaker"],
             with_group=include_grouping,
         )
 
@@ -89,7 +83,7 @@ class SonosManager(Base):
         if entity_list:
             entities = entity_list
         else:
-            entities = self.entity_ids
+            entities = self.args
 
         if len(entities) == 1:
             self.error("Refusing to group only one Sonos speaker", level="WARNING")
