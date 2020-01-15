@@ -20,9 +20,9 @@ class NotifyLowFuel(Base):  # pylint: disable=too-few-public-methods
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             vol.Required(CONF_CAR): cv.entity_id,
-            vol.Required(CONF_FRIENDLY_NAME): str,
-            vol.Required(CONF_FUEL_THRESHOLD): int,
-            vol.Required(CONF_NOTIFICATION_TARGET): str,
+            vol.Required(CONF_FRIENDLY_NAME): cv.string,
+            vol.Required(CONF_FUEL_THRESHOLD): cv.positive_int,
+            vol.Required(CONF_NOTIFICATION_TARGET): cv.notification_target,
         }
     )
 

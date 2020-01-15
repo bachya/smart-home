@@ -393,7 +393,7 @@ class NotifyBadAqi(Base):
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             vol.Required(CONF_AQI_SENSOR): cv.entity_id,
-            vol.Required(CONF_AQI_THRESHOLD): int,
+            vol.Required(CONF_AQI_THRESHOLD): cv.positive_int,
         }
     )
 

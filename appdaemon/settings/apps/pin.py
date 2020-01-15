@@ -6,7 +6,9 @@ from threading import Lock
 from typing import Generator, Optional, Tuple, Union
 
 import voluptuous as vol
+
 from core import APP_SCHEMA, Base  # pylint: disable=no-name-in-module
+from helpers import config_validation as cv
 from util.string import slugify
 
 CONF_CODE_SLOT = "code_slot"
@@ -257,7 +259,7 @@ class PIN(Base):  # pylint: disable=too-many-instance-attributes
 class SimpliSafePIN(PIN):
     """Define a PIN manager for a SimpliSafe security system."""
 
-    APP_SCHEMA = APP_SCHEMA.extend({vol.Required(CONF_SYSTEM_ID): int})
+    APP_SCHEMA = APP_SCHEMA.extend({vol.Required(CONF_SYSTEM_ID): cv.positive_int})
 
     def configure(self) -> None:
         """Configure."""

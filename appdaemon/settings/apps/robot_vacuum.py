@@ -31,8 +31,8 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_CONSUMABLE_THRESHOLD): int,
-            vol.Required(CONF_CONSUMABLES): cv.ensure_list,
+            vol.Required(CONF_CONSUMABLE_THRESHOLD): cv.positive_int,
+            vol.Required(CONF_CONSUMABLES): vol.All(cv.ensure_list, [cv.string]),
         }
     )
 

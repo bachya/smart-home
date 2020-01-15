@@ -19,11 +19,13 @@ CONF_NAME = "name"
 
 APP_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_MODULE): str,
-        vol.Required(CONF_CLASS): str,
-        vol.Optional(CONF_DEPENDENCIES, default=[]): cv.ensure_list,
-        vol.Optional(CONF_APP): str,
-        vol.Optional(CONF_ENABLED_TOGGLE_ENTITY_ID): str,
+        vol.Required(CONF_MODULE): cv.string,
+        vol.Required(CONF_CLASS): cv.string,
+        vol.Optional(CONF_DEPENDENCIES, default=[]): vol.All(
+            cv.ensure_list, [cv.string]
+        ),
+        vol.Optional(CONF_APP): cv.string,
+        vol.Optional(CONF_ENABLED_TOGGLE_ENTITY_ID): cv.entity_id,
     },
     extra=vol.ALLOW_EXTRA,
 )

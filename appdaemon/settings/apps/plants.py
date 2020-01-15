@@ -20,9 +20,9 @@ class LowMoisture(Base):
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             vol.Required(CONF_CURRENT_MOISTURE): cv.entity_id,
-            vol.Required(CONF_FRIENDLY_NAME): str,
-            vol.Required(CONF_MOISTURE_THRESHOLD): int,
-            vol.Required(CONF_NOTIFICATION_INTERVAL): int,
+            vol.Required(CONF_FRIENDLY_NAME): cv.string,
+            vol.Required(CONF_MOISTURE_THRESHOLD): cv.positive_int,
+            vol.Required(CONF_NOTIFICATION_INTERVAL): cv.time_period,
         }
     )
 

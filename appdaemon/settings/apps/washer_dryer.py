@@ -26,10 +26,10 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             vol.Required(CONF_NOTIFICATION_INTERVAL_SLIDER): cv.entity_id,
-            vol.Required(CONF_CLEAN_THRESHOLD): float,
-            vol.Required(CONF_DRYING_THRESHOLD): float,
-            vol.Required(CONF_IOS_EMPTIED_KEY): str,
-            vol.Required(CONF_RUNNING_THRESHOLD): float,
+            vol.Required(CONF_CLEAN_THRESHOLD): vol.Coerce(float),
+            vol.Required(CONF_DRYING_THRESHOLD): vol.Coerce(float),
+            vol.Required(CONF_IOS_EMPTIED_KEY): cv.string,
+            vol.Required(CONF_RUNNING_THRESHOLD): vol.Coerce(float),
         }
     )
 

@@ -64,8 +64,8 @@ class LowBatteries(Base):  # pylint: disable=too-few-public-methods
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             vol.Required(CONF_BATTERIES_TO_MONITOR): cv.ensure_list,
-            vol.Required(CONF_BATTERY_LEVEL_THRESHOLD): int,
-            vol.Required(CONF_NOTIFICATION_INTERVAL): int,
+            vol.Required(CONF_BATTERY_LEVEL_THRESHOLD): cv.positive_int,
+            vol.Required(CONF_NOTIFICATION_INTERVAL): cv.time_period,
         }
     )
 
@@ -154,8 +154,11 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             vol.Required(CONF_ENTITY_ID): cv.entity_id,
-            vol.Required(CONF_DURATION): int,
-            vol.Required(CONF_STATE): str,
+            vol.Required(CONF_DURATION): cv.time_period,
+            vol.Required(CONF_STATE): cv.string,
+            vol.Required(CONF_NOTIFICATION_TARGET): vol.All(
+                cv.ensure_list, [cv.notification_target]
+            ),
         }
     )
 

@@ -29,9 +29,9 @@ class Person(Base):
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             vol.Required(CONF_PERSON): cv.entity_id,
-            vol.Required(CONF_NOTIFIERS): cv.ensure_list,
+            vol.Required(CONF_NOTIFIERS): vol.All(cv.ensure_list, [cv.string]),
             vol.Required(CONF_PRESENCE_STATUS_SENSOR): cv.entity_id,
-            vol.Optional(CONF_PUSH_DEVICE_ID): str,
+            vol.Optional(CONF_PUSH_DEVICE_ID): cv.string,
         }
     )
 

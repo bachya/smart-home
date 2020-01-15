@@ -82,8 +82,8 @@ class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods
     APP_SCHEMA = APP_SCHEMA.extend(
         {
             vol.Required(CONF_GARAGE_DOOR): cv.entity_id,
-            vol.Required(CONF_NOTIFICATION_INTERVAL): int,
-            vol.Required(CONF_TIME_LEFT_OPEN): int,
+            vol.Required(CONF_NOTIFICATION_INTERVAL): cv.time_period,
+            vol.Required(CONF_TIME_LEFT_OPEN): cv.time_period,
         }
     )
 

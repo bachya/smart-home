@@ -23,16 +23,16 @@ VERSION_APP_SCHEMA = APP_SCHEMA.extend(
     {
         vol.Required(CONF_AVAILABLE): cv.entity_id,
         vol.Required(CONF_INSTALLED): cv.entity_id,
-        vol.Required(CONF_APP_NAME): str,
+        vol.Required(CONF_APP_NAME): cv.string,
     }
 )
 
 DYNAMIC_APP_SCHEMA = VERSION_APP_SCHEMA.extend(
     {
         vol.Required(CONF_CREATED_ENTITY_ID): cv.entity_id,
-        vol.Required(CONF_FRIENDLY_NAME): str,
-        vol.Required(CONF_ICON): str,
-        vol.Required(CONF_INTERVAL): int,
+        vol.Required(CONF_FRIENDLY_NAME): cv.string,
+        vol.Required(CONF_ICON): cv.icon,
+        vol.Required(CONF_INTERVAL): cv.time_period,
     }
 )
 
@@ -111,7 +111,7 @@ class NewMultiSensorVersionNotification(DynamicSensor):
     """Detect version changes by examining multiple version sensors."""
 
     APP_SCHEMA = DYNAMIC_APP_SCHEMA.extend(
-        {vol.Required(CONF_VERSION_SENSORS): cv.ensure_list}
+        {vol.Required(CONF_VERSION_SENSORS): vol.All(cv.ensure_list, [cv.entity_id])}
     )
 
     @property
@@ -133,7 +133,10 @@ class NewPortainerVersionNotification(DynamicSensor):
     """Detect new versions of Portainer-defined images."""
 
     APP_SCHEMA = DYNAMIC_APP_SCHEMA.extend(
-        {vol.Required(CONF_ENDPOINT_ID): int, vol.Required(CONF_IMAGE_NAME): str}
+        {
+            vol.Required(CONF_ENDPOINT_ID): cv.positive_int,
+            vol.Required(CONF_IMAGE_NAME): cv.string,
+        }
     )
 
     API_URL = "http://portainer:9000/api"
