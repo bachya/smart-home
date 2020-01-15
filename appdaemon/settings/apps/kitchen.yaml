@@ -6,10 +6,8 @@ bar_cart_on_at_sunset_automation:
   service: "switch/turn_on"
   service_data:
     entity_id: switch.bar_cart
-  entity_ids:
-    target_entity_id: sun.sun
-  properties:
-    new_target_state: below_horizon
+  target_entity_id: sun.sun
+  new_target_state: below_horizon
 
 bar_cart_on_upon_arrival_automation:
   module: services
@@ -19,10 +17,8 @@ bar_cart_on_upon_arrival_automation:
   service: "switch/turn_on"
   service_data:
     entity_id: switch.bar_cart
-  entity_ids:
-    target_entity_id: sensor.proximity_zone
-  properties:
-    new_target_state: Home
+  target_entity_id: sensor.proximity_zone
+  new_target_state: Home
 
 kitchen_sink_leak_detected_automation:
   module: systems
@@ -30,11 +26,9 @@ kitchen_sink_leak_detected_automation:
   constrain_enabled: true
   dependencies:
     - presence_manager
-  entity_ids:
-    entity_id: binary_sensor.kitchen_sink_sensor_water_leak
-  properties:
-    duration: 60
-    notification_target:
-      - "person:Aaron"
-      - "person:Britt"
-    state: "on"
+  entity_id: binary_sensor.kitchen_sink_sensor_water_leak
+  duration: 60
+  notification_target:
+    - "person:Aaron"
+    - "person:Britt"
+  state: "on"

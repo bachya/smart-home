@@ -4,12 +4,7 @@ from typing import Union
 import voluptuous as vol
 
 from core import APP_SCHEMA, Base
-from const import (
-    CONF_ENTITY_IDS,
-    CONF_FRIENDLY_NAME,
-    CONF_NOTIFICATION_INTERVAL,
-    CONF_PROPERTIES,
-)
+from const import CONF_FRIENDLY_NAME, CONF_NOTIFICATION_INTERVAL
 from helpers import config_validation as cv
 from notification import send_notification
 
@@ -24,18 +19,10 @@ class LowMoisture(Base):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {vol.Required(CONF_CURRENT_MOISTURE): cv.entity_id},
-                extra=vol.ALLOW_EXTRA,
-            ),
-            vol.Required(CONF_PROPERTIES): vol.Schema(
-                {
-                    vol.Required(CONF_FRIENDLY_NAME): str,
-                    vol.Required(CONF_MOISTURE_THRESHOLD): int,
-                    vol.Required(CONF_NOTIFICATION_INTERVAL): int,
-                },
-                extra=vol.ALLOW_EXTRA,
-            ),
+            vol.Required(CONF_CURRENT_MOISTURE): cv.entity_id,
+            vol.Required(CONF_FRIENDLY_NAME): str,
+            vol.Required(CONF_MOISTURE_THRESHOLD): int,
+            vol.Required(CONF_NOTIFICATION_INTERVAL): int,
         }
     )
 

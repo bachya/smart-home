@@ -5,9 +5,8 @@ master_bedroom_lights_sleep_timer_automation:
   constrain_enabled: true
   dependencies:
     - presence_manager
-  entity_ids:
-    switch: switch.master_bedroom_salt_lamp
-    timer_slider: input_number.master_bedroom_salt_lamp_timer
+  switch: switch.master_bedroom_salt_lamp
+  timer_slider: input_number.master_bedroom_salt_lamp_timer
 
 master_bedroom_lights_on_at_sunset_automation:
   module: services
@@ -16,10 +15,8 @@ master_bedroom_lights_on_at_sunset_automation:
   service: "switch/turn_on"
   service_data:
     entity_id: switch.master_bedroom_salt_lamp
-  entity_ids:
-    target_entity_id: sun.sun
-  properties:
-    new_target_state: below_horizon
+  target_entity_id: sun.sun
+  new_target_state: below_horizon
 
 master_bathroom_fan_double_tap_timer_automation:
   module: services
@@ -29,8 +26,7 @@ master_bathroom_fan_double_tap_timer_automation:
   service_up_data:
     entity_id: input_number.master_bathroom_fan_timer
     value: 60
-  entity_ids:
-    zwave_device: zwave.master_bathroom_fan
+  zwave_device: zwave.master_bathroom_fan
 
 master_bathroom_fan_sleep_timer_automation:
   module: switches
@@ -38,9 +34,8 @@ master_bathroom_fan_sleep_timer_automation:
   constrain_enabled: true
   dependencies:
     - presence_manager
-  entity_ids:
-    switch: switch.master_bathroom_fan
-    timer_slider: input_number.master_bathroom_fan_timer
+  switch: switch.master_bathroom_fan
+  timer_slider: input_number.master_bathroom_fan_timer
 
 master_toilet_fan_double_tap_timer_automation:
   module: services
@@ -50,8 +45,7 @@ master_toilet_fan_double_tap_timer_automation:
   service_up_data:
     entity_id: input_number.master_bathroom_toilet_fan_timer
     value: 10
-  entity_ids:
-    zwave_device: zwave.master_toilet_fan
+  zwave_device: zwave.master_toilet_fan
 
 master_toilet_fan_toggle_automation:
   module: services
@@ -63,8 +57,7 @@ master_toilet_fan_toggle_automation:
   service_data:
     entity_id: input_number.master_bathroom_toilet_fan_timer
     value: 15
-  properties:
-    interval: 3600
+  interval: 3600
 
 master_toilet_fan_sleep_timer_automation:
   module: switches
@@ -72,6 +65,5 @@ master_toilet_fan_sleep_timer_automation:
   constrain_enabled: true
   dependencies:
     - presence_manager
-  entity_ids:
-    switch: switch.master_toilet_fan
-    timer_slider: input_number.master_bathroom_toilet_fan_timer
+  switch: switch.master_toilet_fan
+  timer_slider: input_number.master_bathroom_toilet_fan_timer

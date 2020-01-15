@@ -5,7 +5,7 @@ from typing import Union
 
 import voluptuous as vol
 
-from const import CONF_ENTITY_IDS, CONF_NOTIFICATION_INTERVAL_SLIDER, CONF_PROPERTIES
+from const import CONF_NOTIFICATION_INTERVAL_SLIDER
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 from notification import send_notification
@@ -25,18 +25,11 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {vol.Required(CONF_NOTIFICATION_INTERVAL_SLIDER): cv.entity_id}
-            ),
-            vol.Required(CONF_PROPERTIES): vol.Schema(
-                {
-                    vol.Required(CONF_CLEAN_THRESHOLD): float,
-                    vol.Required(CONF_DRYING_THRESHOLD): float,
-                    vol.Required(CONF_IOS_EMPTIED_KEY): str,
-                    vol.Required(CONF_RUNNING_THRESHOLD): float,
-                },
-                extra=vol.ALLOW_EXTRA,
-            ),
+            vol.Required(CONF_NOTIFICATION_INTERVAL_SLIDER): cv.entity_id,
+            vol.Required(CONF_CLEAN_THRESHOLD): float,
+            vol.Required(CONF_DRYING_THRESHOLD): float,
+            vol.Required(CONF_IOS_EMPTIED_KEY): str,
+            vol.Required(CONF_RUNNING_THRESHOLD): float,
         }
     )
 
@@ -134,13 +127,8 @@ class WasherDryer(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {
-                    vol.Required(CONF_POWER): cv.entity_id,
-                    vol.Required(CONF_STATUS): cv.entity_id,
-                },
-                extra=vol.ALLOW_EXTRA,
-            )
+            vol.Required(CONF_POWER): cv.entity_id,
+            vol.Required(CONF_STATUS): cv.entity_id,
         }
     )
 

@@ -3,13 +3,7 @@ from typing import TYPE_CHECKING, Union
 
 import voluptuous as vol
 
-from const import (
-    CONF_ENTITY_IDS,
-    CONF_NOTIFIERS,
-    CONF_PEOPLE,
-    CONF_PROPERTIES,
-    EVENT_PRESENCE_CHANGE,
-)
+from const import CONF_NOTIFIERS, CONF_PEOPLE, EVENT_PRESENCE_CHANGE
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 
@@ -34,17 +28,10 @@ class Person(Base):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {
-                    vol.Required(CONF_PERSON): cv.entity_id,
-                    vol.Required(CONF_NOTIFIERS): cv.ensure_list,
-                    vol.Required(CONF_PRESENCE_STATUS_SENSOR): cv.entity_id,
-                },
-                extra=vol.ALLOW_EXTRA,
-            ),
-            vol.Optional(CONF_PROPERTIES, default={}): vol.Schema(
-                {vol.Optional(CONF_PUSH_DEVICE_ID): str}, extra=vol.ALLOW_EXTRA
-            ),
+            vol.Required(CONF_PERSON): cv.entity_id,
+            vol.Required(CONF_NOTIFIERS): cv.ensure_list,
+            vol.Required(CONF_PRESENCE_STATUS_SENSOR): cv.entity_id,
+            vol.Optional(CONF_PUSH_DEVICE_ID): str,
         }
     )
 

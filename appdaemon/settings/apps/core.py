@@ -5,7 +5,6 @@ from typing import Callable, Dict, Union
 import voluptuous as vol
 from appdaemon.plugins.hass.hassapi import Hass  # pylint: disable=no-name-in-module
 
-from const import CONF_ENTITY_IDS, CONF_PROPERTIES
 from helpers import config_validation as cv
 
 CONF_APP = "app"
@@ -23,8 +22,6 @@ APP_SCHEMA = vol.Schema(
         vol.Required(CONF_MODULE): str,
         vol.Required(CONF_CLASS): str,
         vol.Optional(CONF_DEPENDENCIES, default=[]): cv.ensure_list,
-        vol.Optional(CONF_ENTITY_IDS, default={}): dict,
-        vol.Optional(CONF_PROPERTIES, default={}): dict,
         vol.Optional(CONF_APP): str,
         vol.Optional(CONF_ENABLED_TOGGLE_ENTITY_ID): str,
     },
@@ -45,15 +42,9 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
             self.log("Invalid app schema: %s", err, level="ERROR")
             return
 
-        # Define a holding place for HASS entity IDs:
-        self.entity_ids = self.args[CONF_ENTITY_IDS]
-
         # Define a holding place for any scheduler handles that the app wants to keep
         # track of:
         self.handles = {}  # type: Dict[str, Callable]
-
-        # Define a holding place for key/value properties for this app:
-        self.properties = self.args[CONF_PROPERTIES]
 
         # Take every dependecy and create a reference to it:
         for app in self.args[CONF_DEPENDENCIES]:

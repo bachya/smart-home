@@ -6,7 +6,7 @@ from typing import Callable, List, Optional, Union
 import voluptuous as vol
 
 from core import APP_SCHEMA, Base
-from const import CONF_ENTITY_IDS, CONF_NOTIFICATION_INTERVAL_SLIDER, CONF_PROPERTIES
+from const import CONF_NOTIFICATION_INTERVAL_SLIDER
 from helpers import config_validation as cv
 from notification import send_notification
 
@@ -31,13 +31,8 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_PROPERTIES): vol.Schema(
-                {
-                    vol.Required(CONF_CONSUMABLE_THRESHOLD): int,
-                    vol.Required(CONF_CONSUMABLES): cv.ensure_list,
-                },
-                extra=vol.ALLOW_EXTRA,
-            )
+            vol.Required(CONF_CONSUMABLE_THRESHOLD): int,
+            vol.Required(CONF_CONSUMABLES): cv.ensure_list,
         }
     )
 
@@ -123,12 +118,7 @@ class NotifyWhenRunComplete(Base):
     """Define a feature to notify when the vacuum cycle is complete."""
 
     APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {vol.Required(CONF_NOTIFICATION_INTERVAL_SLIDER): cv.entity_id},
-                extra=vol.ALLOW_EXTRA,
-            )
-        }
+        {vol.Required(CONF_NOTIFICATION_INTERVAL_SLIDER): cv.entity_id}
     )
 
     def configure(self) -> None:
@@ -201,12 +191,7 @@ class NotifyWhenStuck(Base):
     """Define a feature to notify when the vacuum is stuck."""
 
     APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {vol.Required(CONF_NOTIFICATION_INTERVAL_SLIDER): cv.entity_id},
-                extra=vol.ALLOW_EXTRA,
-            )
-        }
+        {vol.Required(CONF_NOTIFICATION_INTERVAL_SLIDER): cv.entity_id}
     )
 
     def configure(self) -> None:
@@ -278,13 +263,8 @@ class Vacuum(Base):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {
-                    vol.Required(CONF_BIN_STATE): cv.entity_id,
-                    vol.Required(CONF_VACUUM): cv.entity_id,
-                },
-                extra=vol.ALLOW_EXTRA,
-            )
+            vol.Required(CONF_BIN_STATE): cv.entity_id,
+            vol.Required(CONF_VACUUM): cv.entity_id,
         }
     )
 

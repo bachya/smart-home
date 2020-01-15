@@ -5,11 +5,9 @@ notify_when_3d_print_completes_automation:
   service: "notify/slack"
   service_data:
     message: "3D print completed: {{ states('sensor.ender_3_filename') }}"
-  entity_ids:
-    target_entity_id: sensor.ender_3_state
-  properties:
-    new_target_state: Operational
-    old_target_state: Printing
+  target_entity_id: sensor.ender_3_state
+  new_target_state: Operational
+  old_target_state: Printing
   enabled_toggle_entity_id: input_boolean.3d_printer_notifications_automation
 
 notify_when_3d_print_starts_automation:
@@ -18,11 +16,9 @@ notify_when_3d_print_starts_automation:
   service: "notify/slack"
   service_data:
     message: "3D print started: {{ states('sensor.ender_3_filename') }}"
-  entity_ids:
-    target_entity_id: sensor.ender_3_state
-  properties:
-    new_target_state: Printing
-    old_target_state: Operational
+  target_entity_id: sensor.ender_3_state
+  new_target_state: Printing
+  old_target_state: Operational
   enabled_toggle_entity_id: input_boolean.3d_printer_notifications_automation
 
 turn_3d_printer_off_when_print_complete_automation:
@@ -31,9 +27,7 @@ turn_3d_printer_off_when_print_complete_automation:
   service: "switch/turn_off"
   service_data:
     entity_id: switch.toggle_3d_printer
-  entity_ids:
-    target_entity_id: sensor.ender_3_state
-  properties:
-    new_target_state: Operational
-    old_target_state: Printing
-    delay: 600
+  target_entity_id: sensor.ender_3_state
+  new_target_state: Operational
+  old_target_state: Printing
+  delay: 600

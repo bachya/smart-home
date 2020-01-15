@@ -5,11 +5,10 @@ slack_app_home_assistant:
   dependencies:
     - climate_manager
     - security_manager
-  properties:
-    interactive_command_event: HOME_ASSISTANT_INTERACTIVE_COMMAND
-    slash_command_event: HOME_ASSISTANT_SLASH_COMMAND
-    toggle_domains:
-      - group
-      - light
-      - script
-      - switch
+  interactive_command_event: HOME_ASSISTANT_INTERACTIVE_COMMAND
+  slash_command_event: HOME_ASSISTANT_SLASH_COMMAND
+  toggle_domains:
+    - group
+    - light
+    - script
+    - switch

@@ -7,12 +7,7 @@ import voluptuous as vol
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 from notification import send_notification
-from const import (
-    CONF_ENTITY_IDS,
-    CONF_PROPERTIES,
-    EVENT_PRESENCE_CHANGE,
-    EVENT_PROXIMITY_CHANGE,
-)
+from const import EVENT_PRESENCE_CHANGE, EVENT_PROXIMITY_CHANGE
 
 CONF_AWAY_MODE = "away_mode"
 CONF_THERMOSTAT = "thermostat"
@@ -93,21 +88,17 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {
-                    vol.Required(CONF_AWAY_MODE): cv.entity_id,
-                    vol.Required(CONF_ECO_HIGH_THRESHOLD): cv.entity_id,
-                    vol.Required(CONF_ECO_LOW_THRESHOLD): cv.entity_id,
-                    vol.Required(CONF_HUMIDITY_SENSOR): cv.entity_id,
-                    vol.Required(CONF_INDOOR_TEMPERATURE_SENSOR): cv.entity_id,
-                    vol.Required(CONF_OUTDOOR_BRIGHTNESS_PERCENT_SENSOR): cv.entity_id,
-                    vol.Required(CONF_OUTDOOR_BRIGHTNESS_SENSOR): cv.entity_id,
-                    vol.Required(CONF_OUTDOOR_HIGH_THRESHOLD): cv.entity_id,
-                    vol.Required(CONF_OUTDOOR_LOW_THRESHOLD): cv.entity_id,
-                    vol.Required(CONF_OUTDOOR_TEMPERATURE_SENSOR): cv.entity_id,
-                    vol.Required(CONF_THERMOSTAT): cv.entity_id,
-                }
-            )
+            vol.Required(CONF_AWAY_MODE): cv.entity_id,
+            vol.Required(CONF_ECO_HIGH_THRESHOLD): cv.entity_id,
+            vol.Required(CONF_ECO_LOW_THRESHOLD): cv.entity_id,
+            vol.Required(CONF_HUMIDITY_SENSOR): cv.entity_id,
+            vol.Required(CONF_INDOOR_TEMPERATURE_SENSOR): cv.entity_id,
+            vol.Required(CONF_OUTDOOR_BRIGHTNESS_PERCENT_SENSOR): cv.entity_id,
+            vol.Required(CONF_OUTDOOR_BRIGHTNESS_SENSOR): cv.entity_id,
+            vol.Required(CONF_OUTDOOR_HIGH_THRESHOLD): cv.entity_id,
+            vol.Required(CONF_OUTDOOR_LOW_THRESHOLD): cv.entity_id,
+            vol.Required(CONF_OUTDOOR_TEMPERATURE_SENSOR): cv.entity_id,
+            vol.Required(CONF_THERMOSTAT): cv.entity_id,
         }
     )
 
@@ -401,12 +392,8 @@ class NotifyBadAqi(Base):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {vol.Required(CONF_AQI_SENSOR): cv.entity_id}, extra=vol.ALLOW_EXTRA
-            ),
-            vol.Required(CONF_PROPERTIES): vol.Schema(
-                {vol.Required(CONF_AQI_THRESHOLD): int}, extra=vol.ALLOW_EXTRA
-            ),
+            vol.Required(CONF_AQI_SENSOR): cv.entity_id,
+            vol.Required(CONF_AQI_THRESHOLD): int,
         }
     )
 

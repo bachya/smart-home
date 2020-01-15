@@ -6,7 +6,6 @@ from threading import Lock
 from typing import Generator, Optional, Tuple, Union
 
 import voluptuous as vol
-from const import CONF_PROPERTIES
 from core import APP_SCHEMA, Base  # pylint: disable=no-name-in-module
 from util.string import slugify
 
@@ -258,13 +257,7 @@ class PIN(Base):  # pylint: disable=too-many-instance-attributes
 class SimpliSafePIN(PIN):
     """Define a PIN manager for a SimpliSafe security system."""
 
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            vol.Required(CONF_PROPERTIES): vol.Schema(
-                {vol.Required(CONF_SYSTEM_ID): int}, extra=vol.ALLOW_EXTRA
-            )
-        }
-    )
+    APP_SCHEMA = APP_SCHEMA.extend({vol.Required(CONF_SYSTEM_ID): int})
 
     def configure(self) -> None:
         """Configure."""

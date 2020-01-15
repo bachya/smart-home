@@ -7,10 +7,8 @@ import voluptuous as vol
 
 from core import APP_SCHEMA, Base
 from const import (
-    CONF_ENTITY_IDS,
     CONF_FRIENDLY_NAME,
     CONF_NOTIFICATION_INTERVAL,
-    CONF_PROPERTIES,
     CONF_STATE,
     EVENT_ALARM_CHANGE,
 )
@@ -33,13 +31,7 @@ HANDLE_GARAGE_OPEN = "garage_open"
 class AbsentInsecure(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to notify us when we've left home insecure."""
 
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {vol.Required(CONF_STATE): cv.entity_id}, extra=vol.ALLOW_EXTRA
-            )
-        }
-    )
+    APP_SCHEMA = APP_SCHEMA.extend({vol.Required(CONF_STATE): cv.entity_id})
 
     def configure(self) -> None:
         """Configure."""
@@ -89,16 +81,9 @@ class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {vol.Required(CONF_GARAGE_DOOR): cv.entity_id}, extra=vol.ALLOW_EXTRA
-            ),
-            vol.Required(CONF_PROPERTIES): vol.Schema(
-                {
-                    vol.Required(CONF_NOTIFICATION_INTERVAL): int,
-                    vol.Required(CONF_TIME_LEFT_OPEN): int,
-                },
-                extra=vol.ALLOW_EXTRA,
-            ),
+            vol.Required(CONF_GARAGE_DOOR): cv.entity_id,
+            vol.Required(CONF_NOTIFICATION_INTERVAL): int,
+            vol.Required(CONF_TIME_LEFT_OPEN): int,
         }
     )
 
@@ -174,13 +159,7 @@ class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods
 class NotifyOnChange(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to notify us the secure status changes."""
 
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {vol.Required(CONF_STATE): cv.entity_id}, extra=vol.ALLOW_EXTRA
-            )
-        }
-    )
+    APP_SCHEMA = APP_SCHEMA.extend({vol.Required(CONF_STATE): cv.entity_id})
 
     def configure(self) -> None:
         """Configure."""
@@ -282,14 +261,9 @@ class SecurityManager(Base):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {
-                    vol.Required(CONF_ALARM_CONTROL_PANEL): cv.entity_id,
-                    vol.Required(CONF_GARAGE_DOOR): cv.entity_id,
-                    vol.Required(CONF_OVERALL_SECURITY_STATUS): cv.entity_id,
-                },
-                extra=vol.ALLOW_EXTRA,
-            )
+            vol.Required(CONF_ALARM_CONTROL_PANEL): cv.entity_id,
+            vol.Required(CONF_GARAGE_DOOR): cv.entity_id,
+            vol.Required(CONF_OVERALL_SECURITY_STATUS): cv.entity_id,
         }
     )
 

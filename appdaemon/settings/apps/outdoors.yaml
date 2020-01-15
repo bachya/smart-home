@@ -51,5 +51,4 @@ kitchen_patio_light_double_tap_backyard_lights_automation:
   service_down: "switch/turn_off"
   service_down_data:
     entity_id: switch.backyard_lights
-  entity_ids:
-    zwave_device: zwave.kitchen_patio_light
+  zwave_device: zwave.kitchen_patio_light

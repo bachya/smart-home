@@ -6,8 +6,7 @@ fireplace_failsafe_automation:
   dependencies:
     - guest_mode
     - presence_manager
-  entity_ids:
-    switch: switch.fireplace
+  switch: switch.fireplace
 
 living_room_lights_on_at_sunset_automation:
   module: services
@@ -16,10 +15,8 @@ living_room_lights_on_at_sunset_automation:
   service: "homeassistant/turn_on"
   service_data:
     entity_id: group.living_room_lights
-  entity_ids:
-    target_entity_id: sun.sun
-  properties:
-    new_target_state: below_horizon
+  target_entity_id: sun.sun
+  new_target_state: below_horizon
 
 living_room_lights_on_upon_arrival_automation:
   module: services
@@ -29,10 +26,8 @@ living_room_lights_on_upon_arrival_automation:
   service: "homeassistant/turn_on"
   service_data:
     entity_id: group.living_room_lights
-  entity_ids:
-    target_entity_id: sensor.proximity_zone
-  properties:
-    new_target_state: Home
+  target_entity_id: sensor.proximity_zone
+  new_target_state: Home
 
 living_room_lights_randomize_automation:
   module: services
@@ -53,8 +48,7 @@ living_room_tv_randomize_automation:
   constrain_start_time: sunset
   service: "script/start_random_youtube_video_on_roku"
   service_alternate: "script/stop_random_youtube_video_on_roku"
-  properties:
-    lower_end: 600
+  lower_end: 600
   enabled_toggle_entity_id: input_boolean.randomize_nighttime_tvs
 
 living_room_tv_randomize_off_when_returning_home_automation:
@@ -62,10 +56,8 @@ living_room_tv_randomize_off_when_returning_home_automation:
   class: ServiceOnState
   constrain_enabled: true
   service: "script/stop_random_youtube_video_on_roku"
-  entity_ids:
-    target_entity_id: input_boolean.randomize_nighttime_tvs
-  properties:
-    new_target_state: "off"
+  target_entity_id: input_boolean.randomize_nighttime_tvs
+  new_target_state: "off"
 
 powder_room_fan_auto_turn_on_automation:
   module: services
@@ -74,8 +66,6 @@ powder_room_fan_auto_turn_on_automation:
   service: "switch/turn_on"
   service_data:
     entity_id: switch.powder_room_fan
-  entity_ids:
-    target_entity_id: switch.powder_room_fan
-  properties:
-    delay: 60
-    new_target_state: "off"
+  target_entity_id: switch.powder_room_fan
+  delay: 60
+  new_target_state: "off"

@@ -12,10 +12,9 @@ notify_of_trash_pickup_automation:
 trash_manager:
   module: trash
   class: TrashManager
-  entity_ids:
-    next_pickup_sensor: sensor.recollect_waste
-    trash_type_sensors:
-      compost: binary_sensor.recollect_next_pickup_includes_compost
-      extra_trash: binary_sensor.recollect_next_pickup_includes_extra_trash
-      recycling: binary_sensor.recollect_next_pickup_includes_recycling
-      trash: binary_sensor.recollect_next_pickup_includes_trash
+  next_pickup_sensor: sensor.recollect_waste
+  trash_type_sensors:
+    compost: binary_sensor.recollect_next_pickup_includes_compost
+    extra_trash: binary_sensor.recollect_next_pickup_includes_extra_trash
+    recycling: binary_sensor.recollect_next_pickup_includes_recycling
+    trash: binary_sensor.recollect_next_pickup_includes_trash

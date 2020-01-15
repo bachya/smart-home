@@ -5,13 +5,11 @@ wolfie:
   dependencies:
     - presence_manager
     - security_manager
-  entity_ids:
-    bin_state: input_select.wolfie_bin_status
-    calendar: calendar.wolfie_schedule
-    run_time: sensor.vacuum_cleaning_time
-    vacuum: vacuum.xiaomi_vacuum_cleaner
-  properties:
-    full_threshold_minutes: 5
+  bin_state: input_select.wolfie_bin_status
+  calendar: calendar.wolfie_schedule
+  run_time: sensor.vacuum_cleaning_time
+  vacuum: vacuum.xiaomi_vacuum_cleaner
+  full_threshold_minutes: 5
 
 wolfie_notify_before_run_automation:
   module: robot_vacuum
@@ -30,13 +28,12 @@ wolfie_notify_when_consumable_low_automation:
     - presence_manager
     - wolfie
   app: wolfie
-  properties:
-    consumable_threshold: 5
-    consumables:
-      - filter_left
-      - main_brush_left
-      - sensor_dirty_left
-      - side_brush_left
+  consumable_threshold: 5
+  consumables:
+    - filter_left
+    - main_brush_left
+    - sensor_dirty_left
+    - side_brush_left
 
 wolfie_notify_when_cycle_complete_automation:
   module: robot_vacuum
@@ -46,8 +43,7 @@ wolfie_notify_when_cycle_complete_automation:
     - presence_manager
     - wolfie
   app: wolfie
-  entity_ids:
-    notification_interval_slider: input_number.wolfie_notification_interval
+  notification_interval_slider: input_number.wolfie_notification_interval
 
 wolfie_notify_when_stuck_automation:
   module: robot_vacuum
@@ -57,5 +53,4 @@ wolfie_notify_when_stuck_automation:
     - presence_manager
     - wolfie
   app: wolfie
-  entity_ids:
-    notification_interval_slider: input_number.wolfie_notification_interval
+  notification_interval_slider: input_number.wolfie_notification_interval

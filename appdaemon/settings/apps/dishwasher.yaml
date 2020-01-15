@@ -2,9 +2,8 @@
 dishwasher:
   module: washer_dryer
   class: WasherDryer
-  entity_ids:
-    power: sensor.dishwasher_power
-    status: input_select.dishwasher_status
+  power: sensor.dishwasher_power
+  status: input_select.dishwasher_status
 
 dishwasher_cycle_automation:
   module: washer_dryer
@@ -15,10 +14,8 @@ dishwasher_cycle_automation:
     - presence_manager
     - vacation_mode
   app: dishwasher
-  entity_ids:
-    notification_interval_slider: input_number.dishwasher_notification_interval
-  properties:
-    clean_threshold: 0.0
-    drying_threshold: 3.0
-    ios_emptied_key: DISHWASHER_EMPTIED
-    running_threshold: 10.0
+  notification_interval_slider: input_number.dishwasher_notification_interval
+  clean_threshold: 0.0
+  drying_threshold: 3.0
+  ios_emptied_key: DISHWASHER_EMPTIED
+  running_threshold: 10.0

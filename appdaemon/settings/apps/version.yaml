@@ -5,17 +5,15 @@ new_appdaemon_version_automation:
   constrain_enabled: true
   dependencies:
     - presence_manager
-  entity_ids:
-    available: sensor.appdaemon_available
-    installed: sensor.appdaemon_installed
-  properties:
-    app_name: AppDaemon
-    created_entity_id: sensor.appdaemon_installed
-    endpoint_id: 1
-    friendly_name: AppDaemon Installed
-    icon: mdi:language-python
-    image_name: acockburn/appdaemon
-    interval: 300
+  available: sensor.appdaemon_available
+  installed: sensor.appdaemon_installed
+  app_name: AppDaemon
+  created_entity_id: sensor.appdaemon_installed
+  endpoint_id: 1
+  friendly_name: AppDaemon Installed
+  icon: mdi:language-python
+  image_name: acockburn/appdaemon
+  interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
 
 new_esphome_version_automation:
@@ -24,19 +22,17 @@ new_esphome_version_automation:
   constrain_enabled: true
   dependencies:
     - presence_manager
-  entity_ids:
-    available: sensor.esphome_available
-    installed: sensor.esphome_installed
-    version_sensors:
-      - sensor.master_bathroom_climate_sensor_esphome_version_short
-      - sensor.master_bedroom_salt_lamp_esphome_version_short
-      - sensor.office_salt_lamp_esphome_version_short
-  properties:
-    app_name: ESPHome
-    created_entity_id: sensor.esphome_installed
-    friendly_name: ESPHome Installed
-    icon: mdi:chip
-    interval: 300
+  available: sensor.esphome_available
+  installed: sensor.esphome_installed
+  version_sensors:
+    - sensor.master_bathroom_climate_sensor_esphome_version_short
+    - sensor.master_bedroom_salt_lamp_esphome_version_short
+    - sensor.office_salt_lamp_esphome_version_short
+  app_name: ESPHome
+  created_entity_id: sensor.esphome_installed
+  friendly_name: ESPHome Installed
+  icon: mdi:chip
+  interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
 
 new_hass_version_automation:
@@ -45,11 +41,9 @@ new_hass_version_automation:
   constrain_enabled: true
   dependencies:
     - presence_manager
-  entity_ids:
-    available: sensor.hass_available
-    installed: sensor.hass_installed
-  properties:
-    app_name: Home Assistant
+  available: sensor.hass_available
+  installed: sensor.hass_installed
+  app_name: Home Assistant
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
 
 new_vernemq_version_automation:
@@ -58,17 +52,15 @@ new_vernemq_version_automation:
   constrain_enabled: true
   dependencies:
     - presence_manager
-  entity_ids:
-    available: sensor.vernemq_available
-    installed: sensor.vernemq_installed
-  properties:
-    app_name: VerneMQ
-    created_entity_id: sensor.vernemq_installed
-    endpoint_id: 1
-    friendly_name: VerneMQ Installed
-    icon: mdi:wifi
-    image_name: docker-vernemq
-    interval: 300
+  available: sensor.vernemq_available
+  installed: sensor.vernemq_installed
+  app_name: VerneMQ
+  created_entity_id: sensor.vernemq_installed
+  endpoint_id: 1
+  friendly_name: VerneMQ Installed
+  icon: mdi:wifi
+  image_name: docker-vernemq
+  interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
 
 new_portainer_version_automation:
@@ -77,17 +69,15 @@ new_portainer_version_automation:
   constrain_enabled: true
   dependencies:
     - presence_manager
-  entity_ids:
-    available: sensor.portainer_available
-    installed: sensor.portainer_installed
-  properties:
-    app_name: Portainer
-    created_entity_id: sensor.portainer_installed
-    endpoint_id: 1
-    friendly_name: Portainer Installed
-    icon: mdi:server
-    image_name: portainer/portainer
-    interval: 300
+  available: sensor.portainer_available
+  installed: sensor.portainer_installed
+  app_name: Portainer
+  created_entity_id: sensor.portainer_installed
+  endpoint_id: 1
+  friendly_name: Portainer Installed
+  icon: mdi:server
+  image_name: portainer/portainer
+  interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions
 
 new_yi_hack_version_automation:
@@ -96,9 +86,7 @@ new_yi_hack_version_automation:
   constrain_enabled: true
   dependencies:
     - presence_manager
-  entity_ids:
-    available: sensor.yi_hack_available
-    installed: sensor.yi_hack_installed
-  properties:
-    app_name: Yi Hack
+  available: sensor.yi_hack_available
+  installed: sensor.yi_hack_installed
+  app_name: Yi Hack
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions

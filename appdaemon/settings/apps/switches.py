@@ -2,7 +2,6 @@
 from typing import Union
 
 import voluptuous as vol
-from const import CONF_ENTITY_IDS
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 
@@ -89,13 +88,7 @@ class BaseZwaveSwitch(BaseSwitch):
 class PresenceFailsafe(BaseSwitch):
     """Define a feature to restrict activation when we're not home."""
 
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {vol.Required(CONF_SWITCH): cv.entity_id}, extra=vol.ALLOW_EXTRA
-            )
-        }
-    )
+    APP_SCHEMA = APP_SCHEMA.extend({vol.Required(CONF_SWITCH): cv.entity_id})
 
     def configure(self) -> None:
         """Configure."""
@@ -119,13 +112,8 @@ class SleepTimer(BaseSwitch):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {
-                    vol.Required(CONF_SWITCH): cv.entity_id,
-                    vol.Required(CONF_TIMER_SLIDER): cv.entity_id,
-                },
-                extra=vol.ALLOW_EXTRA,
-            )
+            vol.Required(CONF_SWITCH): cv.entity_id,
+            vol.Required(CONF_TIMER_SLIDER): cv.entity_id,
         }
     )
 

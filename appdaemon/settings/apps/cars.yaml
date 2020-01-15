@@ -5,9 +5,7 @@ subaru_legacy_notify_low_fuel_automation:
   constrain_enabled: true
   dependencies:
     - presence_manager
-  entity_ids:
-    car: device_tracker.2010_subaru_legacy
-  properties:
-    friendly_name: Aaron's car
-    fuel_threshold: 10
-    notification_target: "person:Aaron"
+  car: device_tracker.2010_subaru_legacy
+  friendly_name: Aaron's car
+  fuel_threshold: 10
+  notification_target: "person:Aaron"

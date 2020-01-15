@@ -3,7 +3,7 @@
 from typing import List, Optional, Union
 import voluptuous as vol
 
-from const import CONF_ENTITY_ID, CONF_ENTITY_IDS, CONF_FRIENDLY_NAME, CONF_PROPERTIES
+from const import CONF_ENTITY_ID, CONF_FRIENDLY_NAME
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 
@@ -121,7 +121,7 @@ class Button(Base):
 
     def _on_button_press(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Respond when button is pressed."""
-        action_name = self.get_state(self.entity_ids[CONF_ACTION_LIST])
+        action_name = self.get_state(self.args[CONF_ACTION_LIST])
 
         if action_name == BUTTON_ACTION_NO_ACTION:
             return
@@ -158,12 +158,8 @@ class AmazonDashButton(Button):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {vol.Required(CONF_ACTION_LIST): cv.entity_id}, extra=vol.ALLOW_EXTRA
-            ),
-            vol.Required(CONF_PROPERTIES): vol.Schema(
-                {vol.Required(CONF_FRIENDLY_NAME): str}, extra=vol.ALLOW_EXTRA
-            ),
+            vol.Required(CONF_ACTION_LIST): cv.entity_id,
+            vol.Required(CONF_FRIENDLY_NAME): str,
         }
     )
 
@@ -172,7 +168,7 @@ class AmazonDashButton(Button):
         self.listen_event(
             self._on_button_press,
             "AMAZON_DASH_PRESS",
-            button_label=self.properties[CONF_FRIENDLY_NAME],
+            button_label=self.args[CONF_FRIENDLY_NAME],
         )
 
 
@@ -181,17 +177,10 @@ class ZWaveButton(Button):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {
-                    vol.Required(CONF_ENTITY_ID): cv.entity_id,
-                    vol.Required(CONF_ACTION_LIST): cv.entity_id,
-                },
-                extra=vol.ALLOW_EXTRA,
-            ),
-            vol.Required(CONF_PROPERTIES): vol.Schema(
-                {vol.Required(CONF_SCENE_ID): int, vol.Required(CONF_SCENE_DATA): int},
-                extra=vol.ALLOW_EXTRA,
-            ),
+            vol.Required(CONF_ENTITY_ID): cv.entity_id,
+            vol.Required(CONF_ACTION_LIST): cv.entity_id,
+            vol.Required(CONF_SCENE_ID): int,
+            vol.Required(CONF_SCENE_DATA): int,
         }
     )
 
@@ -200,6 +189,6 @@ class ZWaveButton(Button):
         self.listen_event(
             self._on_button_press,
             "zwave.scene_activated",
-            scene_id=self.properties[CONF_SCENE_ID],
-            scene_data=self.properties[CONF_SCENE_DATA],
+            scene_id=self.args[CONF_SCENE_ID],
+            scene_data=self.args[CONF_SCENE_DATA],
         )

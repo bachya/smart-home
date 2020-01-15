@@ -1,8 +1,4 @@
 """Define various constants."""
-# Top level-related config keys:
-CONF_ENTITY_IDS = "entity_ids"
-CONF_PROPERTIES = "properties"
-
 # Entity-related config keys:
 CONF_DEVICE_TRACKERS = "device_trackers"
 CONF_ENTITY_ID = "entity_id"

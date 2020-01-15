@@ -6,10 +6,8 @@ base_modes_when_returning_home:
   service: "scene/turn_on"
   service_data:
     entity_id: scene.base
-  entity_ids:
-    target_entity_id: sensor.proximity_zone
-  properties:
-    new_target_state: Home
+  target_entity_id: sensor.proximity_zone
+  new_target_state: Home
 
 blackout_mode_off:
   module: services
@@ -18,10 +16,8 @@ blackout_mode_off:
   service: "scene/turn_on"
   service_data:
     entity_id: scene.base
-  entity_ids:
-    target_entity_id: input_boolean.blackout_mode
-  properties:
-    new_target_state: "off"
+  target_entity_id: input_boolean.blackout_mode
+  new_target_state: "off"
 
 blackout_mode_on:
   module: services
@@ -30,10 +26,8 @@ blackout_mode_on:
   service: "scene/turn_on"
   service_data:
     entity_id: scene.blackout_mode
-  entity_ids:
-    target_entity_id: input_boolean.blackout_mode
-  properties:
-    new_target_state: "on"
+  target_entity_id: input_boolean.blackout_mode
+  new_target_state: "on"
 
 blackout_mode_when_triggering_good_night:
   module: services
@@ -42,13 +36,12 @@ blackout_mode_when_triggering_good_night:
   service: "scene/turn_on"
   service_data:
     entity_id: scene.blackout_mode
-  properties:
-    event: call_service
-    event_data:
-      domain: scene
-      service: turn_on
-      service_data:
-        entity_id: scene.good_night
+  event: call_service
+  event_data:
+    domain: scene
+    service: turn_on
+    service_data:
+      entity_id: scene.good_night
 
 blackout_mode_schedule:
   module: hass_apps_loader
@@ -78,10 +71,8 @@ guest_mode_off:
   service: "scene/turn_on"
   service_data:
     entity_id: scene.base
-  entity_ids:
-    target_entity_id: input_boolean.guest_mode
-  properties:
-    new_target_state: "off"
+  target_entity_id: input_boolean.guest_mode
+  new_target_state: "off"
 
 guest_mode_on:
   module: services
@@ -90,10 +81,8 @@ guest_mode_on:
   service: "scene/turn_on"
   service_data:
     entity_id: scene.guest_mode
-  entity_ids:
-    target_entity_id: input_boolean.guest_mode
-  properties:
-    new_target_state: "on"
+  target_entity_id: input_boolean.guest_mode
+  new_target_state: "on"
 
 vacation_mode_off:
   module: services
@@ -102,10 +91,8 @@ vacation_mode_off:
   service: "scene/turn_on"
   service_data:
     entity_id: scene.base
-  entity_ids:
-    target_entity_id: input_boolean.vacation_mode
-  properties:
-    new_target_state: "off"
+  target_entity_id: input_boolean.vacation_mode
+  new_target_state: "off"
 
 vacation_mode_on:
   module: services
@@ -114,7 +101,5 @@ vacation_mode_on:
   service: "scene/turn_on"
   service_data:
     entity_id: scene.vacation_mode
-  entity_ids:
-    target_entity_id: input_boolean.vacation_mode
-  properties:
-    new_target_state: "on"
+  target_entity_id: input_boolean.vacation_mode
+  new_target_state: "on"

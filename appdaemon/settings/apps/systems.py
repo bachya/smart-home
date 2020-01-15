@@ -6,10 +6,8 @@ import voluptuous as vol
 from core import APP_SCHEMA, Base
 from const import (
     CONF_ENTITY_ID,
-    CONF_ENTITY_IDS,
     CONF_NOTIFICATION_INTERVAL,
     CONF_NOTIFICATION_TARGET,
-    CONF_PROPERTIES,
     CONF_STATE,
 )
 from helpers import config_validation as cv
@@ -28,12 +26,7 @@ class AaronAccountability(Base):
     """Define features to keep me accountable on my phone."""
 
     APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {vol.Required(CONF_AARON_ROUTER_TRACKER): cv.entity_id},
-                extra=vol.ALLOW_EXTRA,
-            )
-        }
+        {vol.Required(CONF_AARON_ROUTER_TRACKER): cv.entity_id}
     )
 
     def configure(self) -> None:
@@ -70,17 +63,9 @@ class LowBatteries(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {vol.Required(CONF_BATTERIES_TO_MONITOR): cv.ensure_list},
-                extra=vol.ALLOW_EXTRA,
-            ),
-            vol.Required(CONF_PROPERTIES): vol.Schema(
-                {
-                    vol.Required(CONF_BATTERY_LEVEL_THRESHOLD): int,
-                    vol.Required(CONF_NOTIFICATION_INTERVAL): int,
-                },
-                extra=vol.ALLOW_EXTRA,
-            ),
+            vol.Required(CONF_BATTERIES_TO_MONITOR): cv.ensure_list,
+            vol.Required(CONF_BATTERY_LEVEL_THRESHOLD): int,
+            vol.Required(CONF_NOTIFICATION_INTERVAL): int,
         }
     )
 
@@ -168,13 +153,9 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {vol.Required(CONF_ENTITY_ID): cv.entity_id}, extra=vol.ALLOW_EXTRA
-            ),
-            vol.Required(CONF_PROPERTIES): vol.Schema(
-                {vol.Required(CONF_DURATION): int, vol.Required(CONF_STATE): str},
-                extra=vol.ALLOW_EXTRA,
-            ),
+            vol.Required(CONF_ENTITY_ID): cv.entity_id,
+            vol.Required(CONF_DURATION): int,
+            vol.Required(CONF_STATE): str,
         }
     )
 

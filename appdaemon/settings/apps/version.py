@@ -7,13 +7,7 @@ import voluptuous as vol
 from packaging import version
 
 from core import APP_SCHEMA, Base
-from const import (
-    CONF_ENTITY_IDS,
-    CONF_FRIENDLY_NAME,
-    CONF_ICON,
-    CONF_INTERVAL,
-    CONF_PROPERTIES,
-)
+from const import CONF_FRIENDLY_NAME, CONF_ICON, CONF_INTERVAL
 from helpers import config_validation as cv
 from notification import send_notification
 
@@ -25,35 +19,20 @@ CONF_IMAGE_NAME = "image_name"
 CONF_INSTALLED = "installed"
 CONF_VERSION_SENSORS = "version_sensors"
 
-ENTITY_IDS_SCHEMA = vol.Schema(
+VERSION_APP_SCHEMA = APP_SCHEMA.extend(
     {
         vol.Required(CONF_AVAILABLE): cv.entity_id,
         vol.Required(CONF_INSTALLED): cv.entity_id,
-    },
-    extra=vol.ALLOW_EXTRA,
-)
-
-PROPERTIES_SCHEMA = vol.Schema(
-    {vol.Required(CONF_APP_NAME): str}, extra=vol.ALLOW_EXTRA
-)
-
-VERSION_APP_SCHEMA = APP_SCHEMA.extend(
-    {
-        vol.Optional(CONF_ENTITY_IDS): ENTITY_IDS_SCHEMA,
-        vol.Optional(CONF_PROPERTIES): PROPERTIES_SCHEMA,
+        vol.Required(CONF_APP_NAME): str,
     }
 )
 
 DYNAMIC_APP_SCHEMA = VERSION_APP_SCHEMA.extend(
     {
-        vol.Required(CONF_PROPERTIES): PROPERTIES_SCHEMA.extend(
-            {
-                vol.Required(CONF_CREATED_ENTITY_ID): cv.entity_id,
-                vol.Required(CONF_FRIENDLY_NAME): str,
-                vol.Required(CONF_ICON): str,
-                vol.Required(CONF_INTERVAL): int,
-            }
-        )
+        vol.Required(CONF_CREATED_ENTITY_ID): cv.entity_id,
+        vol.Required(CONF_FRIENDLY_NAME): str,
+        vol.Required(CONF_ICON): str,
+        vol.Required(CONF_INTERVAL): int,
     }
 )
 
@@ -132,11 +111,7 @@ class NewMultiSensorVersionNotification(DynamicSensor):
     """Detect version changes by examining multiple version sensors."""
 
     APP_SCHEMA = DYNAMIC_APP_SCHEMA.extend(
-        {
-            vol.Required(CONF_ENTITY_IDS): ENTITY_IDS_SCHEMA.extend(
-                {vol.Required(CONF_VERSION_SENSORS): vol.All(cv.ensure_list)}
-            )
-        }
+        {vol.Required(CONF_VERSION_SENSORS): cv.ensure_list}
     )
 
     @property
@@ -158,30 +133,16 @@ class NewPortainerVersionNotification(DynamicSensor):
     """Detect new versions of Portainer-defined images."""
 
     APP_SCHEMA = DYNAMIC_APP_SCHEMA.extend(
-        {
-            vol.Required(CONF_PROPERTIES): PROPERTIES_SCHEMA.extend(
-                {
-                    vol.Required(CONF_ENDPOINT_ID): int,
-                    vol.Required(CONF_IMAGE_NAME): str,
-                }
-            )
-        }
+        {vol.Required(CONF_ENDPOINT_ID): int, vol.Required(CONF_IMAGE_NAME): str}
     )
 
     API_URL = "http://portainer:9000/api"
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_ENTITY_IDS): vol.Schema(
-                {
-                    vol.Required(CONF_AVAILABLE): cv.entity_id,
-                    vol.Required(CONF_INSTALLED): cv.entity_id,
-                },
-                extra=vol.ALLOW_EXTRA,
-            ),
-            CONF_PROPERTIES: vol.Schema(
-                {vol.Required(CONF_APP_NAME): str}, extra=vol.ALLOW_EXTRA
-            ),
+            vol.Required(CONF_AVAILABLE): cv.entity_id,
+            vol.Required(CONF_INSTALLED): cv.entity_id,
+            vol.Required(CONF_APP_NAME): str,
         }
     )
 

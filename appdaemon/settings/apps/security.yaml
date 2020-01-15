@@ -6,10 +6,8 @@ auto_departure_lockup_automation:
   service: "scene/turn_on"
   service_data:
     entity_id: scene.depart_home
-  entity_ids:
-    target_entity_id: sensor.proximity_zone
-  properties:
-    old_target_state: Home
+  target_entity_id: sensor.proximity_zone
+  old_target_state: Home
 
 auto_nighttime_lockup_automation:
   module: services
@@ -19,8 +17,7 @@ auto_nighttime_lockup_automation:
   service: "scene/turn_on"
   service_data:
     entity_id: scene.good_night
-  properties:
-    schedule_time: "00:00:00"
+  schedule_time: "00:00:00"
 
 disable_simplisafe_sounds_in_blackout_automation:
   module: services
@@ -31,10 +28,8 @@ disable_simplisafe_sounds_in_blackout_automation:
     system_id: !secret simplisafe_system_id
     chime_volume: 0
     voice_prompt_volume: 0
-  entity_ids:
-    target_entity_id: input_boolean.blackout_mode
-  properties:
-    new_target_state: "on"
+  target_entity_id: input_boolean.blackout_mode
+  new_target_state: "on"
   enabled_toggle_entity_id: >
     input_boolean.simplisafe_sounds_blackout_automation
 
@@ -47,10 +42,8 @@ enable_simplisafe_sounds_out_of_blackout_automation:
     system_id: !secret simplisafe_system_id
     chime_volume: 2
     voice_prompt_volume: 2
-  entity_ids:
-    target_entity_id: input_boolean.blackout_mode
-  properties:
-    new_target_state: "off"
+  target_entity_id: input_boolean.blackout_mode
+  new_target_state: "off"
   enabled_toggle_entity_id: >
     input_boolean.simplisafe_sounds_blackout_automation
 
@@ -62,11 +55,9 @@ notify_of_garage_open_automation:
     - presence_manager
     - security_manager
     - slack_app_home_assistant
-  entity_ids:
-    garage_door: cover.garage_door
-  properties:
-    notification_interval: 300
-    time_left_open: 600
+  garage_door: cover.garage_door
+  notification_interval: 300
+  time_left_open: 600
 
 notify_when_absent_insecure_automation:
   module: security
@@ -77,8 +68,7 @@ notify_when_absent_insecure_automation:
     - guest_mode
     - presence_manager
     - security_manager
-  entity_ids:
-    state: sensor.secure_status
+  state: sensor.secure_status
 
 notify_when_status_changes_automation:
   module: security
@@ -86,8 +76,7 @@ notify_when_status_changes_automation:
   constrain_enabled: true
   dependencies:
     - presence_manager
-  entity_ids:
-    state: sensor.secure_status
+  state: sensor.secure_status
 
 notify_when_person_on_camera:
   module: security
@@ -95,39 +84,35 @@ notify_when_person_on_camera:
   constrain_enabled: true
   dependencies:
     - presence_manager
-  entity_ids:
-    cameras:
-      - camera_entity_id: camera.garage_camera
-        presence_detector_entity_id: binary_sensor.garage_person_detected
-      - camera_entity_id: camera.kitchen_camera
-        presence_detector_entity_id: binary_sensor.kitchen_person_detected
-      - camera_entity_id: camera.guest_bedroom_camera
-        presence_detector_entity_id: binary_sensor.guest_bedroom_person_detected
-  properties:
-    hit_threshold: 5
-    window_seconds: 60
+  cameras:
+    - camera_entity_id: camera.garage_camera
+      presence_detector_entity_id: binary_sensor.garage_person_detected
+    - camera_entity_id: camera.kitchen_camera
+      presence_detector_entity_id: binary_sensor.kitchen_person_detected
+    - camera_entity_id: camera.guest_bedroom_camera
+      presence_detector_entity_id: binary_sensor.guest_bedroom_person_detected
+  hit_threshold: 5
+  window_seconds: 60
 
 security_manager:
   module: security
   class: SecurityManager
-  entity_ids:
-    alarm_control_panel: alarm_control_panel.8673_e_55th_avenue
-    garage_door: cover.garage_door
-    overall_security_status_sensor: sensor.secure_status
-  properties:
-    secure_status_mapping:
-      - entity_id: lock.garage_fire_door
-        friendly_name: the door to the garage
-        state: unlocked
-      - entity_id: lock.front_door
-        friendly_name: the front door
-        state: unlocked
-      - entity_id: cover.garage_door
-        friendly_name: the garage door
-        state: open
-      - entity_id: alarm_control_panel.8673_e_55th_avenue
-        friendly_name: the security system
-        state: disarmed
+  alarm_control_panel: alarm_control_panel.8673_e_55th_avenue
+  garage_door: cover.garage_door
+  overall_security_status_sensor: sensor.secure_status
+  secure_status_mapping:
+    - entity_id: lock.garage_fire_door
+      friendly_name: the door to the garage
+      state: unlocked
+    - entity_id: lock.front_door
+      friendly_name: the front door
+      state: unlocked
+    - entity_id: cover.garage_door
+      friendly_name: the garage door
+      state: open
+    - entity_id: alarm_control_panel.8673_e_55th_avenue
+      friendly_name: the security system
+      state: disarmed
 
 turn_on_front_patio_light_when_nighttime_person_detected_automation:
   module: services
@@ -137,10 +122,8 @@ turn_on_front_patio_light_when_nighttime_person_detected_automation:
   service: "switch/turn_on"
   service_data:
     entity_id: switch.front_patio_light
-  entity_ids:
-    target_entity_id: binary_sensor.front_door_camera_person_detected
-  properties:
-    new_target_state: "on"
+  target_entity_id: binary_sensor.front_door_camera_person_detected
+  new_target_state: "on"
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
 
 turn_off_front_patio_light_when_nighttime_person_leaves_automation:
@@ -151,11 +134,9 @@ turn_off_front_patio_light_when_nighttime_person_leaves_automation:
   service: "switch/turn_off"
   service_data:
     entity_id: switch.front_patio_light
-  entity_ids:
-    target_entity_id: binary_sensor.front_door_camera_person_detected
-  properties:
-    delay: 300
-    new_target_state: "off"
+  target_entity_id: binary_sensor.front_door_camera_person_detected
+  delay: 300
+  new_target_state: "off"
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
 
 turn_on_living_room_lights_when_nighttime_person_detected_automation:
@@ -166,10 +147,8 @@ turn_on_living_room_lights_when_nighttime_person_detected_automation:
   service: "homeassistant/turn_on"
   service_data:
     entity_id: group.living_room_lights
-  entity_ids:
-    target_entity_id: binary_sensor.front_door_camera_person_detected
-  properties:
-    new_target_state: "on"
+  target_entity_id: binary_sensor.front_door_camera_person_detected
+  new_target_state: "on"
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
 
 turn_off_living_room_lights_when_nighttime_person_leaves_automation:
@@ -180,9 +159,7 @@ turn_off_living_room_lights_when_nighttime_person_leaves_automation:
   service: "homeassistant/turn_off"
   service_data:
     entity_id: group.living_room_lights
-  entity_ids:
-    target_entity_id: binary_sensor.front_door_camera_person_detected
-  properties:
-    delay: 300
-    new_target_state: "off"
+  target_entity_id: binary_sensor.front_door_camera_person_detected
+  delay: 300
+  new_target_state: "off"
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation

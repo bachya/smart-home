@@ -9,8 +9,7 @@ aaron_accountability_automation:
     - aaron
     - presence_manager
     - blackout_mode
-  entity_ids:
-    aaron_router_tracker: device_tracker.aarons_iphone
+  aaron_router_tracker: device_tracker.aarons_iphone
 
 notify_of_low_batteries_automation:
   module: systems
@@ -18,19 +17,17 @@ notify_of_low_batteries_automation:
   constrain_enabled: true
   dependencies:
     - presence_manager
-  entity_ids:
-    batteries_to_monitor:
-      - binary_sensor.guest_bedroom_sensor_low_battery
-      - binary_sensor.kitchen_sensor_low_battery
-      - binary_sensor.upstairs_hallway_sensor_low_battery
-      - sensor.aeotec_nanomote_quad_aaron_bedside_battery
-      - sensor.fiddle_leaf_fig_battery
-      - sensor.front_door_lock_battery
-      - sensor.garage_fire_door_lock_battery
-      - sensor.kitchen_sink_sensor_battery
-  properties:
-    battery_level_threshold: 20
-    notification_interval: 900
+  batteries_to_monitor:
+    - binary_sensor.guest_bedroom_sensor_low_battery
+    - binary_sensor.kitchen_sensor_low_battery
+    - binary_sensor.upstairs_hallway_sensor_low_battery
+    - sensor.aeotec_nanomote_quad_aaron_bedside_battery
+    - sensor.fiddle_leaf_fig_battery
+    - sensor.front_door_lock_battery
+    - sensor.garage_fire_door_lock_battery
+    - sensor.kitchen_sink_sensor_battery
+  battery_level_threshold: 20
+  notification_interval: 900
 
 notify_media_center_left_on_automation:
   module: systems
@@ -38,14 +35,12 @@ notify_media_center_left_on_automation:
   constrain_enabled: true
   dependencies:
     - presence_manager
-  entity_ids:
-    entity_id: switch.media_center
-  properties:
-    duration: 43200
-    notification_target:
-      - "person:Aaron"
-      - "person:Britt"
-    state: "on"
+  entity_id: switch.media_center
+  duration: 43200
+  notification_target:
+    - "person:Aaron"
+    - "person:Britt"
+  state: "on"
 
 notify_ps4_left_on_automation:
   module: systems
@@ -53,14 +48,12 @@ notify_ps4_left_on_automation:
   constrain_enabled: true
   dependencies:
     - presence_manager
-  entity_ids:
-    entity_id: media_player.playstation_4
-  properties:
-    duration: 43200
-    notification_target:
-      - "person:Aaron"
-      - "person:Britt"
-    state: "idle"
+  entity_id: media_player.playstation_4
+  duration: 43200
+  notification_target:
+    - "person:Aaron"
+    - "person:Britt"
+  state: "idle"
 
 notify_of_dead_zwave_devices_automation:
   module: systems
@@ -76,8 +69,7 @@ power_off_media_center_for_backup_automation:
   service: "switch/turn_off"
   service_data:
     entity_id: switch.media_center
-  properties:
-    schedule_time: "01:30:00"
+  schedule_time: "01:30:00"
   enabled_toggle_entity_id: input_boolean.media_center_backup_automation
 
 power_on_media_center_for_backup_automation:
@@ -87,14 +79,12 @@ power_on_media_center_for_backup_automation:
   service: "switch/turn_on"
   service_data:
     entity_id: switch.media_center
-  properties:
-    schedule_time: "01:00:00"
+  schedule_time: "01:00:00"
   enabled_toggle_entity_id: input_boolean.media_center_backup_automation
 
 start_homekit_on_zwave_ready_automation:
   module: systems
   class: StartHomeKitOnZwaveReady
   constrain_enabled: true
-  entity_ids:
-    to_exclude:
-      - zwave.aeotec_nanomote_quad_aaron_bedside
+  to_exclude:
+    - zwave.aeotec_nanomote_quad_aaron_bedside
