@@ -55,6 +55,9 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
         # Define a holding place for key/value properties for this app:
         self.properties = validated_args[CONF_PROPERTIES]
 
+        # Save the Voluptuous-validated args:
+        self.validated_args = validated_args
+
         # Take every dependecy and create a reference to it:
         for app in validated_args[CONF_DEPENDENCIES]:
             if not getattr(self, app, None):
