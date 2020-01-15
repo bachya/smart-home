@@ -35,7 +35,7 @@ class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_PROPERTIES: vol.Schema(
+            vol.Required(CONF_PROPERTIES): vol.Schema(
                 {
                     vol.Required(CONF_CONSUMABLE_THRESHOLD): int,
                     vol.Required(CONF_CONSUMABLES): cv.ensure_list,
@@ -128,7 +128,7 @@ class NotifyWhenRunComplete(Base):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {vol.Required(CONF_NOTIFICATION_INTERVAL_SLIDER): cv.entity_id},
                 extra=vol.ALLOW_EXTRA,
             )
@@ -206,7 +206,7 @@ class NotifyWhenStuck(Base):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {vol.Required(CONF_NOTIFICATION_INTERVAL_SLIDER): cv.entity_id},
                 extra=vol.ALLOW_EXTRA,
             )
@@ -282,7 +282,7 @@ class Vacuum(Base):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {
                     vol.Required(CONF_BIN_STATE): cv.entity_id,
                     vol.Required(CONF_VACUUM): cv.entity_id,

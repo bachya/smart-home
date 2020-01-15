@@ -29,7 +29,7 @@ class AaronAccountability(Base):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {vol.Required(CONF_AARON_ROUTER_TRACKER): cv.entity_id},
                 extra=vol.ALLOW_EXTRA,
             )
@@ -70,11 +70,11 @@ class LowBatteries(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {vol.Required(CONF_BATTERIES_TO_MONITOR): cv.ensure_list},
                 extra=vol.ALLOW_EXTRA,
             ),
-            CONF_PROPERTIES: vol.Schema(
+            vol.Required(CONF_PROPERTIES): vol.Schema(
                 {
                     vol.Required(CONF_BATTERY_LEVEL_THRESHOLD): int,
                     vol.Required(CONF_NOTIFICATION_INTERVAL): int,
@@ -168,10 +168,10 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {vol.Required(CONF_ENTITY_ID): cv.entity_id}, extra=vol.ALLOW_EXTRA
             ),
-            CONF_PROPERTIES: vol.Schema(
+            vol.Required(CONF_PROPERTIES): vol.Schema(
                 {vol.Required(CONF_DURATION): int, vol.Required(CONF_STATE): str},
                 extra=vol.ALLOW_EXTRA,
             ),

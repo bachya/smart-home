@@ -25,10 +25,10 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {vol.Required(CONF_NOTIFICATION_INTERVAL_SLIDER): cv.entity_id}
             ),
-            CONF_PROPERTIES: vol.Schema(
+            vol.Required(CONF_PROPERTIES): vol.Schema(
                 {
                     vol.Required(CONF_CLEAN_THRESHOLD): float,
                     vol.Required(CONF_DRYING_THRESHOLD): float,
@@ -134,7 +134,7 @@ class WasherDryer(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {
                     vol.Required(CONF_POWER): cv.entity_id,
                     vol.Required(CONF_STATUS): cv.entity_id,

@@ -17,7 +17,7 @@ class BadLoginNotification(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {
                     vol.Required(CONF_BAD_LOGIN): cv.entity_id,
                     vol.Required(CONF_IP_BAN): cv.entity_id,

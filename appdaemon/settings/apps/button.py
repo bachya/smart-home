@@ -158,10 +158,10 @@ class AmazonDashButton(Button):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {vol.Required(CONF_ACTION_LIST): cv.entity_id}, extra=vol.ALLOW_EXTRA
             ),
-            CONF_PROPERTIES: vol.Schema(
+            vol.Required(CONF_PROPERTIES): vol.Schema(
                 {vol.Required(CONF_FRIENDLY_NAME): str}, extra=vol.ALLOW_EXTRA
             ),
         }
@@ -181,14 +181,14 @@ class ZWaveButton(Button):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {
                     vol.Required(CONF_ENTITY_ID): cv.entity_id,
                     vol.Required(CONF_ACTION_LIST): cv.entity_id,
                 },
                 extra=vol.ALLOW_EXTRA,
             ),
-            CONF_PROPERTIES: vol.Schema(
+            vol.Required(CONF_PROPERTIES): vol.Schema(
                 {vol.Required(CONF_SCENE_ID): int, vol.Required(CONF_SCENE_DATA): int},
                 extra=vol.ALLOW_EXTRA,
             ),

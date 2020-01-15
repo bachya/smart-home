@@ -91,7 +91,7 @@ class PresenceFailsafe(BaseSwitch):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {vol.Required(CONF_SWITCH): cv.entity_id}, extra=vol.ALLOW_EXTRA
             )
         }
@@ -119,7 +119,7 @@ class SleepTimer(BaseSwitch):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {
                     vol.Required(CONF_SWITCH): cv.entity_id,
                     vol.Required(CONF_TIMER_SLIDER): cv.entity_id,

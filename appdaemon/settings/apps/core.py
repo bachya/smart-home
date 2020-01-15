@@ -35,7 +35,7 @@ APP_SCHEMA = vol.Schema(
 class Base(Hass):  # pylint: disable=too-many-public-methods
     """Define a base app/automation object."""
 
-    APP_SCHEMA = APP_SCHEMA.extend({})
+    APP_SCHEMA = APP_SCHEMA
 
     def initialize(self) -> None:
         """Initialize."""

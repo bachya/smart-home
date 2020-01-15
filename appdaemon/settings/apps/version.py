@@ -172,7 +172,7 @@ class NewPortainerVersionNotification(DynamicSensor):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {
                     vol.Required(CONF_AVAILABLE): cv.entity_id,
                     vol.Required(CONF_INSTALLED): cv.entity_id,

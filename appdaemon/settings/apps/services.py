@@ -49,7 +49,7 @@ class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
         {
-            CONF_PROPERTIES: vol.Schema(
+            vol.Required(CONF_PROPERTIES): vol.Schema(
                 {
                     vol.Required(CONF_EVENT): str,
                     vol.Optional(CONF_EVENT_DATA, default={}): dict,
@@ -79,7 +79,7 @@ class ServiceOnInterval(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
         {
-            CONF_PROPERTIES: vol.Schema(
+            vol.Required(CONF_PROPERTIES): vol.Schema(
                 {vol.Required(CONF_INTERVAL): int}, extra=vol.ALLOW_EXTRA
             )
         }
@@ -167,11 +167,11 @@ class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {vol.Required(CONF_TARGET_ENTITY_ID): cv.entity_id},
                 extra=vol.ALLOW_EXTRA,
             ),
-            CONF_PROPERTIES: vol.All(
+            vol.Required(CONF_PROPERTIES): vol.All(
                 vol.Schema(
                     {
                         vol.Optional(CONF_NEW_TARGET_STATE): str,
@@ -222,7 +222,7 @@ class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
         {
-            CONF_PROPERTIES: vol.Schema(
+            vol.Required(CONF_PROPERTIES): vol.Schema(
                 {vol.Required(CONF_SCHEDULE_TIME): str}, extra=vol.ALLOW_EXTRA
             )
         }
@@ -247,7 +247,7 @@ class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-met
     APP_SCHEMA = vol.All(
         APP_SCHEMA.extend(
             {
-                CONF_ENTITY_IDS: vol.Schema(
+                vol.Required(CONF_ENTITY_IDS): vol.Schema(
                     {vol.Required(CONF_ZWAVE_DEVICE): cv.entity_id},
                     extra=vol.ALLOW_EXTRA,
                 ),

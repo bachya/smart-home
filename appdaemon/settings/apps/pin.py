@@ -260,7 +260,7 @@ class SimpliSafePIN(PIN):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_PROPERTIES: vol.Schema(
+            vol.Required(CONF_PROPERTIES): vol.Schema(
                 {vol.Required(CONF_SYSTEM_ID): int}, extra=vol.ALLOW_EXTRA
             )
         }

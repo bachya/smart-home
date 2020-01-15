@@ -95,7 +95,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {
                     vol.Required(CONF_AWAY_MODE): cv.entity_id,
                     vol.Required(CONF_ECO_HIGH_THRESHOLD): cv.entity_id,
@@ -405,10 +405,10 @@ class NotifyBadAqi(Base):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {vol.Required(CONF_AQI_SENSOR): cv.entity_id}, extra=vol.ALLOW_EXTRA
             ),
-            CONF_PROPERTIES: vol.Schema(
+            vol.Required(CONF_PROPERTIES): vol.Schema(
                 {vol.Required(CONF_AQI_THRESHOLD): int}, extra=vol.ALLOW_EXTRA
             ),
         }

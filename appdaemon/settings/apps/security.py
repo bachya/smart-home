@@ -35,7 +35,7 @@ class AbsentInsecure(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {vol.Required(CONF_STATE): cv.entity_id}, extra=vol.ALLOW_EXTRA
             )
         }
@@ -89,10 +89,10 @@ class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {vol.Required(CONF_GARAGE_DOOR): cv.entity_id}, extra=vol.ALLOW_EXTRA
             ),
-            CONF_PROPERTIES: vol.Schema(
+            vol.Required(CONF_PROPERTIES): vol.Schema(
                 {
                     vol.Required(CONF_NOTIFICATION_INTERVAL): int,
                     vol.Required(CONF_TIME_LEFT_OPEN): int,
@@ -176,7 +176,7 @@ class NotifyOnChange(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {vol.Required(CONF_STATE): cv.entity_id}, extra=vol.ALLOW_EXTRA
             )
         }
@@ -282,7 +282,7 @@ class SecurityManager(Base):
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            CONF_ENTITY_IDS: vol.Schema(
+            vol.Required(CONF_ENTITY_IDS): vol.Schema(
                 {
                     vol.Required(CONF_ALARM_CONTROL_PANEL): cv.entity_id,
                     vol.Required(CONF_GARAGE_DOOR): cv.entity_id,
