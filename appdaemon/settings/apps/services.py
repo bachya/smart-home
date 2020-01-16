@@ -67,11 +67,11 @@ class MultiServiceBase(Base):
 
     def pick_and_call_service(self) -> None:
         """Run the correct service."""
-        if self.args[CONF_SERVICE_ORDER] == SERVICE_ORDER_SEQUENTIAL:
-            index = self._count % len(self.args[CONF_SERVICES])
-            service_data = self.args[CONF_SERVICES][index]
+        if self.args[CONF_SERVICES][CONF_SERVICE_ORDER] == SERVICE_ORDER_SEQUENTIAL:
+            index = self._count % len(self.args[CONF_SERVICES][CONF_SERVICES])
+            service_data = self.args[CONF_SERVICES][CONF_SERVICES][index]
         else:
-            service_data = choice(self.args[CONF_SERVICES])  # nosec
+            service_data = choice(self.args[CONF_SERVICES][CONF_SERVICES])  # nosec
 
         self.call_service(service_data[CONF_SERVICE], **service_data[CONF_SERVICE_DATA])
 
@@ -96,7 +96,10 @@ class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
 
     def _on_event_heard(self, event_name: str, data: dict, kwargs: dict) -> None:
         """Call the service."""
-        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
+        self.call_service(
+            self.args[CONF_SERVICES][CONF_SERVICE],
+            **self.args[CONF_SERVICES][CONF_SERVICE_DATA]
+        )
 
 
 class ServiceOnInterval(MultiServiceBase):  # pylint: disable=too-few-public-methods
@@ -207,7 +210,10 @@ class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
         # another:
         if new == old:
             return
-        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
+        self.call_service(
+            self.args[CONF_SERVICES][CONF_SERVICE],
+            **self.args[CONF_SERVICES][CONF_SERVICE_DATA]
+        )
 
 
 class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
@@ -223,7 +229,10 @@ class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
 
     def _on_time_reached(self, kwargs: dict) -> None:
         """Call the service."""
-        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
+        self.call_service(
+            self.args[CONF_SERVICES][CONF_SERVICE],
+            **self.args[CONF_SERVICES][CONF_SERVICE_DATA]
+        )
 
 
 class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-methods
@@ -269,7 +278,8 @@ class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-met
             return
 
         self.call_service(
-            self.args[CONF_SERVICE_DOWN], **self.args[CONF_SERVICE_DOWN_DATA]
+            self.args[CONF_SERVICES][CONF_SERVICE_DOWN],
+            **self.args[CONF_SERVICES][CONF_SERVICE_DOWN_DATA]
         )
 
     def _on_double_tap_up(self, event_name: str, data: dict, kwargs: dict) -> None:
@@ -278,4 +288,7 @@ class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-met
             self.log("No service defined for double-tap up")
             return
 
-        self.call_service(self.args[CONF_SERVICE_UP], **self.args[CONF_SERVICE_UP_DATA])
+        self.call_service(
+            self.args[CONF_SERVICES][CONF_SERVICE_UP],
+            **self.args[CONF_SERVICES][CONF_SERVICE_UP_DATA]
+        )
