@@ -62,6 +62,12 @@ script:
       - service: remote.turn_off
         data:
           entity_id: remote.living_room_tv
+  switch_roku_to_plex:
+    sequence:
+      - service: media_player.select_source
+        data:
+          entity_id: media_player.living_room_roku
+          source: Plex
 
 sensor:
   - platform: template
