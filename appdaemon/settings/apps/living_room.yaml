@@ -45,8 +45,8 @@ living_room_tv_randomize_automation:
   constrain_enabled: true
   constrain_end_time: "23:30:00"
   constrain_start_time: sunset
-  service: "script/start_random_youtube_video_on_roku"
-  service_alternate: "script/stop_random_youtube_video_on_roku"
+  service: "script/start_random_stream_on_living_room_roku"
+  service_alternate: "script/stop_random_stream_on_living_room_roku"
   lower_end: 600
   enabled_toggle_entity_id: input_boolean.randomize_nighttime_tvs
 
@@ -54,7 +54,7 @@ living_room_tv_randomize_off_when_returning_home_automation:
   module: services
   class: ServiceOnState
   constrain_enabled: true
-  service: "script/stop_random_youtube_video_on_roku"
+  service: "script/stop_random_stream_on_living_room_roku"
   target_entity_id: input_boolean.randomize_nighttime_tvs
   new_target_state: "off"
 

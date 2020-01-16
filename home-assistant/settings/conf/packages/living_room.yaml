@@ -33,7 +33,7 @@ roku:
   - host: 172.16.11.38
 
 script:
-  start_random_youtube_video_on_roku:
+  start_random_stream_on_living_room_roku:
     sequence:
       - service: remote.turn_on
         data:
@@ -42,20 +42,8 @@ script:
       - service: media_player.select_source
         data:
           entity_id: media_player.living_room_roku
-          source: YouTube
+          source: Locast.org
       - delay: "00:00:10"
-      - service: remote.send_command
-        data:
-          entity_id: remote.living_room_roku
-          command: right
-      - service: remote.send_command
-        data:
-          entity_id: remote.living_room_roku
-          command: right
-      - service: remote.send_command
-        data:
-          entity_id: remote.living_room_roku
-          command: right
       - service: remote.send_command
         data:
           entity_id: remote.living_room_roku
@@ -64,7 +52,7 @@ script:
         data:
           entity_id: media_player.sonos_playbar
           volume_level: 0.25
-  stop_random_youtube_video_on_roku:
+  stop_random_stream_on_living_room_roku:
     sequence:
       - service: media_player.select_source
         data:
