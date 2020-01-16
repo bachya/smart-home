@@ -1,7 +1,8 @@
 """Define voluptuous helpers."""
 # pylint: disable=invalid-name
 from datetime import date as date_sys, time as time_sys, timedelta
-from typing import Any, Callable, Dict, List, Number, TypeVar, Union
+from numbers import Number
+from typing import Any, Callable, Dict, List, TypeVar, Union
 
 import voluptuous as vol
 
