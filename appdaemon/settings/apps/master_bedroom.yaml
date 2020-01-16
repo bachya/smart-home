@@ -43,10 +43,11 @@ master_toilet_fan_double_tap_timer_automation:
   module: services
   class: ServiceOnZWaveSwitchDoubleTap
   constrain_enabled: true
-  service_up: "input_number/set_value"
-  service_up_data:
-    entity_id: input_number.master_bathroom_toilet_fan_timer
-    value: 10
+  services:
+    service_up: "input_number/set_value"
+    service_up_data:
+      entity_id: input_number.master_bathroom_toilet_fan_timer
+      value: 10
   zwave_device: zwave.master_toilet_fan
 
 master_toilet_fan_toggle_automation:

@@ -37,16 +37,18 @@ DEFAULT_RANDOM_TICK_UPPER_END = 60 * 60
 
 HANDLE_TICK = "tick"
 
-SERVICE_CALL_SCHEMA = APP_SCHEMA.extend(
+SERVICE_CALL_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_SERVICE): cv.string,
         vol.Optional(CONF_SERVICE_DATA, default={}): dict,
     }
 )
 
-SINGLE_SERVICE_SCHEMA = vol.Schema({vol.Required(CONF_SERVICES): SERVICE_CALL_SCHEMA})
+SINGLE_SERVICE_SCHEMA = APP_SCHEMA.extend(
+    {vol.Required(CONF_SERVICES): SERVICE_CALL_SCHEMA}
+)
 
-MULTI_SERVICE_SCHEMA = vol.Schema(
+MULTI_SERVICE_SCHEMA = APP_SCHEMA.extend(
     {
         vol.Required(CONF_SERVICES): vol.All(cv.ensure_list, [SERVICE_CALL_SCHEMA]),
         vol.Optional(CONF_SERVICE_ORDER, default=SERVICE_ORDER_SEQUENTIAL): vol.In(
@@ -227,22 +229,18 @@ class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
 class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-methods
     """Define an automation to call a service when a Z-Wave switch double-tap occurs."""
 
-    APP_SCHEMA = vol.All(
-        APP_SCHEMA.extend(
-            {
-                vol.Required(CONF_SERVICES): vol.Schema(
-                    {
-                        vol.Inclusive(CONF_SERVICE_UP, "up"): cv.string,
-                        vol.Inclusive(CONF_SERVICE_UP_DATA, "up"): dict,
-                        vol.Inclusive(CONF_SERVICE_DOWN, "down"): cv.string,
-                        vol.Inclusive(CONF_SERVICE_DOWN_DATA, "down"): dict,
-                    }
-                ),
-                vol.Required(CONF_ZWAVE_DEVICE): cv.entity_id,
-            }
+    APP_SCHEMA = APP_SCHEMA.extend({
+        vol.Required(CONF_SERVICES): vol.All(
+            vol.Schema({
+                vol.Inclusive(CONF_SERVICE_UP, "up"): cv.string,
+                vol.Inclusive(CONF_SERVICE_UP_DATA, "up"): dict,
+                vol.Inclusive(CONF_SERVICE_DOWN, "down"): cv.string,
+                vol.Inclusive(CONF_SERVICE_DOWN_DATA, "down"): dict,
+            }),
+            cv.has_at_least_one_key(CONF_SERVICE_UP, CONF_SERVICE_DOWN),
         ),
-        cv.has_at_least_one_key(CONF_SERVICE_UP, CONF_SERVICE_DOWN),
-    )
+        vol.Required(CONF_ZWAVE_DEVICE): cv.entity_id,
+    })
 
     def configure(self) -> None:
         """Configure."""
