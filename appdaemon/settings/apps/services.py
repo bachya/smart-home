@@ -260,14 +260,14 @@ class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-met
         self.listen_event(
             self._on_double_tap_up,
             "zwave.node_event",
-            arg=self.args[CONF_ZWAVE_DEVICE],
+            entity_id=self.args[CONF_ZWAVE_DEVICE],
             basic_level=255,
         )
 
         self.listen_event(
             self._on_double_tap_down,
             "zwave.node_event",
-            arg=self.args[CONF_ZWAVE_DEVICE],
+            entity_id=self.args[CONF_ZWAVE_DEVICE],
             basic_level=0,
         )
 
