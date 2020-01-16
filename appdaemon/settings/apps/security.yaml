@@ -3,9 +3,10 @@ auto_departure_lockup_automation:
   module: services
   class: ServiceOnState
   constrain_enabled: true
-  service: "scene/turn_on"
-  service_data:
-    entity_id: scene.depart_home
+  services:
+    service: "scene/turn_on"
+    service_data:
+      entity_id: scene.depart_home
   target_entity_id: sensor.proximity_zone
   old_target_state: Home
 
@@ -14,20 +15,22 @@ auto_nighttime_lockup_automation:
   class: ServiceOnTime
   constrain_anyone: home
   constrain_enabled: true
-  service: "scene/turn_on"
-  service_data:
-    entity_id: scene.good_night
+  services:
+    service: "scene/turn_on"
+    service_data:
+      entity_id: scene.good_night
   schedule_time: "00:00:00"
 
 disable_simplisafe_sounds_in_blackout_automation:
   module: services
   class: ServiceOnState
   constrain_enabled: true
-  service: "simplisafe/set_system_properties"
-  service_data:
-    system_id: !secret simplisafe_system_id
-    chime_volume: 0
-    voice_prompt_volume: 0
+  services:
+    service: "simplisafe/set_system_properties"
+    service_data:
+      system_id: !secret simplisafe_system_id
+      chime_volume: 0
+      voice_prompt_volume: 0
   target_entity_id: input_boolean.blackout_mode
   new_target_state: "on"
   enabled_toggle_entity_id: >
@@ -37,11 +40,12 @@ enable_simplisafe_sounds_out_of_blackout_automation:
   module: services
   class: ServiceOnState
   constrain_enabled: true
-  service: "simplisafe/set_system_properties"
-  service_data:
-    system_id: !secret simplisafe_system_id
-    chime_volume: 2
-    voice_prompt_volume: 2
+  services:
+    service: "simplisafe/set_system_properties"
+    service_data:
+      system_id: !secret simplisafe_system_id
+      chime_volume: 2
+      voice_prompt_volume: 2
   target_entity_id: input_boolean.blackout_mode
   new_target_state: "off"
   enabled_toggle_entity_id: >
@@ -118,9 +122,10 @@ turn_on_front_patio_light_when_nighttime_person_detected_automation:
   class: ServiceOnState
   constrain_enabled: true
   constrain_in_bed: true
-  service: "switch/turn_on"
-  service_data:
-    entity_id: switch.front_patio_light
+  services:
+    service: "switch/turn_on"
+    service_data:
+      entity_id: switch.front_patio_light
   target_entity_id: binary_sensor.front_door_camera_person_detected
   new_target_state: "on"
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
@@ -130,9 +135,10 @@ turn_off_front_patio_light_when_nighttime_person_leaves_automation:
   class: ServiceOnState
   constrain_enabled: true
   constrain_in_bed: true
-  service: "switch/turn_off"
-  service_data:
-    entity_id: switch.front_patio_light
+  services:
+    service: "switch/turn_off"
+    service_data:
+      entity_id: switch.front_patio_light
   target_entity_id: binary_sensor.front_door_camera_person_detected
   delay: 300
   new_target_state: "off"
@@ -143,9 +149,10 @@ turn_on_living_room_lights_when_nighttime_person_detected_automation:
   class: ServiceOnState
   constrain_enabled: true
   constrain_in_bed: true
-  service: "homeassistant/turn_on"
-  service_data:
-    entity_id: group.living_room_lights
+  services:
+    service: "homeassistant/turn_on"
+    service_data:
+      entity_id: group.living_room_lights
   target_entity_id: binary_sensor.front_door_camera_person_detected
   new_target_state: "on"
   enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
@@ -155,9 +162,10 @@ turn_off_living_room_lights_when_nighttime_person_leaves_automation:
   class: ServiceOnState
   constrain_enabled: true
   constrain_in_bed: true
-  service: "homeassistant/turn_off"
-  service_data:
-    entity_id: group.living_room_lights
+  services:
+    service: "homeassistant/turn_off"
+    service_data:
+      entity_id: group.living_room_lights
   target_entity_id: binary_sensor.front_door_camera_person_detected
   delay: 300
   new_target_state: "off"

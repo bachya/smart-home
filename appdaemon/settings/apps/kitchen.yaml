@@ -3,9 +3,10 @@ bar_cart_on_at_sunset_automation:
   module: services
   class: ServiceOnState
   constrain_enabled: true
-  service: "switch/turn_on"
-  service_data:
-    entity_id: switch.bar_cart
+  services:
+    service: "switch/turn_on"
+    service_data:
+      entity_id: switch.bar_cart
   target_entity_id: sun.sun
   new_target_state: below_horizon
 
@@ -14,9 +15,10 @@ bar_cart_on_upon_arrival_automation:
   class: ServiceOnState
   constrain_enabled: true
   constrain_sun: down
-  service: "switch/turn_on"
-  service_data:
-    entity_id: switch.bar_cart
+  services:
+    service: "switch/turn_on"
+    service_data:
+      entity_id: switch.bar_cart
   target_entity_id: sensor.proximity_zone
   new_target_state: Home
 

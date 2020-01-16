@@ -1,5 +1,5 @@
 """Define automations to call services in specific scenarios."""
-from random import randint
+from random import choice, randint
 from typing import Union
 
 import voluptuous as vol
@@ -17,16 +17,20 @@ CONF_RANDOM_TICK_UPPER_END = "upper_end"
 CONF_RUN_ON_DAYS = "run_on_days"
 CONF_SCHEDULE_TIME = "schedule_time"
 CONF_SERVICE = "service"
-CONF_SERVICE_ALTERNATE = "service_alternate"
+CONF_SERVICES = "services"
 CONF_SERVICE_DATA = "service_data"
-CONF_SERVICE_DATA_ALTERNATE = "service_data_alternate"
 CONF_SERVICE_DOWN = "service_down"
 CONF_SERVICE_DOWN_DATA = "service_down_data"
+CONF_SERVICE_ORDER = "service_order"
 CONF_SERVICE_UP = "service_up"
 CONF_SERVICE_UP_DATA = "service_up_data"
 CONF_TARGET_ENTITY_ID = "target_entity_id"
 CONF_TARGET_VALUE = "target_value"
 CONF_ZWAVE_DEVICE = "zwave_device"
+
+SERVICE_ORDER_RANDOM = "random"
+SERVICE_ORDER_SEQUENTIAL = "sequential"
+SERVICE_ORDER_OPTIONS = set([SERVICE_ORDER_RANDOM, SERVICE_ORDER_SEQUENTIAL])
 
 DEFAULT_RANDOM_TICK_LOWER_END = 5 * 60
 DEFAULT_RANDOM_TICK_UPPER_END = 60 * 60
@@ -40,11 +44,42 @@ SERVICE_CALL_SCHEMA = APP_SCHEMA.extend(
     }
 )
 
+SINGLE_SERVICE_SCHEMA = vol.Schema({vol.Required(CONF_SERVICES): SERVICE_CALL_SCHEMA})
+
+MULTI_SERVICE_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_SERVICES): vol.All(cv.ensure_list, [SERVICE_CALL_SCHEMA]),
+        vol.Optional(CONF_SERVICE_ORDER, default=SERVICE_ORDER_SEQUENTIAL): vol.In(
+            SERVICE_ORDER_OPTIONS
+        ),
+    }
+)
+
+
+class MultiServiceBase(Base):
+    """Define a base class for automations that handle multiple services."""
+
+    def configure(self) -> None:
+        """Configure."""
+        self._count = 0
+
+    def pick_and_call_service(self) -> None:
+        """Run the correct service."""
+        if self.args[CONF_SERVICE_ORDER] == SERVICE_ORDER_SEQUENTIAL:
+            index = self._count % len(self.args[CONF_SERVICES])
+            service_data = self.args[CONF_SERVICES][index]
+        else:
+            service_data = choice(self.args[CONF_SERVICES])  # nosec
+
+        self.call_service(service_data[CONF_SERVICE], **service_data[CONF_SERVICE_DATA])
+
+        self._count += 1
+
 
 class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
     """Define an automation to call a service upon seeing an specific event/payload."""
 
-    APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
+    APP_SCHEMA = SINGLE_SERVICE_SCHEMA.extend(
         {
             vol.Required(CONF_EVENT): cv.string,
             vol.Optional(CONF_EVENT_DATA, default={}): dict,
@@ -62,10 +97,10 @@ class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
         self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
 
 
-class ServiceOnInterval(Base):  # pylint: disable=too-few-public-methods
+class ServiceOnInterval(MultiServiceBase):  # pylint: disable=too-few-public-methods
     """Define an automation to call a service every X seconds."""
 
-    APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
+    APP_SCHEMA = MULTI_SERVICE_SCHEMA.extend(
         {
             vol.Required(CONF_INTERVAL): vol.All(
                 cv.time_period, lambda value: value.seconds
@@ -81,16 +116,14 @@ class ServiceOnInterval(Base):  # pylint: disable=too-few-public-methods
 
     def _on_interval_reached(self, kwargs: dict) -> None:
         """Call the service."""
-        self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
+        self.pick_and_call_service()
 
 
-class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
+class ServiceOnRandomTick(MultiServiceBase):  # pylint: disable=too-few-public-methods
     """Define an automation to call a service at random moments."""
 
-    APP_SCHEMA = SERVICE_CALL_SCHEMA.extend(
+    APP_SCHEMA = MULTI_SERVICE_SCHEMA.extend(
         {
-            vol.Optional(CONF_SERVICE_ALTERNATE): cv.string,
-            vol.Optional(CONF_SERVICE_DATA_ALTERNATE, default={}): dict,
             vol.Optional(
                 CONF_RANDOM_TICK_LOWER_END, default=DEFAULT_RANDOM_TICK_LOWER_END
             ): cv.positive_int,
@@ -102,7 +135,6 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        self._count = 0
         self._start_ticking()
 
     def _start_ticking(self) -> None:
@@ -118,14 +150,7 @@ class ServiceOnRandomTick(Base):  # pylint: disable=too-few-public-methods
 
     def _on_tick(self, kwargs: dict) -> None:
         """Fire the event when the tick occurs."""
-        self._count += 1
-        if CONF_SERVICE_ALTERNATE in self.args and self._count % 2 == 0:
-            self.call_service(
-                self.args[CONF_SERVICE_ALTERNATE],
-                **self.args[CONF_SERVICE_DATA_ALTERNATE],
-            )
-        else:
-            self.call_service(self.args[CONF_SERVICE], **self.args[CONF_SERVICE_DATA])
+        self.pick_and_call_service()
 
     def on_disable(self) -> None:
         """Stop ticking when the automation is disabled."""
@@ -142,7 +167,7 @@ class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
     """Define an automation to call a service upon seeing an entity in a state."""
 
     APP_SCHEMA = vol.All(
-        SERVICE_CALL_SCHEMA.extend(
+        SINGLE_SERVICE_SCHEMA.extend(
             {
                 vol.Required(CONF_TARGET_ENTITY_ID): cv.entity_id,
                 vol.Optional(CONF_NEW_TARGET_STATE): cv.string,
@@ -186,7 +211,9 @@ class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
 class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
     """Define an automation to call a service at a specific time."""
 
-    APP_SCHEMA = SERVICE_CALL_SCHEMA.extend({vol.Required(CONF_SCHEDULE_TIME): cv.time})
+    APP_SCHEMA = SINGLE_SERVICE_SCHEMA.extend(
+        {vol.Required(CONF_SCHEDULE_TIME): cv.time}
+    )
 
     def configure(self) -> None:
         """Configure."""
@@ -203,11 +230,15 @@ class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-met
     APP_SCHEMA = vol.All(
         APP_SCHEMA.extend(
             {
+                vol.Required(CONF_SERVICES): vol.Schema(
+                    {
+                        vol.Inclusive(CONF_SERVICE_UP, "up"): cv.string,
+                        vol.Inclusive(CONF_SERVICE_UP_DATA, "up"): dict,
+                        vol.Inclusive(CONF_SERVICE_DOWN, "down"): cv.string,
+                        vol.Inclusive(CONF_SERVICE_DOWN_DATA, "down"): dict,
+                    }
+                ),
                 vol.Required(CONF_ZWAVE_DEVICE): cv.entity_id,
-                vol.Inclusive(CONF_SERVICE_UP, "up"): cv.string,
-                vol.Inclusive(CONF_SERVICE_UP_DATA, "up"): dict,
-                vol.Inclusive(CONF_SERVICE_DOWN, "down"): cv.string,
-                vol.Inclusive(CONF_SERVICE_DOWN_DATA, "down"): dict,
             }
         ),
         cv.has_at_least_one_key(CONF_SERVICE_UP, CONF_SERVICE_DOWN),
