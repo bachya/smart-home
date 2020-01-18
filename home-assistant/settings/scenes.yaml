@@ -226,6 +226,10 @@
       state: false
     group.master_bathroom:
       state: false
+    input_boolean.aarons_arrival_can_trigger_drive_home:
+      state: false
+    input_boolean.britts_arrival_can_trigger_drive_home:
+      state: false
     media_player.house_audio:
       state: paused
     media_player.sonos_playbar:
