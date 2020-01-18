@@ -1,4 +1,33 @@
 ---
+aarons_arrival_resets_input_boolean_automation:
+  module: services
+  class: ServiceOnState
+  constrain_enabled: true
+  constrain_input_boolean: input_boolean.aarons_arrival_can_trigger_drive_home
+  services:
+    service: "input_boolean/turn_off"
+    service_data:
+      entity_id: input_boolean.aarons_arrival_can_trigger_drive_home
+  target_entity_id: sensor.aaron_presence_status
+  new_target_state: Just Arrived
+  delay: 15
+  enabled_toggle_entity_id: >
+    input_boolean.auto_drive_home_upon_arrival_automation
+
+aarons_arrival_triggers_drive_home_automation:
+  module: services
+  class: ServiceOnState
+  constrain_enabled: true
+  constrain_input_boolean: input_boolean.aarons_arrival_can_trigger_drive_home
+  services:
+    service: "scene/turn_on"
+    service_data:
+      entity_id: scene.drive_home
+  target_entity_id: sensor.aaron_presence_status
+  new_target_state: Just Arrived
+  enabled_toggle_entity_id: >
+    input_boolean.auto_drive_home_upon_arrival_automation
+
 auto_departure_lockup_automation:
   module: services
   class: ServiceOnState
@@ -22,6 +51,35 @@ auto_nighttime_lockup_automation:
     service_data:
       entity_id: scene.good_night
   schedule_time: "00:00:00"
+
+britts_arrival_resets_input_boolean_automation:
+  module: services
+  class: ServiceOnState
+  constrain_enabled: true
+  constrain_input_boolean: input_boolean.britts_arrival_can_trigger_drive_home
+  services:
+    service: "input_boolean/turn_off"
+    service_data:
+      entity_id: input_boolean.britts_arrival_can_trigger_drive_home
+  target_entity_id: sensor.britt_presence_status
+  new_target_state: Just Arrived
+  delay: 15
+  enabled_toggle_entity_id: >
+    input_boolean.auto_drive_home_upon_arrival_automation
+
+britts_arrival_triggers_drive_home_automation:
+  module: services
+  class: ServiceOnState
+  constrain_enabled: true
+  constrain_input_boolean: input_boolean.britts_arrival_can_trigger_drive_home
+  services:
+    service: "scene/turn_on"
+    service_data:
+      entity_id: scene.drive_home
+  target_entity_id: sensor.britt_presence_status
+  new_target_state: Just Arrived
+  enabled_toggle_entity_id: >
+    input_boolean.auto_drive_home_upon_arrival_automation
 
 disable_simplisafe_sounds_in_blackout_automation:
   module: services
