@@ -83,6 +83,10 @@ power_on_media_center_for_backup_automation:
   schedule_time: "01:00:00"
   enabled_toggle_entity_id: input_boolean.media_center_backup_automation
 
+send_appdaemon_logs_to_hass_automation:
+  module: systems
+  class: AppDaemonLogs
+
 start_homekit_on_zwave_ready_automation:
   module: systems
   class: StartHomeKitOnZwaveReady
