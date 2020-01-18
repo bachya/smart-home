@@ -11,6 +11,7 @@ logger: !include conf/logger.yaml
 lovelace:
 panel_custom: !include conf/panel-custom.yaml
 panel_iframe: !include conf/panel-iframe.yaml
+python_script:
 recorder: !include conf/recorder.yaml
 stream:
 scene: !include scenes.yaml

@@ -21,6 +21,12 @@ CONF_EXPIRY_THRESHOLD = "expiry_threshold"
 
 HANDLE_BATTERY_LOW = "battery_low"
 
+WARNING_LOG_BLACKLIST = [
+    "Disconnected from Home Assistant",
+    "HVAC mode support has been disabled",
+    "not found in namespace",
+]
+
 
 class AaronAccountability(Base):
     """Define features to keep me accountable on my phone."""
@@ -53,6 +59,32 @@ class AaronAccountability(Base):
             "mobile_app_brittany_bachs_iphone",
             "His phone shouldn't be off wifi during the night.",
             title="Check on Aaron",
+        )
+
+
+class AppDaemonLogs(Base):  # pylint: disable=too-few-public-methods
+    """Define a feature to notify us of AppDaemon error/warning logs."""
+
+    def configure(self) -> None:
+        """Configure."""
+        self.listen_log(self._on_log_found, "ERROR")
+        self.listen_log(self._on_log_found, "WARNING")
+
+    def _on_log_found(self, name: str, timestamp: int, level: str, message: str):
+        """Log a warning or error log if appropriate."""
+        if message in WARNING_LOG_BLACKLIST:
+            return
+
+        if "Traceback" in message:
+            self.call_service(
+                "python_script/log",
+                level="ERROR",
+                message="{0}: {1}".format(name, message),
+            )
+            return
+
+        self.call_service(
+            "python_script/log", level=level, message="{0}: {1}".format(name, message)
         )
 
 
