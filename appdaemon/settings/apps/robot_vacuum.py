@@ -277,6 +277,7 @@ class Vacuum(Base):
         idle = "idle"
         paused = "paused"
         returning = "returning"
+        unavailable = "unavailable"
 
     def configure(self) -> None:
         """Configure."""
