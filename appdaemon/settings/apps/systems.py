@@ -80,7 +80,11 @@ class AppDaemonLogs(Base):  # pylint: disable=too-few-public-methods
         kwargs: dict,
     ):
         """Log a warning or error log if appropriate."""
-        if message in WARNING_LOG_BLACKLIST:
+        if any(
+            blacklisted_string
+            for blacklisted_string in WARNING_LOG_BLACKLIST
+            if blacklisted_string in message
+        ):
             return
 
         if "Traceback" in message:
