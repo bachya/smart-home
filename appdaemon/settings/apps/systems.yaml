@@ -2,12 +2,12 @@
 aaron_accountability_automation:
   module: systems
   class: AaronAccountability
-  constrain_anyone: home
-  constrain_enabled: true
-  constrain_mode_on: blackout
   dependencies:
     - aaron
     - presence_manager
+  constrain_anyone: home
+  constrain_enabled: true
+  constrain_mode_on: blackout
   aaron_router_tracker: device_tracker.aarons_iphone
 
 notify_of_low_batteries_automation:

@@ -13,6 +13,8 @@ auto_departure_lockup_automation:
 auto_nighttime_lockup_automation:
   module: services
   class: ServiceOnTime
+  dependencies:
+    - presence_manager
   constrain_anyone: home
   constrain_enabled: true
   services:
