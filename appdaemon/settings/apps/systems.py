@@ -70,7 +70,15 @@ class AppDaemonLogs(Base):  # pylint: disable=too-few-public-methods
         self.listen_log(self._on_log_found, "ERROR")
         self.listen_log(self._on_log_found, "WARNING")
 
-    def _on_log_found(self, name: str, timestamp: int, level: str, message: str):
+    def _on_log_found(
+        self,
+        name: str,
+        data: dict,
+        level: str,
+        log_type: str,
+        message: str,
+        kwargs: dict,
+    ):
         """Log a warning or error log if appropriate."""
         if message in WARNING_LOG_BLACKLIST:
             return
