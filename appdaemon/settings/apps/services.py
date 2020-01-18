@@ -115,6 +115,7 @@ class ServiceOnInterval(MultiServiceBase):  # pylint: disable=too-few-public-met
 
     def configure(self) -> None:
         """Configure."""
+        super().configure()
         self.run_every(
             self._on_interval_reached, self.datetime(), self.args[CONF_INTERVAL]
         )
@@ -140,6 +141,7 @@ class ServiceOnRandomTick(MultiServiceBase):  # pylint: disable=too-few-public-m
 
     def configure(self) -> None:
         """Configure."""
+        super().configure()
         self._start_ticking()
 
     def _start_ticking(self) -> None:
