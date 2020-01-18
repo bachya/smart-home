@@ -67,11 +67,11 @@ class MultiServiceBase(Base):
 
     def pick_and_call_service(self) -> None:
         """Run the correct service."""
-        if self.args[CONF_SERVICES][CONF_SERVICE_ORDER] == SERVICE_ORDER_SEQUENTIAL:
-            index = self._count % len(self.args[CONF_SERVICES][CONF_SERVICES])
-            service_data = self.args[CONF_SERVICES][CONF_SERVICES][index]
+        if self.args[CONF_SERVICE_ORDER] == SERVICE_ORDER_SEQUENTIAL:
+            index = self._count % len(self.args[CONF_SERVICES])
+            service_data = self.args[CONF_SERVICES][index]
         else:
-            service_data = choice(self.args[CONF_SERVICES][CONF_SERVICES])  # nosec
+            service_data = choice(self.args[CONF_SERVICES])  # nosec
 
         self.call_service(service_data[CONF_SERVICE], **service_data[CONF_SERVICE_DATA])
 
