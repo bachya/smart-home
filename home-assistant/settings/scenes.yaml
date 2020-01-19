@@ -376,5 +376,6 @@
       state: true
     remote.living_room_tv:
       state: true
-    script.switch_roku_to_plex:
-      state: true
+    media_player.living_room_roku:
+      state: "on"
+      source: "Plex - Stream Free TV & Movies"
