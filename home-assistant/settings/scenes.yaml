@@ -3,147 +3,147 @@
   name: Base
   entities:
     automation.slack_interactive_command_home_assistant_app:
-      state: true
+      state: "on"
     automation.slack_slash_command_home_assistant_app:
-      state: true
+      state: "on"
     automation.update_openuv_every_30_minutes_during_the_daytime:
-      state: true
+      state: "on"
     input_boolean.adjust_climate_on_proximity_automation:
-      state: true
+      state: "on"
     input_boolean.auto_departure_lockup_automation:
-      state: true
+      state: "on"
     input_boolean.auto_nighttime_lockup_automation:
-      state: true
+      state: "on"
     input_boolean.auto_vacation_mode_alterations_automation:
-      state: true
+      state: "on"
     input_boolean.bad_login_notifications_automation:
-      state: true
+      state: "on"
     input_boolean.bar_cart_on_at_sunset_automation:
-      state: true
+      state: "on"
     input_boolean.bar_cart_on_upon_arrival_automation:
-      state: true
+      state: "on"
     input_boolean.blackout_schedule_automation:
-      state: true
+      state: "on"
     input_boolean.dishwasher_cycle_automation:
-      state: true
+      state: "on"
     input_boolean.fiddle_leaf_fig_low_moisture_automation:
-      state: true
+      state: "on"
     input_boolean.fireplace_failsafe_automation:
-      state: true
+      state: "on"
     input_boolean.garage_lights_off_after_garage_close_automation:
-      state: true
+      state: "on"
     input_boolean.garage_lights_on_garage_open_sundown_automation:
-      state: true
+      state: "on"
     input_boolean.kitchen_patio_light_double_tap_backyard_lights_automation:
-      state: true
+      state: "on"
     input_boolean.lightning_detected_automation:
-      state: true
+      state: "on"
     input_boolean.lights_on_night_doorbell_automation:
-      state: true
+      state: "on"
     input_boolean.living_room_lights_on_at_sunset_automation:
-      state: true
+      state: "on"
     input_boolean.living_room_lights_on_upon_arrival_automation:
-      state: true
+      state: "on"
     input_boolean.master_bathroom_fan_double_tap_timer_automation:
-      state: true
+      state: "on"
     input_boolean.master_bathroom_fan_sleep_timer_automation:
-      state: true
+      state: "on"
     input_boolean.master_bedroom_lights_on_at_sunset_automation:
-      state: true
+      state: "on"
     input_boolean.master_bedroom_lights_sleep_timer_automation:
-      state: true
+      state: "on"
     input_boolean.master_toilet_fan_double_tap_timer_automation:
-      state: true
+      state: "on"
     input_boolean.master_toilet_fan_sleep_timer_automation:
-      state: true
+      state: "on"
     input_boolean.master_toilet_fan_toggle_automation:
-      state: true
+      state: "on"
     input_boolean.notify_bad_aqi_automation:
-      state: true
+      state: "on"
     input_boolean.notify_media_center_left_on_automation:
-      state: true
+      state: "on"
     input_boolean.notify_of_dead_zwave_devices_automation:
-      state: true
+      state: "on"
     input_boolean.notify_of_garage_open_automation:
-      state: true
+      state: "on"
     input_boolean.notify_of_low_batteries_automation:
-      state: true
+      state: "on"
     input_boolean.notify_of_new_versions:
-      state: true
+      state: "on"
     input_boolean.notify_of_trash_pickup_automation:
-      state: true
+      state: "on"
     input_boolean.notify_ps4_left_on_automation:
-      state: true
+      state: "on"
     input_boolean.3d_printer_notifications_automation:
-      state: true
+      state: "on"
     input_boolean.notify_when_absent_insecure_automation:
-      state: true
+      state: "on"
     input_boolean.notify_when_person_on_camera:
-      state: false
+      state: "off"
     input_boolean.notify_when_status_changes_automation:
-      state: false
+      state: "off"
     input_boolean.office_lights_schedule_automation:
-      state: true
+      state: "on"
     input_boolean.office_lights_sleep_timer_automation:
-      state: true
+      state: "on"
     input_boolean.outdoor_lights_schedule_automation:
-      state: true
+      state: "on"
     input_boolean.powder_room_fan_auto_turn_on_automation:
-      state: true
+      state: "on"
     input_boolean.randomize_nighttime_lighting:
-      state: false
+      state: "off"
     input_boolean.randomize_nighttime_tvs:
-      state: false
+      state: "off"
     input_boolean.subaru_legacy_notify_low_fuel_automation:
-      state: true
+      state: "on"
     input_boolean.turn_3d_printer_off_when_print_complete_automation:
-      state: true
+      state: "on"
     input_boolean.wolfie:
-      state: true
+      state: "on"
     input_boolean.wolfie_notify_when_consumable_low_automation:
-      state: true
+      state: "on"
     input_boolean.wolfie_notify_when_cycle_complete_automation:
-      state: true
+      state: "on"
     input_boolean.wolfie_notify_when_stuck_automation:
-      state: true
+      state: "on"
     switch.water_main:
-      state: true
+      state: "on"
 
 - id: blackout_mode
   name: Blackout Mode
   entities:
     input_boolean.bad_login_notifications_automation:
-      state: false
+      state: "off"
     input_boolean.fiddle_leaf_fig_low_moisture_automation:
-      state: false
+      state: "off"
     input_boolean.lightning_detected_automation:
-      state: false
+      state: "off"
     input_boolean.master_bedroom_lights_on_at_sunset_automation:
-      state: false
+      state: "off"
     input_boolean.notify_bad_aqi_automation:
-      state: false
+      state: "off"
     input_boolean.notify_media_center_left_on_automation:
-      state: false
+      state: "off"
     input_boolean.notify_of_dead_zwave_devices_automation:
-      state: false
+      state: "off"
     input_boolean.notify_of_low_batteries_automation:
-      state: false
+      state: "off"
     input_boolean.notify_of_new_versions:
-      state: false
+      state: "off"
     input_boolean.notify_ps4_left_on_automation:
-      state: false
+      state: "off"
     input_boolean.3d_printer_notifications_automation:
-      state: false
+      state: "off"
     input_boolean.subaru_legacy_notify_low_fuel_automation:
-      state: false
+      state: "off"
     input_boolean.wolfie:
-      state: false
+      state: "off"
     input_boolean.wolfie_notify_when_consumable_low_automation:
-      state: false
+      state: "off"
     input_boolean.wolfie_notify_when_cycle_complete_automation:
-      state: false
+      state: "off"
     input_boolean.wolfie_notify_when_stuck_automation:
-      state: false
+      state: "off"
 
 - id: depart_home
   name: Depart Home
@@ -153,51 +153,51 @@
     cover.garage_door:
       state: closed
     input_boolean.dishwasher_cycle_automation:
-      state: false
+      state: "off"
     input_boolean.fiddle_leaf_fig_low_moisture_automation:
-      state: false
+      state: "off"
     input_boolean.master_toilet_fan_toggle_automation:
-      state: false
+      state: "off"
     input_boolean.notify_bad_aqi_automation:
-      state: false
+      state: "off"
     input_boolean.notify_of_dead_zwave_devices_automation:
-      state: false
+      state: "off"
     input_boolean.notify_of_low_batteries_automation:
-      state: false
+      state: "off"
     input_boolean.notify_when_person_on_camera:
-      state: true
+      state: "on"
     input_boolean.randomize_nighttime_lighting:
-      state: true
+      state: "on"
     input_boolean.randomize_nighttime_tvs:
-      state: true
+      state: "on"
     input_boolean.wolfie_notify_when_consumable_low_automation:
-      state: false
+      state: "off"
     input_boolean.wolfie_notify_when_cycle_complete_automation:
-      state: false
+      state: "off"
     input_boolean.wolfie_notify_when_stuck_automation:
-      state: false
+      state: "off"
     lock.front_door:
       state: locked
     lock.garage_fire_door:
       state: locked
     group.living_room_lights:
-      state: false
+      state: "off"
     media_player.house_audio:
       state: paused
     media_player.sonos_playbar:
       state: paused
     remote.basement_tv:
-      state: false
+      state: "off"
     remote.living_room_tv:
-      state: false
+      state: "off"
     switch.bar_cart:
-      state: false
+      state: "off"
     switch.basement_lights:
-      state: false
+      state: "off"
     switch.garage_lights:
-      state: false
+      state: "off"
     switch.fireplace:
-      state: false
+      state: "off"
 
 - id: drive_home
   name: Drive Home
@@ -221,145 +221,145 @@
     lock.garage_fire_door:
       state: locked
     group.living_room_lights:
-      state: false
+      state: "off"
     group.office_lights:
-      state: false
+      state: "off"
     group.master_bathroom:
-      state: false
+      state: "off"
     input_boolean.aarons_arrival_can_trigger_drive_home:
-      state: false
+      state: "off"
     input_boolean.britts_arrival_can_trigger_drive_home:
-      state: false
+      state: "off"
     media_player.house_audio:
       state: paused
     media_player.sonos_playbar:
       state: paused
     remote.basement_tv:
-      state: false
+      state: "off"
     remote.living_room_tv:
-      state: false
+      state: "off"
     switch.bar_cart:
-      state: false
+      state: "off"
     switch.basement_lights:
-      state: false
+      state: "off"
     switch.garage_lights:
-      state: false
+      state: "off"
     switch.fireplace:
-      state: false
+      state: "off"
 
 - id: guest_mode
   name: Guest Mode
   entities:
     input_boolean.adjust_climate_on_proximity_automation:
-      state: false
+      state: "off"
     input_boolean.auto_departure_lockup_automation:
-      state: false
+      state: "off"
     input_boolean.auto_nighttime_lockup_automation:
-      state: false
+      state: "off"
     input_boolean.auto_vacation_mode_alterations_automation:
-      state: false
+      state: "off"
     input_boolean.bar_cart_on_at_sunset_automation:
-      state: false
+      state: "off"
     input_boolean.bar_cart_on_upon_arrival_automation:
-      state: false
+      state: "off"
     input_boolean.blackout_schedule_automation:
-      state: false
+      state: "off"
     input_boolean.fiddle_leaf_fig_low_moisture_automation:
-      state: false
+      state: "off"
     input_boolean.fireplace_failsafe_automation:
-      state: false
+      state: "off"
     input_boolean.lightning_detected_automation:
-      state: false
+      state: "off"
     input_boolean.living_room_lights_on_at_sunset_automation:
-      state: false
+      state: "off"
     input_boolean.living_room_lights_on_upon_arrival_automation:
-      state: false
+      state: "off"
     input_boolean.master_bedroom_lights_on_at_sunset_automation:
-      state: false
+      state: "off"
     input_boolean.master_toilet_fan_toggle_automation:
-      state: false
+      state: "off"
     input_boolean.notify_bad_aqi_automation:
-      state: false
+      state: "off"
     input_boolean.notify_media_center_left_on_automation:
-      state: false
+      state: "off"
     input_boolean.notify_of_dead_zwave_devices_automation:
-      state: false
+      state: "off"
     input_boolean.notify_of_garage_open_automation:
-      state: false
+      state: "off"
     input_boolean.notify_of_low_batteries_automation:
-      state: false
+      state: "off"
     input_boolean.notify_of_new_versions:
-      state: false
+      state: "off"
     input_boolean.notify_of_trash_pickup_automation:
-      state: false
+      state: "off"
     input_boolean.notify_ps4_left_on_automation:
-      state: false
+      state: "off"
     input_boolean.3d_printer_notifications_automation:
-      state: false
+      state: "off"
     input_boolean.notify_when_absent_insecure_automation:
-      state: false
+      state: "off"
     input_boolean.notify_when_person_on_camera:
-      state: false
+      state: "off"
     input_boolean.office_lights_schedule_automation:
-      state: false
+      state: "off"
     input_boolean.outdoor_lights_schedule_automation:
-      state: false
+      state: "off"
     input_boolean.wolfie:
-      state: false
+      state: "off"
     input_boolean.wolfie_notify_when_consumable_low_automation:
-      state: false
+      state: "off"
     input_boolean.wolfie_notify_when_cycle_complete_automation:
-      state: false
+      state: "off"
     input_boolean.wolfie_notify_when_stuck_automation:
-      state: false
+      state: "off"
 
 - id: vacation_mode
   name: Vacation Mode
   entities:
     input_boolean.bar_cart_on_upon_arrival_automation:
-      state: false
+      state: "off"
     input_boolean.blackout_schedule_automation:
-      state: false
+      state: "off"
     input_boolean.fiddle_leaf_fig_low_moisture_automation:
-      state: false
+      state: "off"
     input_boolean.lightning_detected_automation:
-      state: false
+      state: "off"
     input_boolean.master_bedroom_lights_on_at_sunset_automation:
-      state: false
+      state: "off"
     input_boolean.master_toilet_fan_toggle_automation:
-      state: false
+      state: "off"
     input_boolean.notify_bad_aqi_automation:
-      state: false
+      state: "off"
     input_boolean.notify_of_dead_zwave_devices_automation:
-      state: false
+      state: "off"
     input_boolean.notify_of_low_batteries_automation:
-      state: false
+      state: "off"
     input_boolean.notify_of_new_versions:
-      state: false
+      state: "off"
     input_boolean.notify_of_trash_pickup_automation:
-      state: false
+      state: "off"
     input_boolean.3d_printer_notifications_automation:
-      state: false
+      state: "off"
     input_boolean.notify_when_person_on_camera:
-      state: true
+      state: "on"
     input_boolean.notify_when_status_changes_automation:
-      state: true
+      state: "on"
     input_boolean.office_lights_schedule_automation:
-      state: false
+      state: "off"
     input_boolean.randomize_nighttime_lighting:
-      state: true
+      state: "on"
     input_boolean.randomize_nighttime_tvs:
-      state: true
+      state: "on"
     input_boolean.wolfie:
-      state: false
+      state: "off"
     input_boolean.wolfie_notify_when_consumable_low_automation:
-      state: false
+      state: "off"
     input_boolean.wolfie_notify_when_cycle_complete_automation:
-      state: false
+      state: "off"
     input_boolean.wolfie_notify_when_stuck_automation:
-      state: false
+      state: "off"
     switch.water_main:
-      state: false
+      state: "off"
 
 - id: walk_home
   name: Walk Home
@@ -373,9 +373,9 @@
   name: Watch Plex
   entities:
     switch.media_center:
-      state: true
+      state: "on"
     remote.living_room_tv:
-      state: true
+      state: "on"
     media_player.living_room_roku:
       state: "on"
       source: "Plex - Stream Free TV & Movies"
