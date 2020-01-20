@@ -63,7 +63,6 @@ class MultiServiceBase(Base):
 
     def configure(self) -> None:
         """Configure."""
-        super().configure()
         self._count = 0
 
     def pick_and_call_service(self) -> None:
