@@ -12,7 +12,7 @@ aaron_accountability_automation:
 
 notify_of_low_batteries_automation:
   module: systems
-  class: LowBatteries
+  class: EntityPowerIssues
   constrain_enabled: true
   dependencies:
     - presence_manager

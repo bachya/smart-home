@@ -100,7 +100,7 @@ class AppDaemonLogs(Base):  # pylint: disable=too-few-public-methods
         )
 
 
-class LowBatteries(Base):  # pylint: disable=too-few-public-methods
+class EntityPowerIssues(Base):  # pylint: disable=too-few-public-methods
     """Define a feature to notify us of low batteries."""
 
     APP_SCHEMA = APP_SCHEMA.extend(
