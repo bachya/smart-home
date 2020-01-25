@@ -17,9 +17,13 @@ notify_of_low_batteries_automation:
   dependencies:
     - presence_manager
   batteries_to_monitor:
+    - binary_sensor.basement_sensor_missing
     - binary_sensor.guest_bedroom_sensor_low_battery
+    - binary_sensor.guest_bedroom_sensor_missing
     - binary_sensor.kitchen_sensor_low_battery
+    - binary_sensor.kitchen_sensor_missing
     - binary_sensor.upstairs_hallway_sensor_low_battery
+    - binary_sensor.upstairs_hallway_sensor_missing
     - sensor.aeotec_nanomote_quad_aaron_bedside_battery
     - sensor.fiddle_leaf_fig_battery
     - sensor.front_door_lock_battery
