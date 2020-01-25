@@ -14,7 +14,7 @@ from helpers import config_validation as cv
 from notification import send_notification
 
 CONF_AARON_ROUTER_TRACKER = "aaron_router_tracker"
-CONF_BATTERIES_TO_MONITOR = "batteries_to_monitor"
+CONF_ENTITIES_TO_MONITOR = "batteries_to_monitor"
 CONF_BATTERY_LEVEL_THRESHOLD = "battery_level_threshold"
 CONF_DURATION = "duration"
 CONF_EXPIRY_THRESHOLD = "expiry_threshold"
@@ -105,7 +105,7 @@ class EntityPowerIssues(Base):  # pylint: disable=too-few-public-methods
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_BATTERIES_TO_MONITOR): cv.ensure_list,
+            vol.Required(CONF_ENTITIES_TO_MONITOR): cv.ensure_list,
             vol.Required(CONF_BATTERY_LEVEL_THRESHOLD): cv.positive_int,
             vol.Required(CONF_NOTIFICATION_INTERVAL): vol.All(
                 cv.time_period, lambda value: value.seconds
@@ -118,15 +118,15 @@ class EntityPowerIssues(Base):  # pylint: disable=too-few-public-methods
         self._registered = []  # type: List[str]
         self._send_notification_func = None  # type: Optional[Callable]
 
-        for entity in self.args[CONF_BATTERIES_TO_MONITOR]:
+        for entity in self.args[CONF_ENTITIES_TO_MONITOR]:
             if entity.split(".")[0] == "binary_sensor":
                 self.listen_state(
-                    self._on_battery_change, entity, new="on", attribute="all"
+                    self._on_entity_change, entity, new="on", attribute="all"
                 )
             else:
-                self.listen_state(self._on_battery_change, entity, attribute="all")
+                self.listen_state(self._on_entity_change, entity, attribute="all")
 
-    def _on_battery_change(
+    def _on_entity_change(
         self,
         entity: Union[str, dict],
         attribute: str,
@@ -134,7 +134,7 @@ class EntityPowerIssues(Base):  # pylint: disable=too-few-public-methods
         new: dict,
         kwargs: dict,
     ) -> None:
-        """Create OmniFocus todos whenever there's a low battery."""
+        """Notify whenever an entity has issues."""
         name = new["attributes"]["friendly_name"]
 
         try:
@@ -154,7 +154,7 @@ class EntityPowerIssues(Base):  # pylint: disable=too-few-public-methods
             self.data[notification_handle] = send_notification(
                 self,
                 "slack",
-                f"{name} has low batteries ({value}%). Replace them ASAP!",
+                f"{name} is offline or has a low battery.",
                 when=self.datetime(),
                 interval=self.args[CONF_NOTIFICATION_INTERVAL],
             )
@@ -165,7 +165,7 @@ class EntityPowerIssues(Base):  # pylint: disable=too-few-public-methods
             if name in self._registered:
                 return
 
-            self.log(f"Low battery detected: {name}")
+            self.log(f"Entity power issue detected: {name}")
             self._registered.append(name)
 
             # If the automation is enabled when a battery is low, send a notification;
