@@ -1,6 +1,5 @@
 """Support for SimpliSafe alarm systems."""
 import asyncio
-from datetime import timedelta
 import logging
 
 from simplipy import API
@@ -9,13 +8,7 @@ from simplipy.system.v3 import VOLUME_HIGH, VOLUME_LOW, VOLUME_MEDIUM, VOLUME_OF
 import voluptuous as vol
 
 from homeassistant.config_entries import SOURCE_IMPORT
-from homeassistant.const import (
-    CONF_CODE,
-    CONF_PASSWORD,
-    CONF_SCAN_INTERVAL,
-    CONF_TOKEN,
-    CONF_USERNAME,
-)
+from homeassistant.const import CONF_CODE, CONF_PASSWORD, CONF_TOKEN, CONF_USERNAME
 from homeassistant.core import callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import (
@@ -29,7 +22,10 @@ from homeassistant.helpers.dispatcher import (
 )
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import async_track_time_interval
-from homeassistant.helpers.service import verify_domain_control
+from homeassistant.helpers.service import (
+    async_register_admin_service,
+    verify_domain_control,
+)
 
 from .config_flow import configured_instances
 from .const import DATA_CLIENT, DEFAULT_SCAN_INTERVAL, DOMAIN, TOPIC_UPDATE
@@ -69,23 +65,23 @@ SERVICE_SET_PIN_SCHEMA = SERVICE_BASE_SCHEMA.extend(
 SERVICE_SET_SYSTEM_PROPERTIES_SCHEMA = SERVICE_BASE_SCHEMA.extend(
     {
         vol.Optional(ATTR_ALARM_DURATION): vol.All(
-            vol.Coerce(int), vol.Range(min=30, max=480)
+            cv.time_period, lambda value: value.seconds, vol.Range(min=30, max=480)
         ),
         vol.Optional(ATTR_ALARM_VOLUME): vol.All(vol.Coerce(int), vol.In(VOLUMES)),
         vol.Optional(ATTR_CHIME_VOLUME): vol.All(vol.Coerce(int), vol.In(VOLUMES)),
         vol.Optional(ATTR_ENTRY_DELAY_AWAY): vol.All(
-            vol.Coerce(int), vol.Range(min=30, max=255)
+            cv.time_period, lambda value: value.seconds, vol.Range(min=30, max=255)
         ),
         vol.Optional(ATTR_ENTRY_DELAY_HOME): vol.All(
-            vol.Coerce(int), vol.Range(min=0, max=255)
+            cv.time_period, lambda value: value.seconds, vol.Range(max=255)
         ),
         vol.Optional(ATTR_EXIT_DELAY_AWAY): vol.All(
-            vol.Coerce(int), vol.Range(min=45, max=255)
+            cv.time_period, lambda value: value.seconds, vol.Range(min=45, max=255)
         ),
         vol.Optional(ATTR_EXIT_DELAY_HOME): vol.All(
-            vol.Coerce(int), vol.Range(min=0, max=255)
+            cv.time_period, lambda value: value.seconds, vol.Range(max=255)
         ),
-        vol.Optional(ATTR_LIGHT): bool,
+        vol.Optional(ATTR_LIGHT): cv.boolean,
         vol.Optional(ATTR_VOICE_PROMPT_VOLUME): vol.All(
             vol.Coerce(int), vol.In(VOLUMES)
         ),
@@ -97,7 +93,6 @@ ACCOUNT_CONFIG_SCHEMA = vol.Schema(
         vol.Required(CONF_USERNAME): cv.string,
         vol.Required(CONF_PASSWORD): cv.string,
         vol.Optional(CONF_CODE): cv.string,
-        vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): cv.time_period,
     }
 )
 
@@ -157,7 +152,6 @@ async def async_setup(hass, config):
                     CONF_USERNAME: account[CONF_USERNAME],
                     CONF_PASSWORD: account[CONF_PASSWORD],
                     CONF_CODE: account.get(CONF_CODE),
-                    CONF_SCAN_INTERVAL: account[CONF_SCAN_INTERVAL],
                 },
             )
         )
@@ -199,7 +193,7 @@ async def async_setup_entry(hass, config_entry):
         async_dispatcher_send(hass, TOPIC_UPDATE)
 
     hass.data[DOMAIN][DATA_LISTENER][config_entry.entry_id] = async_track_time_interval(
-        hass, refresh, timedelta(seconds=config_entry.data[CONF_SCAN_INTERVAL])
+        hass, refresh, DEFAULT_SCAN_INTERVAL
     )
 
     # Register the base station for each system:
@@ -285,7 +279,7 @@ async def async_setup_entry(hass, config_entry):
             SERVICE_SET_SYSTEM_PROPERTIES_SCHEMA,
         ),
     ]:
-        hass.services.async_register(DOMAIN, service, method, schema=schema)
+        async_register_admin_service(hass, DOMAIN, service, method, schema=schema)
 
     return True
 
@@ -313,6 +307,7 @@ class SimpliSafe:
         """Initialize."""
         self._api = api
         self._config_entry = config_entry
+        self._emergency_refresh_token_used = False
         self._hass = hass
         self.last_event_data = {}
         self.systems = systems
@@ -322,6 +317,28 @@ class SimpliSafe:
         try:
             await system.update()
             latest_event = await system.get_latest_event()
+        except InvalidCredentialsError:
+            # SimpliSafe's cloud is a little shaky. At times, a 500 or 502 will
+            # seemingly harm simplisafe-python's existing access token _and_ refresh
+            # token, thus preventing the integration from recovering. However, the
+            # refresh token stored in the config entry escapes unscathed (again,
+            # apparently); so, if we detect that we're in such a situation, try a last-
+            # ditch effort by re-authenticating with the stored token:
+            if self._emergency_refresh_token_used:
+                # If we've already tried this, log the error, suggest a HASS restart,
+                # and stop the time tracker:
+                _LOGGER.error(
+                    "SimpliSafe authentication disconnected. Please restart HASS."
+                )
+                remove_listener = self._hass.data[DOMAIN][DATA_LISTENER].pop(
+                    self._config_entry.entry_id
+                )
+                remove_listener()
+                return
+
+            _LOGGER.warning("SimpliSafe cloud error; trying stored refresh token")
+            self._emergency_refresh_token_used = True
+            await self._api.refresh_access_token(self._config_entry.data[CONF_TOKEN])
         except SimplipyError as err:
             _LOGGER.error(
                 'SimpliSafe error while updating "%s": %s', system.address, err
@@ -333,16 +350,21 @@ class SimpliSafe:
 
         self.last_event_data[system.system_id] = latest_event
 
-        if self._api.refresh_token_dirty:
-            _async_save_refresh_token(
-                self._hass, self._config_entry, self._api.refresh_token
-            )
+        # If we've reached this point using an emergency refresh token, we're in the
+        # clear and we can discard it:
+        if self._emergency_refresh_token_used:
+            self._emergency_refresh_token_used = False
 
     async def async_update(self):
         """Get updated data from SimpliSafe."""
         tasks = [self._update_system(system) for system in self.systems.values()]
 
         await asyncio.gather(*tasks)
+
+        if self._api.refresh_token_dirty:
+            _async_save_refresh_token(
+                self._hass, self._config_entry, self._api.refresh_token
+            )
 
 
 class SimpliSafeEntity(Entity):
