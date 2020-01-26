@@ -22,6 +22,9 @@ notify_of_low_batteries_automation:
     - binary_sensor.guest_bedroom_sensor_missing
     - binary_sensor.kitchen_sensor_low_battery
     - binary_sensor.kitchen_sensor_missing
+    - binary_sensor.master_bathroom_climate_sensor_status
+    - binary_sensor.master_bedroom_salt_lamp_status
+    - binary_sensor.office_salt_lamp_status
     - binary_sensor.upstairs_hallway_sensor_low_battery
     - binary_sensor.upstairs_hallway_sensor_missing
     - sensor.aeotec_nanomote_quad_aaron_bedside_battery
