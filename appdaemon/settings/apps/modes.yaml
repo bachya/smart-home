@@ -10,6 +10,36 @@ base_modes_when_returning_home:
   target_entity_id: sensor.proximity_zone
   new_target_state: Home
 
+base_modes_when_scene_implies_returning_home_drive_home:
+  module: services
+  class: ServiceOnEvent
+  constrain_enabled: true
+  services:
+    service: "scene/turn_on"
+    service_data:
+      entity_id: scene.base
+  event: call_service
+  event_data:
+    domain: scene
+    service: turn_on
+    service_data:
+      entity_id: scene.drive_home
+
+base_modes_when_scene_implies_returning_home_walk_home:
+  module: services
+  class: ServiceOnEvent
+  constrain_enabled: true
+  services:
+    service: "scene/turn_on"
+    service_data:
+      entity_id: scene.base
+  event: call_service
+  event_data:
+    domain: scene
+    service: turn_on
+    service_data:
+      entity_id: scene.walk_home
+
 blackout_mode_off:
   module: services
   class: ServiceOnState
