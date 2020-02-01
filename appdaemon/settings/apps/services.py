@@ -1,5 +1,5 @@
 """Define automations to call services in specific scenarios."""
-from random import choice, randint
+from random import choice
 from typing import Union
 
 import voluptuous as vol
@@ -148,11 +148,14 @@ class ServiceOnRandomTick(MultiServiceBase):  # pylint: disable=too-few-public-m
         """Start the "ticking" process."""
         self.data[HANDLE_TICK] = self.run_every(
             self._on_tick,
-            self.datetime(),
-            randint(  # nosec
-                self.args[CONF_RANDOM_TICK_LOWER_END],
-                self.args[CONF_RANDOM_TICK_UPPER_END],
-            ),
+            "now",
+            (
+                self.args[CONF_RANDOM_TICK_LOWER_END]
+                + self.args[CONF_RANDOM_TICK_UPPER_END]
+            )
+            / 2,
+            random_start=self.args[CONF_RANDOM_TICK_LOWER_END],
+            random_end=self.args[CONF_RANDOM_TICK_UPPER_END],
         )
 
     def _on_tick(self, kwargs: dict) -> None:
