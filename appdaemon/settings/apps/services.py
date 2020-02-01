@@ -148,7 +148,7 @@ class ServiceOnRandomTick(MultiServiceBase):  # pylint: disable=too-few-public-m
         """Start the "ticking" process."""
         self.data[HANDLE_TICK] = self.run_every(
             self._on_tick,
-            "now",
+            self.datetime(),
             self.args[CONF_RANDOM_TICK_LOWER_END],
             random_end=self.args[CONF_RANDOM_TICK_UPPER_END],
         )
