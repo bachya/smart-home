@@ -149,12 +149,7 @@ class ServiceOnRandomTick(MultiServiceBase):  # pylint: disable=too-few-public-m
         self.data[HANDLE_TICK] = self.run_every(
             self._on_tick,
             "now",
-            (
-                self.args[CONF_RANDOM_TICK_LOWER_END]
-                + self.args[CONF_RANDOM_TICK_UPPER_END]
-            )
-            / 2,
-            random_start=self.args[CONF_RANDOM_TICK_LOWER_END],
+            self.args[CONF_RANDOM_TICK_LOWER_END],
             random_end=self.args[CONF_RANDOM_TICK_UPPER_END],
         )
 
