@@ -35,12 +35,32 @@ from homeassistant.const import (
     STATE_ALARM_DISARMED,
     STATE_ALARM_TRIGGERED,
 )
+from homeassistant.core import callback
+
 from . import SimpliSafeEntity
-from .const import ATTR_LAST_EVENT_TYPE, DATA_CLIENT, DOMAIN
+from .const import (
+    ATTR_ALARM_DURATION,
+    ATTR_ALARM_VOLUME,
+    ATTR_CHIME_VOLUME,
+    ATTR_ENTRY_DELAY_AWAY,
+    ATTR_ENTRY_DELAY_HOME,
+    ATTR_EXIT_DELAY_AWAY,
+    ATTR_EXIT_DELAY_HOME,
+    ATTR_LIGHT,
+    ATTR_VOICE_PROMPT_VOLUME,
+    DATA_CLIENT,
+    DOMAIN,
+    VOLUME_STRING_MAP,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
+ATTR_BATTERY_BACKUP_POWER_LEVEL = "battery_backup_power_level"
+ATTR_GSM_STRENGTH = "gsm_strength"
 ATTR_PIN_NAME = "pin_name"
+ATTR_RF_JAMMING = "rf_jamming"
+ATTR_WALL_POWER_LEVEL = "wall_power_level"
+ATTR_WIFI_STRENGTH = "wifi_strength"
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
@@ -60,12 +80,10 @@ class SimpliSafeAlarm(SimpliSafeEntity, AlarmControlPanel):
 
     def __init__(self, simplisafe, system, code):
         """Initialize the SimpliSafe alarm."""
-        super().__init__(system, "Alarm Control Panel")
+        super().__init__(simplisafe, system, "Alarm Control Panel")
         self._changed_by = None
         self._code = code
         self._last_event = None
-        self._simplisafe = simplisafe
-        self._state_manually_overriden = False
 
         if system.alarm_going_off:
             self._state = STATE_ALARM_TRIGGERED
@@ -123,7 +141,7 @@ class SimpliSafeAlarm(SimpliSafeEntity, AlarmControlPanel):
         try:
             await self._system.set_off()
         except SimplipyError as err:
-            _LOGGER.error("Error while disarming system: %s", err)
+            _LOGGER.error('Error while disarming "%s": %s', self._system.name, err)
             return
 
         self._state = STATE_ALARM_DISARMED
@@ -136,7 +154,7 @@ class SimpliSafeAlarm(SimpliSafeEntity, AlarmControlPanel):
         try:
             await self._system.set_home()
         except SimplipyError as err:
-            _LOGGER.error('Error while arming system ("home"): %s', err)
+            _LOGGER.error('Error while arming "%s" (home): %s', self._system.name, err)
             return
 
         self._state = STATE_ALARM_ARMED_HOME
@@ -149,59 +167,67 @@ class SimpliSafeAlarm(SimpliSafeEntity, AlarmControlPanel):
         try:
             await self._system.set_away()
         except SimplipyError as err:
-            _LOGGER.error('Error while arming system ("away"): %s', err)
+            _LOGGER.error('Error while arming "%s" (away): %s', self._system.name, err)
             return
 
         self._state = STATE_ALARM_ARMING
 
-    async def async_update(self):
-        """Update alarm status."""
-        rest_data = self._simplisafe.last_rest_api_data[self._system.system_id]
-        ws_data = self._simplisafe.last_websocket_data.get(self._system.system_id)
+    @callback
+    def async_update_from_rest_api(self):
+        """Update the entity with the provided REST API data."""
+        if self._system.state == SystemStates.error:
+            self._online = False
+            return
+        self._online = True
 
-        # If the most recent REST API data (within the data object) doesn't match what
-        # this entity last used, update:
-        if self._last_used_rest_api_data != rest_data:
-            self._last_used_rest_api_data = rest_data
+        if self._system.version == 3:
+            self._attrs.update(
+                {
+                    ATTR_ALARM_DURATION: self._system.alarm_duration,
+                    ATTR_ALARM_VOLUME: VOLUME_STRING_MAP[self._system.alarm_volume],
+                    ATTR_BATTERY_BACKUP_POWER_LEVEL: self._system.battery_backup_power_level,
+                    ATTR_CHIME_VOLUME: VOLUME_STRING_MAP[self._system.chime_volume],
+                    ATTR_ENTRY_DELAY_AWAY: self._system.entry_delay_away,
+                    ATTR_ENTRY_DELAY_HOME: self._system.entry_delay_home,
+                    ATTR_EXIT_DELAY_AWAY: self._system.exit_delay_away,
+                    ATTR_EXIT_DELAY_HOME: self._system.exit_delay_home,
+                    ATTR_GSM_STRENGTH: self._system.gsm_strength,
+                    ATTR_LIGHT: self._system.light,
+                    ATTR_RF_JAMMING: self._system.rf_jamming,
+                    ATTR_VOICE_PROMPT_VOLUME: VOLUME_STRING_MAP[
+                        self._system.voice_prompt_volume
+                    ],
+                    ATTR_WALL_POWER_LEVEL: self._system.wall_power_level,
+                    ATTR_WIFI_STRENGTH: self._system.wifi_strength,
+                }
+            )
 
-            if self._system.state == SystemStates.error:
-                self._online = False
-                return
-            self._online = True
+    @callback
+    def async_update_from_websocket_event(self, event):
+        """Update the entity with the provided websocket API event data."""
+        if event.event_type in (
+            EVENT_ALARM_CANCELED,
+            EVENT_DISARMED_BY_MASTER_PIN,
+            EVENT_DISARMED_BY_REMOTE,
+        ):
+            self._state = STATE_ALARM_DISARMED
+        elif event.event_type == EVENT_ALARM_TRIGGERED:
+            self._state = STATE_ALARM_TRIGGERED
+        elif event.event_type in (
+            EVENT_ARMED_AWAY,
+            EVENT_ARMED_AWAY_BY_KEYPAD,
+            EVENT_ARMED_AWAY_BY_REMOTE,
+        ):
+            self._state = STATE_ALARM_ARMED_AWAY
+        elif event.event_type == EVENT_ARMED_HOME:
+            self._state = STATE_ALARM_ARMED_HOME
+        elif event.event_type in (
+            EVENT_AWAY_EXIT_DELAY_BY_KEYPAD,
+            EVENT_AWAY_EXIT_DELAY_BY_REMOTE,
+            EVENT_HOME_EXIT_DELAY,
+        ):
+            self._state = STATE_ALARM_ARMING
+        else:
+            self._state = None
 
-            self._attrs.update(rest_data)
-
-        # If the most recent websocket data (within the data object) doesn't match what
-        # this entity last used, update:
-        if self._last_used_websocket_data != ws_data:
-            self._last_used_websocket_data = ws_data
-
-            if ws_data.get(ATTR_PIN_NAME):
-                self._changed_by = ws_data[ATTR_PIN_NAME]
-
-            if ws_data[ATTR_LAST_EVENT_TYPE] in (
-                EVENT_ALARM_CANCELED,
-                EVENT_DISARMED_BY_MASTER_PIN,
-                EVENT_DISARMED_BY_REMOTE,
-            ):
-                self._state = STATE_ALARM_DISARMED
-            elif ws_data[ATTR_LAST_EVENT_TYPE] == EVENT_ALARM_TRIGGERED:
-                self._state = STATE_ALARM_TRIGGERED
-            elif ws_data[ATTR_LAST_EVENT_TYPE] in (
-                EVENT_ARMED_AWAY,
-                EVENT_ARMED_AWAY_BY_KEYPAD,
-                EVENT_ARMED_AWAY_BY_REMOTE,
-            ):
-                self._state = STATE_ALARM_ARMED_AWAY
-            elif ws_data[ATTR_LAST_EVENT_TYPE] == EVENT_ARMED_HOME:
-                self._state = STATE_ALARM_ARMED_HOME
-            elif ws_data[ATTR_LAST_EVENT_TYPE] in (
-                EVENT_AWAY_EXIT_DELAY_BY_KEYPAD,
-                EVENT_AWAY_EXIT_DELAY_BY_REMOTE,
-                EVENT_HOME_EXIT_DELAY,
-            ):
-                self._state = STATE_ALARM_ARMING
-            else:
-                self._state = None
-
-            self._attrs.update(ws_data)
+        self._changed_by = event.changed_by
