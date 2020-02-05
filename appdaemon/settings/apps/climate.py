@@ -9,38 +9,37 @@ from helpers import config_validation as cv
 from notification import send_notification
 from const import EVENT_PRESENCE_CHANGE, EVENT_PROXIMITY_CHANGE
 
+CONF_AQI_SENSOR = "aqi"
+CONF_AQI_THRESHOLD = "aqi_threshold"
 CONF_AWAY_MODE = "away_mode"
+CONF_BRIGHTNESS_PERCENT_SENSOR = "sensor.outdoor_brightness_percent_sensor"
+CONF_BRIGHTNESS_SENSOR = "sensor.outdoor_brightness_sensor"
+CONF_DISTANCE = "distance"
+CONF_ECO_HIGH_THRESHOLD = "eco_high_threshold"
+CONF_ECO_LOW_THRESHOLD = "eco_low_threshold"
+CONF_HUMIDITY_SENSOR = "humidity_sensor"
+CONF_INDOOR_TEMPERATURE_SENSOR = "indoor_temperature_sensor"
+CONF_LAST_HVAC_MODE = "last_hvac_mode"
+CONF_LIGHTNING_WINDOW = "notification_window_seconds"
+CONF_OUTDOOR_BRIGHTNESS_PERCENT_SENSOR = "outdoor_brightness_percent_sensor"
+CONF_OUTDOOR_BRIGHTNESS_SENSOR = "outdoor_brightness_sensor"
+CONF_OUTDOOR_HIGH_THRESHOLD = "outdoor_high_threshold"
+CONF_OUTDOOR_LOW_THRESHOLD = "outdoor_low_threshold"
+CONF_OUTDOOR_TEMPERATURE_SENSOR = "outdoor_temperature_sensor"
 CONF_THERMOSTAT = "thermostat"
+
 FAN_MODE_AUTO_LOW = "Auto Low"
 FAN_MODE_CIRCULATE = "Circulate"
 FAN_MODE_ON_LOW = "On Low"
-HVAC_MODE_AUTO = "auto"
+
+HVAC_MODE_AUTO = "heat_cool"
 HVAC_MODE_COOL = "cool"
 HVAC_MODE_HEAT = "heat"
 HVAC_MODE_OFF = "off"
 
-CONF_ECO_HIGH_THRESHOLD = "eco_high_threshold"
-CONF_ECO_LOW_THRESHOLD = "eco_low_threshold"
 HANDLE_ECO_MODE = "eco_mode"
 
-CONF_AQI_SENSOR = "aqi"
-CONF_AQI_THRESHOLD = "aqi_threshold"
-
-CONF_HUMIDITY_SENSOR = "humidity_sensor"
-CONF_INDOOR_TEMPERATURE_SENSOR = "indoor_temperature_sensor"
-
-CONF_BRIGHTNESS_PERCENT_SENSOR = "sensor.outdoor_brightness_percent_sensor"
-CONF_BRIGHTNESS_SENSOR = "sensor.outdoor_brightness_sensor"
-CONF_OUTDOOR_BRIGHTNESS_PERCENT_SENSOR = "outdoor_brightness_percent_sensor"
-CONF_OUTDOOR_BRIGHTNESS_SENSOR = "outdoor_brightness_sensor"
-
-CONF_OUTDOOR_HIGH_THRESHOLD = "outdoor_high_threshold"
-CONF_OUTDOOR_LOW_THRESHOLD = "outdoor_low_threshold"
-CONF_OUTDOOR_TEMPERATURE_SENSOR = "outdoor_temperature_sensor"
-
 EVENT_LIGHTNING_DETECTED = "LIGHTNING_DETECTED"
-CONF_DISTANCE = "distance"
-CONF_LIGHTNING_WINDOW = "notification_window_seconds"
 
 
 class AdjustOnProximity(Base):  # pylint: disable=too-few-public-methods
@@ -104,9 +103,6 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
     def configure(self) -> None:
         """Configure."""
-        self._last_hvac_mode = None  # type: Optional[str]
-        self._last_temperature = None  # type: Optional[float]
-
         if self.away_mode:
             self._set_away()
 
@@ -238,9 +234,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
     def _restore_previous_state(self) -> None:
         """Restore the thermostat to its previous state."""
-        if self._last_hvac_mode and self._last_temperature:
-            self._set_hvac_mode(self._last_hvac_mode)
-            self.set_temperature(self._last_temperature)
+        self._set_hvac_mode(self.get_state(CONF_LAST_HVAC_MODE))
 
     def _set_away(self) -> None:
         """Put the thermostat in "Away" mode."""
@@ -281,7 +275,8 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
         if hvac_mode == self.hvac_mode:
             return
 
-        self._last_hvac_mode = self.hvac_mode
+        # Set the previous HVAC mode in case we want to return to it:
+        self.select_option(CONF_LAST_HVAC_MODE, self.hvac_mode)
 
         self.log('Setting operation mode to "%s"', hvac_mode.title())
         self.call_service(
@@ -330,15 +325,12 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
     def set_mode_off(self) -> None:
         """Set the operation mode to off."""
-        self._last_temperature = self.target_temperature
         self._set_hvac_mode(HVAC_MODE_OFF)
 
     def set_temperature(self, temperature: float) -> None:
         """Set the thermostat temperature."""
         if temperature == self.target_temperature:
             return
-
-        self._last_temperature = self.target_temperature
 
         self.call_service(
             "climate/set_temperature",

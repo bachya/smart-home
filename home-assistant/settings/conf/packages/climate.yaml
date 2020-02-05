@@ -53,6 +53,16 @@ input_number:
     unit_of_measurement: °F
     icon: mdi:thermostat
 
+input_select:
+  last_hvac_mode:
+    name: "HVAC Mode (Before Away Mode)"
+    options:
+      - cool
+      - heat
+      - heat_cool
+      - "off"
+    icon: mdi:thermostat
+
 sensor:
   - platform: darksky
     api_key: !secret dark_sky_api_key

@@ -15,6 +15,7 @@ climate_manager:
   eco_low_threshold: input_number.thermostat_eco_low_threshold
   humidity_sensor: sensor.average_indoor_humidity
   indoor_temperature_sensor: sensor.average_indoor_temperature
+  last_hvac_mode: input_select.last_hvac_mode
   outdoor_brightness_percent_sensor: sensor.filtered_outdoor_brightness
   outdoor_brightness_sensor: sensor.side_yard_solar_rad
   outdoor_high_threshold: input_number.outdoor_extreme_high_threshold
