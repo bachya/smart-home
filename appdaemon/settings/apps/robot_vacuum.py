@@ -300,7 +300,10 @@ class Vacuum(Base):
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """Start cleaning via the schedule."""
-        self.start()
+        # self.start()
+        send_notification(
+            self, "person:Britt", "Wolfie is scheduled to run.", "Time to run Wolfie"
+        )
 
     def pause(self) -> None:
         """Pause the cleaning cycle."""
