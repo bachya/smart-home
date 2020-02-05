@@ -43,7 +43,7 @@ services:
       F2B_LOG_TARGET: /usr/local/fail2ban-log/fail2ban.log
       F2B_MAX_RETRY: 3
       F2B_IPTABLES_CHAIN: INPUT
-    image: crazymax/fail2ban:0.10.4
+    image: crazymax/fail2ban:0.11.1
     network_mode: "host"
     restart: unless-stopped
     volumes:
