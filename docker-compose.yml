@@ -200,7 +200,7 @@ services:
       Z2MA_SETTINGS__MQTTSERVER: vernemq
       Z2MA_SETTINGS__MQTTUSERNAME: zigbee2mqttassistant
       Z2MA_SETTINGS__MQTTPASSWORD: 8tYtazjfRVgXzbjsHtf7AcTKH
-    image: carldebilly/zigbee2mqttassistant:0.2.0-dev.66
+    image: carldebilly/zigbee2mqttassistant:0.3.135
     ports:
       - "127.0.0.1:8880:80/tcp"
     restart: unless-stopped
