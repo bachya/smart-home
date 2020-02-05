@@ -1,23 +1,14 @@
 ---
 input_boolean:
-  aarons_arrival_can_trigger_drive_home:
-    icon: mdi:car-side
-    name: Aaron's arrival opens up
   auto_departure_lockup_automation:
     icon: mdi:car-side
     name: Automatic departure lock up
-  auto_drive_home_upon_arrival_automation:
-    icon: mdi:car-side
-    name: Automatically open up upon arrival
   auto_nighttime_lockup_automation:
     icon: mdi:clock
     name: Automatically lock up at night
   bad_login_notifications_automation:
     icon: mdi:alert-circle
     name: Bad login notifications
-  britts_arrival_can_trigger_drive_home:
-    icon: mdi:car-side
-    name: Britt's arrival opens up
   notify_when_absent_insecure_automation:
     icon: mdi:lock-open
     name: Absent & insecure alerts
