@@ -186,7 +186,7 @@ services:
       - "/dev/zigbee:/dev/zigbee"
     environment:
       TZ: America/Denver
-    image: koenkk/zigbee2mqtt:1.6.0
+    image: koenkk/zigbee2mqtt:1.9.0
     restart: unless-stopped
     volumes:
       - /etc/localtime:/etc/localtime:ro
