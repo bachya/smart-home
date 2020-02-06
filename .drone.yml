@@ -22,6 +22,7 @@ steps:
       - black --check --fast ./appdaemon/settings/apps/
       - flake8 ./appdaemon/settings/apps/
       - pylint --rcfile ./appdaemon/settings/pylintrc appdaemon/settings/apps/
+      - yamllint ./docker-compose.yml
       - yamllint ./appdaemon/settings/
       - yamllint ./esphome/
       - yamllint ./home-assistant/settings/
