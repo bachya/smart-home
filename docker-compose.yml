@@ -160,7 +160,8 @@ services:
       DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
       DOCKER_VERNEMQ_USER_user_1: "password"
       DOCKER_VERNEMQ_plugins.vmq_bridge: "on"
-      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.cafile: /etc/ssl/certs/DST_Root_CA_X3.pem
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.cafile: >
+        /etc/ssl/certs/DST_Root_CA_X3.pem
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.insecure: "on"
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.max_outgoing_buffered_messages: 100
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.password: "remote_password"
