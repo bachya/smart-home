@@ -9,6 +9,11 @@ trigger:
     - refs/tags/*
 
 steps:
+  - name: Docker Compose
+    image: python:3
+    commands:
+      - pip install docker-compose
+      - docker-compose config -q
   - name: Linting
     image: labhackercd/alpine-python3-nodejs:latest
     commands:
