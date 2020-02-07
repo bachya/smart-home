@@ -2,6 +2,7 @@
 *.pyc
 .DS_Store
 .config_entries.json
+.env
 .ios.conf
 .mypy_cache
 .ps4-wake.credentials.json
