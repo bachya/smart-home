@@ -17,6 +17,9 @@ function copy_config_data() {
     cp -a . /data
 }
 
+# Change into the repo's dir so that docker-compose .env works correctly:
+pushd "$REPO_PATH"
+
 # Update AppDaemon configs:
 copy_config_data "hub_appdaemon-config" "$REPO_PATH"/appdaemon/settings
 
@@ -33,34 +36,25 @@ copy_config_data "hub_hass-config" "$REPO_PATH"/home-assistant/settings
 copy_config_data "hub_zigbee2mqtt-config" "$REPO_PATH"/zigbee2mqtt/settings
 
 # Re-build the containers if necessary:
-docker-compose \
-    -f "$REPO_PATH"/docker-compose.yml \
-    --project-directory "$REPO_PATH" \
-    build
+docker-compose build
 
 # Tear the stack down and clean up loose containers and images:
-docker-compose \
-    -f "$REPO_PATH"/docker-compose.yml \
-    --project-directory "$REPO_PATH" \
-    down --remove-orphans
+docker-compose down --remove-orphans
 docker container prune -f
 docker image prune -f
 
 # Bring up the services in a staggered order:
-docker-compose \
-    -f "$REPO_PATH"/docker-compose.yml \
-    --project-directory="$REPO_PATH" \
-    up -d \
-        --scale hass=0 \
-        --scale nginx=0 \
-        --scale zigbee2mqtt=0 \
-        --scale zigbee2mqttassistant=0
+docker-compose up -d \
+    --scale hass=0 \
+    --scale nginx=0 \
+    --scale zigbee2mqtt=0 \
+    --scale zigbee2mqttassistant=0
 sleep 5
-docker-compose \
-    -f "$REPO_PATH"/docker-compose.yml \
-    --project-directory "$REPO_PATH" \
-    up -d
+docker-compose up -d
 
 # Do a final cleanup of unused networks and volumes:
 docker network prune -f
 docker volume prune -f
+
+# Go back to where we started:
+popd
