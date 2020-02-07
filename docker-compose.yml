@@ -158,15 +158,15 @@ services:
     container_name: vernemq
     environment:
       DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
-      DOCKER_VERNEMQ_PASSWORD_hass: "${VERNEMQ_PASSWORD_HASS}"
-      DOCKER_VERNEMQ_PASSWORD_miflora-mqtt-daemon: >
+      DOCKER_VERNEMQ_USER_hass: "${VERNEMQ_PASSWORD_HASS}"
+      DOCKER_VERNEMQ_USER_miflora-mqtt-daemon: >
         ${VERNEMQ_PASSWORD_MIFLORA_MQTT_DAEMON}
-      DOCKER_VERNEMQ_PASSWORD_octoprint2mqtt: >
+      DOCKER_VERNEMQ_USER_octoprint2mqtt: >
         ${VERNEMQ_PASSWORD_OCTOPRINT2MQTT}
-      DOCKER_VERNEMQ_PASSWORD_rtlamr: "${VERNEMQ_PASSWORD_RTLAMR}"
-      DOCKER_VERNEMQ_PASSWORD_sonoff: "${VERNEMQ_PASSWORD_SONOFF}"
-      DOCKER_VERNEMQ_PASSWORD_wyze: "${VERNEMQ_PASSWORD_WYZE}"
-      DOCKER_VERNEMQ_PASSWORD_zigbee2mqttassistant: >
+      DOCKER_VERNEMQ_USER_rtlamr: "${VERNEMQ_PASSWORD_RTLAMR}"
+      DOCKER_VERNEMQ_USER_sonoff: "${VERNEMQ_PASSWORD_SONOFF}"
+      DOCKER_VERNEMQ_USER_wyze: "${VERNEMQ_PASSWORD_WYZE}"
+      DOCKER_VERNEMQ_USER_zigbee2mqttassistant: >
         ${VERNEMQ_PASSWORD_Z2M_ASSISTANT}
       DOCKER_VERNEMQ_plugins.vmq_bridge: "on"
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.cafile: >
