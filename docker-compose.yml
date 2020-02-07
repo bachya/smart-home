@@ -113,9 +113,15 @@ services:
     build:
       context: ./nginx/docker
       args:
+<<<<<<< HEAD
         libmaxminddb_version: 1.4.2
         nginx_version: 1.17.8
         ngx_http_geoip2_module_version: 3.3
+=======
+        libmaxminddb_version: "${LIBMAXMINDDB_VERSION}"
+        nginx_version: "${NGINX_VERSION}"
+        ngx_http_geoip2_module_version: "${NGX_HTTP_GEOIP2_MODULE_VERSION}"
+>>>>>>> 29006fd50e21... Fix some bugs with using an .env file in docker-compose
     cap_add:
       - NET_ADMIN
     command: /usr/bin/supervisord -c /etc/supervisor.conf
