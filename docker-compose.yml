@@ -5,7 +5,7 @@ services:
 
   almond:
     container_name: almond
-    image: stanfordoval/almond-server:v1.7.2-portable
+    image: "stanfordoval/almond-server:v${ALMOND_SERVER_VERSION}-portable"
     network_mode: "host"
     restart: unless-stopped
     volumes:
@@ -16,7 +16,7 @@ services:
     container_name: appdaemon
     environment:
       EXTRA_CMD: -D INFO
-    image: acockburn/appdaemon:4.0.1
+    image: "acockburn/appdaemon:${APPDAEMON_VERSION}"
     ports:
       - "127.0.0.1:5051:5051"
     restart: unless-stopped
@@ -26,7 +26,7 @@ services:
 
   esphome-dashboard:
     container_name: esphome-dashboard
-    image: esphome/esphome:1.14.3
+    image: "esphome/esphome:${ESPHOME_VERSION}"
     network_mode: "host"
     restart: unless-stopped
     volumes:
@@ -43,7 +43,7 @@ services:
       F2B_LOG_TARGET: /usr/local/fail2ban-log/fail2ban.log
       F2B_MAX_RETRY: 3
       F2B_IPTABLES_CHAIN: INPUT
-    image: crazymax/fail2ban:0.11.1
+    image: "crazymax/fail2ban:${FAIL2BAN_CONTAINER_VERSION}"
     network_mode: "host"
     restart: unless-stopped
     volumes:
@@ -68,7 +68,7 @@ services:
     build:
       context: ./glances/docker
       args:
-        version: 3.0
+        version: "${GLANCES_VERSION}"
     command: /usr/bin/supervisord -c /etc/supervisor.conf
     container_name: glances
     image: bachya/glances
@@ -87,7 +87,7 @@ services:
       - vernemq
     devices:
       - "/dev/zwave:/dev/zwave"
-    image: homeassistant/home-assistant:0.105.0
+    image: "homeassistant/home-assistant:${HOME_ASSISTANT_CORE_VERSION}"
     network_mode: "host"
     restart: unless-stopped
     volumes:
@@ -98,10 +98,10 @@ services:
   mysql:
     container_name: mysql
     environment:
-      MYSQL_DATABASE: recorder_db
-      MYSQL_PASSWORD: recorder_password
-      MYSQL_ROOT_PASSWORD: mysql_root_password
-      MYSQL_USER: recorder_user
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_USER: "${MYSQL_USER}"
     image: bianjp/mariadb-alpine:latest
     ports:
       - "3306:3306/tcp"
@@ -113,15 +113,9 @@ services:
     build:
       context: ./nginx/docker
       args:
-<<<<<<< HEAD
-        libmaxminddb_version: 1.4.2
-        nginx_version: 1.17.8
-        ngx_http_geoip2_module_version: 3.3
-=======
         libmaxminddb_version: "${LIBMAXMINDDB_VERSION}"
         nginx_version: "${NGINX_VERSION}"
         ngx_http_geoip2_module_version: "${NGX_HTTP_GEOIP2_MODULE_VERSION}"
->>>>>>> 29006fd50e21... Fix some bugs with using an .env file in docker-compose
     cap_add:
       - NET_ADMIN
     command: /usr/bin/supervisord -c /etc/supervisor.conf
@@ -151,7 +145,7 @@ services:
 
   portainer:
     container_name: portainer
-    image: portainer/portainer:1.23.0
+    image: "portainer/portainer:${PORTAINER_VERSION}"
     ports:
       - "127.0.0.1:9000:9000/tcp"
     restart: unless-stopped
@@ -164,17 +158,26 @@ services:
     container_name: vernemq
     environment:
       DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
-      DOCKER_VERNEMQ_USER_user_1: "password"
+      DOCKER_VERNEMQ_PASSWORD_hass: "${VERNEMQ_PASSWORD_HASS}"
+      DOCKER_VERNEMQ_PASSWORD_miflora-mqtt-daemon: >
+        ${VERNEMQ_PASSWORD_MIFLORA_MQTT_DAEMON}
+      DOCKER_VERNEMQ_PASSWORD_octoprint2mqtt: >
+        ${VERNEMQ_PASSWORD_OCTOPRINT2MQTT}
+      DOCKER_VERNEMQ_PASSWORD_rtlamr: "${VERNEMQ_PASSWORD_RTLAMR}"
+      DOCKER_VERNEMQ_PASSWORD_sonoff: "${VERNEMQ_PASSWORD_SONOFF}"
+      DOCKER_VERNEMQ_PASSWORD_wyze: "${VERNEMQ_PASSWORD_WYZE}"
+      DOCKER_VERNEMQ_PASSWORD_zigbee2mqttassistant: >
+        ${VERNEMQ_PASSWORD_Z2M_ASSISTANT}
       DOCKER_VERNEMQ_plugins.vmq_bridge: "on"
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.cafile: >
         /etc/ssl/certs/DST_Root_CA_X3.pem
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.insecure: "on"
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.max_outgoing_buffered_messages: 100
-      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.password: "remote_password"
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.password: "${VERNEMQ_BRIDGE_PASSWORD}"
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.topic.1: "* in"
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.username: hub_mqtt
-      DOCKER_VERNEMQ_vmq_bridge.ssl.br0: remote_mqtt.myserver.com:18883
-    image: erlio/docker-vernemq:1.10.0-alpine
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0: "${VERNEMQ_BRIDGE_HOST}"
+    image: "erlio/docker-vernemq:${VERNEMQ_VERSION}-alpine"
     ports:
       - "1883:1883/tcp"
       - "127.0.0.1:8888:8888/tcp"
@@ -193,7 +196,7 @@ services:
       - "/dev/zigbee:/dev/zigbee"
     environment:
       TZ: America/Denver
-    image: koenkk/zigbee2mqtt:1.9.0
+    image: "koenkk/zigbee2mqtt:${Z2M_VERSION}"
     restart: unless-stopped
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -205,9 +208,9 @@ services:
       - vernemq
     environment:
       Z2MA_SETTINGS__MQTTSERVER: vernemq
-      Z2MA_SETTINGS__MQTTUSERNAME: zigbee2mqttassistant
-      Z2MA_SETTINGS__MQTTPASSWORD: 8tYtazjfRVgXzbjsHtf7AcTKH
-    image: carldebilly/zigbee2mqttassistant:0.3.135
+      Z2MA_SETTINGS__MQTTUSERNAME: "${Z2M_ASSISTANT_MQTT_USERNAME}"
+      Z2MA_SETTINGS__MQTTPASSWORD: "${Z2M_ASSISTANT_MQTT_PASSWORD}"
+    image: "carldebilly/zigbee2mqttassistant:${Z2M_ASSISTANT_VERSION}"
     ports:
       - "127.0.0.1:8880:80/tcp"
     restart: unless-stopped
