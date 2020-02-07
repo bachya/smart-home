@@ -51,7 +51,7 @@ docker-compose \
     -f "$REPO_PATH"/docker-compose.yml \
     --project-directory="$REPO_PATH" \
     up -d \
-        --scale hass=0
+        --scale hass=0 \
         --scale nginx=0 \
         --scale zigbee2mqtt=0 \
         --scale zigbee2mqttassistant=0
