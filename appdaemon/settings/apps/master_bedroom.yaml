@@ -27,7 +27,7 @@ master_bathroom_fan_double_tap_timer_automation:
     service_up: "input_number/set_value"
     service_up_data:
       entity_id: input_number.master_bathroom_fan_timer
-      value: 60
+      value: 30
   zwave_device: zwave.master_bathroom_fan
 
 master_bathroom_fan_sleep_timer_automation:
