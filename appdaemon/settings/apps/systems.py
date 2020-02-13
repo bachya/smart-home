@@ -2,14 +2,13 @@
 from typing import Callable, List, Optional, Union
 
 import voluptuous as vol
-
-from core import APP_SCHEMA, Base
 from const import (
     CONF_ENTITY_ID,
     CONF_NOTIFICATION_INTERVAL,
     CONF_NOTIFICATION_TARGET,
     CONF_STATE,
 )
+from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 from notification import send_notification
 
@@ -140,12 +139,15 @@ class EntityPowerIssues(Base):  # pylint: disable=too-few-public-methods
         try:
             value = int(new["state"])
         except ValueError:
-            # If the sensor value can't be parsed as an integer, it is either a binary
-            # battery sensor or the sensor is unavailable. The former should continue
-            # on; the latter should stop immediately:
-            if new["state"] != "on":
+            # If we're looking at a binary sensor, hardcode some appropriate numeric
+            # values:
+            if new["state"] == "unavailable":
                 return
-            value = 0
+
+            if new["state"] == "on":
+                value = 100
+            else:
+                value = 0
 
         notification_handle = f"{HANDLE_BATTERY_LOW}_{name}"
 
