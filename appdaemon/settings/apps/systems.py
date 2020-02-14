@@ -123,9 +123,7 @@ class EntityPowerIssues(Base):  # pylint: disable=too-few-public-methods
                     self._on_entity_change, entity, new="on", attribute="all"
                 )
             else:
-                self.listen_state(
-                    self._on_entity_change, entity, attribute="all", duration=60
-                )
+                self.listen_state(self._on_entity_change, entity, attribute="all")
 
     def _on_entity_change(
         self,
