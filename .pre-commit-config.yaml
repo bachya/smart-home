@@ -13,9 +13,6 @@ repos:
     rev: 19.10b0
     hooks:
       - id: black
-        args:
-          - --safe
-          - --quiet
         language_version: python3
         files: ^(appdaemon/settings/apps/.+)?[^/]+\.py$
   - repo: https://github.com/codespell-project/codespell
@@ -55,3 +52,8 @@ repos:
           - --no-bracket-spacing
           - --write
         files: .+\.(json|yaml)
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.20.0
+    hooks:
+      - id: yamllint
+        types: [file, yaml]
