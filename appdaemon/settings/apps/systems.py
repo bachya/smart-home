@@ -137,7 +137,7 @@ class EntityPowerIssues(Base):  # pylint: disable=too-few-public-methods
         name = new["attributes"]["friendly_name"]
 
         try:
-            value = int(float(new["state"]))
+            value = float(new["state"])
         except ValueError:
             # If we're looking at a binary sensor, hardcode some appropriate numeric
             # values:
