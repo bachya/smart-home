@@ -14,14 +14,13 @@ steps:
     commands:
       - pip install docker-compose
       - docker-compose config -q
-  - name: "Linting & Typing"
+  - name: Linting
     image: labhackercd/alpine-python3-nodejs:latest
     commands:
-      - pip3 install black flake8 mypy pylint yamllint
+      - pip3 install black flake8 pylint yamllint
       - npm install --global prettier
       - black --check --fast ./appdaemon/settings/apps/
       - flake8 ./appdaemon/settings/apps/
-      - mypy --ignore-missing-imports ./appdaemon/settings/apps/
       - pylint --rcfile ./appdaemon/settings/pylintrc appdaemon/settings/apps/
       - yamllint ./docker-compose.yml
       - yamllint ./appdaemon/settings/
@@ -29,6 +28,11 @@ steps:
       - yamllint ./home-assistant/settings/
       - yamllint ./zigbee2mqtt/settings/
       - prettier --check --no-bracket-spacing '**/*.{yaml,json}'
+  - name: Typing
+    image: python:3
+    commands:
+      - pip3 install mypy
+      - mypy --ignore-missing-imports ./appdaemon/settings/apps/
 
 ---
 kind: pipeline
