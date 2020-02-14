@@ -1,4 +1,3 @@
-**/.mypy_cache
 *.pyc
 .DS_Store
 .config_entries.json
@@ -6,6 +5,7 @@
 .ios.conf
 .mypy_cache
 .ps4-wake.credentials.json
+.pytest_cache
 .tile.conf
 Pipfile.lock
 backup/
