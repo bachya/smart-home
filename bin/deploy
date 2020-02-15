@@ -26,7 +26,7 @@ function num_of_running_builds() {
         "https://$DRONE_HOST/$DRONE_BUILDS_API_ENDPOINT"
 
     echo "$builds_json" | \
-        jq '[.[] | select(.repo_id == 16 and .status == "running")] | length'
+        jq '[.[] | select(.repo_id == 16 and .target == '\"$DRONE_BRANCH\"' and .status == "running")] | length'
 }
 
 function remote_git() {
