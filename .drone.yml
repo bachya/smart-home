@@ -19,12 +19,7 @@ steps:
     commands:
       - pip3 install pre-commit
       - pre-commit install-hooks --config .pre-commit-config.yaml
-      - pre-commit run bandit --files ./appdaemon/settings/apps
-      - pre-commit run black --files ./appdaemon/settings/apps
-      - pre-commit run flake8 --files ./appdaemon/settings/apps
-      - pre-commit run mypy --files ./appdaemon/settings/apps
-      - pre-commit run prettier --all-files
-      - pre-commit run yamllint --all-files
+      - pre-commit run --all-files
 
 ---
 kind: pipeline
