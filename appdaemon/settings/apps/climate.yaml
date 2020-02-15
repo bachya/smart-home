@@ -30,13 +30,29 @@ lightning_detected_automation:
   notification_window_seconds: 1200
 
 notify_bad_aqi_automation:
-  module: climate
-  class: NotifyBadAqi
+  class: ServiceOnState
   constrain_enabled: true
-  dependencies:
-    - climate_manager
-  aqi: sensor.us_air_quality_index
-  aqi_threshold: 100
+  services:
+    service: "appdaemon/send_notification"
+    service_data:
+      notification_target: ["person:Aaron", "person:Britt"]
+      notification_message: Don't spend unnecessary time outside.
+      notification_title: 😷 Bad Air Quality
+  target_entity_id: sensor.us_air_pollution_level
+  new_target_state: Unhealthy for sensitive groups
+
+notify_better_aqi_automation:
+  class: ServiceOnState
+  constrain_enabled: true
+  services:
+    service: "appdaemon/send_notification"
+    service_data:
+      notification_target: ["person:Aaron", "person:Britt"]
+      notification_message: The outside air is getting better!
+      notification_title: 😅 Air Quality Improving
+  target_entity_id: sensor.us_air_pollution_level
+  old_target_state: Unhealthy for sensitive groups
+  enabled_toggle_entity_id: input_boolean.notify_bad_aqi_automation
 
 thermostat_schedule:
   module: hass_apps_loader

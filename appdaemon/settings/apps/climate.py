@@ -1,13 +1,12 @@
 """Define automations for climate control."""
 from threading import Lock
-from typing import Callable, Optional, Union
+from typing import Union
 
 import voluptuous as vol
-
+from const import EVENT_PRESENCE_CHANGE, EVENT_PROXIMITY_CHANGE
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 from notification import send_notification
-from const import EVENT_PRESENCE_CHANGE, EVENT_PROXIMITY_CHANGE
 
 CONF_AQI_SENSOR = "aqi"
 CONF_AQI_THRESHOLD = "aqi_threshold"
@@ -375,80 +374,3 @@ class LightningDetected(Base):  # pylint: disable=too-few-public-methods
     def _on_reset(self, kwargs: dict) -> None:
         """Reset the notification window."""
         self._active = False
-
-
-class NotifyBadAqi(Base):
-    """Define a feature to notify us of bad air quality."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            vol.Required(CONF_AQI_SENSOR): cv.entity_id,
-            vol.Required(CONF_AQI_THRESHOLD): cv.positive_int,
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self._bad_notification_sent = False
-        self._good_notification_sent = True
-        self._send_notification_func = None  # type: Optional[Callable]
-
-        self.listen_state(self._on_aqi_change, self.args[CONF_AQI_SENSOR])
-
-    def _on_aqi_change(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Send select notifications when cooling and poor AQI."""
-        if self.climate_manager.hvac_mode != HVAC_MODE_COOL:
-            return
-
-        current_aqi = int(new)
-
-        def _send_bad_notification():
-            """Send a notification of bad AQI."""
-            send_notification(
-                self,
-                "presence:home",
-                f"AQI is at {current_aqi}; consider closing the humidifier vent.",
-                title="Poor AQI 😤",
-            )
-
-        def _send_good_notification():
-            """Send a notification of good AQI."""
-            send_notification(
-                self,
-                "presence:home",
-                f"AQI is at {current_aqi}; open the humidifer vent again.",
-                title="Better AQI 😅",
-            )
-
-        if current_aqi > self.args[CONF_AQI_THRESHOLD]:
-            if self._bad_notification_sent:
-                return
-
-            self.log("Notifying anyone at home of bad AQI during cooling")
-            self._bad_notification_sent = True
-            self._good_notification_sent = False
-            notification_func = _send_bad_notification
-        else:
-            if self._good_notification_sent:
-                return
-
-            self.log("Notifying anyone at home of AQI improvement during cooling")
-            self._bad_notification_sent = False
-            self._good_notification_sent = True
-            notification_func = _send_good_notification
-
-        # If the automation is enabled when a battery is low, send a notification;
-        # if not, remember that we should send the notification when the automation
-        # becomes enabled:
-        if self.enabled:
-            notification_func()
-        else:
-            self._send_notification_func = notification_func
-
-    def on_enable(self) -> None:
-        """Send the notification once the automation is enabled (if appropriate)."""
-        if self._send_notification_func:
-            self._send_notification_func()
-            self._send_notification_func = None
