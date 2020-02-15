@@ -15,15 +15,12 @@ from const import (
 from core import APP_SCHEMA, Base
 from notification import send_notification
 
-CONF_SERVICE_NAME = "service_name"
-
 
 class SendNotification(Base):  # pylint: disable=too-few-public-methods
     """Define an automation that sends notifications on events."""
 
     APP_SCHEMA = APP_SCHEMA.extend(
         {
-            vol.Required(CONF_SERVICE_NAME): cv.string,
             vol.Required(CONF_NOTIFICATION_TARGET): vol.Any(
                 cv.notification_target, List[cv.notification_target]
             ),
@@ -36,11 +33,14 @@ class SendNotification(Base):  # pylint: disable=too-few-public-methods
         }
     )
 
+    SERVICE = "appdaemon/send_notification"
+
     def configure(self) -> None:
         """Configure."""
-        self.register_service(
-            f"appdaemon/{self.args[CONF_SERVICE_NAME]}", self._send_notification
-        )
+        # We'll use this class multiple times, but only want to register the service
+        # one time:
+        if self.SERVICE not in self.list_services():
+            self.register_service(self.SERVICE, self._send_notification)
 
     def _send_notification(self) -> None:
         """Send a notification."""
