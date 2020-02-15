@@ -1,0 +1,5 @@
+---
+custom_service_send_message:
+  module: custom_services
+  class: SendNotification
+  service_name: send_notification
