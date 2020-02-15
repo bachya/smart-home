@@ -25,7 +25,6 @@ steps:
       - pre-commit run mypy --files ./appdaemon/settings/apps
       - pre-commit run prettier --all-files
       - pre-commit run yamllint --all-files
-      - pre-commit run yamllint --all-files
 
 ---
 kind: pipeline
