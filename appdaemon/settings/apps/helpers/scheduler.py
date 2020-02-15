@@ -2,7 +2,7 @@
 import datetime
 from typing import Callable
 
-from core import Base  # pylint: disable=no-name-in-module
+from core import Base
 
 
 def run_on_days(

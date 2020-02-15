@@ -3,7 +3,7 @@
 from typing import Dict, List
 
 from const import CONF_PEOPLE
-from core import Base  # pylint: disable=no-name-in-module
+from core import Base
 
 
 class Target:

@@ -6,8 +6,7 @@ from threading import Lock
 from typing import Generator, Optional, Tuple, Union
 
 import voluptuous as vol
-
-from core import APP_SCHEMA, Base  # pylint: disable=no-name-in-module
+from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 from util.string import slugify
 

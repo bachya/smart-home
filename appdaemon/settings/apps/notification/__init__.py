@@ -1,17 +1,16 @@
 """Define the ability to send single and repeating notifications."""
-# pylint: disable=too-few-public-methods
 from datetime import datetime
 from typing import Callable, List, Optional, Union
 from uuid import uuid4
 
 import attr
-from core import Base  # pylint: disable=no-name-in-module
+from core import Base
 from notification.target import Target, get_targets_from_string
 
 CONF_NOTIFICATION_HANDLES = "notification_handles"
 
 
-@attr.s(slots=True, auto_attribs=True)
+@attr.s(slots=True, auto_attribs=True)  # pylint: disable=too-few-public-methods
 class Notification:
     """Define a base notification object."""
 

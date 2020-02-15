@@ -3,8 +3,7 @@ from datetime import timedelta
 from typing import Any, Dict, Union
 
 import voluptuous as vol
-from appdaemon.plugins.hass.hassapi import Hass  # pylint: disable=no-name-in-module
-
+from appdaemon.plugins.hass.hassapi import Hass
 from helpers import config_validation as cv
 
 CONF_APP = "app"
@@ -47,7 +46,7 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
         # Define an attribute for the app to store data in:
         self.data = {}  # type: Dict[str, Any]
 
-        # Take every dependecy and create a reference to it:
+        # Take every dependency and create a reference to it:
         for app in self.args[CONF_DEPENDENCIES]:
             if not getattr(self, app, None):
                 setattr(self, app, self.get_app(app))

@@ -22,7 +22,7 @@ repos:
         args:
           - --skip="./.*,*.json"
           - --quiet-level=2
-          - --ignore-words-list=hass
+          - --ignore-words-list=hass,noone
         exclude_types: [json]
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.7.9
