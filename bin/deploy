@@ -1,19 +1,33 @@
 #!/bin/bash
 set -euxo pipefail
 
-# Variables to edit when copying this deployment script to other repos:
-BRANCH="master"
-REPO_NAME="hub"
-
-# Variables that shouldn't need editing:
-SLACK_HOOK_URL="https://hooks.slack.com/services/ID/ID2/ID3"
-COLOR_BLUE="#1539e0"
-COLOR_GREEN="good"
-COLOR_RED="danger"
-COLOR_YELLOW="warning"
-
 BIN_PATH="$( dirname "$( cd "$(dirname "$0")" ; pwd -P )" )"
 
+DRONE_BRANCH="master"
+DRONE_BUILDS_API_ENDPOINT="api/repos/bachya/hub/builds"
+DRONE_HOST="drone.myserver.com"
+DRONE_TOKEN="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+DRONE_REPO_NAME="hub"
+
+SLACK_COLOR_BLUE="#1539e0"
+SLACK_COLOR_GREEN="good"
+SLACK_COLOR_RED="danger"
+SLACK_COLOR_YELLOW="warning"
+SLACK_HOOK_URL="https://hooks.slack.com/services/ID/ID2/ID3"
+
+
+function num_of_running_builds() {
+    local builds_json
+    builds_json="$(curl \
+        -H "Authorization: Bearer $DRONE_TOKEN" \
+        -H "Connection: Close" \
+        -H "Host: $DRONE_HOST" \
+        -H "User-Agent: Paw/3.1.10 (Macintosh; OS X/10.15.3) GCDHTTPRequest")" \
+        "https://$DRONE_HOST/$DRONE_BUILDS_API_ENDPOINT"
+
+    echo "$builds_json" | \
+        jq '[.[] | select(.repo_id == 16 and .status == "running")] | length'
+}
 
 function remote_git() {
     git --git-dir "$BIN_PATH"/.git --work-tree="$BIN_PATH" "$@"
@@ -23,12 +37,12 @@ function send_slack_message() {
    local color="$2"
    local text="$1"
    local message
-   message="\`$REPO_NAME/$BRANCH\`: $text"
+   message="\`$DRONE_REPO_NAME/$DRONE_BRANCH\`: $text"
 
    curl \
        -X "POST" \
-     -H 'Content-Type: application/json' \
-     -d $'{ "attachments": [ { "color": "'"$color"'", "text": "'"$message"'" } ] }' \
+       -H 'Content-Type: application/json' \
+       -d $'{ "attachments": [ { "color": "'"$color"'", "text": "'"$message"'" } ] }' \
     "$SLACK_HOOK_URL"
 }
 
@@ -40,10 +54,10 @@ function update() {
     # If the repo has a branch other than the target one checked out, don't trigger
     # a build:
     local_branch="$(remote_git rev-parse --abbrev-ref HEAD)"
-    if [ "$local_branch" != "$BRANCH" ]; then
+    if [ "$local_branch" != "$DRONE_BRANCH" ]; then
         send_slack_message \
             "Refusing to deploy to local branch: $local_branch" \
-            "$COLOR_YELLOW"
+            "$SLACK_COLOR_YELLOW"
         echo "false"
         return 1
     fi
@@ -52,7 +66,16 @@ function update() {
     remote_git fetch
     status_result=$(remote_git status | grep -c "behind" || true)
     if [ "$status_result" -eq "0" ]; then
-        send_slack_message "No new changes to deploy" "$COLOR_BLUE"
+        send_slack_message "No new changes to deploy" "$SLACK_COLOR_BLUE"
+        return 0
+    fi
+
+    # If there is more than one running build, don't keep going (i.e., wait for them
+    # to all finish):
+    if [[ "$(num_of_running_builds)" -gt "1" ]]; then
+        send_slack_message \
+            "Waiting for other CI/CD jobs to finish before deploying" \
+            "$SLACK_COLOR_BLUE"
         return 0
     fi
 
@@ -63,15 +86,15 @@ function update() {
     if [ "$git_merge_result" == "1" ]; then
         send_slack_message \
             "Deployment failed due to failed Git merge on target host" \
-            "$COLOR_RED"
+            "$SLACK_COLOR_RED"
         return 1
     fi
 
-    send_slack_message "Deployment started:\n$new_commits" "$COLOR_BLUE"
+    send_slack_message "Deployment started:\n$new_commits" "$SLACK_COLOR_BLUE"
 
     "$BIN_PATH"/bin/build
 
-    send_slack_message "Deployment completed" "$COLOR_GREEN"
+    send_slack_message "Deployment completed" "$SLACK_COLOR_GREEN"
 }
 
 update
