@@ -14,12 +14,15 @@ CONF_STATE = "state"
 CONF_INTERVAL = "interval"
 
 # Notification-related config keys:
-CONF_MESSAGE = "message"
+CONF_NOTIFICATION_MESSAGE = "notification_message"
+CONF_NOTIFICATION_DATA = "notification_data"
 CONF_NOTIFICATION_INTERVAL = "notification_interval"
 CONF_NOTIFICATION_INTERVAL_SLIDER = "notification_interval_slider"
+CONF_NOTIFICATION_ITERATIONS = "notification_iterations"
 CONF_NOTIFICATION_TARGET = "notification_target"
+CONF_NOTIFICATION_TITLE = "notification_title"
+CONF_NOTIFICATION_WHEN = "notification_when"
 CONF_NOTIFIERS = "notifiers"
-CONF_TITLE = "title"
 
 # Misc. config keys:
 CONF_PEOPLE = "people"
