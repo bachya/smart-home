@@ -2,7 +2,7 @@
 from typing import List
 
 import helpers.config_validation as cv
-import voluptuos as vol
+import voluptuous as vol
 from const import (
     CONF_NOTIFICATION_DATA,
     CONF_NOTIFICATION_INTERVAL,
