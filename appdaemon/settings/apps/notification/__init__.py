@@ -5,7 +5,6 @@ from typing import Callable, List, Optional, Union
 from uuid import uuid4
 
 import attr
-
 from core import Base  # pylint: disable=no-name-in-module
 from notification.target import Target, get_targets_from_string
 
@@ -25,7 +24,6 @@ class Notification:
     title: Optional[str] = None
 
     # Scheduling properties:
-    urgent: bool = False
     repeat: bool = False
     when: Optional[datetime] = None
     interval: Optional[int] = None
@@ -112,7 +110,6 @@ def send_notification(
     targets: Union[str, List[str]],
     message: str,
     title: str = None,
-    urgent: bool = False,
     when: datetime = None,
     interval: int = None,
     iterations: int = None,
@@ -124,7 +121,6 @@ def send_notification(
         targets=targets,
         message=message,
         title=title,
-        urgent=urgent,
         when=when,
         interval=interval,
         iterations=iterations,
