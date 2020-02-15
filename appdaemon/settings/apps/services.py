@@ -1,15 +1,17 @@
 """Define automations to call services in specific scenarios."""
+# pylint: disable=too-few-public-methods
 from random import choice
 from typing import Union
 
 import voluptuous as vol
-
 from const import CONF_EVENT, CONF_EVENT_DATA, CONF_INTERVAL
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 
+CONF_ABOVE = "above"
+CONF_BELOW = "below"
 CONF_DELAY = "delay"
-CONF_ENTITY_THRESHOLDS = "entity_thresholds"
+CONF_EQUAL_TO = "equal_to"
 CONF_NEW_TARGET_STATE = "new_target_state"
 CONF_OLD_TARGET_STATE = "old_target_state"
 CONF_RANDOM_TICK_LOWER_END = "lower_end"
@@ -78,7 +80,7 @@ class MultiServiceBase(Base):
         self._count += 1
 
 
-class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
+class ServiceOnEvent(Base):
     """Define an automation to call a service upon seeing an specific event/payload."""
 
     APP_SCHEMA = SINGLE_SERVICE_SCHEMA.extend(
@@ -102,7 +104,7 @@ class ServiceOnEvent(Base):  # pylint: disable=too-few-public-methods
         )
 
 
-class ServiceOnInterval(MultiServiceBase):  # pylint: disable=too-few-public-methods
+class ServiceOnInterval(MultiServiceBase):
     """Define an automation to call a service every X seconds."""
 
     APP_SCHEMA = MULTI_SERVICE_SCHEMA.extend(
@@ -125,7 +127,7 @@ class ServiceOnInterval(MultiServiceBase):  # pylint: disable=too-few-public-met
         self.pick_and_call_service()
 
 
-class ServiceOnRandomTick(MultiServiceBase):  # pylint: disable=too-few-public-methods
+class ServiceOnRandomTick(MultiServiceBase):
     """Define an automation to call a service at random moments."""
 
     APP_SCHEMA = MULTI_SERVICE_SCHEMA.extend(
@@ -168,7 +170,7 @@ class ServiceOnRandomTick(MultiServiceBase):  # pylint: disable=too-few-public-m
         self._start_ticking()
 
 
-class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
+class ServiceOnState(Base):
     """Define an automation to call a service upon seeing an entity in a state."""
 
     APP_SCHEMA = vol.All(
@@ -216,7 +218,58 @@ class ServiceOnState(Base):  # pylint: disable=too-few-public-methods
         )
 
 
-class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
+class ServiceOnThreshold(Base):
+    """Define an automation to call a service at a specific time."""
+
+    APP_SCHEMA = vol.All(
+        SINGLE_SERVICE_SCHEMA.extend(
+            {
+                vol.Required(CONF_TARGET_ENTITY_ID): cv.entity_id,
+                vol.Exclusive(CONF_ABOVE, "operator"): int,
+                vol.Exclusive(CONF_BELOW, "operator"): int,
+                vol.Optional(CONF_EQUAL_TO, default=False): cv.boolean,
+            }
+        ),
+        cv.has_at_least_one_key(CONF_ABOVE, CONF_BELOW),
+    )
+
+    def configure(self) -> None:
+        """Configure."""
+        self.listen_state(self._on_state_change, self.args[CONF_TARGET_ENTITY_ID])
+
+    def _threshold_met(self, value: float) -> bool:
+        """Determine if a value meets threshold rules."""
+        if CONF_EQUAL_TO not in self.args and value == self.args[CONF_ABOVE]:
+            return False
+
+        if CONF_ABOVE in self.args and value < self.args[CONF_ABOVE]:
+            return False
+
+        if CONF_BELOW in self.args and value > self.args[CONF_ABOVE]:
+            return False
+
+        return True
+
+    def _on_state_change(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Respond when the entity's state has changed."""
+        try:
+            value = float(new)
+        except ValueError:
+            self.error("Cannot measure threshold for non-numeric entity: %s", entity)
+            return
+
+        if not self._threshold_met(value):
+            return
+
+        self.call_service(
+            self.args[CONF_SERVICES][CONF_SERVICE],
+            **self.args[CONF_SERVICES][CONF_SERVICE_DATA]
+        )
+
+
+class ServiceOnTime(Base):
     """Define an automation to call a service at a specific time."""
 
     APP_SCHEMA = SINGLE_SERVICE_SCHEMA.extend(
@@ -235,7 +288,7 @@ class ServiceOnTime(Base):  # pylint: disable=too-few-public-methods
         )
 
 
-class ServiceOnZWaveSwitchDoubleTap(Base):  # pylint: disable=too-few-public-methods
+class ServiceOnZWaveSwitchDoubleTap(Base):
     """Define an automation to call a service when a Z-Wave switch double-tap occurs."""
 
     APP_SCHEMA = APP_SCHEMA.extend(
