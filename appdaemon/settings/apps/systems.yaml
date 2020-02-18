@@ -10,6 +10,11 @@ aaron_accountability_automation:
   constrain_mode_on: blackout
   aaron_router_tracker: device_tracker.aarons_iphone
 
+forward_persistent_notifications_to_slack_automation:
+  module: systems
+  class: ForwardNotificationsToSlack
+  constrain_enabled: true
+
 notify_of_low_batteries_automation:
   module: systems
   class: EntityPowerIssues
