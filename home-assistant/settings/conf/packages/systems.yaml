@@ -1,5 +1,8 @@
 ---
 input_boolean:
+  forward_persistent_notifications_to_slack_automation:
+    icon: mdi:slack
+    name: Forward HASS notifications to Slack
   media_center_backup_automation:
     icon: mdi:backup-restore
     name: Daily media center backup

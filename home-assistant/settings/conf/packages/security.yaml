@@ -6,9 +6,6 @@ input_boolean:
   auto_nighttime_lockup_automation:
     icon: mdi:clock
     name: Automatically lock up at night
-  bad_login_notifications_automation:
-    icon: mdi:alert-circle
-    name: Bad login notifications
   notify_when_absent_insecure_automation:
     icon: mdi:lock-open
     name: Absent & insecure alerts

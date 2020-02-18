@@ -1,4 +1,5 @@
 """Define automations for various home systems."""
+# pylint: disable=too-few-public-methods
 from typing import Callable, List, Optional, Union
 
 import voluptuous as vol
@@ -61,7 +62,7 @@ class AaronAccountability(Base):
         )
 
 
-class AppDaemonLogs(Base):  # pylint: disable=too-few-public-methods
+class AppDaemonLogs(Base):
     """Define a feature to notify us of AppDaemon error/warning logs."""
 
     def configure(self) -> None:
@@ -99,7 +100,7 @@ class AppDaemonLogs(Base):  # pylint: disable=too-few-public-methods
         )
 
 
-class EntityPowerIssues(Base):  # pylint: disable=too-few-public-methods
+class EntityPowerIssues(Base):
     """Define a feature to notify us of low batteries."""
 
     APP_SCHEMA = APP_SCHEMA.extend(
@@ -194,7 +195,21 @@ class EntityPowerIssues(Base):  # pylint: disable=too-few-public-methods
             self._send_notification_func = None
 
 
-class LeftInState(Base):  # pylint: disable=too-few-public-methods
+class ForwardNotificationsToSlack(Base):
+    """Define a feature to forward persistent notifications to Slack."""
+
+    def configure(self) -> None:
+        """Configure."""
+        self.listen_state(self._on_notification_received, "persistent_notification")
+
+    def _on_notification_received(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Notify when the HASS notification comes through."""
+        send_notification(self, "slack", new)
+
+
+class LeftInState(Base):
     """Define a feature to monitor whether an entity is left in a state."""
 
     APP_SCHEMA = APP_SCHEMA.extend(
@@ -256,7 +271,7 @@ class LeftInState(Base):  # pylint: disable=too-few-public-methods
             self._send_notification_func = None
 
 
-class NotifyOfDeadZwaveDevices(Base):  # pylint: disable=too-few-public-methods
+class NotifyOfDeadZwaveDevices(Base):
     """Define a feature to notify me of dead Z-Wave devices."""
 
     def configure(self) -> None:
