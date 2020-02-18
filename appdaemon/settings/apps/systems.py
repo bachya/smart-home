@@ -200,13 +200,20 @@ class ForwardNotificationsToSlack(Base):
 
     def configure(self) -> None:
         """Configure."""
-        self.listen_state(self._on_notification_received, "persistent_notification")
+        self.listen_state(
+            self._on_notification_received, "persistent_notification", attribute="all"
+        )
 
     def _on_notification_received(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+        self,
+        entity: Union[str, dict],
+        attribute: str,
+        old: dict,
+        new: dict,
+        kwargs: dict,
     ) -> None:
         """Notify when the HASS notification comes through."""
-        send_notification(self, "slack", new)
+        send_notification(self, "slack", new["attributes"]["message"])
 
 
 class LeftInState(Base):
