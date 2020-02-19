@@ -53,6 +53,13 @@ notify_of_low_batteries_automation:
   battery_level_threshold: 20
   notification_interval: 900
 
+notify_of_dead_zwave_devices_automation:
+  module: systems
+  class: NotifyOfDeadZwaveDevices
+  constrain_enabled: true
+  dependencies:
+    - presence_manager
+
 notify_ps4_left_on_automation:
   module: systems
   class: LeftInState
@@ -65,13 +72,6 @@ notify_ps4_left_on_automation:
     - "person:Aaron"
     - "person:Britt"
   state: "idle"
-
-notify_of_dead_zwave_devices_automation:
-  module: systems
-  class: NotifyOfDeadZwaveDevices
-  constrain_enabled: true
-  dependencies:
-    - presence_manager
 
 power_off_media_center_for_backup_automation:
   module: services
