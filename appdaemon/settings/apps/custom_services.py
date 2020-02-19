@@ -1,6 +1,4 @@
 """Define custom services."""
-import voluptuous as vol
-
 from const import (
     CONF_NOTIFICATION_DATA,
     CONF_NOTIFICATION_INTERVAL,
@@ -10,25 +8,22 @@ from const import (
     CONF_NOTIFICATION_TITLE,
     CONF_NOTIFICATION_WHEN,
 )
-from core import APP_SCHEMA, Base
-from helpers import config_validation as cv
+from core import Base
 from notification import send_notification
 
 CONF_SERVICE_NAME = "service_name"
 
 
-class SendNotification(Base):  # pylint: disable=too-few-public-methods
+class Notifications(Base):  # pylint: disable=too-few-public-methods
     """Define an automation that sends notifications on events."""
-
-    APP_SCHEMA = APP_SCHEMA.extend({vol.Required(CONF_SERVICE_NAME): cv.string})
 
     def configure(self) -> None:
         """Configure."""
         self.register_service(
-            f"appdaemon/{self.args[CONF_SERVICE_NAME]}", self._service_called
+            f"appdaemon/send_notification", self._send_notification_service_called
         )
 
-    def _service_called(
+    def _send_notification_service_called(
         self, namespace: str, domain: str, service: str, data: dict
     ) -> None:
         """Send a notification."""
