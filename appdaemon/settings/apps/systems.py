@@ -213,6 +213,8 @@ class ForwardNotificationsToSlack(Base):
         kwargs: dict,
     ) -> None:
         """Notify when the HASS notification comes through."""
+        if not new:
+            return
         send_notification(self, "slack", new["attributes"]["message"])
 
 
