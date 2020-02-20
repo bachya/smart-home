@@ -6,6 +6,9 @@ input_boolean:
   auto_nighttime_lockup_automation:
     icon: mdi:clock
     name: Automatically lock up at night
+  forward_simplisafe_notifications_to_slack_automation:
+    icon: mdi:slack
+    name: Forward SimpliSafe messages to Slack
   notify_when_absent_insecure_automation:
     icon: mdi:lock-open
     name: Absent & insecure alerts

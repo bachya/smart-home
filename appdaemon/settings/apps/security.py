@@ -332,3 +332,22 @@ class SecurityManager(Base):
             )
         else:
             raise AttributeError(f"Unknown security state: {new}")
+
+
+class SimpliSafeNotifications(Base):  # pylint: disable=too-few-public-methods
+    """Define a feature to send SimpliSafe notifications to Slack."""
+
+    def configure(self) -> None:
+        """Configure."""
+        self.listen_event(self._on_event_received, "SIMPLISAFE_EVENT")
+        self.listen_event(self._on_notification_received, "SIMPLISAFE_NOTIFICATION")
+
+    def _on_event_received(self, event_name: str, data: dict, kwargs: dict) -> None:
+        """Forward a SimpliSafe event to Slack."""
+        send_notification(self, "slack", f'SimpliSafe: {data["last_event_info"]}')
+
+    def _on_notification_received(
+        self, event_name: str, data: dict, kwargs: dict
+    ) -> None:
+        """Forward a SimpliSafe event to Slack."""
+        send_notification(self, "slack", f'SimpliSafe: {data["message"]}')
