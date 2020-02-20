@@ -6,7 +6,7 @@ import voluptuous as vol
 from const import EVENT_PRESENCE_CHANGE, EVENT_PROXIMITY_CHANGE
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
-from notification import send_notification
+from helpers.notification import send_notification
 
 CONF_AQI_SENSOR = "aqi"
 CONF_AQI_THRESHOLD = "aqi_threshold"

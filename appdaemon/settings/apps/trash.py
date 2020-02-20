@@ -6,7 +6,7 @@ from typing import Tuple
 from core import Base
 from helpers import grammatical_list_join, suffix_strftime
 from helpers.scheduler import run_on_days
-from notification import send_notification
+from helpers.notification import send_notification
 
 CONF_NEXT_PICKUP_SENSOR = "next_pickup_sensor"
 CONF_TRASH_TYPE_SENSORS = "trash_type_sensors"

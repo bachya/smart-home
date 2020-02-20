@@ -9,7 +9,7 @@ from const import (
     CONF_NOTIFICATION_WHEN,
 )
 from core import Base
-from notification import send_notification
+from helpers.notification import send_notification
 
 CONF_SERVICE_NAME = "service_name"
 

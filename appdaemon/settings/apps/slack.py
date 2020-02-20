@@ -11,7 +11,7 @@ from helpers import (
     random_affirmative_response,
     relative_search_list,
 )
-from notification import send_notification
+from helpers.notification import send_notification
 
 
 def message(response_url: str, text: str, attachments: list = None) -> None:

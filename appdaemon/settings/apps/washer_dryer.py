@@ -8,7 +8,7 @@ import voluptuous as vol
 from const import CONF_NOTIFICATION_INTERVAL_SLIDER
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
-from notification import send_notification
+from helpers.notification import send_notification
 
 CONF_POWER = "power"
 CONF_STATUS = "status"

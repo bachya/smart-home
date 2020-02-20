@@ -6,7 +6,7 @@ import voluptuous as vol
 from const import CONF_FRIENDLY_NAME, CONF_NOTIFICATION_TARGET
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
-from notification import send_notification
+from helpers.notification import send_notification
 
 CONF_CAR = "car"
 CONF_FUEL_THRESHOLD = "fuel_threshold"

@@ -5,7 +5,7 @@ from uuid import uuid4
 
 import attr
 from core import Base
-from notification.target import Target, get_targets_from_string
+from helpers.notification.target import Target, get_targets_from_string
 
 CONF_NOTIFICATION_HANDLES = "notification_handles"
 

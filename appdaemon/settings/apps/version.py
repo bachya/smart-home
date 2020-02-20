@@ -9,7 +9,7 @@ from packaging import version
 from core import APP_SCHEMA, Base
 from const import CONF_FRIENDLY_NAME, CONF_ICON, CONF_INTERVAL
 from helpers import config_validation as cv
-from notification import send_notification
+from helpers.notification import send_notification
 
 CONF_APP_NAME = "app_name"
 CONF_AVAILABLE = "available"

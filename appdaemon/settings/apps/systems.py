@@ -11,7 +11,7 @@ from const import (
 )
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
-from notification import send_notification
+from helpers.notification import send_notification
 
 CONF_AARON_ROUTER_TRACKER = "aaron_router_tracker"
 CONF_ENTITIES_TO_MONITOR = "batteries_to_monitor"

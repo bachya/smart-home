@@ -13,7 +13,7 @@ from const import (
     EVENT_ALARM_CHANGE,
 )
 from helpers import config_validation as cv
-from notification import send_notification
+from helpers.notification import send_notification
 
 CONF_ALARM_CONTROL_PANEL = "alarm_control_panel"
 CONF_CAMERAS = "cameras"
