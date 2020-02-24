@@ -275,7 +275,8 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             return
 
         # Set the previous HVAC mode in case we want to return to it:
-        self.select_option(self.args[CONF_LAST_HVAC_MODE], self.hvac_mode)
+        if self.hvac_mode != HVAC_MODE_OFF:
+            self.select_option(self.args[CONF_LAST_HVAC_MODE], self.hvac_mode)
 
         self.log('Setting operation mode to "%s"', hvac_mode.title())
         self.call_service(
