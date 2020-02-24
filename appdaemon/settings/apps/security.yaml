@@ -55,7 +55,7 @@ enable_simplisafe_sounds_out_of_blackout_automation:
 
 forward_simplisafe_notifications_to_slack_automation:
   module: security
-  class: GarageLeftOpen
+  class: SimpliSafeNotifications
   constrain_enabled: true
 
 notify_of_garage_open_automation:
