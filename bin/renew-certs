@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euxo pipefail
 
+REPO_PATH="$( dirname "$( cd "$(dirname "$0")" ; pwd -P )" )"
+
 function ask_for_sudo() {
   # Ask for the administrator password upfront:
   sudo -v &> /dev/null
@@ -21,6 +23,7 @@ ask_for_sudo
 sudo docker run --name certbot -it --rm \
   -v /etc/letsencrypt:/etc/letsencrypt \
   -v /var/lib/letsencrypt:/var/lib/letsencrypt \
-  --entrypoint='' \
-  certbot/certbot \
-  sh -c 'certbot certonly --manual -d myserver.com -d *.myserver.com --email email@address.com --manual-public-ip-logging-ok --agree-tos --server https://acme-v02.api.letsencrypt.org/directory --rsa-key-size 4096 --preferred-challenges dns'
+  -v "$REPO_PATH":/repo \
+  --entrypoint="" \
+  certbot/dns-linode:amd64-v1.2.0 \
+  sh -c "certbot certonly --dns-linode --dns-linode-credentials /repo/certbot/settings/linode.ini -d myserver.com -d *.myserver.com"
