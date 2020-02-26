@@ -6,6 +6,8 @@ from simplipy import API
 from simplipy.errors import InvalidCredentialsError, SimplipyError
 from simplipy.websocket import (
     EVENT_CAMERA_MOTION_DETECTED,
+    EVENT_CONNECTION_LOST,
+    EVENT_CONNECTION_RESTORED,
     EVENT_DOORBELL_DETECTED,
     EVENT_ENTRY_DETECTED,
     EVENT_LOCK_LOCKED,
@@ -40,7 +42,6 @@ from homeassistant.helpers.service import (
     verify_domain_control,
 )
 
-from .config_flow import configured_instances
 from .const import (
     ATTR_ALARM_DURATION,
     ATTR_ALARM_VOLUME,
@@ -182,9 +183,6 @@ async def async_setup(hass, config):
     conf = config[DOMAIN]
 
     for account in conf[CONF_ACCOUNTS]:
-        if account[CONF_USERNAME] in configured_instances(hass):
-            continue
-
         hass.async_create_task(
             hass.config_entries.flow.async_init(
                 DOMAIN,
@@ -202,6 +200,11 @@ async def async_setup(hass, config):
 
 async def async_setup_entry(hass, config_entry):
     """Set up SimpliSafe as config entry."""
+    if not config_entry.unique_id:
+        hass.config_entries.async_update_entry(
+            config_entry, unique_id=config_entry.data[CONF_USERNAME]
+        )
+
     _verify_domain_control = verify_domain_control(hass, DOMAIN)
 
     websession = aiohttp_client.async_get_clientsession(hass)
@@ -471,41 +474,39 @@ class SimpliSafe:
 
         tasks = [update_system(system) for system in self.systems.values()]
 
-        def cancel_tasks():
-            """Cancel tasks and ensure their cancellation is processed."""
-            for task in tasks:
-                task.cancel()
+        results = asyncio.gather(*tasks, return_exceptions=True)
+        for result in results:
+            if isinstance(result, InvalidCredentialsError):
+                if self._emergency_refresh_token_used:
+                    _LOGGER.error(
+                        "SimpliSafe authentication disconnected. Please restart HASS."
+                    )
+                    remove_listener = self._hass.data[DOMAIN][DATA_LISTENER].pop(
+                        self._config_entry.entry_id
+                    )
+                    remove_listener()
+                    return
 
-        try:
-            await asyncio.gather(*tasks)
-        except InvalidCredentialsError:
-            cancel_tasks()
+                _LOGGER.warning("SimpliSafe cloud error; trying stored refresh token")
+                self._emergency_refresh_token_used = True
+                return await self._api.refresh_access_token(
+                    self._config_entry.data[CONF_TOKEN]
+                )
 
-            if self._emergency_refresh_token_used:
-                _LOGGER.error(
-                    "SimpliSafe authentication disconnected. Please restart HASS."
-                )
-                remove_listener = self._hass.data[DOMAIN][DATA_LISTENER].pop(
-                    self._config_entry.entry_id
-                )
-                remove_listener()
+            if isinstance(result, SimplipyError):
+                _LOGGER.error("SimpliSafe error while updating: %s", result)
                 return
 
-            _LOGGER.warning("SimpliSafe cloud error; trying stored refresh token")
-            self._emergency_refresh_token_used = True
-            return await self._api.refresh_access_token(
-                self._config_entry.data[CONF_TOKEN]
-            )
-        except SimplipyError as err:
-            cancel_tasks()
-            _LOGGER.error("SimpliSafe error while updating: %s", err)
-            return
-        except Exception as err:  # pylint: disable=broad-except
-            cancel_tasks()
-            _LOGGER.error("Unknown error while updating: %s", err)
-            return
+            if isinstance(result, SimplipyError):
+                _LOGGER.error("Unknown error while updating: %s", result)
+                return
 
         if self._api.refresh_token_dirty:
+            # Reconnect the websocket:
+            await self._api.websocket.async_disconnect()
+            await self._api.websocket.async_connect()
+
+            # Save the new refresh token:
             _async_save_refresh_token(
                 self._hass, self._config_entry, self._api.refresh_token
             )
@@ -527,7 +528,10 @@ class SimpliSafeEntity(Entity):
         self._online = True
         self._simplisafe = simplisafe
         self._system = system
-        self.websocket_events_to_listen_for = []
+        self.websocket_events_to_listen_for = [
+            EVENT_CONNECTION_LOST,
+            EVENT_CONNECTION_RESTORED,
+        ]
 
         if serial:
             self._serial = serial
@@ -654,12 +658,31 @@ class SimpliSafeEntity(Entity):
                 ATTR_LAST_EVENT_TIMESTAMP: last_websocket_event.timestamp,
             }
         )
-        self.async_update_from_websocket_event(last_websocket_event)
+        self._async_internal_update_from_websocket_event(last_websocket_event)
 
     @callback
     def async_update_from_rest_api(self):
         """Update the entity with the provided REST API data."""
         pass
+
+    @callback
+    def _async_internal_update_from_websocket_event(self, event):
+        """Check for connection events and set offline appropriately.
+
+        Should not be called directly.
+        """
+        if event.event_type == EVENT_CONNECTION_LOST:
+            self._online = False
+        elif event.event_type == EVENT_CONNECTION_RESTORED:
+            self._online = True
+
+        # It's uncertain whether SimpliSafe events will still propagate down the
+        # websocket when the base station is offline. Just in case, we guard against
+        # further action until connection is restored:
+        if not self._online:
+            return
+
+        self.async_update_from_websocket_event(event)
 
     @callback
     def async_update_from_websocket_event(self, event):
