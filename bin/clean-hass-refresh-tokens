@@ -1,25 +1,37 @@
 #!/bin/bash
 set -e pipefail
 
-REPO_PATH="$( dirname "$( cd "$(dirname "$0")" ; pwd -P )" )"
+TMP_FILENAME=new_hass_auth
+TMP_PATH=/tmp
 
 DAYS_TO_KEEP=7
 
 function get_auth_data() {
-  docker run --rm \
-    -v hub_hass-config:/data \
-    busybox \
-    cat /data/.storage/auth
+    docker run --rm \
+        -v hub_hass-config:/data \
+        busybox \
+        cat /data/.storage/auth
 }
 
 function save_auth_data() {
-  docker run --rm \
-    -v "$REPO_PATH":/src \
-    -v hub_hass-config:/data \
-    busybox \
-    /bin/sh -c "mv /data/.storage/auth /data/.storage/auth.bak;
-      cp /src/new_auth /data/.storage/auth"
+    if [ -z "$1" ]; then
+        echo "Usage: save_auth_data [json-string]"
+        exit 1
+    fi
+
+    auth_data=$1
+
+    echo "$new_auth_data" > "$TMP_PATH/$TMP_FILENAME"
+    docker run --rm \
+        -v "$TMP_PATH":/src \
+        -v hub_hass-config:/data \
+        busybox \
+        /bin/sh -c "mv /data/.storage/auth /data/.storage/auth.bak;
+            cp /src/$TMP_FILENAME /data/.storage/auth"
+    rm "$TMP_PATH/$TMP_FILENAME"
 }
+
+echo "Deleting HASS refresh tokens older than $DAYS_TO_KEEP days..."
 
 auth_data="$(get_auth_data)"
 current_token_count="$(
@@ -27,24 +39,19 @@ current_token_count="$(
         jq '[.data.refresh_tokens[] | select(.token_type == "normal")] | length'
 )"
 
-echo "Deleting HASS refresh tokens older than $DAYS_TO_KEEP days..."
-echo "Current number of tokens: $current_token_count"
+new_auth_data="$(echo "$auth_data" | \
+    jq --arg s "$(date -d "-$DAYS_TO_KEEP days" +"%Y-%m-%dT%H:%M")" \
+    'del( .data.refresh_tokens[] | select(.token_type == "normal" and .last_used_at < $s) )')"
+new_token_count="$(echo "$new_auth_data" | jq '[.data.refresh_tokens[]] | length')"
 
-# Get the auth JSON and delete any refresh keys older than $DAYS_TO_KEEP:
-echo "$auth_data" | jq \
-    --arg s "$(date -d "-$DAYS_TO_KEEP days" +"%Y-%m-%dT%H:%M")" \
-    'del( .data.refresh_tokens[] | select(.token_type == "normal" and .last_used_at < $s) )' \
-    > "$REPO_PATH/new_auth"
+tokens_to_remove=$(( "$current_token_count" - "$new_token_count" ))
 
-new_token_count="$(
-    echo "$auth_data" | \
-        jq '[.data.refresh_tokens[] | select(.token_type == "normal")] | length' \
-        < "$REPO_PATH/new_auth"
-)"
-echo "New number of tokens: $new_token_count"
+if [ "$tokens_to_remove" -eq "0" ]; then
+    echo "No out-of-date tokens to remove"
+    exit 0
+fi
 
-# Backup the old auth data, save the new data, and remove the tmp file:
-save_auth_data
-rm "$REPO_PATH/new_auth"
+echo "Removing $tokens_to_remove tokens..."
+save_auth_data "$new_auth_data"
 
 echo "HASS refresh tokens cleaned"
