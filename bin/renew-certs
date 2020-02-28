@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euxo pipefail
+set -euo pipefail
 
 REPO_PATH="$( dirname "$( cd "$(dirname "$0")" ; pwd -P )" )"
 
