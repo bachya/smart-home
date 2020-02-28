@@ -31,6 +31,7 @@ copy_config_data "hub_glances-config" "$REPO_PATH"/glances/settings
 
 # Update Home Assistant configs:
 copy_config_data "hub_hass-config" "$REPO_PATH"/home-assistant/settings
+"$REPO_PATH/bin/clean-hass-refresh-tokens"
 
 # Update Zigbee2MQTT configs:
 copy_config_data "hub_zigbee2mqtt-config" "$REPO_PATH"/zigbee2mqtt/settings
