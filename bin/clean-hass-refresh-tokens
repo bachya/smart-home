@@ -46,11 +46,7 @@ new_token_count="$(echo "$new_auth_data" | jq '[.data.refresh_tokens[]] | length
 
 tokens_to_remove=$(( "$current_token_count" - "$new_token_count" ))
 
-if [ "$tokens_to_remove" -lt "0" ]; then
-    tokens_to_remove="0"
-fi
-
-if [ "$tokens_to_remove" -eq "0" ]; then
+if [ "$tokens_to_remove" -le "0" ]; then
     echo "No out-of-date tokens to remove"
     exit 0
 fi
