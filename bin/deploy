@@ -90,7 +90,8 @@ function update() {
         return 1
     fi
 
-    send_slack_message "Deployment started:\n$new_commits" "$SLACK_COLOR_BLUE"
+    send_slack_message "Deployment started and will include:" "$SLACK_COLOR_BLUE"
+    send_slack_message "$new_commits" "$SLACK_COLOR_BLUE"
 
     "$REPO_PATH"/bin/build
 
