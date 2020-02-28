@@ -1,0 +1,42 @@
+#!/bin/bash
+set -euo pipefail
+
+REPO_PATH="$( dirname "$( cd "$(dirname "$0")" ; pwd -P )" )"
+
+DAYS_TO_KEEP=7
+
+function get_auth_data() {
+  docker run --rm \
+    -v hub_hass-config:/data \
+    busybox \
+    cat /data/.storage/auth
+}
+
+function save_auth_data() {
+  docker run --rm \
+    -v "$REPO_PATH":/src \
+    -v hub_hass-config:/data \
+    busybox \
+    /bin/sh -c "mv /data/.storage/auth /data/.storage/auth.bak;
+      cp /src/new_auth /data/.storage/auth"
+}
+
+auth_data="$(get_auth_data)"
+current_token_count="$(echo "$auth_data" | jq '[.data.refresh_tokens[]] | length')"
+
+echo "Deleting HASS refresh tokens older than $DAYS_TO_KEEP days..."
+echo "Current number of tokens: $current_token_count"
+
+# Get the auth JSON and delete any refresh keys older than $DAYS_TO_KEEP:
+echo "$auth_data" | jq \
+    --arg s "$(date -d "-$DAYS_TO_KEEP days" +"%Y-%m-%dT%H:%M")" \
+    'del( .data.refresh_tokens[] | select(.last_used_at < $s) )' > "$REPO_PATH/new_auth"
+
+new_token_count=$(jq '[.data.refresh_tokens[]] | length' < "$REPO_PATH/new_auth")
+echo "New number of tokens: $new_token_count"
+
+# Backup the old auth data, save the new data, and remove the tmp file:
+save_auth_data
+rm "$REPO_PATH/new_auth"
+
+echo "HASS refresh tokens cleaned"
