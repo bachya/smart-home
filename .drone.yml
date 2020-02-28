@@ -17,6 +17,7 @@ steps:
   - name: "Pre-Commit Hooks"
     image: python:3
     commands:
+      - apt-get install -y shellcheck
       - pip3 install pre-commit
       - pre-commit install-hooks --config .pre-commit-config.yaml
       - pre-commit run --all-files
