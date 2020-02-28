@@ -147,29 +147,6 @@ steps:
 
 ---
 kind: pipeline
-name: Shell Scripts
-
-trigger:
-  ref:
-    - refs/heads/master
-    - refs/heads/feature/*
-    - refs/tags/*
-
-depends_on:
-  - Pre-Flight
-
-steps:
-  - name: "Static Analysis: bin/*"
-    image: koalaman/shellcheck-alpine:stable
-    pull: always
-    commands:
-      - shellcheck --version
-      - shellcheck ./bin/*
-      - shellcheck ./fail2ban-mqtt-notifier/docker/bin/*
-      - shellcheck ./nginx/docker/bin/*
-
----
-kind: pipeline
 name: Deploy
 
 trigger:
