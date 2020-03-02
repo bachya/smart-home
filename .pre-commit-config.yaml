@@ -37,14 +37,6 @@ repos:
     hooks:
       - id: mypy
         files: ^(appdaemon/settings/apps/.+)?[^/]+\.py$
-  - repo: https://github.com/prettier/prettier
-    rev: 1.19.1
-    hooks:
-      - id: prettier
-        args:
-          - --no-bracket-spacing
-          - --write
-        files: .+\.(json)
   - repo: https://github.com/ryanrhee/shellcheck-py
     rev: v0.7.0.1-1
     hooks:
