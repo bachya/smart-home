@@ -45,10 +45,10 @@ repos:
           - --no-bracket-spacing
           - --write
         files: .+\.(json)
-  - repo: git://github.com/detailyang/pre-commit-shell
-    rev: v1.0.6
+  - repo: https://github.com/ryanrhee/shellcheck-py
+    rev: v0.7.0.1-1
     hooks:
-      - id: shell-lint
+      - id: shellcheck
         args:
           - --format=json
         files: bin/*
