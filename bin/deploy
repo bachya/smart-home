@@ -98,4 +98,5 @@ function update() {
     send_slack_message "Deployment completed" "$SLACK_COLOR_GREEN"
 }
 
+sleep 2
 update
