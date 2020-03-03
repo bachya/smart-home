@@ -41,7 +41,7 @@ living_room_tv_randomize_automation:
     - service: "script/stop_random_stream_on_living_room_roku"
   lower_end: 600
   enabled_toggle_entity_id: input_boolean.randomize_nighttime_tvs
-  
+
 living_room_tv_randomize_done_for_night_automation:
   module: services
   class: ServiceOnTime
@@ -83,7 +83,7 @@ sofa_lamp_randomize_automation:
     service_data:
       entity_id: switch.sofa_lamp
   enabled_toggle_entity_id: input_boolean.randomize_nighttime_lighting
-  
+
 sofa_lamp_randomize_done_for_night_automation:
   module: services
   class: ServiceOnTime

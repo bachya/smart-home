@@ -23,7 +23,7 @@ basement_lights_randomize_automation:
     service_data:
       entity_id: switch.basement_lights
   enabled_toggle_entity_id: input_boolean.randomize_nighttime_lighting
-  
+
 basement_lights_randomize_done_for_night_automation:
   module: services
   class: ServiceOnTime
@@ -51,7 +51,7 @@ basement_tv_randomize_automation:
         entity_id: remote.basement_tv
   lower_end: 600
   enabled_toggle_entity_id: input_boolean.randomize_nighttime_tvs
-  
+
 basement_tv_randomize_done_for_night_automation:
   module: services
   class: ServiceOnTime
