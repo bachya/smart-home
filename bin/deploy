@@ -19,6 +19,7 @@ SLACK_HOOK_URL="https://hooks.slack.com/services/ID/ID2/ID3"
 function num_of_running_builds() {
     local builds_json
     builds_json="$(curl \
+        -s \
         -H "Authorization: Bearer $DRONE_TOKEN" \
         -H "Connection: Close" \
         -H "Host: $DRONE_HOST" \
