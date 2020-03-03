@@ -5,16 +5,13 @@ input_boolean:
     name: Auto enable/disable vacation mode
   blackout_mode:
     icon: mdi:weather-night
-    initial: false
     name: Blackout Mode
   blackout_schedule_automation:
     icon: mdi:brightness-4
     name: Blackout Schedule
   guest_mode:
     icon: mdi:hotel
-    initial: false
     name: Guest Mode
   vacation_mode:
     icon: mdi:beach
-    initial: false
     name: Vacation Mode
