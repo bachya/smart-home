@@ -16,7 +16,7 @@ basement_lights_randomize_automation::
   module: services
   class: ServiceOnRandomTick
   constrain_enabled: true
-  constrain_end_time: "23:30:00"
+  constrain_end_time: "22:30:00"
   constrain_start_time: sunset
   services:
     service: "switch/toggle"
@@ -28,7 +28,7 @@ basement_tv_randomize_automation:
   module: services
   class: ServiceOnRandomTick
   constrain_enabled: true
-  constrain_end_time: "23:30:00"
+  constrain_end_time: "22:30:00"
   constrain_start_time: sunset
   services:
     - service: "remote/turn_on"

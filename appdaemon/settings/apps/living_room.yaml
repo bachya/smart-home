@@ -34,7 +34,7 @@ living_room_tv_randomize_automation:
   module: services
   class: ServiceOnRandomTick
   constrain_enabled: true
-  constrain_end_time: "23:30:00"
+  constrain_end_time: "22:30:00"
   constrain_start_time: sunset
   services:
     - service: "script/start_random_stream_on_living_room_roku"
@@ -67,7 +67,7 @@ sofa_lamp_randomize_automation:
   module: services
   class: ServiceOnRandomTick
   constrain_enabled: true
-  constrain_end_time: "23:30:00"
+  constrain_end_time: "22:30:00"
   constrain_start_time: sunset
   services:
     service: "switch/toggle"
