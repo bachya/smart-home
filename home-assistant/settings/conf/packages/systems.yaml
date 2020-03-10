@@ -84,7 +84,7 @@ sensor:
       latest_drone_build_message:
         friendly_name: Message
         value_template: |
-          {{ state_attr("sensor.latest_drone_build", "message")[:-1] }}
+          {{ state_attr("sensor.latest_drone_build", "message") }}
       latest_drone_build_started:
         friendly_name: Started
         value_template: |
