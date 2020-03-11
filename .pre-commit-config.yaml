@@ -49,3 +49,4 @@ repos:
     hooks:
       - id: yamllint
         types: [file, yaml]
+        exclude: ^home-assistant/settings/custom_components/hacs
