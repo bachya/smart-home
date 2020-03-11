@@ -22,6 +22,7 @@ cloud: !include_dir_merge_named conf/cloud/
 ffmpeg: !include conf/ffmpeg.yaml
 google: !include conf/google.yaml
 group: !include_dir_named conf/groups/
+hacs: !include conf/hacs.yaml
 ifttt: !include conf/ifttt.yaml
 input_boolean: !include_dir_merge_named conf/input-booleans/
 mqtt: !include conf/mqtt.yaml
