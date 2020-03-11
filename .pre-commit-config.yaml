@@ -23,6 +23,7 @@ repos:
           - --skip="./.*,*.json"
           - --quiet-level=2
           - --ignore-words-list=ba,dur,hass,nd,noone
+        exclude: ^home-assistant/settings/custom_components/
         exclude_types: [json]
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.7.9
@@ -49,4 +50,4 @@ repos:
     hooks:
       - id: yamllint
         types: [file, yaml]
-        exclude: ^home-assistant/settings/custom_components/hacs
+        exclude: ^home-assistant/settings/custom_components/
