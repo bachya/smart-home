@@ -1,4 +1,9 @@
 ---
+binary_sensor:
+  - platform: linode
+    nodes:
+      - linode2506384
+
 input_boolean:
   forward_persistent_notifications_to_slack_automation:
     icon: mdi:slack
@@ -18,6 +23,9 @@ input_boolean:
   notify_ps4_left_on_automation:
     icon: mdi:playstation
     name: PS4 left on
+
+linode:
+  access_token: !secret linode_access_token
 
 sensor:
   - platform: command_line
