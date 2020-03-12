@@ -83,7 +83,7 @@ services:
     container_name: hass
     depends_on:
       - glances
-      - mysql
+      - mysql-hass
       - vernemq
     devices:
       - "/dev/zwave:/dev/zwave"
@@ -95,8 +95,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - hass-config:/config
 
-  mysql:
-    container_name: mysql
+  mysql-hass:
+    container_name: mysql-hass
     environment:
       MYSQL_DATABASE: "${MYSQL_DATABASE}"
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
@@ -107,7 +107,7 @@ services:
       - "3306:3306/tcp"
     restart: unless-stopped
     volumes:
-      - /var/lib/docker/mysql:/var/lib/mysql
+      - mysql-hass-data:/var/lib/mysql
 
   nginx:
     build:
@@ -226,5 +226,6 @@ volumes:
   fail2ban-log:
   glances-config:
   hass-config:
+  mysql-hass-data:
   portainer-config:
   zigbee2mqtt-config:
