@@ -98,10 +98,10 @@ services:
   mysql-hass:
     container_name: mysql-hass
     environment:
-      MYSQL_DATABASE: "${MYSQL_DATABASE}"
-      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
-      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
-      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_DATABASE: "${MYSQL_HASS_DATABASE}"
+      MYSQL_PASSWORD: "${MYSQL_HASS_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_HASS_ROOT_PASSWORD}"
+      MYSQL_USER: "${MYSQL_HASS_USER}"
     image: bianjp/mariadb-alpine:latest
     ports:
       - "3306:3306/tcp"
