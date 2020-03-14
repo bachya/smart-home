@@ -9,7 +9,7 @@ basement_lights_randomize_automation:
     service: "switch/toggle"
     service_data:
       entity_id: switch.basement_lights
-  enabled_toggle_entity_id: >
+  enabled_toggle_entity_id: >-
     input_boolean.randomize_nighttime_lighting_automation
 
 basement_lights_randomize_done_for_night_automation:
@@ -21,7 +21,7 @@ basement_lights_randomize_done_for_night_automation:
     service_data:
       entity_id: switch.basement_lights
   schedule_time: "22:30:00"
-  enabled_toggle_entity_id: >
+  enabled_toggle_entity_id: >-
     input_boolean.randomize_nighttime_lighting_automation
 
 basement_tv_randomize_automation:
@@ -72,7 +72,7 @@ living_room_lights_randomize_done_for_night_automation:
     service_data:
       entity_id: group.living_room_lights
   schedule_time: "22:30:00"
-  enabled_toggle_entity_id: >
+  enabled_toggle_entity_id: >-
     input_boolean.randomize_nighttime_lighting_automation
 
 living_room_tv_randomize_automation:
@@ -151,5 +151,5 @@ sofa_lamp_randomize_automation:
     service: "switch/toggle"
     service_data:
       entity_id: switch.sofa_lamp
-  enabled_toggle_entity_id: >
+  enabled_toggle_entity_id: >-
     input_boolean.randomize_nighttime_lighting_automation
