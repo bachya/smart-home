@@ -50,7 +50,9 @@ automation:
     action:
       service: notify.slack
       data_template:
-        message: "📥 SimpliSafe Event: {{ trigger.event.data.last_event_info }}"
+        message: >
+            📥 SimpliSafe Event:
+            {{ trigger.event.data.service_data.last_event_info }}
 
   - alias: "Forward SimpliSafe notifications to Slack"
     trigger:
@@ -59,7 +61,9 @@ automation:
     action:
       service: notify.slack
       data_template:
-        message: "📥 SimpliSafe Notification: {{ trigger.event.data.message }}"
+        message: >
+            📥 SimpliSafe Notification:
+            {{ trigger.event.data.service_data.message }}
 
   - alias: "Notify when garage left open"
     trigger:

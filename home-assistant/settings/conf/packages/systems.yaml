@@ -11,8 +11,8 @@ automation:
       service: notify.slack
       data_template:
         message: >
-          📥 Home Assistant Notification: {{ trigger.event.data.title }}
-          {{ trigger.event.data.message }}
+            📥 Home Assistant Notification:
+            {{ trigger.event.data.service_data.message }}
 
   - alias: "Notify when media center left on"
     trigger:
