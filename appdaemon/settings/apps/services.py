@@ -59,27 +59,7 @@ MULTI_SERVICE_SCHEMA = APP_SCHEMA.extend(
 )
 
 
-class MultiServiceBase(Base):
-    """Define a base class for automations that handle multiple services."""
-
-    def configure(self) -> None:
-        """Configure."""
-        self._count = 0
-
-    def pick_and_call_service(self) -> None:
-        """Run the correct service."""
-        if self.args[CONF_SERVICE_ORDER] == SERVICE_ORDER_SEQUENTIAL:
-            index = self._count % len(self.args[CONF_SERVICES])
-            service_data = self.args[CONF_SERVICES][index]
-        else:
-            service_data = choice(self.args[CONF_SERVICES])  # nosec
-
-        self.call_service(service_data[CONF_SERVICE], **service_data[CONF_SERVICE_DATA])
-
-        self._count += 1
-
-
-class ServiceOnRandomTick(MultiServiceBase):
+class ServiceOnRandomTick(Base):
     """Define an automation to call a service at random moments."""
 
     APP_SCHEMA = MULTI_SERVICE_SCHEMA.extend(
@@ -95,7 +75,7 @@ class ServiceOnRandomTick(MultiServiceBase):
 
     def configure(self) -> None:
         """Configure."""
-        super().configure()
+        self._count = 0
         self._start_ticking()
 
     def _start_ticking(self) -> None:
@@ -120,6 +100,18 @@ class ServiceOnRandomTick(MultiServiceBase):
     def on_enable(self) -> None:
         """Start ticking when the automation is enabled."""
         self._start_ticking()
+
+    def pick_and_call_service(self) -> None:
+        """Run the correct service."""
+        if self.args[CONF_SERVICE_ORDER] == SERVICE_ORDER_SEQUENTIAL:
+            index = self._count % len(self.args[CONF_SERVICES])
+            service_data = self.args[CONF_SERVICES][index]
+        else:
+            service_data = choice(self.args[CONF_SERVICES])  # nosec
+
+        self.call_service(service_data[CONF_SERVICE], **service_data[CONF_SERVICE_DATA])
+
+        self._count += 1
 
 
 class ServiceOnState(Base):
