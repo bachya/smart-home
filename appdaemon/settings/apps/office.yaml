@@ -7,26 +7,3 @@ office_lights_sleep_timer_automation:
     - presence_manager
   switch: switch.office_salt_lamp
   timer_slider: input_number.office_salt_lamp_timer
-
-office_lights_off_at_10pm_automation:
-  module: services
-  class: ServiceOnTime
-  constrain_enabled: true
-  services:
-    service: "switch/turn_off"
-    service_data:
-      entity_id: switch.office_salt_lamp
-  schedule_time: "22:00:00"
-  enabled_toggle_entity_id: input_boolean.office_lights_schedule_automation
-
-office_lights_on_at_sunset_automation:
-  module: services
-  class: ServiceOnState
-  constrain_enabled: true
-  services:
-    service: "switch/turn_on"
-    service_data:
-      entity_id: switch.office_salt_lamp
-  target_entity_id: sun.sun
-  new_target_state: "below_horizon"
-  enabled_toggle_entity_id: input_boolean.office_lights_schedule_automation

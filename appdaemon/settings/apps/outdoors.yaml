@@ -40,16 +40,3 @@ outdoor_lights_schedule:
 
   watched_entities:
     - sun.sun
-
-kitchen_patio_light_double_tap_backyard_lights_automation:
-  module: services
-  class: ServiceOnZWaveSwitchDoubleTap
-  constrain_enabled: true
-  services:
-    service_up: "switch/turn_on"
-    service_up_data:
-      entity_id: switch.backyard_lights
-    service_down: "switch/turn_off"
-    service_down_data:
-      entity_id: switch.backyard_lights
-  zwave_device: zwave.kitchen_patio_light

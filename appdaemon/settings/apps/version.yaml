@@ -14,7 +14,7 @@ new_appdaemon_version_automation:
   icon: mdi:language-python
   image_name: acockburn/appdaemon
   interval: 300
-  enabled_toggle_entity_id: input_boolean.notify_of_new_versions
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
 
 new_esphome_version_automation:
   module: version
@@ -33,7 +33,7 @@ new_esphome_version_automation:
   friendly_name: ESPHome Installed
   icon: mdi:chip
   interval: 300
-  enabled_toggle_entity_id: input_boolean.notify_of_new_versions
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
 
 new_hass_version_automation:
   module: version
@@ -44,7 +44,7 @@ new_hass_version_automation:
   available: sensor.hass_available
   installed: sensor.hass_installed
   app_name: Home Assistant
-  enabled_toggle_entity_id: input_boolean.notify_of_new_versions
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
 
 new_vernemq_version_automation:
   module: version
@@ -61,7 +61,7 @@ new_vernemq_version_automation:
   icon: mdi:wifi
   image_name: docker-vernemq
   interval: 300
-  enabled_toggle_entity_id: input_boolean.notify_of_new_versions
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
 
 new_portainer_version_automation:
   module: version
@@ -78,7 +78,7 @@ new_portainer_version_automation:
   icon: mdi:server
   image_name: portainer/portainer
   interval: 300
-  enabled_toggle_entity_id: input_boolean.notify_of_new_versions
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
 
 new_yi_hack_version_automation:
   module: version
@@ -89,4 +89,4 @@ new_yi_hack_version_automation:
   available: sensor.yi_hack_available
   installed: sensor.yi_hack_installed
   app_name: Yi Hack
-  enabled_toggle_entity_id: input_boolean.notify_of_new_versions
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation

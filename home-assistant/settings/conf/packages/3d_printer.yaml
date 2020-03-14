@@ -1,4 +1,45 @@
 ---
+automation:
+  - alias: Notify when 3D print completes
+    trigger:
+      platform: state
+      entity_id: sensor.ender_3_state
+      from: Printing
+      to: Operational
+    action:
+      service: notify.slack
+      data_template:
+        message: >
+          🦿 3D print completed: {{ states("sensor.ender_3_filename") }}
+
+  - alias: Notify when 3D print starts
+    trigger:
+      platform: state
+      entity_id: sensor.ender_3_state
+      from: Operational
+      to: Printing
+    action:
+      service: notify.slack
+      data_template:
+        message: >
+          🦿 3D print started: {{ states("sensor.ender_3_filename") }}
+
+  - alias: "Turn off when 3D print completes"
+    trigger:
+      platform: state
+      entity_id: sensor.ender_3_state
+      from: Printing
+      to: Operational
+      for:
+        minutes: 10
+    action:
+      - service: notify.slack
+        data:
+          message: "🦿 Turning 3D printer off"
+      - service: "switch.turn_off"
+        data:
+          entity_id: switch.toggle_3d_printer
+
 binary_sensor:
   - platform: mqtt
     name: Ender 3 Error State
@@ -11,15 +52,6 @@ binary_sensor:
     payload_available: connected
     payload_not_available: disconnected
     device_class: problem
-
-input_boolean:
-  3d_printer_notifications_automation:
-    icon: mdi:printer-3d
-    name: 3D print notifications
-  turn_3d_printer_off_when_print_complete_automation:
-    icon: mdi:power
-    initial: true
-    name: "Turn off when print complete"
 
 rest_command:
   turn_off_octopi:

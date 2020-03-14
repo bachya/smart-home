@@ -85,28 +85,6 @@ class BaseZwaveSwitch(BaseSwitch):
         pass
 
 
-class PresenceFailsafe(BaseSwitch):
-    """Define a feature to restrict activation when we're not home."""
-
-    APP_SCHEMA = APP_SCHEMA.extend({vol.Required(CONF_SWITCH): cv.entity_id})
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_state(
-            self._on_switch_activate,
-            self.args[CONF_SWITCH],
-            new="on",
-            constrain_noone="just_arrived,home",
-        )
-
-    def _on_switch_activate(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Turn the switch off if no one is home."""
-        self.log("No one home; not allowing switch to activate")
-        self.toggle(state="off")
-
-
 class SleepTimer(BaseSwitch):
     """Define a feature to turn a switch off after an amount of time."""
 

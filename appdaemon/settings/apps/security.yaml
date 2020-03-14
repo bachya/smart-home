@@ -1,91 +1,111 @@
 ---
-auto_departure_lockup_automation:
+basement_lights_randomize_automation:
   module: services
-  class: ServiceOnState
+  class: ServiceOnRandomTick
   constrain_enabled: true
+  constrain_end_time: "22:30:00"
+  constrain_start_time: sunset
   services:
-    service: "scene/turn_on"
+    service: "switch/toggle"
     service_data:
-      entity_id: scene.depart_home
-  target_entity_id: sensor.proximity_zone
-  old_target_state: Home
+      entity_id: switch.basement_lights
+  enabled_toggle_entity_id: >
+    input_boolean.randomize_nighttime_lighting_automation
 
-auto_nighttime_lockup_automation:
+basement_lights_randomize_done_for_night_automation:
   module: services
   class: ServiceOnTime
   constrain_enabled: true
   services:
-    service: "scene/turn_on"
+    service: "switch/turn_off"
     service_data:
-      entity_id: scene.good_night
-  schedule_time: "00:00:00"
-
-disable_simplisafe_sounds_in_blackout_automation:
-  module: services
-  class: ServiceOnState
-  constrain_enabled: true
-  services:
-    service: "simplisafe/set_system_properties"
-    service_data:
-      system_id: !secret simplisafe_system_id
-      chime_volume: 0
-      voice_prompt_volume: 0
-  target_entity_id: input_boolean.blackout_mode
-  new_target_state: "on"
+      entity_id: switch.basement_lights
+  schedule_time: "22:30:00"
   enabled_toggle_entity_id: >
-    input_boolean.simplisafe_sounds_blackout_automation
+    input_boolean.randomize_nighttime_lighting_automation
 
-enable_simplisafe_sounds_out_of_blackout_automation:
+basement_tv_randomize_automation:
+  module: services
+  class: ServiceOnRandomTick
+  constrain_enabled: true
+  constrain_end_time: "22:30:00"
+  constrain_start_time: sunset
+  services:
+    - service: "remote/turn_on"
+      service_data:
+        entity_id: remote.basement_tv
+        activity: Watch TV
+    - service: "remote/turn_off"
+      service_data:
+        entity_id: remote.basement_tv
+  lower_end: 600
+  enabled_toggle_entity_id: input_boolean.randomize_nighttime_tvs_automation
+
+basement_tv_randomize_done_for_night_automation:
+  module: services
+  class: ServiceOnTime
+  constrain_enabled: true
+  services:
+    service: "remote/turn_off"
+    service_data:
+      entity_id: remote.basement_tv
+  schedule_time: "22:30:00"
+  enabled_toggle_entity_id: input_boolean.randomize_nighttime_tvs_automation
+
+basement_tv_randomize_off_automation:
   module: services
   class: ServiceOnState
   constrain_enabled: true
   services:
-    service: "simplisafe/set_system_properties"
+    service: "remote/turn_off"
     service_data:
-      system_id: !secret simplisafe_system_id
-      chime_volume: 2
-      voice_prompt_volume: 2
-  target_entity_id: input_boolean.blackout_mode
+      entity_id: remote.basement_tv
+  target_entity_id: input_boolean.randomize_nighttime_tvs_automation
   new_target_state: "off"
+
+living_room_lights_randomize_done_for_night_automation:
+  module: services
+  class: ServiceOnTime
+  constrain_enabled: true
+  services:
+    service: "switch/turn_off"
+    service_data:
+      entity_id: group.living_room_lights
+  schedule_time: "22:30:00"
   enabled_toggle_entity_id: >
-    input_boolean.simplisafe_sounds_blackout_automation
+    input_boolean.randomize_nighttime_lighting_automation
 
-forward_simplisafe_notifications_to_slack_automation:
-  module: security
-  class: SimpliSafeNotifications
+living_room_tv_randomize_automation:
+  module: services
+  class: ServiceOnRandomTick
   constrain_enabled: true
+  constrain_end_time: "22:30:00"
+  constrain_start_time: sunset
+  services:
+    - service: "script/start_random_stream_on_living_room_roku"
+    - service: "script/stop_random_stream_on_living_room_roku"
+  lower_end: 600
+  enabled_toggle_entity_id: input_boolean.randomize_nighttime_tvs_automation
 
-notify_of_garage_open_automation:
-  module: security
-  class: GarageLeftOpen
+living_room_tv_randomize_done_for_night_automation:
+  module: services
+  class: ServiceOnTime
   constrain_enabled: true
-  dependencies:
-    - presence_manager
-    - security_manager
-    - slack_app_home_assistant
-  garage_door: cover.garage_door
-  notification_interval: 300
-  time_left_open: 600
+  services:
+    service: "script/stop_random_stream_on_living_room_roku"
+  schedule_time: "22:30:00"
+  enabled_toggle_entity_id: input_boolean.randomize_nighttime_tvs_automation
 
-notify_when_absent_insecure_automation:
-  module: security
-  class: AbsentInsecure
+living_room_tv_randomize_off_when_returning_home_automation:
+  module: services
+  class: ServiceOnState
   constrain_enabled: true
-  constrain_noone: "just_arrived,home"
-  dependencies:
-    - presence_manager
-    - security_manager
-  state: sensor.secure_status
+  services:
+    service: "script/stop_random_stream_on_living_room_roku"
+  target_entity_id: input_boolean.randomize_nighttime_tvs_automation
+  new_target_state: "off"
 
-notify_when_status_changes_automation:
-  module: security
-  class: NotifyOnChange
-  constrain_enabled: true
-  dependencies:
-    - presence_manager
-  state: sensor.secure_status
-
-notify_when_person_on_camera:
+notify_when_person_on_camera_automation:
   module: security
   class: PersonDetectedOnCamera
   constrain_enabled: true
@@ -121,56 +141,15 @@ security_manager:
       friendly_name: the security system
       state: disarmed
 
-turn_on_front_patio_light_when_nighttime_person_detected_automation:
+sofa_lamp_randomize_automation:
   module: services
-  class: ServiceOnState
+  class: ServiceOnRandomTick
   constrain_enabled: true
-  constrain_in_bed: true
+  constrain_end_time: "22:30:00"
+  constrain_start_time: sunset
   services:
-    service: "switch/turn_on"
+    service: "switch/toggle"
     service_data:
-      entity_id: switch.front_patio_light
-  target_entity_id: binary_sensor.front_door_camera_person_detected
-  new_target_state: "on"
-  enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
-
-turn_off_front_patio_light_when_nighttime_person_leaves_automation:
-  module: services
-  class: ServiceOnState
-  constrain_enabled: true
-  constrain_in_bed: true
-  services:
-    service: "switch/turn_off"
-    service_data:
-      entity_id: switch.front_patio_light
-  target_entity_id: binary_sensor.front_door_camera_person_detected
-  delay: 300
-  new_target_state: "off"
-  enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
-
-turn_on_living_room_lights_when_nighttime_person_detected_automation:
-  module: services
-  class: ServiceOnState
-  constrain_enabled: true
-  constrain_in_bed: true
-  services:
-    service: "homeassistant/turn_on"
-    service_data:
-      entity_id: group.living_room_lights
-  target_entity_id: binary_sensor.front_door_camera_person_detected
-  new_target_state: "on"
-  enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
-
-turn_off_living_room_lights_when_nighttime_person_leaves_automation:
-  module: services
-  class: ServiceOnState
-  constrain_enabled: true
-  constrain_in_bed: true
-  services:
-    service: "homeassistant/turn_off"
-    service_data:
-      entity_id: group.living_room_lights
-  target_entity_id: binary_sensor.front_door_camera_person_detected
-  delay: 300
-  new_target_state: "off"
-  enabled_toggle_entity_id: input_boolean.lights_on_night_doorbell_automation
+      entity_id: switch.sofa_lamp
+  enabled_toggle_entity_id: >
+    input_boolean.randomize_nighttime_lighting_automation

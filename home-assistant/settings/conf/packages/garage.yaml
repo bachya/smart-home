@@ -1,23 +1,46 @@
 ---
+automation:
+  - alias: "Notify of low fuel: Subaru"
+    trigger:
+      platform: template
+      value_template: >
+        {% set entity = "device_tracker.2010_subaru_legacy" %}
+        {% if state_attr(entity, "fuel_level") < 10 %}
+          true
+        {% endif %}
+    action:
+      service: notify.slack
+      data:
+        message: ⛽️ Aaron's car needs some gas.
+
+  - alias: "Turn on garage lights when garage door opens while it's dark"
+    trigger:
+      platform: state
+      entity_id: cover.garage_door
+      to: open
+    condition:
+      condition: numeric_state
+      entity_id: sensor.filtered_outdoor_brightness
+      below: 70
+    action:
+      service: switch.turn_on
+      data:
+        entity_id: switch.garage_lights
+
+  - alias: "Turn off garage lights after garage door closes"
+    trigger:
+      platform: state
+      entity_id: cover.garage_door
+      to: closed
+      for:
+        minutes: 10
+    action:
+      service: switch.turn_off
+      data:
+        entity_id: switch.garage_lights
+
 cover:
   - platform: myq
     username: !secret chamberlain_myq_username
     password: !secret chamberlain_myq_password
     type: chamberlain
-
-input_boolean:
-  garage_lights_off_after_garage_close_automation:
-    icon: mdi:garage
-    name: Turn off 5 minutes after door closes
-  garage_lights_on_garage_open_sundown_automation:
-    icon: mdi:weather-sunset-down
-    name: Turn off 5 minutes after door closes
-  notify_of_garage_open_automation:
-    icon: mdi:garage
-    name: Notify if garage left open
-  subaru_legacy_notify_eta_automation:
-    icon: mdi:car
-    name: Notify of ETA
-  subaru_legacy_notify_low_fuel_automation:
-    icon: mdi:gas-station
-    name: Notify of low fuel

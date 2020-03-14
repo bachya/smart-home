@@ -1,8 +1,76 @@
 ---
+automation:
+  - alias: "Adjust automations in Blackout Mode"
+    trigger:
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: scene
+          service: turn_on
+          service_data:
+            entity_id: scene.good_night
+      - platform: state
+        entity_id: input_boolean.blackout_mode
+        to: "on"
+    action:
+      service: scene.turn_on
+      data:
+        entity_id: scene.blackout_mode
+
+  - alias: "Adjust automations in Guest Mode"
+    trigger:
+      platform: state
+      entity_id: input_boolean.guest_mode
+      to: "on"
+    action:
+      service: scene.turn_on
+      data:
+        entity_id: scene.guest_mode
+
+  - alias: "Adjust automations in Vacation Mode"
+    trigger:
+      platform: state
+      entity_id: input_boolean.vacation_mode
+      to: "on"
+    action:
+      service: scene.turn_on
+      data:
+        entity_id: scene.vacation_mode
+
+  - alias: "Reset automations when no mode is active"
+    trigger:
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: scene
+          service: turn_on
+          service_data:
+            entity_id: scene.drive_home
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: scene
+          service: turn_on
+          service_data:
+            entity_id: scene.walk_home
+      - platform: state
+        entity_id: input_boolean.blackout_mode
+        to: "off"
+      - platform: state
+        entity_id: input_boolean.guest_mode
+        to: "off"
+      - platform: state
+        entity_id: input_boolean.vacation_mode
+        to: "off"
+      - platform: state
+        entity_id: sensor.proximity_zone
+        to: Home
+    action:
+      service: scene.turn_on
+      data:
+        entity_id: scene.base
+
 input_boolean:
-  auto_vacation_mode_alterations_automation:
-    icon: mdi:beach
-    name: Auto enable/disable vacation mode
   blackout_mode:
     icon: mdi:weather-night
     name: Blackout Mode

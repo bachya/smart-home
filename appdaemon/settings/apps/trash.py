@@ -1,11 +1,10 @@
 """Define automations for trash."""
 import datetime
 from math import ceil
-from typing import Tuple
+from typing import Tuple, Union
 
 from core import Base
 from helpers import grammatical_list_join, suffix_strftime
-from helpers.scheduler import run_on_days
 from helpers.notification import send_notification
 
 CONF_NEXT_PICKUP_SENSOR = "next_pickup_sensor"
@@ -13,20 +12,22 @@ CONF_TRASH_TYPE_SENSORS = "trash_type_sensors"
 
 
 class NotifyOfPickup(Base):  # pylint: disable=too-few-public-methods
-    """Define a feature to notify us of low batteries."""
+    """Define a feature to notify us the next trash pickup."""
 
     def configure(self) -> None:
         """Configure."""
-        run_on_days(self, self._on_notify, ["Sunday"], datetime.time(20, 0, 0))
+        self.listen_state(self._on_date_change, "sensor.recollect_waste")
 
-    def _on_notify(self, kwargs: dict) -> None:
-        """Schedule the next pickup notification."""
+    def _on_date_change(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Respond when the pickup date changes."""
         date, friendly_str = self.trash_manager.in_next_pickup_str()
         send_notification(
             self,
             "presence:home",
-            friendly_str,
-            title="Trash Reminder 🗑",
+            f"🗑 {friendly_str}",
+            title="Trash Reminder",
             when=datetime.datetime.combine(
                 date - datetime.timedelta(days=1), datetime.time(20, 0, 0)
             ),

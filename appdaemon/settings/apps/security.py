@@ -1,14 +1,13 @@
 """Define automations for security."""
 from enum import Enum
 from threading import Lock
-from typing import Callable, Optional, Union
+from typing import Union
 
 import voluptuous as vol
 
 from core import APP_SCHEMA, Base
 from const import (
     CONF_FRIENDLY_NAME,
-    CONF_NOTIFICATION_INTERVAL,
     CONF_STATE,
     EVENT_ALARM_CHANGE,
 )
@@ -26,170 +25,6 @@ CONF_TIME_LEFT_OPEN = "time_left_open"
 CONF_WINDOW_SECONDS = "window_seconds"
 
 HANDLE_GARAGE_OPEN = "garage_open"
-
-
-class AbsentInsecure(Base):  # pylint: disable=too-few-public-methods
-    """Define a feature to notify us when we've left home insecure."""
-
-    APP_SCHEMA = APP_SCHEMA.extend({vol.Required(CONF_STATE): cv.entity_id})
-
-    def configure(self) -> None:
-        """Configure."""
-        self._send_notification_func = None  # type: Optional[Callable]
-
-        self.listen_state(
-            self._on_house_insecure, self.args[CONF_STATE], new="Open", duration=60 * 5,
-        )
-
-    def _on_house_insecure(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Send notifications when the house has been left insecure."""
-
-        def _send_notification() -> None:
-            """Send the notification."""
-            send_notification(
-                self,
-                ["person:Aaron", "person:Britt"],
-                "No one is home and the house isn't locked up.",
-                title="Security Issue 🔐",
-                data={"push": {"category": "dishwasher"}},
-            )
-
-        self.log("No one home and house is insecure; notifying")
-
-        # If the automation is enabled when the house is insecure, send a notification;
-        # if not, remember that we should send the notification when the automation
-        # becomes enabled:
-        if self.enabled:
-            _send_notification()
-        else:
-            self._send_notification_func = _send_notification
-
-    def on_enable(self) -> None:
-        """Send the notification once the automation is enabled (if appropriate)."""
-        if self._send_notification_func:
-            self._send_notification_func()
-            self._send_notification_func = None
-
-
-class GarageLeftOpen(Base):  # pylint: disable=too-few-public-methods
-    """Define a feature to notify us when the garage is left open."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            vol.Required(CONF_GARAGE_DOOR): cv.entity_id,
-            vol.Required(CONF_NOTIFICATION_INTERVAL): vol.All(
-                cv.time_period, lambda value: value.seconds
-            ),
-            vol.Required(CONF_TIME_LEFT_OPEN): vol.All(
-                cv.time_period, lambda value: value.seconds
-            ),
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_state(self._on_closed, self.args[CONF_GARAGE_DOOR], new="closed")
-        self.listen_state(
-            self._on_left_open,
-            self.args[CONF_GARAGE_DOOR],
-            new="open",
-            duration=self.args[CONF_TIME_LEFT_OPEN],
-        )
-
-    def _cancel_notification_cycle(self) -> None:
-        """Cancel any active notification."""
-        if HANDLE_GARAGE_OPEN in self.data:
-            cancel = self.data.pop(HANDLE_GARAGE_OPEN)
-            cancel()
-
-    def _on_closed(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Cancel notification when the garage is _on_closed."""
-        self._cancel_notification_cycle()
-
-    def _on_left_open(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Send notifications when the garage has been left open."""
-        if self.enabled:
-            self._start_notification_cycle()
-        else:
-            self._cancel_notification_cycle()
-
-    def _start_notification_cycle(self) -> None:
-        """Start the notification cycle."""
-        message = "The garage has been left open. Want to close it?"
-
-        self.data[HANDLE_GARAGE_OPEN] = send_notification(
-            self,
-            ["person:Aaron", "person:Britt"],
-            message,
-            title="Garage Open 🚗",
-            when=self.datetime(),
-            interval=self.args[CONF_NOTIFICATION_INTERVAL],
-            data={"push": {"category": "garage"}},
-        )
-
-        self.slack_app_home_assistant.ask(
-            message,
-            {
-                "Yes": {
-                    "callback": self.security_manager.close_garage,
-                    "response_text": "You got it; closing it now.",
-                },
-                "No": {"response_text": "If you really say so..."},
-            },
-            urgent=True,
-        )
-
-    def on_disable(self) -> None:
-        """Stop the notification once the automation is disable."""
-        self._cancel_notification_cycle()
-
-    def on_enable(self) -> None:
-        """Send the notification once the automation is enabled."""
-        if self.get_state(self.args[CONF_GARAGE_DOOR]) == "open":
-            self._start_notification_cycle()
-
-
-class NotifyOnChange(Base):  # pylint: disable=too-few-public-methods
-    """Define a feature to notify us the secure status changes."""
-
-    APP_SCHEMA = APP_SCHEMA.extend({vol.Required(CONF_STATE): cv.entity_id})
-
-    def configure(self) -> None:
-        """Configure."""
-        self._send_notification_func = None  # type: Optional[Callable]
-
-        self.listen_state(self._on_security_system_change, self.args[CONF_STATE])
-
-    def _on_security_system_change(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Send a notification when the security state changes."""
-
-        def _send_notification() -> None:
-            """Send the notification."""
-            send_notification(
-                self,
-                ["person:Aaron", "person:Britt"],
-                f'The security status has changed to "{new}"',
-                title="Security Change 🔐",
-            )
-
-        if self.enabled:
-            _send_notification()
-        else:
-            self._send_notification_func = _send_notification
-
-    def on_enable(self) -> None:
-        """Send the notification once the automation is enabled (if appropriate)."""
-        if self._send_notification_func:
-            self._send_notification_func()
-            self._send_notification_func = None
 
 
 class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
@@ -332,22 +167,3 @@ class SecurityManager(Base):
             )
         else:
             raise AttributeError(f"Unknown security state: {new}")
-
-
-class SimpliSafeNotifications(Base):  # pylint: disable=too-few-public-methods
-    """Define a feature to send SimpliSafe notifications to Slack."""
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_event(self._on_event_received, "SIMPLISAFE_EVENT")
-        self.listen_event(self._on_notification_received, "SIMPLISAFE_NOTIFICATION")
-
-    def _on_event_received(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Forward a SimpliSafe event to Slack."""
-        send_notification(self, "slack", f'SimpliSafe: {data["last_event_info"]}')
-
-    def _on_notification_received(
-        self, event_name: str, data: dict, kwargs: dict
-    ) -> None:
-        """Forward a SimpliSafe event to Slack."""
-        send_notification(self, "slack", f'SimpliSafe: {data["message"]}')

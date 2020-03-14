@@ -1,11 +1,32 @@
 ---
-input_boolean:
-  bar_cart_on_at_sunset_automation:
-    icon: mdi:weather-sunset-down
-    name: Turn on at sunset
-  bar_cart_on_upon_arrival_automation:
-    icon: mdi:car
-    name: Turn on upon arrival
+automation:
+  - alias: "Notify on kitchen sink leak"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.kitchen_sink_sensor_water_leak
+      to: "on"
+      for:
+        minutes: 1
+    action:
+      - service: notify.slack
+        data:
+          message: 💦 Leak detected under the kitchen sink!
+      - service: notify.mobile_app_brittany_bachs_iphone
+        data:
+          message: 💦 Leak detected under the kitchen sink!
+          title: Leak
+
+  - alias: "Turn bar cart lights on"
+    trigger:
+      - platform: state
+        entity_id: sensor.proximity_zone
+        to: Home
+      - platform: sun
+        event: sunset
+    action:
+      service: switch.turn_on
+      data:
+        entity_id: switch.bar_cart
 
 sensor:
   - platform: template

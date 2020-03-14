@@ -3,12 +3,7 @@
 from typing import Callable, List, Optional, Union
 
 import voluptuous as vol
-from const import (
-    CONF_ENTITY_ID,
-    CONF_NOTIFICATION_INTERVAL,
-    CONF_NOTIFICATION_TARGET,
-    CONF_STATE,
-)
+from const import CONF_NOTIFICATION_INTERVAL
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 from helpers.notification import send_notification
@@ -26,40 +21,6 @@ WARNING_LOG_BLACKLIST = [
     "HVAC mode support has been disabled",
     "not found in namespace",
 ]
-
-
-class AaronAccountability(Base):
-    """Define features to keep me accountable on my phone."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {vol.Required(CONF_AARON_ROUTER_TRACKER): cv.entity_id}
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_state(
-            self._on_disconnect, self.args[CONF_AARON_ROUTER_TRACKER], new="not_home"
-        )
-
-    @property
-    def router_tracker_state(self) -> str:
-        """Return the state of Aaron's Unifi tracker."""
-        return self.get_state(self.args[CONF_AARON_ROUTER_TRACKER])
-
-    def _on_disconnect(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Send a notification when I disconnect during a blackout."""
-        self._send_notification()
-
-    def _send_notification(self) -> None:
-        """Send notification to my love."""
-        send_notification(
-            self,
-            "mobile_app_brittany_bachs_iphone",
-            "His phone shouldn't be off wifi during the night.",
-            title="Check on Aaron",
-        )
 
 
 class AppDaemonLogs(Base):
@@ -195,91 +156,6 @@ class EntityPowerIssues(Base):
             self._send_notification_func = None
 
 
-class ForwardNotificationsToSlack(Base):
-    """Define a feature to forward persistent notifications to Slack."""
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_state(
-            self._on_notification_received, "persistent_notification", attribute="all"
-        )
-
-    def _on_notification_received(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: dict,
-        new: dict,
-        kwargs: dict,
-    ) -> None:
-        """Notify when the HASS notification comes through."""
-        if not new:
-            return
-        send_notification(self, "slack", new["attributes"]["message"])
-
-
-class LeftInState(Base):
-    """Define a feature to monitor whether an entity is left in a state."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            vol.Required(CONF_ENTITY_ID): cv.entity_id,
-            vol.Required(CONF_DURATION): vol.All(
-                cv.time_period, lambda value: value.seconds
-            ),
-            vol.Required(CONF_STATE): cv.string,
-            vol.Required(CONF_NOTIFICATION_TARGET): vol.All(
-                cv.ensure_list, [cv.notification_target]
-            ),
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self._send_notification_func = None  # type: Optional[Callable]
-
-        self.listen_state(
-            self._on_limit,
-            self.args[CONF_ENTITY_ID],
-            new=self.args[CONF_STATE],
-            duration=self.args[CONF_DURATION],
-        )
-
-    def _on_limit(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Notify when the threshold is reached."""
-
-        def _send_notification() -> None:
-            """Send a notification."""
-            friendly_name = self.get_state(
-                self.args[CONF_ENTITY_ID], attribute="friendly_name"
-            )
-            send_notification(
-                self,
-                self.args[CONF_NOTIFICATION_TARGET],
-                (
-                    f"{friendly_name} -> {self.args[CONF_STATE]} "
-                    f"({self.args[CONF_DURATION]} seconds)"
-                ),
-                title="Entity Alert",
-            )
-
-        # If the automation is enabled when the limit is reached, send a notification;
-        # if not, remember that we should send the notification when the automation
-        # becomes enabled:
-        if self.enabled:
-            _send_notification()
-        else:
-            self._send_notification_func = _send_notification
-
-    def on_enable(self) -> None:
-        """Send the notification once the automation is enabled (if appropriate)."""
-        if self._send_notification_func:
-            self._send_notification_func()
-            self._send_notification_func = None
-
-
 class NotifyOfDeadZwaveDevices(Base):
     """Define a feature to notify me of dead Z-Wave devices."""
 
@@ -287,17 +163,14 @@ class NotifyOfDeadZwaveDevices(Base):
         """Configure."""
         for entity_id in self.get_state("zwave").keys():
             self.listen_state(
-                self._on_dead_device_found,
-                entity_id,
-                new="dead",
-                constrain_mode_on="blackout",
+                self._on_dead_device_found, entity_id, new="dead",
             )
 
     def _on_dead_device_found(
         self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
     ) -> None:
         """React when a dead device is found."""
-        send_notification(self, "slack:@aaron", f"A Z-Wave device just died: {entity}")
+        send_notification(self, "person:Aaron", f"A Z-Wave device just died: {entity}")
 
 
 class StartHomeKitOnZwaveReady(Base):

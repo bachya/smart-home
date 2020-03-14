@@ -1,4 +1,40 @@
 ---
+automation:
+  - alias: "Master bathroom fan timer switch"
+    trigger:
+      platform: event
+      event_type: zwave.node_event
+      event_data:
+        entity_id: zwave.master_bathroom_fan
+        basic_level: 255
+    action:
+      service: input_number.set_value
+      data:
+        entity_id: input_number.master_bathroom_fan_timer
+        value: 30
+
+  - alias: "Master toilet fan timer switch"
+    trigger:
+      platform: event
+      event_type: zwave.node_event
+      event_data:
+        entity_id: zwave.master_toilet_fan
+        basic_level: 255
+    action:
+      service: input_number.set_value
+      data:
+        entity_id: input_number.master_bathroom_toilet_fan_timer
+        value: 10
+
+  - alias: "Turn master bedroom lights on at sunset"
+    trigger:
+      platform: sun
+      event: sunset
+    action:
+      service: switch.turn_on
+      data:
+        entity_id: switch.master_bedroom_salt_lamp
+
 binary_sensor:
   - platform: bayesian
     name: In Bed
@@ -20,21 +56,12 @@ binary_sensor:
         prob_given_false: 0.25
 
 input_boolean:
-  master_bathroom_fan_double_tap_timer_automation:
-    icon: mdi:timer
-    name: "Bathroom: double tap 10-minute timer"
   master_bathroom_fan_sleep_timer_automation:
     icon: mdi:sleep
     name: "Bathroom: enable sleep timer"
-  master_bedroom_lights_on_at_sunset_automation:
-    icon: mdi:weather-sunset-down
-    name: Turn on at sunset
   master_bedroom_lights_sleep_timer_automation:
     icon: mdi:sleep
     name: Enable sleep timer
-  master_toilet_fan_double_tap_timer_automation:
-    icon: mdi:timer
-    name: "Toilet: double tap 10-minute timer"
   master_toilet_fan_sleep_timer_automation:
     icon: mdi:sleep
     name: "Toilet: enable sleep timer"

@@ -1,5 +1,41 @@
 ---
 automation:
+  - alias: "Notify on bad outdoor AQI"
+    trigger:
+      platform: state
+      entity_id: sensor.us_air_pollution_level
+      to: Unhealthy for sensitive groups
+    action:
+      - service: notify.slack
+        data:
+          message: 😷 The outdoor air quality is pretty bad.
+      - service: notify.mobile_app_aarons_iphone
+        data:
+          message: 😷 The outdoor air quality is pretty bad.
+          title: Bad AQI
+      - service: notify.mobile_app_brittany_bachs_iphone
+        data:
+          message: 😷 The outdoor air quality is pretty bad.
+          title: Bad AQI
+
+  - alias: "Notify on return from bad outdoor AQI"
+    trigger:
+      platform: state
+      entity_id: sensor.us_air_pollution_level
+      from: Unhealthy for sensitive groups
+    action:
+      - service: notify.slack
+        data:
+          message: 😅 The outdoor air quality is good again.
+      - service: notify.mobile_app_aarons_iphone
+        data:
+          message: 😅 The outdoor air quality is good again.
+          title: Bad AQI
+      - service: notify.mobile_app_brittany_bachs_iphone
+        data:
+          message: 😅 The outdoor air quality is good again.
+          title: Better AQI
+
   - alias: Update OpenUV every 30 minutes during the daytime
     initial_state: true
     trigger:

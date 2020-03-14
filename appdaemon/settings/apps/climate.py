@@ -1,25 +1,21 @@
 """Define automations for climate control."""
-from threading import Lock
 from typing import Union
 
 import voluptuous as vol
 from const import EVENT_PRESENCE_CHANGE, EVENT_PROXIMITY_CHANGE
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
-from helpers.notification import send_notification
 
 CONF_AQI_SENSOR = "aqi"
 CONF_AQI_THRESHOLD = "aqi_threshold"
 CONF_AWAY_MODE = "away_mode"
 CONF_BRIGHTNESS_PERCENT_SENSOR = "sensor.outdoor_brightness_percent_sensor"
 CONF_BRIGHTNESS_SENSOR = "sensor.outdoor_brightness_sensor"
-CONF_DISTANCE = "distance"
 CONF_ECO_HIGH_THRESHOLD = "eco_high_threshold"
 CONF_ECO_LOW_THRESHOLD = "eco_low_threshold"
 CONF_HUMIDITY_SENSOR = "humidity_sensor"
 CONF_INDOOR_TEMPERATURE_SENSOR = "indoor_temperature_sensor"
 CONF_LAST_HVAC_MODE = "last_hvac_mode"
-CONF_LIGHTNING_WINDOW = "notification_window_seconds"
 CONF_OUTDOOR_BRIGHTNESS_PERCENT_SENSOR = "outdoor_brightness_percent_sensor"
 CONF_OUTDOOR_BRIGHTNESS_SENSOR = "outdoor_brightness_sensor"
 CONF_OUTDOOR_HIGH_THRESHOLD = "outdoor_high_threshold"
@@ -37,8 +33,6 @@ HVAC_MODE_HEAT = "heat"
 HVAC_MODE_OFF = "off"
 
 HANDLE_ECO_MODE = "eco_mode"
-
-EVENT_LIGHTNING_DETECTED = "LIGHTNING_DETECTED"
 
 
 class AdjustOnProximity(Base):  # pylint: disable=too-few-public-methods
@@ -344,34 +338,3 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
             self._restore_previous_state()
         else:
             self.set_mode_off()
-
-
-class LightningDetected(Base):  # pylint: disable=too-few-public-methods
-    """Define a feature to notify when lightning is detected."""
-
-    def configure(self) -> None:
-        """Configure."""
-        self._active = False
-        self._lock = Lock()
-
-        self.listen_event(self._on_lightning_detected, EVENT_LIGHTNING_DETECTED)
-
-    def _on_lightning_detected(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Respond to "LIGHTNING_DETECTED" events."""
-        with self._lock:
-            if self._active:
-                return
-
-            send_notification(
-                self,
-                "presence:home",
-                f"Lightning detected {data[CONF_DISTANCE]} miles away.",
-                title="Lightning Detected ⚡️",
-            )
-
-            self._active = True
-            self.run_in(self._on_reset, self.args[CONF_LIGHTNING_WINDOW])
-
-    def _on_reset(self, kwargs: dict) -> None:
-        """Reset the notification window."""
-        self._active = False

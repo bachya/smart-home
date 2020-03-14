@@ -7,7 +7,7 @@ aaron:
   priority: 10
   geocoded_location: sensor.aarons_geocoded_location
   notifiers:
-    - mobile_app_aarons_iphone
+    - "slack:@aaron"
   person: person.aaron
   presence_status_sensor: sensor.aaron_presence_status
 

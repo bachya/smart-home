@@ -1,30 +1,155 @@
 ---
+automation:
+  - alias: "Automatically lock up at night"
+    trigger:
+      platform: time
+      at: "00:00:00"
+    action:
+      service: scene.turn_on
+      data:
+        entity_id: scene.good_night
+
+  - alias: "Automatically lock up when we depart"
+    trigger:
+      platform: state
+      entity_id: sensor.proximity_zone
+      from: Home
+    action:
+      service: scene.turn_on
+      data:
+        entity_id: scene.depart_home
+
+  - alias: "Disable SimpliSafe sounds in Blackout Mode"
+    trigger:
+      platform: state
+      entity_id: input_boolean.blackout_mode
+      to: "on"
+    action:
+      service: simplisafe.set_system_properties
+      data:
+        system_id: !secret simplisafe_system_id
+        chime_volume: 0
+        voice_prompt_volume: 0
+
+  - alias: "Enable SimpliSafe sounds when leaving Blackout Mode"
+    trigger:
+      platform: state
+      entity_id: input_boolean.blackout_mode
+      to: "off"
+    action:
+      service: simplisafe.set_system_properties
+      data:
+        system_id: !secret simplisafe_system_id
+        chime_volume: 2
+        voice_prompt_volume: 2
+
+  - alias: "Forward SimpliSafe events to Slack"
+    trigger:
+      - platform: event
+        event_type: SIMPLISAFE_EVENT
+    action:
+      service: notify.slack
+      data_template:
+        message: "📥 SimpliSafe Event: {{ trigger.event.data.last_event_info }}"
+
+  - alias: "Forward SimpliSafe notifications to Slack"
+    trigger:
+      - platform: event
+        event_type: SIMPLISAFE_NOTIFICATION
+    action:
+      service: notify.slack
+      data_template:
+        message: "📥 SimpliSafe Notification: {{ trigger.event.data.message }}"
+
+  - alias: "Notify when garage left open"
+    trigger:
+      platform: state
+      entity_id: cover.garage_door
+      to: open
+      for:
+        minutes: 10
+    action:
+      - service: notify.slack
+        data:
+          message: 🚗 The garage has been left open for 10 minutes.
+      - service: notify.mobile_app_brittany_bachs_iphone
+        data:
+          message: 🚗 The garage has been left open for 10 minutes.
+          title: Garage Left Open
+
+  - alias: "Notify when house is empty and open"
+    trigger:
+      platform: state
+      entity_id: sensor.secure_status
+      to: Open
+      for:
+        minutes: 5
+    condition:
+      condition: template
+      value_template: "{{ states('sensor.proximity_zone') != 'Home' }}"
+    action:
+      - service: notify.slack
+        data:
+          message: "🚨 The house isn't secure and no one is home."
+      - service: notify.mobile_app_brittany_bachs_iphone
+        data:
+          message: "🚨 The house isn't secure and no one is home."
+          title: Insecure and Empty House
+
+  - alias: "Notify when security status changes"
+    trigger:
+      platform: state
+      entity_id: sensor.secure_status
+    action:
+      service: notify.slack
+      data_template:
+        message: >
+          📥 The house's security has changed: {{ trigger.to_state.state }}
+
+  - alias: "Turn lights off when person detected at nighttime leaves"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.front_door_camera_person_detected
+      to: "off"
+      for:
+        minutes: 5
+    condition:
+      condition: time
+      after: "23:00:00"
+      before: "04:00:00"
+    action:
+      - service: switch.turn_off
+        data:
+          entity_id: switch.front_patio_light
+      - service: switch.turn_off
+        data:
+          entity_id: group.living_room_lights
+
+  - alias: "Turn lights on when person detected at nighttime"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.front_door_camera_person_detected
+      to: "on"
+    condition:
+      condition: time
+      after: "23:00:00"
+      before: "04:00:00"
+    action:
+      - service: switch.turn_on
+        data:
+          entity_id: switch.front_patio_light
+      - service: switch.turn_on
+        data:
+          entity_id: group.living_room_lights
+
 input_boolean:
-  auto_departure_lockup_automation:
-    icon: mdi:car-side
-    name: Automatic departure lock up
-  auto_nighttime_lockup_automation:
-    icon: mdi:clock
-    name: Automatically lock up at night
-  forward_simplisafe_notifications_to_slack_automation:
-    icon: mdi:slack
-    name: Forward SimpliSafe messages to Slack
-  notify_when_absent_insecure_automation:
-    icon: mdi:lock-open
-    name: Absent & insecure alerts
-  notify_when_person_on_camera:
+  notify_when_person_on_camera_automation:
     icon: mdi:cctv
     name: Strange person detected
-  notify_when_status_changes_automation:
-    icon: mdi:shield-half-full
-    name: Notify when state changes
-  simplisafe_sounds_blackout_automation:
-    icon: mdi:shield-home
-    name: Disable SimpliSafe sounds during blackout
-  randomize_nighttime_lighting:
+  randomize_nighttime_lighting_automation:
     icon: mdi:timer
     name: Randomize nighttime lighting
-  randomize_nighttime_tvs:
+  randomize_nighttime_tvs_automation:
     icon: mdi:timer
     name: Randomize nighttime TVs
 

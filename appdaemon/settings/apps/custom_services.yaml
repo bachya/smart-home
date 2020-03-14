@@ -1,4 +1,0 @@
----
-custom_service_send_message:
-  module: custom_services
-  class: Notifications

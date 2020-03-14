@@ -4,7 +4,7 @@ from random import choice
 from typing import Union
 
 import voluptuous as vol
-from const import CONF_EVENT, CONF_EVENT_DATA, CONF_INTERVAL
+from const import CONF_INTERVAL
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 
@@ -78,30 +78,6 @@ class MultiServiceBase(Base):
         self.call_service(service_data[CONF_SERVICE], **service_data[CONF_SERVICE_DATA])
 
         self._count += 1
-
-
-class ServiceOnEvent(Base):
-    """Define an automation to call a service upon seeing an specific event/payload."""
-
-    APP_SCHEMA = SINGLE_SERVICE_SCHEMA.extend(
-        {
-            vol.Required(CONF_EVENT): cv.string,
-            vol.Optional(CONF_EVENT_DATA, default={}): dict,
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_event(
-            self._on_event_heard, self.args[CONF_EVENT], **self.args[CONF_EVENT_DATA]
-        )
-
-    def _on_event_heard(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Call the service."""
-        self.call_service(
-            self.args[CONF_SERVICES][CONF_SERVICE],
-            **self.args[CONF_SERVICES][CONF_SERVICE_DATA]
-        )
 
 
 class ServiceOnInterval(MultiServiceBase):
@@ -218,57 +194,6 @@ class ServiceOnState(Base):
         )
 
 
-class ServiceOnThreshold(Base):
-    """Define an automation to call a service at a specific time."""
-
-    APP_SCHEMA = vol.All(
-        SINGLE_SERVICE_SCHEMA.extend(
-            {
-                vol.Required(CONF_TARGET_ENTITY_ID): cv.entity_id,
-                vol.Exclusive(CONF_ABOVE, "operator"): int,
-                vol.Exclusive(CONF_BELOW, "operator"): int,
-                vol.Optional(CONF_EQUAL_TO, default=False): cv.boolean,
-            }
-        ),
-        cv.has_at_least_one_key(CONF_ABOVE, CONF_BELOW),
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_state(self._on_state_change, self.args[CONF_TARGET_ENTITY_ID])
-
-    def _threshold_met(self, value: float) -> bool:
-        """Determine if a value meets threshold rules."""
-        if CONF_EQUAL_TO not in self.args and value == self.args[CONF_ABOVE]:
-            return False
-
-        if CONF_ABOVE in self.args and value < self.args[CONF_ABOVE]:
-            return False
-
-        if CONF_BELOW in self.args and value > self.args[CONF_ABOVE]:
-            return False
-
-        return True
-
-    def _on_state_change(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Respond when the entity's state has changed."""
-        try:
-            value = float(new)
-        except ValueError:
-            self.error("Cannot measure threshold for non-numeric entity: %s", entity)
-            return
-
-        if not self._threshold_met(value):
-            return
-
-        self.call_service(
-            self.args[CONF_SERVICES][CONF_SERVICE],
-            **self.args[CONF_SERVICES][CONF_SERVICE_DATA]
-        )
-
-
 class ServiceOnTime(Base):
     """Define an automation to call a service at a specific time."""
 
@@ -285,63 +210,4 @@ class ServiceOnTime(Base):
         self.call_service(
             self.args[CONF_SERVICES][CONF_SERVICE],
             **self.args[CONF_SERVICES][CONF_SERVICE_DATA]
-        )
-
-
-class ServiceOnZWaveSwitchDoubleTap(Base):
-    """Define an automation to call a service when a Z-Wave switch double-tap occurs."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            vol.Required(CONF_SERVICES): vol.All(
-                vol.Schema(
-                    {
-                        vol.Inclusive(CONF_SERVICE_UP, "up"): cv.string,
-                        vol.Inclusive(CONF_SERVICE_UP_DATA, "up"): dict,
-                        vol.Inclusive(CONF_SERVICE_DOWN, "down"): cv.string,
-                        vol.Inclusive(CONF_SERVICE_DOWN_DATA, "down"): dict,
-                    }
-                ),
-                cv.has_at_least_one_key(CONF_SERVICE_UP, CONF_SERVICE_DOWN),
-            ),
-            vol.Required(CONF_ZWAVE_DEVICE): cv.entity_id,
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_event(
-            self._on_double_tap_up,
-            "zwave.node_event",
-            entity_id=self.args[CONF_ZWAVE_DEVICE],
-            basic_level=255,
-        )
-
-        self.listen_event(
-            self._on_double_tap_down,
-            "zwave.node_event",
-            entity_id=self.args[CONF_ZWAVE_DEVICE],
-            basic_level=0,
-        )
-
-    def _on_double_tap_down(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Call the "down" service."""
-        if CONF_SERVICE_DOWN not in self.args[CONF_SERVICES]:
-            self.log("No service defined for double-tap down")
-            return
-
-        self.call_service(
-            self.args[CONF_SERVICES][CONF_SERVICE_DOWN],
-            **self.args[CONF_SERVICES][CONF_SERVICE_DOWN_DATA]
-        )
-
-    def _on_double_tap_up(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Call the "up" service."""
-        if CONF_SERVICE_UP not in self.args[CONF_SERVICES]:
-            self.log("No service defined for double-tap up")
-            return
-
-        self.call_service(
-            self.args[CONF_SERVICES][CONF_SERVICE_UP],
-            **self.args[CONF_SERVICES][CONF_SERVICE_UP_DATA]
         )

@@ -1,28 +1,76 @@
 ---
+automation:
+  - alias: "Forward HASS persistent notifications to Slack"
+    trigger:
+      platform: event
+      event_type: call_service
+      event_data:
+        domain: persistent_notification
+        service: create
+    action:
+      service: notify.slack
+      data_template:
+        message: >
+          📥 Home Assistant Notification: {{ trigger.event.data.title }}
+          {{ trigger.event.data.message }}
+
+  - alias: "Notify when media center left on"
+    trigger:
+      platform: state
+      entity_id: switch.media_center
+      to: "on"
+      for:
+        hours: 12
+    action:
+      service: notify.slack
+      data:
+        message: "🎥 The media center has been on for 12 hours."
+
+  - alias: "Notify when PS4 left on"
+    trigger:
+      platform: state
+      entity_id: media_player.playstation_4
+      to: idle
+      for:
+        hours: 12
+    action:
+      service: notify.slack
+      data:
+        message: "🎮 The PS4 has been on for 12 hours."
+
+  - alias: "Power media center off (backup)"
+    trigger:
+      platform: time
+      at: "01:30:00"
+    action:
+      service: switch.turn_off
+      data_template:
+        entity_id: switch.media_center
+
+  - alias: "Power media center on (backup)"
+    trigger:
+      platform: time
+      at: "01:00:00"
+    action:
+      service: switch.turn_on
+      data_template:
+        entity_id: switch.media_center
+
 binary_sensor:
   - platform: linode
     nodes:
       - linode2506384
 
 input_boolean:
-  forward_persistent_notifications_to_slack_automation:
-    icon: mdi:slack
-    name: Forward HASS notifications to Slack
-  media_center_backup_automation:
-    icon: mdi:backup-restore
-    name: Daily media center backup
   notify_of_dead_zwave_devices_automation:
     icon: mdi:z-wave
     name: Notify of dead Z-Wave devices
   notify_of_low_batteries_automation:
     icon: mdi:battery
     name: Notify of low batteries
-  notify_of_new_versions:
+  notify_of_new_versions_automation:
     icon: mdi:home-assistant
     name: Notify of new versions
-  notify_ps4_left_on_automation:
-    icon: mdi:playstation
-    name: PS4 left on
 
 linode:
   access_token: !secret linode_access_token

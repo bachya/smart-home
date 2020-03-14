@@ -100,7 +100,7 @@ class NotifyDone(Base):  # pylint: disable=too-few-public-methods
             self,
             "presence:home",
             "Empty it now and you won't have to do it later!",
-            title="Dishwasher Clean 🍽",
+            title="🍽 Dishwasher Clean",
             when=self.datetime() + timedelta(minutes=15),
             interval=int(
                 float(self.get_state(self.args[CONF_NOTIFICATION_INTERVAL_SLIDER]))

@@ -1,27 +1,53 @@
 ---
+automation:
+  - alias: "Monitor fiddle leaf fig moisture"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.fiddle_leaf_fig_moisture
+      below: 15
+    action:
+      - service: notify.slack
+        data:
+          message: "🌴 Fred is low on moisture and needs a drink."
+      - service: notify.mobile_app_brittany_bachs_iphone
+        data:
+          message: "🌴 Fred is low on moisture and needs a drink."
+          title: Fred is Dry
+
+  - alias: "Turn living room lights on"
+    trigger:
+      - platform: state
+        entity_id: sensor.proximity_zone
+        to: Home
+      - platform: sun
+        event: sunset
+    condition:
+      condition: state
+      entity_id: sun.sun
+      state: below_horizon
+    action:
+      service: switch.turn_on
+      data:
+        entity_id: group.living_room_lights
+
+  - alias: "Turn powder room fan back on if someone turns it off"
+    trigger:
+      platform: state
+      entity_id: switch.powder_room_fan
+      to: "off"
+      for:
+        minutes: 1
+    action:
+      service: switch.turn_on
+      data:
+        entity_id: switch.powder_room_fan
+
 group:
   living_room_lights:
     entities:
       - switch.christmas_tree
       - switch.reading_lamp
       - switch.sofa_lamp
-
-input_boolean:
-  fiddle_leaf_fig_low_moisture_automation:
-    icon: mdi:flower
-    name: Notify of low moisture
-  fireplace_failsafe_automation:
-    icon: mdi:fire
-    name: Disable fireplace when away
-  living_room_lights_on_at_sunset_automation:
-    icon: mdi:weather-sunset-down
-    name: Turn on at sunset
-  living_room_lights_on_upon_arrival_automation:
-    icon: mdi:car
-    name: Turn on upon arrival
-  powder_room_fan_auto_turn_on_automation:
-    icon: mdi:fan
-    name: Turn on if turned off
 
 remote:
   - platform: harmony
@@ -98,3 +124,23 @@ sensor:
           {% else %}
             mdi:apps
           {% endif %}
+
+switch:
+  - platform: template
+    switches:
+      presence_aware_fireplace:
+        friendly_name: Fireplace
+        value_template: "{{ is_state('switch.fireplace', 'on') }}"
+        turn_on:
+          service: switch.turn_on
+          data_template:
+            entity_id: >
+              {% if is_state("sensor.proximity_zone", "Home") %}
+                switch.fireplace
+              {% else %}
+                switch.fireplace_no_one_home
+              {% endif %}
+        turn_off:
+          service: switch.turn_off
+          data:
+            entity_id: switch.fireplace

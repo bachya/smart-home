@@ -7,10 +7,22 @@ apple_tv:
     name: Basement Apple TV
     start_off: true
 
-input_boolean:
-  notify_media_center_left_on_automation:
-    icon: mdi:server
-    name: Media Center left on
+automation:
+  - alias: "Notify on basement leak"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.basement_sensor_leak_detector
+      to: "on"
+      for:
+        minutes: 1
+    action:
+      - service: notify.slack
+        data:
+          message: 💦 Leak detected in the basement!
+      - service: notify.mobile_app_brittany_bachs_iphone
+        data:
+          message: 💦 Leak detected in the basement!
+          title: Leak
 
 remote:
   - platform: harmony

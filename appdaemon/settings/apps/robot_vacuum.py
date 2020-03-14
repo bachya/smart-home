@@ -134,7 +134,7 @@ class NotifyWhenRunComplete(Base):
             self,
             "presence:home",
             "Empty him now and you won't have to do it later!",
-            title="Wolfie Full 🤖",
+            title="🤖 Wolfie Full",
             when=self.datetime(),
             interval=int(
                 float(self.get_state(self.args[CONF_NOTIFICATION_INTERVAL_SLIDER]))
@@ -203,7 +203,7 @@ class NotifyWhenStuck(Base):
             self,
             "presence:home",
             "Help him get back on track or home.",
-            title="Wolfie Stuck 😢",
+            title="😢 Wolfie Stuck",
             when=self.datetime(),
             interval=int(
                 float(self.get_state(self.args[CONF_NOTIFICATION_INTERVAL_SLIDER]))
