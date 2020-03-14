@@ -17,19 +17,6 @@ master_bathroom_fan_sleep_timer_automation:
   switch: switch.master_bathroom_fan
   timer_slider: input_number.master_bathroom_fan_timer
 
-master_toilet_fan_toggle_automation:
-  module: services
-  class: ServiceOnInterval
-  constrain_enabled: true
-  constrain_end_time: "17:00:00"
-  constrain_start_time: "10:00:00"
-  services:
-    service: "input_number/set_value"
-    service_data:
-      entity_id: input_number.master_bathroom_toilet_fan_timer
-      value: 15
-  interval: 3600
-
 master_toilet_fan_sleep_timer_automation:
   module: switches
   class: SleepTimer

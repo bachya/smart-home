@@ -4,7 +4,6 @@ from random import choice
 from typing import Union
 
 import voluptuous as vol
-from const import CONF_INTERVAL
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 
@@ -78,29 +77,6 @@ class MultiServiceBase(Base):
         self.call_service(service_data[CONF_SERVICE], **service_data[CONF_SERVICE_DATA])
 
         self._count += 1
-
-
-class ServiceOnInterval(MultiServiceBase):
-    """Define an automation to call a service every X seconds."""
-
-    APP_SCHEMA = MULTI_SERVICE_SCHEMA.extend(
-        {
-            vol.Required(CONF_INTERVAL): vol.All(
-                cv.time_period, lambda value: value.seconds
-            )
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        super().configure()
-        self.run_every(
-            self._on_interval_reached, self.datetime(), self.args[CONF_INTERVAL]
-        )
-
-    def _on_interval_reached(self, kwargs: dict) -> None:
-        """Call the service."""
-        self.pick_and_call_service()
 
 
 class ServiceOnRandomTick(MultiServiceBase):

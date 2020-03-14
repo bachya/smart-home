@@ -26,6 +26,19 @@ automation:
         entity_id: input_number.master_bathroom_toilet_fan_timer
         value: 10
 
+  - alias: "Toggle toilet fan during the day"
+    trigger:
+      platform: time_pattern
+      hours: "/1"
+    condition:
+      condition: time
+      after: "10:00:00"
+      before: "17:00:00"
+    action:
+      service: input_number.set_value
+      entity_id: input_number.master_bathroom_toilet_fan_timer
+      value: 15
+
   - alias: "Turn master bedroom lights on at sunset"
     trigger:
       platform: sun
@@ -65,9 +78,6 @@ input_boolean:
   master_toilet_fan_sleep_timer_automation:
     icon: mdi:sleep
     name: "Toilet: enable sleep timer"
-  master_toilet_fan_toggle_automation:
-    icon: mdi:fan
-    name: Toggle toilet fan every 15 minutes
 
 input_number:
   master_bathroom_fan_timer:

@@ -66,6 +66,8 @@
       state: "on"
     automation.slack_slash_command_home_assistant_app:
       state: "on"
+    automation.toggle_toilet_fan_during_the_day:
+      state: "on"
     automation.turn_bar_cart_lights_on:
       state: "on"
     automation.turn_lights_off_when_person_detected_at_nighttime_leaves:
@@ -103,8 +105,6 @@
     input_boolean.master_bedroom_lights_sleep_timer_automation:
       state: "on"
     input_boolean.master_toilet_fan_sleep_timer_automation:
-      state: "on"
-    input_boolean.master_toilet_fan_toggle_automation:
       state: "on"
     input_boolean.notify_of_dead_zwave_devices_automation:
       state: "on"
@@ -178,10 +178,10 @@
       state: armed_away
     automation.monitor_fiddle_leaf_fig_moisture:
       state: "off"
+    automation.toggle_toilet_fan_during_the_day:
+      state: "off"
     cover.garage_door:
       state: closed
-    input_boolean.master_toilet_fan_toggle_automation:
-      state: "off"
     input_boolean.notify_when_person_on_camera_automation:
       state: "on"
     input_boolean.randomize_nighttime_lighting_automation:
@@ -266,9 +266,9 @@
       state: "off"
     automation.notify_when_house_is_empty_and_open:
       state: "off"
-    input_boolean.adjust_climate_on_proximity_automation:
+    automation.toggle_toilet_fan_during_the_day:
       state: "off"
-    input_boolean.master_toilet_fan_toggle_automation:
+    input_boolean.adjust_climate_on_proximity_automation:
       state: "off"
     input_boolean.notify_of_low_batteries_automation:
       state: "off"
@@ -296,6 +296,8 @@
       state: "off"
     automation.notify_when_security_status_changes:
       state: "on"
+    automation.toggle_toilet_fan_during_the_day:
+      state: "off"
     automation.turn_bar_cart_lights_on:
       state: "off"
     input_boolean.blackout_schedule_automation:
@@ -303,8 +305,6 @@
     input_boolean.lightning_detected_automation:
       state: "off"
     automation.turn_master_bedroom_lights_on_at_sunset:
-      state: "off"
-    input_boolean.master_toilet_fan_toggle_automation:
       state: "off"
     input_boolean.notify_of_dead_zwave_devices_automation:
       state: "off"
