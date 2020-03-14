@@ -17,7 +17,7 @@ automation:
     trigger:
       platform: state
       entity_id: cover.garage_door
-      to: open
+      from: closed
     condition:
       condition: numeric_state
       entity_id: sensor.filtered_outdoor_brightness
