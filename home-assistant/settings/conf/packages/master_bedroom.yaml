@@ -36,8 +36,9 @@ automation:
       before: "17:00:00"
     action:
       service: input_number.set_value
-      entity_id: input_number.master_bathroom_toilet_fan_timer
-      value: 15
+      data:
+        entity_id: input_number.master_bathroom_toilet_fan_timer
+        value: 15
 
   - alias: "Turn master bedroom lights on at sunset"
     trigger:
