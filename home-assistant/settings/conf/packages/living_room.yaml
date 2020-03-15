@@ -7,7 +7,7 @@ alert:
     entity_id: binary_sensor.fiddle_leaf_fig_moisture_low_and_at_home
     state: "on"
     repeat:
-      - 1
+      - 60
     skip_first: true
     notifiers:
       - mobile_app_brittany_bachs_iphone

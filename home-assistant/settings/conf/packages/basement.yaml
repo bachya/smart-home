@@ -8,7 +8,6 @@ alert:
     state: "on"
     repeat:
       - 1
-    skip_first: true
     notifiers:
       - mobile_app_aarons_iphone
       - mobile_app_brittany_bachs_iphone

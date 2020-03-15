@@ -1,4 +1,19 @@
 ---
+alert:
+  garage_left_open:
+    name: 💦 Leak detected in the basement!
+    done_message: 💦 The basement leak has been dried up.
+    title: Leak Detected
+    entity_id: binary_sensor.basement_sensor_leak_detector
+    state: "on"
+    repeat:
+      - 10
+    skip_first: true
+    notifiers:
+      - mobile_app_aarons_iphone
+      - mobile_app_brittany_bachs_iphone
+      - slack
+
 automation:
   - alias: "Automatically lock up at night"
     trigger:
