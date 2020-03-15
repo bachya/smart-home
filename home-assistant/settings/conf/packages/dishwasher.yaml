@@ -4,8 +4,8 @@ alert:
     name: 🍽 The dishwasher is clean and can be emptied.
     done_message: 🍽 The dishwashe rhas been emptied.
     title: Dishwasher is Clean
-    entity_id: input_select.dishwasher_status
-    state: Clean
+    entity_id: binary_sensor.dishwasher_clean_and_home
+    state: "on"
     repeat:
       - 15
       - 60
@@ -55,6 +55,14 @@ automation:
       data:
         entity_id: input_select.dishwasher_status
         option: Clean
+
+binary_sensor:
+  - platform: template
+    sensors:
+      dishwasher_clean_and_home:
+        value_template: >-
+          {{ states("input_select.dishwasher_status") == "Clean" and
+          states("sensor.proximity_zone") == "Home" }}
 
 input_select:
   dishwasher_status:
