@@ -1,4 +1,45 @@
 ---
+automation:
+  - alias: "Notify when Wolfie needs a new filter"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.vacuum_filter_remaining
+      below: 5
+    action:
+      service: notify.slack
+      data:
+        message: 🤖 Wolfie's filter is dirty; he needs a new one!
+
+  - alias: "Notify when Wolfie needs a new main brush"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.vacuum_main_brush_remaining
+      below: 5
+    action:
+      service: notify.slack
+      data:
+        message: 🤖 Wolfie's main brush is old; he needs a new one.
+
+  - alias: "Notify when Wolfie needs a sensor cleaning"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.vacuum_sensor_dirtiness_remaining
+      below: 5
+    action:
+      service: notify.slack
+      data:
+        message: 🤖 Wolfie's sensors are dirty; clean them up!
+
+  - alias: "Notify when Wolfie needs a new side brush"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.vacuum_side_brush_remaining
+      below: 5
+    action:
+      service: notify.slack
+      data:
+        message: 🤖 Wolfie's side brush is old; he needs a new one!
+
 input_boolean:
   wolfie:
     icon: mdi:robot-vacuum
@@ -6,9 +47,6 @@ input_boolean:
   wolfie_notify_before_run_automation:
     icon: mdi:robot-vacuum
     name: Notify before run
-  wolfie_notify_when_consumable_low_automation:
-    icon: mdi:robot-vacuum
-    name: Notify when consumable low
   wolfie_notify_when_cycle_complete_automation:
     icon: mdi:robot-vacuum
     name: Notify when full

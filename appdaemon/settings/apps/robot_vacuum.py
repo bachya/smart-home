@@ -1,6 +1,6 @@
 """Define automations for robot vacuums."""
 from enum import Enum
-from typing import Callable, List, Optional, Union
+from typing import Union
 
 import voluptuous as vol
 
@@ -23,66 +23,6 @@ CONF_IOS_EMPTIED_KEY = "ios_emptied_key"
 HANDLE_BIN_FULL = "bin_full"
 HANDLE_NEXT_RUN_NOTIFICATION = "next_run_notification"
 HANDLE_STUCK = "stuck"
-
-
-class MonitorConsumables(Base):  # pylint: disable=too-few-public-methods
-    """Define a feature to notify when a consumable gets low."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            vol.Required(CONF_CONSUMABLE_THRESHOLD): cv.positive_int,
-            vol.Required(CONF_CONSUMABLES): vol.All(cv.ensure_list, [cv.string]),
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self._consumables_met: List[str] = []
-        self._send_notification_func: Optional[Callable] = None
-
-        for consumable in self.args[CONF_CONSUMABLES]:
-            self.listen_state(
-                self._on_consumable_change,
-                self.app.args[CONF_VACUUM],
-                attribute=consumable,
-            )
-
-    def _on_consumable_change(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Create a task when a consumable is getting low."""
-
-        def _send_notification() -> None:
-            """Send the notification."""
-            send_notification(
-                self, "slack:@aaron", f"Order a new Wolfie consumable: {attribute}"
-            )
-
-        if int(new) < self.args[CONF_CONSUMABLE_THRESHOLD]:
-            if attribute in self._consumables_met:
-                return
-
-            self._consumables_met.append(attribute)
-
-            self.log("Consumable is low: %s", attribute)
-
-            if self.enabled:
-                _send_notification()
-            else:
-                self._send_notification_func = _send_notification
-        else:
-            if attribute not in self._consumables_met:
-                return
-
-            self._consumables_met.remove(attribute)
-
-            self.log("Consumable is restored: %s", attribute)
-
-    def on_enable(self) -> None:
-        """Send the notification once the automation is enabled (if appropriate)."""
-        if self._send_notification_func:
-            self._send_notification_func()
-            self._send_notification_func = None
 
 
 class NotifyWhenRunComplete(Base):

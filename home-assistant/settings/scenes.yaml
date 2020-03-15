@@ -44,6 +44,14 @@
       state: "on"
     automation.notify_when_ps4_left_on:
       state: "on"
+    automation.notify_when_wolfie_needs_a_new_filter:
+      state: "on"
+    automation.notify_when_wolfie_needs_a_new_main_brush:
+      state: "on"
+    automation.notify_when_wolfie_needs_a_sensor_cleaning:
+      state: "on"
+    automation.notify_when_wolfie_needs_a_new_side_brush:
+      state: "on"
     automation.notify_when_security_status_changes:
       state: "off"
     automation.power_media_center_off_backup:
@@ -120,8 +128,6 @@
       state: "off"
     input_boolean.wolfie_notify_before_run_automation:
       state: "on"
-    input_boolean.wolfie_notify_when_consumable_low_automation:
-      state: "on"
     input_boolean.wolfie_notify_when_cycle_complete_automation:
       state: "on"
     input_boolean.wolfie_notify_when_stuck_automation:
@@ -146,6 +152,14 @@
       state: "off"
     automation.notify_when_ps4_left_on:
       state: "off"
+    automation.notify_when_wolfie_needs_a_new_filter:
+      state: "off"
+    automation.notify_when_wolfie_needs_a_new_main_brush:
+      state: "off"
+    automation.notify_when_wolfie_needs_a_sensor_cleaning:
+      state: "off"
+    automation.notify_when_wolfie_needs_a_new_side_brush:
+      state: "off"
     automation.turn_master_bedroom_lights_on_at_sunset:
       state: "off"
     input_boolean.lightning_detected_automation:
@@ -155,8 +169,6 @@
     input_boolean.notify_of_low_batteries_automation:
       state: "off"
     input_boolean.notify_of_new_versions_automation:
-      state: "off"
-    input_boolean.wolfie_notify_when_consumable_low_automation:
       state: "off"
     input_boolean.wolfie_notify_when_cycle_complete_automation:
       state: "off"
@@ -280,6 +292,14 @@
       state: "off"
     automation.notify_when_security_status_changes:
       state: "on"
+    automation.notify_when_wolfie_needs_a_new_filter:
+      state: "off"
+    automation.notify_when_wolfie_needs_a_new_main_brush:
+      state: "off"
+    automation.notify_when_wolfie_needs_a_sensor_cleaning:
+      state: "off"
+    automation.notify_when_wolfie_needs_a_new_side_brush:
+      state: "off"
     automation.toggle_toilet_fan_during_the_day:
       state: "off"
     automation.turn_bar_cart_lights_on:
@@ -306,8 +326,6 @@
       state: "on"
     input_boolean.randomize_nighttime_tvs_automation:
       state: "on"
-    input_boolean.wolfie_notify_when_consumable_low_automation:
-      state: "off"
     input_boolean.wolfie_notify_when_cycle_complete_automation:
       state: "off"
     input_boolean.wolfie_notify_when_stuck_automation:
