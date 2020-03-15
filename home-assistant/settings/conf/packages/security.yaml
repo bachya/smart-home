@@ -18,9 +18,10 @@ alert:
     name: "🚨 The house isn't secure and no one is home."
     done_message: "✅ The house is now secure."
     title: House Empty and Insecure
-    entity_id: sensor.secure_status
-    state: Open
+    entity_id: binary_sensor.house_open_and_insecure
+    state: "on"
     repeat:
+      - 1
       - 5
     skip_first: true
     notifiers:
@@ -152,6 +153,14 @@ automation:
       - service: switch.turn_on
         data:
           entity_id: group.living_room_lights
+
+binary_sensor:
+  - platform: template
+    sensors:
+      house_open_and_insecure:
+        value_template: >-
+          {{ states("sensor.secure_status") == "Open" and
+          states("sensor.proximity_zone") != "Home" }}
 
 group:
   smoke_detectors:
