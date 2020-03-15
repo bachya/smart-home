@@ -30,13 +30,12 @@ alert:
 
   smoke_detected:
     name: "🚨 Smoke has been detected."
-    done_message: "🚨 The house is now secure."
+    done_message: "✅ The smoke has cleared."
     title: House Empty and Insecure
-    entity_id: sensor.secure_status
-    state: Open
+    entity_id: group.smoke_detectors
+    state: "on"
     repeat:
-      - 5
-    skip_first: true
+      - 1
     notifiers:
       - mobile_app_aarons_iphone
       - mobile_app_brittany_bachs_iphone
@@ -117,20 +116,6 @@ automation:
       data_template:
         message: >
           📥 The house's security has changed: {{ trigger.to_state.state }}
-
-  - alias: "Notify when smoke detected"
-    trigger:
-      platform: state
-      entity_id: group.smoke_detectors
-      to: "on"
-    action:
-      - service: notify.slack
-        data:
-          message: "🚨 Smoke has been detected."
-      - service: notify.mobile_app_brittany_bachs_iphone
-        data:
-          message: "🚨 Smoke has been detected."
-          title: Insecure and Empty House
 
   - alias: "Turn lights off when person detected at nighttime leaves"
     trigger:
