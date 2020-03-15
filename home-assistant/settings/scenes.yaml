@@ -36,8 +36,6 @@
       state: "on"
     automation.notify_on_bad_outdoor_aqi:
       state: "on"
-    automation.notify_on_basement_leak:
-      state: "on"
     automation.notify_on_kitchen_sink_leak:
       state: "on"
     automation.notify_on_return_from_bad_outdoor_aqi:

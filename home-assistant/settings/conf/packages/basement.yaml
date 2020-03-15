@@ -1,4 +1,19 @@
 ---
+alert:
+  basement_leak:
+    name: 💦 Leak detected in the basement!
+    done_message: 💦 The basement leak has been dried up.
+    title: Leak Detected
+    entity_id: binary_sensor.basement_sensor_leak_detector
+    state: "on"
+    repeat:
+      - 1
+    skip_first: true
+    notifiers:
+      - mobile_app_aarons_iphone
+      - mobile_app_brittany_bachs_iphone
+      - slack
+
 apple_tv:
   - host: 172.16.10.64
     login_id: 00000000-1012-d722-4d49-70717fb642c1
@@ -6,23 +21,6 @@ apple_tv:
       D3E25683444DED1E26AB409A493D6"
     name: Basement Apple TV
     start_off: true
-
-automation:
-  - alias: "Notify on basement leak"
-    trigger:
-      platform: state
-      entity_id: binary_sensor.basement_sensor_leak_detector
-      to: "on"
-      for:
-        minutes: 1
-    action:
-      - service: notify.slack
-        data:
-          message: 💦 Leak detected in the basement!
-      - service: notify.mobile_app_brittany_bachs_iphone
-        data:
-          message: 💦 Leak detected in the basement!
-          title: Leak
 
 remote:
   - platform: harmony
