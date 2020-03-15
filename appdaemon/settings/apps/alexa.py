@@ -54,7 +54,7 @@ class Alexa(Base):
         name = relative_search_list(containers, container)
 
         if name in ("Wolfie", "The vacuum"):
-            self.wolfie.bin_state = self.wolfie.BinStates.empty
+            self.select_option("input_select.wolfie_bin_status", "Empty")
             speech = random_affirmative_response()
         elif name == "The dishwasher":
             self.select_option("input_select.dishwasher_status", "Dirty")
