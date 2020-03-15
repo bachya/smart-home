@@ -5,160 +5,14 @@ from typing import Union
 import voluptuous as vol
 
 from core import APP_SCHEMA, Base
-from const import CONF_NOTIFICATION_INTERVAL_SLIDER
 from helpers import config_validation as cv
 from helpers.notification import send_notification
 
 CONF_BIN_STATE = "bin_state"
+CONF_CALENDAR = "calendar"
 CONF_FULL_THRESHOLD_MINUTES = "full_threshold_minutes"
 CONF_RUN_TIME = "run_time"
 CONF_VACUUM = "vacuum"
-
-CONF_CONSUMABLES = "consumables"
-CONF_CONSUMABLE_THRESHOLD = "consumable_threshold"
-
-CONF_CALENDAR = "calendar"
-CONF_IOS_EMPTIED_KEY = "ios_emptied_key"
-
-HANDLE_BIN_FULL = "bin_full"
-HANDLE_NEXT_RUN_NOTIFICATION = "next_run_notification"
-HANDLE_STUCK = "stuck"
-
-
-class NotifyWhenRunComplete(Base):
-    """Define a feature to notify when the vacuum cycle is complete."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {vol.Required(CONF_NOTIFICATION_INTERVAL_SLIDER): cv.entity_id}
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        if self.enabled and self.app.bin_state == self.app.BinStates.full:
-            self._start_notification_cycle()
-
-        self.listen_state(
-            self._on_notification_interval_change,
-            self.args[CONF_NOTIFICATION_INTERVAL_SLIDER],
-        )
-        self.listen_state(self._on_vacuum_bin_change, self.app.args[CONF_BIN_STATE])
-
-    def _cancel_notification_cycle(self) -> None:
-        """Cancel any active notification."""
-        if HANDLE_BIN_FULL in self.data:
-            cancel = self.data.pop(HANDLE_BIN_FULL)
-            cancel()
-
-    def _on_notification_interval_change(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Reset the notification interval."""
-        self._cancel_notification_cycle()
-        if self.enabled and self.app.bin_state == self.app.BinStates.full:
-            self._start_notification_cycle()
-
-    def _on_vacuum_bin_change(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Deal with changes to the bin."""
-        if self.enabled and new == self.app.BinStates.full.value:
-            self._start_notification_cycle()
-        elif old == self.app.BinStates.full.value:
-            self._cancel_notification_cycle()
-
-    def _start_notification_cycle(self) -> None:
-        """Start a repeating notification sequence."""
-        self._cancel_notification_cycle()
-
-        self.data[HANDLE_BIN_FULL] = send_notification(
-            self,
-            "presence:home",
-            "Empty him now and you won't have to do it later!",
-            title="🤖 Wolfie Full",
-            when=self.datetime(),
-            interval=int(
-                float(self.get_state(self.args[CONF_NOTIFICATION_INTERVAL_SLIDER]))
-            )
-            * 60
-            * 60,
-        )
-
-    def on_disable(self) -> None:
-        """Stop notifying when the automation is disabled."""
-        self._cancel_notification_cycle()
-
-    def on_enable(self) -> None:
-        """Start notifying when the automation is enabled (if appropriate)."""
-        if self.app.bin_state == self.app.BinStates.full:
-            self._start_notification_cycle()
-
-
-class NotifyWhenStuck(Base):
-    """Define a feature to notify when the vacuum is stuck."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {vol.Required(CONF_NOTIFICATION_INTERVAL_SLIDER): cv.entity_id}
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        if self.enabled and self.app.state == self.app.States.error:
-            self._start_notification_cycle()
-
-        self.listen_state(self._on_error_change, self.app.args[CONF_VACUUM])
-        self.listen_state(
-            self._on_notification_interval_change,
-            self.args[CONF_NOTIFICATION_INTERVAL_SLIDER],
-        )
-
-    def _cancel_notification_cycle(self) -> None:
-        """Cancel any active notification."""
-        if HANDLE_STUCK in self.data:
-            cancel = self.data.pop(HANDLE_STUCK)
-            cancel()
-
-    def _on_error_change(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Notify when the vacuum is an error state."""
-        if self.enabled and new == self.app.States.error.value:
-            self._start_notification_cycle()
-        elif old == self.app.States.error.value:
-            self._cancel_notification_cycle()
-
-    def _on_notification_interval_change(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Reset the notification interval."""
-        self._cancel_notification_cycle()
-        if self.enabled and self.app.state == self.app.States.error:
-            self._start_notification_cycle()
-
-    def _start_notification_cycle(self) -> None:
-        """Start a repeating notification sequence."""
-        self._cancel_notification_cycle()
-
-        self.data[HANDLE_STUCK] = send_notification(
-            self,
-            "presence:home",
-            "Help him get back on track or home.",
-            title="😢 Wolfie Stuck",
-            when=self.datetime(),
-            interval=int(
-                float(self.get_state(self.args[CONF_NOTIFICATION_INTERVAL_SLIDER]))
-            )
-            * 60
-            * 60,
-        )
-
-    def on_disable(self) -> None:
-        """Stop notifying when the automation is disabled."""
-        self._cancel_notification_cycle()
-
-    def on_enable(self) -> None:
-        """Start notifying when the automation is enabled (if appropriate)."""
-        if self.app.state == self.app.States.error:
-            self._start_notification_cycle()
 
 
 class Vacuum(Base):
@@ -240,7 +94,10 @@ class Vacuum(Base):
         """Start cleaning via the schedule."""
         # self.start()
         send_notification(
-            self, "person:Britt", "Wolfie is scheduled to run.", "Time to run Wolfie"
+            self,
+            "mobile_app_brittany_bachs_iphone",
+            "🤖 Wolfie is scheduled to run.",
+            "Time to run Wolfie",
         )
 
     def pause(self) -> None:

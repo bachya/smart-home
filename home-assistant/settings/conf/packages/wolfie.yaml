@@ -12,6 +12,18 @@ alert:
       - mobile_app_aarons_iphone
       - mobile_app_brittany_bachs_iphone
 
+  wolfie_stuck:
+    name: "🤖 Wolfie is stuck on something and needs help."
+    done_message: ✅ Wolfie has been unstuck.
+    title: Wolfie is Stuck
+    entity_id: binary_sensor.wolfie_stuck_and_home
+    state: "on"
+    repeat:
+      - 10
+    notifiers:
+      - mobile_app_aarons_iphone
+      - mobile_app_brittany_bachs_iphone
+
 automation:
   - alias: "Notify when Wolfie needs a new filter"
     trigger:
@@ -61,13 +73,20 @@ binary_sensor:
           {{ states("input_select.wolfie_bin_status") == "Full" and
           states("sensor.proximity_zone") == "Home" }}
 
+      wolfie_stuck_and_home:
+        value_template: >-
+          {{ states("vacuum.xiaomi_vacuum_cleaner") == "error" and
+          states("sensor.proximity_zone") == "Home" }}
+
 input_boolean:
   wolfie:
     icon: mdi:robot-vacuum
     name: Automatic schedule
+
   wolfie_notify_before_run_automation:
     icon: mdi:robot-vacuum
     name: Notify before run
+
   wolfie_notify_when_stuck_automation:
     icon: mdi:robot-vacuum
     name: Notify when stuck

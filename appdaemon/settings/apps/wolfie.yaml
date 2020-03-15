@@ -10,13 +10,3 @@ wolfie:
   run_time: sensor.vacuum_cleaning_time
   vacuum: vacuum.xiaomi_vacuum_cleaner
   full_threshold_minutes: 5
-
-wolfie_notify_when_stuck_automation:
-  module: robot_vacuum
-  class: NotifyWhenStuck
-  constrain_enabled: true
-  dependencies:
-    - presence_manager
-    - wolfie
-  app: wolfie
-  notification_interval_slider: input_number.wolfie_notification_interval
