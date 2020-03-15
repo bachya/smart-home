@@ -1,6 +1,6 @@
 ---
 alert:
-  basement_leak:
+  kitchen_sink_leak:
     name: 💦 Leak detected under the kitchen sink!
     done_message: ✅ The leak has been fixed.
     title: Leak Detected
