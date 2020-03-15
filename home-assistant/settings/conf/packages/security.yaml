@@ -1,11 +1,11 @@
 ---
 alert:
   garage_left_open:
-    name: 💦 Leak detected in the basement!
-    done_message: 💦 The basement leak has been dried up.
-    title: Leak Detected
-    entity_id: binary_sensor.basement_sensor_leak_detector
-    state: "on"
+    name: 🚗 The garage has been left open.
+    done_message: 🚗 The garage is now closed.
+    title: Garage Left Open
+    entity_id: cover.garage_door
+    state: open
     repeat:
       - 10
     skip_first: true
@@ -79,22 +79,6 @@ automation:
         message: >
             📥 SimpliSafe Notification:
             {{ trigger.event.data.service_data.message }}
-
-  - alias: "Notify when garage left open"
-    trigger:
-      platform: state
-      entity_id: cover.garage_door
-      to: open
-      for:
-        minutes: 10
-    action:
-      - service: notify.slack
-        data:
-          message: 🚗 The garage has been left open for 10 minutes.
-      - service: notify.mobile_app_brittany_bachs_iphone
-        data:
-          message: 🚗 The garage has been left open for 10 minutes.
-          title: Garage Left Open
 
   - alias: "Notify when house is empty and open"
     trigger:

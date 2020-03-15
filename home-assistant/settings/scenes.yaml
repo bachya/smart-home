@@ -36,8 +36,6 @@
       state: "on"
     automation.notify_on_return_from_bad_outdoor_aqi:
       state: "on"
-    automation.notify_when_garage_left_open:
-      state: "on"
     automation.notify_when_house_is_empty_and_open:
       state: "on"
     automation.notify_when_media_center_left_on:
@@ -255,8 +253,6 @@
     automation.automatically_lock_up_at_night:
       state: "off"
     automation.automatically_lock_up_when_we_depart:
-      state: "off"
-    automation.notify_when_garage_left_open:
       state: "off"
     automation.notify_when_house_is_empty_and_open:
       state: "off"
