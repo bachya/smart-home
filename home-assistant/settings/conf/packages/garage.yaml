@@ -44,3 +44,8 @@ cover:
     username: !secret chamberlain_myq_username
     password: !secret chamberlain_myq_password
     type: chamberlain
+
+rainmachine:
+  controllers:
+    - ip_address: rainmachine.phil.iot
+      password: !secret rainmachine_password
