@@ -14,6 +14,20 @@ alert:
       - mobile_app_brittany_bachs_iphone
       - slack
 
+  house_empty_and_insecure:
+    name: "🚨 The house isn't secure and no one is home."
+    done_message: "🚨 The house is now secure."
+    title: House Empty and Insecure
+    entity_id: sensor.secure_status
+    state: Open
+    repeat:
+      - 5
+    skip_first: true
+    notifiers:
+      - mobile_app_aarons_iphone
+      - mobile_app_brittany_bachs_iphone
+      - slack
+
 automation:
   - alias: "Automatically lock up at night"
     trigger:
@@ -79,25 +93,6 @@ automation:
         message: >
             📥 SimpliSafe Notification:
             {{ trigger.event.data.service_data.message }}
-
-  - alias: "Notify when house is empty and open"
-    trigger:
-      platform: state
-      entity_id: sensor.secure_status
-      to: Open
-      for:
-        minutes: 5
-    condition:
-      condition: template
-      value_template: "{{ states('sensor.proximity_zone') != 'Home' }}"
-    action:
-      - service: notify.slack
-        data:
-          message: "🚨 The house isn't secure and no one is home."
-      - service: notify.mobile_app_brittany_bachs_iphone
-        data:
-          message: "🚨 The house isn't secure and no one is home."
-          title: Insecure and Empty House
 
   - alias: "Notify when security status changes"
     trigger:
