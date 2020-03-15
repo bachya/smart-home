@@ -1,19 +1,18 @@
 ---
-automation:
-  - alias: "Monitor fiddle leaf fig moisture"
-    trigger:
-      platform: numeric_state
-      entity_id: sensor.fiddle_leaf_fig_moisture
-      below: 15
-    action:
-      - service: notify.slack
-        data:
-          message: "🌴 Fred is low on moisture and needs a drink."
-      - service: notify.mobile_app_brittany_bachs_iphone
-        data:
-          message: "🌴 Fred is low on moisture and needs a drink."
-          title: Fred is Dry
+alert:
+  basement_leak:
+    name: "🌴 Fred is low on moisture and needs a drink."
+    done_message: "🌴 Fred is nicely hydrated!"
+    title: Fred is Dry
+    entity_id: binary_sensor.fiddle_leaf_fig_moisture_low_and_at_home
+    state: "on"
+    repeat:
+      - 1
+    skip_first: true
+    notifiers:
+      - mobile_app_brittany_bachs_iphone
 
+automation:
   - alias: "Turn living room lights on"
     trigger:
       - platform: state
@@ -41,6 +40,14 @@ automation:
       service: switch.turn_on
       data:
         entity_id: switch.powder_room_fan
+
+binary_sensor:
+  - platform: template
+    sensors:
+      fiddle_leaf_fig_moisture_low_and_at_home:
+        value_template: >-
+          {% set moisture = states("sensor.fiddle_leaf_fig_moisture") | int %}
+          {{ moisture < 15 and states("sensor.proximity_zone") == "Home" }}
 
 group:
   living_room_lights:

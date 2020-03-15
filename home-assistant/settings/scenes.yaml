@@ -30,8 +30,6 @@
       state: "on"
     automation.master_toilet_fan_timer_switch:
       state: "on"
-    automation.monitor_fiddle_leaf_fig_moisture:
-      state: "on"
     automation.notify_of_low_fuel_subaru:
       state: "on"
     automation.notify_on_bad_outdoor_aqi:
@@ -138,8 +136,6 @@
 - id: blackout_mode
   name: Blackout Mode
   entities:
-    automation.monitor_fiddle_leaf_fig_moisture:
-      state: "off"
     automation.notify_of_low_fuel_subaru:
       state: "off"
     automation.notify_on_bad_outdoor_aqi:
@@ -176,8 +172,6 @@
   entities:
     alarm_control_panel.8673_e_55th_avenue:
       state: armed_away
-    automation.monitor_fiddle_leaf_fig_moisture:
-      state: "off"
     automation.toggle_toilet_fan_during_the_day:
       state: "off"
     cover.garage_door:
@@ -284,8 +278,6 @@
 - id: vacation_mode
   name: Vacation Mode
   entities:
-    automation.monitor_fiddle_leaf_fig_moisture:
-      state: "off"
     automation.notify_on_bad_outdoor_aqi:
       state: "off"
     automation.notify_on_return_from_bad_outdoor_aqi:
