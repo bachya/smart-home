@@ -11,16 +11,6 @@ wolfie:
   vacuum: vacuum.xiaomi_vacuum_cleaner
   full_threshold_minutes: 5
 
-wolfie_notify_when_cycle_complete_automation:
-  module: robot_vacuum
-  class: NotifyWhenRunComplete
-  constrain_enabled: true
-  dependencies:
-    - presence_manager
-    - wolfie
-  app: wolfie
-  notification_interval_slider: input_number.wolfie_notification_interval
-
 wolfie_notify_when_stuck_automation:
   module: robot_vacuum
   class: NotifyWhenStuck

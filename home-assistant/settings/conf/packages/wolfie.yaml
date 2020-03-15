@@ -1,4 +1,17 @@
 ---
+alert:
+  wolfie_cycle_complete:
+    name: 🤖 Wolfie has finished cleaning and can be emptied.
+    done_message: ✅ Wolfie's bin has been emptied.
+    title: Wolfie is Full
+    entity_id: binary_sensor.wolfie_full_bin_and_home
+    state: "on"
+    repeat:
+      - 120
+    notifiers:
+      - mobile_app_aarons_iphone
+      - mobile_app_brittany_bachs_iphone
+
 automation:
   - alias: "Notify when Wolfie needs a new filter"
     trigger:
@@ -40,6 +53,14 @@ automation:
       data:
         message: 🤖 Wolfie's side brush is old; he needs a new one!
 
+binary_sensor:
+  - platform: template
+    sensors:
+      wolfie_full_bin_and_home:
+        value_template: >-
+          {{ states("input_select.wolfie_bin_status") == "Full" and
+          states("sensor.proximity_zone") == "Home" }}
+
 input_boolean:
   wolfie:
     icon: mdi:robot-vacuum
@@ -47,21 +68,9 @@ input_boolean:
   wolfie_notify_before_run_automation:
     icon: mdi:robot-vacuum
     name: Notify before run
-  wolfie_notify_when_cycle_complete_automation:
-    icon: mdi:robot-vacuum
-    name: Notify when full
   wolfie_notify_when_stuck_automation:
     icon: mdi:robot-vacuum
     name: Notify when stuck
-
-input_number:
-  wolfie_notification_interval:
-    name: Notification Interval
-    min: 1
-    max: 10
-    step: 1
-    unit_of_measurement: hours
-    icon: mdi:bell
 
 input_select:
   wolfie_bin_status:
