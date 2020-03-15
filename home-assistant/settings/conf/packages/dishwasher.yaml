@@ -2,7 +2,8 @@
 alert:
   dishwasher_clean:
     name: 🍽 The dishwasher is clean and can be emptied.
-    done_message: 🍽 The dishwasherhas been emptied.
+    done_message: 🍽 The dishwashe rhas been emptied.
+    title: Dishwasher is Clean
     entity_id: input_select.dishwasher_status
     state: Clean
     repeat:
