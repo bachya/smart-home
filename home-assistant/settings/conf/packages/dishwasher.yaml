@@ -1,8 +1,59 @@
 ---
-input_boolean:
-  dishwasher_cycle_automation:
-    icon: mdi:washing-machine
-    name: Notifications when clean
+alert:
+  dishwasher_clean:
+    name: 🍽 The dishwasher is clean and can be emptied.
+    done_message: 🍽 The dishwasherhas been emptied.
+    entity_id: input_select.dishwasher_status
+    state: Clean
+    repeat:
+      - 15
+      - 60
+    skip_first: true
+    notifiers:
+      - mobile_app_aarons_iphone
+      - mobile_app_brittany_bachs_iphone
+
+automation:
+  - alias: 'Set dishwasher state to "Running"'
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.dishwasher_power
+      above: 9
+    action:
+      service: input_select.select_option
+      data:
+        entity_id: input_select.dishwasher_status
+        option: Running
+
+  - alias: 'Set dishwasher state to "Drying"'
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.dishwasher_power
+      below: 4
+    condition:
+      condition: state
+      entity_id: input_select.dishwasher_status
+      state: Running
+    action:
+      service: input_select.select_option
+      data:
+        entity_id: input_select.dishwasher_status
+        option: Drying
+
+  - alias: 'Set dishwasher state to "Clean"'
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.dishwasher_power
+      below: 1
+    condition:
+      condition: state
+      entity_id: input_select.dishwasher_status
+      state: Drying
+    action:
+      service: input_select.select_option
+      data:
+        entity_id: input_select.dishwasher_status
+        option: Clean
 
 input_number:
   dishwasher_notification_interval:

@@ -46,24 +46,6 @@ class Alexa(Base):
 
         return response, 200
 
-    def clean_full_intent(self, data: dict) -> Tuple[str, str, str]:
-        """Define a handler for the CleanFullIntent."""
-        containers = {
-            "Wolfie": self.wolfie.bin_state.value,
-            "The vacuum": self.wolfie.bin_state.value,
-            "The dishwasher": self.dishwasher.state.value,
-        }
-
-        container = self.get_alexa_slot_value(data, "Container")
-        name, state = relative_search_dict(containers, container)
-
-        if name:
-            speech = f"{name} is {state.lower()}."
-        else:
-            speech = f"I don't know what {container} is."
-
-        return speech, speech, f"What state is {container}?"
-
     def empty_container_intent(self, data: dict) -> Tuple[str, str, str]:
         """Define a handler for the EmptyContainerIntent."""
         containers = ["Wolfie", "The vacuum", "The dishwasher"]
@@ -75,7 +57,7 @@ class Alexa(Base):
             self.wolfie.bin_state = self.wolfie.BinStates.empty
             speech = random_affirmative_response()
         elif name == "The dishwasher":
-            self.dishwasher.state = self.dishwasher.States.dirty
+            self.select_option("input_select.dishwasher_status", "Dirty")
             speech = random_affirmative_response()
         else:
             speech = f"I don't know what {container} is."

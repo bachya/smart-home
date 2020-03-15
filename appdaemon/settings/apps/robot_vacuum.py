@@ -141,7 +141,6 @@ class NotifyWhenRunComplete(Base):
             )
             * 60
             * 60,
-            data={"push": {"category": "dishwasher"}},
         )
 
     def on_disable(self) -> None:
@@ -210,7 +209,6 @@ class NotifyWhenStuck(Base):
             )
             * 60
             * 60,
-            data={"push": {"category": "dishwasher"}},
         )
 
     def on_disable(self) -> None:

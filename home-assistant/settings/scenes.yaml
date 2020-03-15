@@ -62,6 +62,12 @@
       state: "on"
     automation.reset_automations_when_no_mode_is_active:
       state: "on"
+    automation.set_dishwasher_state_to_clean:
+      state: "on"
+    automation.set_dishwasher_state_to_drying:
+      state: "on"
+    automation.set_dishwasher_state_to_running:
+      state: "on"
     automation.slack_interactive_command_home_assistant_app:
       state: "on"
     automation.slack_slash_command_home_assistant_app:
@@ -95,8 +101,6 @@
     input_boolean.adjust_climate_on_proximity_automation:
       state: "on"
     input_boolean.blackout_schedule_automation:
-      state: "on"
-    input_boolean.dishwasher_cycle_automation:
       state: "on"
     input_boolean.lightning_detected_automation:
       state: "on"
