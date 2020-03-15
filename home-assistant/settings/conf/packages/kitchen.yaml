@@ -2,7 +2,7 @@
 alert:
   basement_leak:
     name: 💦 Leak detected under the kitchen sink!
-    done_message: 💦 The kitchen sink leak has been dried up.
+    done_message: ✅ The leak has been fixed.
     title: Leak Detected
     entity_id: binary_sensor.kitchen_sink_sensor_water_leak
     state: "on"

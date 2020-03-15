@@ -2,7 +2,7 @@
 alert:
   basement_leak:
     name: 💦 Leak detected in the basement!
-    done_message: 💦 The basement leak has been dried up.
+    done_message: ✅ The leak has been fixed.
     title: Leak Detected
     entity_id: binary_sensor.basement_sensor_leak_detector
     state: "on"

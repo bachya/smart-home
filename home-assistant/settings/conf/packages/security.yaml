@@ -2,7 +2,7 @@
 alert:
   garage_left_open:
     name: 🚗 The garage has been left open.
-    done_message: 🚗 The garage is now closed.
+    done_message: ✅ The garage is now closed.
     title: Garage Left Open
     entity_id: cover.garage_door
     state: open
@@ -16,6 +16,20 @@ alert:
 
   house_empty_and_insecure:
     name: "🚨 The house isn't secure and no one is home."
+    done_message: "✅ The house is now secure."
+    title: House Empty and Insecure
+    entity_id: sensor.secure_status
+    state: Open
+    repeat:
+      - 5
+    skip_first: true
+    notifiers:
+      - mobile_app_aarons_iphone
+      - mobile_app_brittany_bachs_iphone
+      - slack
+
+  smoke_detected:
+    name: "🚨 Smoke has been detected."
     done_message: "🚨 The house is now secure."
     title: House Empty and Insecure
     entity_id: sensor.secure_status
