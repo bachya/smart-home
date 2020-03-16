@@ -78,19 +78,6 @@ binary_sensor:
           {{ states("vacuum.xiaomi_vacuum_cleaner") == "error" and
           states("sensor.proximity_zone") == "Home" }}
 
-input_boolean:
-  wolfie:
-    icon: mdi:robot-vacuum
-    name: Automatic schedule
-
-  wolfie_notify_before_run_automation:
-    icon: mdi:robot-vacuum
-    name: Notify before run
-
-  wolfie_notify_when_stuck_automation:
-    icon: mdi:robot-vacuum
-    name: Notify when stuck
-
 input_select:
   wolfie_bin_status:
     name: Bin Status
