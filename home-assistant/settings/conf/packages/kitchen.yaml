@@ -8,7 +8,7 @@ alert:
     state: "on"
     repeat:
       - 15
-      - 60
+      - 120
     skip_first: true
     notifiers:
       - mobile_app_aarons_iphone
