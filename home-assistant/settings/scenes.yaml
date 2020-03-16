@@ -126,12 +126,6 @@
       state: "off"
     input_boolean.randomize_nighttime_tvs_automation:
       state: "off"
-    input_boolean.wolfie_notify_before_run_automation:
-      state: "on"
-    input_boolean.wolfie_notify_when_cycle_complete_automation:
-      state: "on"
-    input_boolean.wolfie_notify_when_stuck_automation:
-      state: "on"
     switch.water_main:
       state: "on"
 
@@ -169,10 +163,6 @@
     input_boolean.notify_of_low_batteries_automation:
       state: "off"
     input_boolean.notify_of_new_versions_automation:
-      state: "off"
-    input_boolean.wolfie_notify_when_cycle_complete_automation:
-      state: "off"
-    input_boolean.wolfie_notify_when_stuck_automation:
       state: "off"
 
 - id: depart_home
@@ -326,10 +316,6 @@
       state: "on"
     input_boolean.randomize_nighttime_tvs_automation:
       state: "on"
-    input_boolean.wolfie_notify_when_cycle_complete_automation:
-      state: "off"
-    input_boolean.wolfie_notify_when_stuck_automation:
-      state: "off"
     switch.water_main:
       state: "off"
 
