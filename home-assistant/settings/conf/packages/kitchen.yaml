@@ -56,9 +56,8 @@ automation:
 
   - alias: 'Set dishwasher state to "Clean"'
     trigger:
-      platform: numeric_state
-      entity_id: sensor.dishwasher_power
-      below: 1
+      platform: template
+      value_template: "{{ states('sensor.dishwasher_power') | int == 0 }}"
     condition:
       condition: state
       entity_id: input_select.dishwasher_status
