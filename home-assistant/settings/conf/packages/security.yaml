@@ -248,6 +248,11 @@ sensor:
     sensors:
       secure_status:
         friendly_name: Security Status
+        entity_id:
+          - lock.front_door
+          - lock.garage_fire_door
+          - alarm_control_panel.8673_e_55th_avenue
+          - cover.garage_door
         value_template: >
           {% if is_state('lock.front_door', 'locked')
              and is_state('lock.garage_fire_door', 'locked')
