@@ -158,9 +158,9 @@ binary_sensor:
   - platform: template
     sensors:
       house_open_and_insecure:
-        value_template: >-
-          {{ states("sensor.secure_status") == "Open" and
-          states("sensor.proximity_zone") != "Home" }}
+        value_template: >
+          {{ is_state("sensor.secure_status", "Open") and
+          not is_state("sensor.proximity_zone", "Home") }}
 
 group:
   smoke_detectors:

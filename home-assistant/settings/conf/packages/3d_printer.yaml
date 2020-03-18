@@ -186,14 +186,12 @@ switch:
       toggle_3d_printer:
         friendly_name: Power
         value_template: >
-          {{
-            states("sensor.ender_3_state") != "unavailable"
-            and states("switch.3d_printer") == "on"
-          }}
+          {{ not is_state("sensor.ender_3_state", "unavailable") and
+            is_state("switch.3d_printer", "on") }}
         turn_off:
           - service: rest_command.turn_off_octopi
           - wait_template: >
-              {{ states("sensor.ender_3_state") == "unavailable" }}
+              {{ is_state("sensor.ender_3_state", "unavailable") }}
           - service: switch.turn_off
             data:
               entity_id: switch.3d_printer

@@ -89,8 +89,8 @@ binary_sensor:
     sensors:
       dishwasher_clean_and_home:
         value_template: >-
-          {{ states("input_select.dishwasher_status") == "Clean" and
-          states("sensor.proximity_zone") == "Home" }}
+          {{ is_state("input_select.dishwasher_status", "Clean") and
+          is_state("sensor.proximity_zone", "Home") }}
 
 input_select:
   dishwasher_status:

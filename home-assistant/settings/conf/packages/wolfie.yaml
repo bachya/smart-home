@@ -120,13 +120,13 @@ binary_sensor:
     sensors:
       wolfie_full_bin_and_home:
         value_template: >-
-          {{ states("input_select.wolfie_bin_status") == "Full" and
-          states("sensor.proximity_zone") == "Home" }}
+          {{ is_state("input_select.wolfie_bin_status", "Full") and
+          is_state("sensor.proximity_zone", "Home") }}
 
       wolfie_stuck_and_home:
         value_template: >-
-          {{ states("vacuum.xiaomi_vacuum_cleaner") == "error" and
-          states("sensor.proximity_zone") == "Home" }}
+          {{ is_state("vacuum.xiaomi_vacuum_cleaner", "error") and
+          is_state("sensor.proximity_zone", "Home") }}
 
 input_select:
   wolfie_bin_status:
@@ -183,16 +183,15 @@ sensor:
         value_template: >
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.status }}
         icon_template: >
-          {% set val = states.vacuum.xiaomi_vacuum_cleaner.attributes.status %}
-          {% if val == 'Charging' %}
+          {% if is_state("vacuum.xiaomi_vacuum_cleaner", "docked")  %}
             mdi:battery-charging
-          {% elif val == 'Cleaning' %}
+          {% if is_state("vacuum.xiaomi_vacuum_cleaner", "cleaning")  %}
             mdi:move-resize
-          {% elif val == 'Returning home' %}
+          {% if is_state("vacuum.xiaomi_vacuum_cleaner", "returning")  %}
             mdi:keyboard-return
-          {% elif val == 'Idle' %}
+          {% if is_state("vacuum.xiaomi_vacuum_cleaner", "idle")  %}
             mdi:dots-horizontal
-          {% elif val == 'Paused' %}
+          {% if is_state("vacuum.xiaomi_vacuum_cleaner", "paused")  %}
             mdi:pause-circle
           {% else %}
             mdi:help-circle

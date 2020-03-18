@@ -110,13 +110,13 @@ sensor:
         friendly_name: Season
         value_template: "{{ states('sensor.season') | title }}"
         icon_template: >
-          {% if states("sensor.season") == 'spring' %}
+          {% if is_state("sensor.season", "spring") %}
             mdi:flower
-          {% elif states("sensor.season") == 'summer' %}
+          {% if is_state("sensor.season", "summer") %}
             mdi:sunglasses
-          {% elif states("sensor.season") == 'autumn' %}
+          {% if is_state("sensor.season", "autumn") %}
             mdi:leaf
-          {% elif states("sensor.season") == 'winter' %}
+          {% else %}
             mdi:snowflake
           {% endif %}
       moon_phase:
