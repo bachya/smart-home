@@ -11,7 +11,7 @@ new_almond_server_version_automation:
   endpoint_id: 1
   friendly_name: Almond Server Installed
   icon: mdi:language-python
-  image_name: stanford-oval/almond-server
+  image_name: stanfordoval/almond-server
   interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
 
