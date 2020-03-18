@@ -116,10 +116,12 @@ class Alexa(Base):
         action = self.get_alexa_slot_value(data, "Action")
         if action in ("activate", "run", "start"):
             speech = "Go get those dust bunnies, little guy!"
-            self.wolfie.start()
+            self.call_service("vacuum/start", entity_id="vacuum.xiaomi_vacuum_cleaner ")
         else:
             speech = "Time to go home, vacuum hero!"
-            self.wolfie.stop()
+            self.call_service(
+                "vacuum/return_to_base", entity_id="vacuum.xiaomi_vacuum_cleaner "
+            )
         return speech, speech, "Wolfie"
 
     def where_is_intent(self, data: dict) -> Tuple[str, str, str]:
