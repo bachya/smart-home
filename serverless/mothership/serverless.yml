@@ -1,7 +1,7 @@
 ---
-service: mothership
-app: mothership-app
-org: bachya1208
+service: MY_SERVICE
+app: MY_APP
+org: MY_ORG
 
 provider:
   name: aws
@@ -9,15 +9,12 @@ provider:
   profile: personal-serverless-framework
   region: us-west-2
 
-plugins:
-  - serverless-python-requirements
-
 functions:
   alexa_forwarder:
     handler: alexa_forwarder.forward_invocation_handler
+    environment:
+      APPDAEMON_API_PASSWORD: API_PASSWORD
+      APPDAEMON_BASE_URL: https://appdaemon.myserver.com
+      DEBUG: true
     events:
       - alexaSkill: amzn1.ask.skill.xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-
-custom:
-  pythonRequirements:
-    dockerizePip: non-linux
