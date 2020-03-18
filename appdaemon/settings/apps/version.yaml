@@ -100,3 +100,19 @@ new_yi_hack_version_automation:
   installed: sensor.yi_hack_installed
   app_name: Yi Hack
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
+
+new_zigbee2mqtt_version_automation:
+  module: version
+  class: NewPortainerVersionNotification
+  constrain_enabled: true
+  dependencies:
+  available: sensor.zigbee2mqtt_available
+  installed: sensor.zigbee2mqtt_installed
+  app_name: Almond Server
+  created_entity_id: sensor.zigbee2mqtt_installed
+  endpoint_id: 1
+  friendly_name: Zigbee2MQTT Installed
+  icon: mdi:language-python
+  image_name: koenkk/zigbee2mqtt
+  interval: 300
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation

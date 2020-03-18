@@ -211,6 +211,17 @@ sensor:
       ssh -i /config/id_rsa -o StrictHostKeyChecking=no
       root@yi-camera-guest-bedroom.phil.iot cat version
 
+  - platform: command_line
+    name: Zigbee2MQTT Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/Koenkk/zigbee2mqtt/releases/latest
+    value_template: "{{ value_json.tag_name }}"
+    scan_interval: 1800
+
+
   - platform: dnsip
     hostname: !secret base_domain_name
 
