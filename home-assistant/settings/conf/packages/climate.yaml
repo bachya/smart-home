@@ -112,9 +112,9 @@ sensor:
         icon_template: >
           {% if is_state("sensor.season", "spring") %}
             mdi:flower
-          {% if is_state("sensor.season", "summer") %}
+          {% elif is_state("sensor.season", "summer") %}
             mdi:sunglasses
-          {% if is_state("sensor.season", "autumn") %}
+          {% elif is_state("sensor.season", "autumn") %}
             mdi:leaf
           {% else %}
             mdi:snowflake

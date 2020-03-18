@@ -185,13 +185,13 @@ sensor:
         icon_template: >
           {% if is_state("vacuum.xiaomi_vacuum_cleaner", "docked")  %}
             mdi:battery-charging
-          {% if is_state("vacuum.xiaomi_vacuum_cleaner", "cleaning")  %}
+          {% elif is_state("vacuum.xiaomi_vacuum_cleaner", "cleaning")  %}
             mdi:move-resize
-          {% if is_state("vacuum.xiaomi_vacuum_cleaner", "returning")  %}
+          {% elif is_state("vacuum.xiaomi_vacuum_cleaner", "returning")  %}
             mdi:keyboard-return
-          {% if is_state("vacuum.xiaomi_vacuum_cleaner", "idle")  %}
+          {% elif is_state("vacuum.xiaomi_vacuum_cleaner", "idle")  %}
             mdi:dots-horizontal
-          {% if is_state("vacuum.xiaomi_vacuum_cleaner", "paused")  %}
+          {% elif is_state("vacuum.xiaomi_vacuum_cleaner", "paused")  %}
             mdi:pause-circle
           {% else %}
             mdi:help-circle
