@@ -1,10 +1,25 @@
 ---
+new_almond_server_version_automation:
+  module: version
+  class: NewPortainerVersionNotification
+  constrain_enabled: true
+  dependencies:
+  available: sensor.almond_server_available
+  installed: sensor.almond_server_installed
+  app_name: Almond Server
+  created_entity_id: sensor.almond_server_installed
+  endpoint_id: 1
+  friendly_name: Almond Server Installed
+  icon: mdi:language-python
+  image_name: stanford-oval/almond-server
+  interval: 300
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
+
 new_appdaemon_version_automation:
   module: version
   class: NewPortainerVersionNotification
   constrain_enabled: true
   dependencies:
-    - presence_manager
   available: sensor.appdaemon_available
   installed: sensor.appdaemon_installed
   app_name: AppDaemon
@@ -21,7 +36,6 @@ new_esphome_version_automation:
   class: NewMultiSensorVersionNotification
   constrain_enabled: true
   dependencies:
-    - presence_manager
   available: sensor.esphome_available
   installed: sensor.esphome_installed
   version_sensors:
@@ -40,7 +54,6 @@ new_hass_version_automation:
   class: NewVersionNotification
   constrain_enabled: true
   dependencies:
-    - presence_manager
   available: sensor.hass_available
   installed: sensor.hass_installed
   app_name: Home Assistant
@@ -51,7 +64,6 @@ new_portainer_version_automation:
   class: NewPortainerVersionNotification
   constrain_enabled: true
   dependencies:
-    - presence_manager
   available: sensor.portainer_available
   installed: sensor.portainer_installed
   app_name: Portainer
@@ -68,7 +80,6 @@ new_vernemq_version_automation:
   class: NewPortainerVersionNotification
   constrain_enabled: true
   dependencies:
-    - presence_manager
   available: sensor.vernemq_available
   installed: sensor.vernemq_installed
   app_name: VerneMQ
@@ -85,7 +96,6 @@ new_yi_hack_version_automation:
   class: NewVersionNotification
   constrain_enabled: true
   dependencies:
-    - presence_manager
   available: sensor.yi_hack_available
   installed: sensor.yi_hack_installed
   app_name: Yi Hack
