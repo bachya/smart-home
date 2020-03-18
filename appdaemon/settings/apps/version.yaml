@@ -46,23 +46,6 @@ new_hass_version_automation:
   app_name: Home Assistant
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
 
-new_vernemq_version_automation:
-  module: version
-  class: NewPortainerVersionNotification
-  constrain_enabled: true
-  dependencies:
-    - presence_manager
-  available: sensor.vernemq_available
-  installed: sensor.vernemq_installed
-  app_name: VerneMQ
-  created_entity_id: sensor.vernemq_installed
-  endpoint_id: 1
-  friendly_name: VerneMQ Installed
-  icon: mdi:wifi
-  image_name: docker-vernemq
-  interval: 300
-  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
-
 new_portainer_version_automation:
   module: version
   class: NewPortainerVersionNotification
@@ -77,6 +60,23 @@ new_portainer_version_automation:
   friendly_name: Portainer Installed
   icon: mdi:server
   image_name: portainer/portainer
+  interval: 300
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
+
+new_vernemq_version_automation:
+  module: version
+  class: NewPortainerVersionNotification
+  constrain_enabled: true
+  dependencies:
+    - presence_manager
+  available: sensor.vernemq_available
+  installed: sensor.vernemq_installed
+  app_name: VerneMQ
+  created_entity_id: sensor.vernemq_installed
+  endpoint_id: 1
+  friendly_name: VerneMQ Installed
+  icon: mdi:wifi
+  image_name: docker-vernemq
   interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
 
