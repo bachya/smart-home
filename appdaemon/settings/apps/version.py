@@ -62,8 +62,7 @@ class NewVersionNotification(Base):  # pylint: disable=too-few-public-methods
             send_notification(
                 self,
                 "slack:@aaron",
-                f"New {self.args[CONF_APP_NAME]} Version: {new_version}",
-                title="New Software 💿",
+                f"💿 New {self.args[CONF_APP_NAME]} Version: {new_version}",
             )
 
         if new_version > installed_version:
