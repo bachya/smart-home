@@ -77,8 +77,8 @@ class PersonDetectedOnCamera(Base):  # pylint: disable=too-few-public-methods
         send_notification(
             self,
             ["person:Aaron", "person:Britt"],
-            f"A possible person was detected on the {camera_friendly_name}.",
-            title="Security Issue 🔐",
+            f"📷 A possible person was detected on the {camera_friendly_name}.",
+            title="Security Issue",
             data={
                 "attachment": {"content-type": "jpeg"},
                 "push": {"category": "camera"},
