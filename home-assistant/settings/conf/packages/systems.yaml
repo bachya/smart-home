@@ -92,8 +92,8 @@ sensor:
       curl -L
       -H "User-Agent: Home Assistant"
       -H "Content-Type: application/json"
-      https://pypi.python.org/pypi/appdaemon/json
-    value_template: "{{ value_json.info.version }}"
+      https://api.github.com/repos/home-assistant/appdaemon/releases/latest
+    value_template: "{{ value_json.tag_name }}"
     scan_interval: 1800
 
   - platform: command_line
