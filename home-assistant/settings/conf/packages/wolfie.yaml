@@ -25,6 +25,17 @@ alert:
       - mobile_app_brittany_bachs_iphone
 
 automation:
+  - alias: "Notify when time for Wolfie to run"
+    trigger:
+      platform: state
+      entity_id: calendar.wolfie_schedule
+      to: "on"
+    action:
+      service: notify.mobile_app_brittany_bachs_iphone
+      data:
+        message: 🤖 It's time to run Wolfie!
+        title: Vacuum Time
+
   - alias: "Notify when Wolfie needs a new filter"
     trigger:
       platform: numeric_state

@@ -44,6 +44,8 @@
       state: "on"
     automation.notify_when_ps4_left_on:
       state: "on"
+    automation.notify_when_time_for_wolfie_to_run:
+      state: "on"
     automation.notify_when_wolfie_needs_a_new_filter:
       state: "on"
     automation.notify_when_wolfie_needs_a_new_main_brush:
@@ -145,6 +147,8 @@
     automation.notify_when_3d_print_starts:
       state: "off"
     automation.notify_when_ps4_left_on:
+      state: "off"
+    automation.notify_when_time_for_wolfie_to_run:
       state: "off"
     automation.notify_when_wolfie_needs_a_new_filter:
       state: "off"
@@ -282,6 +286,8 @@
       state: "off"
     automation.notify_when_security_status_changes:
       state: "on"
+    automation.notify_when_time_for_wolfie_to_run:
+      state: "off"
     automation.notify_when_wolfie_needs_a_new_filter:
       state: "off"
     automation.notify_when_wolfie_needs_a_new_main_brush:
