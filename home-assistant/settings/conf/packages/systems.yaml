@@ -155,11 +155,11 @@ sensor:
         icon_template: >
           {% if is_state("sensor.latest_drone_build", "failure")  %}
             mdi:progress-close
-          {% if is_state("sensor.latest_drone_build", "killed")  %}
+          {% elif is_state("sensor.latest_drone_build", "killed")  %}
             mdi:progress-close
-          {% if is_state("sensor.latest_drone_build", "running")  %}
+          {% elif is_state("sensor.latest_drone_build", "running")  %}
             mdi:progress-clock
-          {% if is_state("sensor.latest_drone_build", "success")  %}
+          {% elif is_state("sensor.latest_drone_build", "success")  %}
             mdi:progress-check
           {% else %}
             mdi:progress-alert
