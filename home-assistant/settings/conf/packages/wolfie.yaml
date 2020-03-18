@@ -25,6 +25,45 @@ alert:
       - mobile_app_brittany_bachs_iphone
 
 automation:
+  - alias: "Alter armed alarm when Wolfie cleans"
+    trigger:
+      platform: state
+      entity_id: vacuum.xiaomi_vacuum_cleaner
+      to: cleaning
+    condition:
+      condition: state
+      entity_id: alarm_control_panel.8673_e_55th_avenue
+      state: armed_away
+    action:
+      - service: vacuum.pause
+        data:
+          entity_id: vacuum.xiaomi_vacuum_cleaner
+      - service: alarm_control_panel.alarm_arm_home
+        data:
+          entity_id: alarm_control_panel.8673_e_55th_avenue
+      - wait_template: >
+          {{ is_state("alarm_control_panel.8673_e_55th_avenue", "armed_home") }}
+        timeout: "00:01:00"
+        continue_on_timeout: false
+      - service: vacuum.start
+        data:
+          entity_id: vacuum.xiaomi_vacuum_cleaner
+
+  - alias: "Arm alarm when Wolfie finishes cleaning an empty house"
+    trigger:
+      platform: state
+      entity_id: input_select.wolfie_bin_status
+      to: Full
+    condition:
+      condition: template
+      value_template: >
+        {{ not is_state('sensor.proximity_zone', 'Home') and
+        not is_state("alarm_control_panel.8673_e_55th_avenue", "armed_away") }}
+    action:
+      service: alarm_control_panel.alarm_arm_away
+      data:
+        entity_id: alarm_control_panel.8673_e_55th_avenue
+
   - alias: "Notify when time for Wolfie to run"
     trigger:
       platform: state

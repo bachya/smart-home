@@ -8,6 +8,10 @@
       state: "on"
     automation.adjust_automations_in_vacation_mode:
       state: "on"
+    automation.alter_armed_alarm_when_wolfie_cleans:
+      state: "on"
+    automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
+      state: "on"
     automation.automatically_lock_up_at_night:
       state: "on"
     automation.automatically_lock_up_when_we_depart:
@@ -134,6 +138,10 @@
 - id: blackout_mode
   name: Blackout Mode
   entities:
+    automation.alter_armed_alarm_when_wolfie_cleans:
+      state: "off"
+    automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
+      state: "off"
     automation.notify_of_low_fuel_subaru:
       state: "off"
     automation.notify_on_bad_outdoor_aqi:
@@ -254,6 +262,10 @@
 - id: guest_mode
   name: Guest Mode
   entities:
+    automation.alter_armed_alarm_when_wolfie_cleans:
+      state: "off"
+    automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
+      state: "off"
     automation.automatically_lock_up_at_night:
       state: "off"
     automation.automatically_lock_up_when_we_depart:
@@ -271,6 +283,8 @@
     input_boolean.notify_ps4_left_on_automation:
       state: "off"
     input_boolean.notify_when_person_on_camera_automation:
+      state: "off"
+    automation.notify_when_time_for_wolfie_to_run:
       state: "off"
 
 - id: vacation_mode
