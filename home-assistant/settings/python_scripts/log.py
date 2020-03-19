@@ -11,8 +11,12 @@ data:
 
 def main():
     """Run the script."""
-    log_level = data["level"]
-    message = data["message"]
+    try:
+        log_level = data["level"]
+        message = data["message"]
+    except KeyError:
+        logger.error("Incorrect data schema: %s", data)
+        return
 
     if log_level == "ERROR":
         logger.error(message)
