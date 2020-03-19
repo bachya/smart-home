@@ -1,10 +1,10 @@
 """Define a Python script to insert log entries into the HASS log."""
-log_level = data["level"]
-message = data["message"]
+LOG_LEVEL = data["level"]
+MESSAGE = data["MESSAGE"]
 
-if log_level == "ERROR":
-    logger.error(message)
-elif log_level == "WARNING":
-    logger.warning(message)
+if LOG_LEVEL == "ERROR":
+    logger.error(MESSAGE)
+elif LOG_LEVEL == "WARNING":
+    logger.warning(MESSAGE)
 else:
-    logger.info(message)
+    logger.info(MESSAGE)
