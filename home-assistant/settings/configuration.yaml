@@ -16,15 +16,12 @@ recorder: !include conf/recorder.yaml
 stream:
 scene: !include scenes.yaml
 
-# Components:
+# Inteegrations:
 almond: !include conf/almond.yaml
-cloud: !include_dir_merge_named conf/cloud/
 ffmpeg: !include conf/ffmpeg.yaml
 google: !include conf/google.yaml
-group: !include_dir_named conf/groups/
 hacs: !include conf/hacs.yaml
 ifttt: !include conf/ifttt.yaml
-input_boolean: !include_dir_merge_named conf/input-booleans/
 mqtt: !include conf/mqtt.yaml
 nest: !include conf/nest.yaml
 notion: !include conf/notion.yaml
