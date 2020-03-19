@@ -1,5 +1,19 @@
 ---
 automation:
+  - alias: "Cycle master toilet fan during the day"
+    trigger:
+      platform: time_pattern
+      hours: "/1"
+    condition:
+      condition: time
+      after: "10:00:00"
+      before: "17:00:00"
+    action:
+      service: input_number.set_value
+      data:
+        entity_id: input_number.master_bathroom_toilet_fan_timer
+        value: 15
+
   - alias: "Set sleep timer on master bathroom fan when switch double tapped"
     trigger:
       platform: event
@@ -25,20 +39,6 @@ automation:
       data:
         entity_id: input_number.master_bathroom_toilet_fan_timer
         value: 10
-
-  - alias: "Cycle master toilet fan during the day"
-    trigger:
-      platform: time_pattern
-      hours: "/1"
-    condition:
-      condition: time
-      after: "10:00:00"
-      before: "17:00:00"
-    action:
-      service: input_number.set_value
-      data:
-        entity_id: input_number.master_bathroom_toilet_fan_timer
-        value: 15
 
   - alias: "Turn master bedroom lights on at sunset"
     trigger:
