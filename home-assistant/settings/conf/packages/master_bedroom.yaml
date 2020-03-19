@@ -1,6 +1,6 @@
 ---
 automation:
-  - alias: "Master bathroom fan timer switch"
+  - alias: "Set sleep timer on master bathroom fan when switch double tapped"
     trigger:
       platform: event
       event_type: zwave.node_event
@@ -13,7 +13,7 @@ automation:
         entity_id: input_number.master_bathroom_fan_timer
         value: 30
 
-  - alias: "Master toilet fan timer switch"
+  - alias: "Set sleep timer on master toilet fan when switch double tapped"
     trigger:
       platform: event
       event_type: zwave.node_event
@@ -26,7 +26,7 @@ automation:
         entity_id: input_number.master_bathroom_toilet_fan_timer
         value: 10
 
-  - alias: "Toggle toilet fan during the day"
+  - alias: "Cycle master toilet fan during the day"
     trigger:
       platform: time_pattern
       hours: "/1"
@@ -129,3 +129,13 @@ sensor:
     state_topic: "tele/climate-sensor-2/SENSOR"
     value_template: "{{ value_json['BME280'].Pressure }}"
     unit_of_measurement: "hPa"
+
+timer:
+  master_bathroom_fan:
+    duration: "00:30:00"
+
+  master_bedroom_salt_lamp:
+    duration: "00:15:00"
+
+  master_toilet_fan:
+    duration: "00:10:00"

@@ -20,6 +20,8 @@
       state: "on"
     automation.backyard_light_switch_via_kitchen_patio_light_on:
       state: "on"
+    automation.cycle_toilet_fan_during_the_day:
+      state: "on"
     automation.disable_simplisafe_sounds_in_blackout_mode:
       state: "on"
     automation.enable_simplisafe_sounds_when_leaving_blackout_mode:
@@ -30,9 +32,9 @@
       state: "on"
     automation.forward_simplisafe_notifications_to_slack:
       state: "on"
-    automation.master_bathroom_fan_timer_switch:
+    automation.set_sleep_timer_on_master_bathroom_fan_when_switch_double_tapped:
       state: "on"
-    automation.master_toilet_fan_timer_switch:
+    automation.set_sleep_timer_on_master_toilet_fan_when_switch_double_tapped:
       state: "on"
     automation.notify_of_low_fuel_subaru:
       state: "on"
@@ -76,8 +78,6 @@
       state: "on"
     automation.slack_slash_command_home_assistant_app:
       state: "on"
-    automation.toggle_toilet_fan_during_the_day:
-      state: "on"
     automation.turn_bar_cart_lights_on:
       state: "on"
     automation.turn_lights_off_when_person_detected_at_nighttime_leaves:
@@ -108,12 +108,6 @@
       state: "on"
     input_boolean.lightning_detected_automation:
       state: "on"
-    input_boolean.master_bathroom_fan_sleep_timer_automation:
-      state: "on"
-    input_boolean.master_bedroom_lights_sleep_timer_automation:
-      state: "on"
-    input_boolean.master_toilet_fan_sleep_timer_automation:
-      state: "on"
     input_boolean.notify_of_dead_zwave_devices_automation:
       state: "on"
     input_boolean.notify_of_low_batteries_automation:
@@ -124,8 +118,6 @@
       state: "on"
     input_boolean.notify_when_person_on_camera_automation:
       state: "off"
-    input_boolean.office_lights_sleep_timer_automation:
-      state: "on"
     input_boolean.outdoor_lights_schedule_automation:
       state: "on"
     input_boolean.randomize_nighttime_lighting_automation:
@@ -182,7 +174,7 @@
   entities:
     alarm_control_panel.8673_e_55th_avenue:
       state: armed_away
-    automation.toggle_toilet_fan_during_the_day:
+    automation.cycle_toilet_fan_during_the_day:
       state: "off"
     cover.garage_door:
       state: closed
@@ -270,7 +262,7 @@
       state: "off"
     automation.automatically_lock_up_when_we_depart:
       state: "off"
-    automation.toggle_toilet_fan_during_the_day:
+    automation.cycle_toilet_fan_during_the_day:
       state: "off"
     input_boolean.adjust_climate_on_proximity_automation:
       state: "off"
@@ -290,6 +282,8 @@
 - id: vacation_mode
   name: Vacation Mode
   entities:
+    automation.cycle_toilet_fan_during_the_day:
+      state: "off"
     automation.notify_on_bad_outdoor_aqi:
       state: "off"
     automation.notify_on_return_from_bad_outdoor_aqi:
@@ -309,8 +303,6 @@
     automation.notify_when_wolfie_needs_a_sensor_cleaning:
       state: "off"
     automation.notify_when_wolfie_needs_a_new_side_brush:
-      state: "off"
-    automation.toggle_toilet_fan_during_the_day:
       state: "off"
     automation.turn_bar_cart_lights_on:
       state: "off"
