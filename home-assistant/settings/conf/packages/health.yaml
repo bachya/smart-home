@@ -1,4 +1,7 @@
 ---
+airvisual:
+  api_key: !secret airvisual_api_key
+
 automation:
   - alias: "Notify on bad outdoor AQI"
     trigger:
@@ -58,10 +61,4 @@ openuv:
   api_key: !secret openuv_api_key
 
 sensor:
-  - platform: airvisual
-    api_key: !secret airvisual_api_key
-    monitored_conditions:
-      - us
-    show_on_map: false
-
   - platform: flunearyou
