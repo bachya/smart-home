@@ -108,6 +108,26 @@ automation:
             📥 SimpliSafe Notification:
             {{ trigger.event.data.service_data.message }}
 
+  - alias: "Notify of Fail2Ban bans"
+    trigger:
+      - platform: state
+        entity_id: sensor.fail2ban_last_ban_ip
+    action:
+      service: notify.slack
+      data:
+        message: >
+          ❌ Fail2Ban just banned an IP address: {{ trigger.to_state.state }}
+
+  - alias: "Notify of Fail2Ban failures"
+    trigger:
+      - platform: state
+        entity_id: sensor.fail2ban_last_failure_ip
+    action:
+      service: notify.slack
+      data:
+        message: >
+          ❌ Fail2Ban just failed an IP address: {{ trigger.to_state.state }}
+
   - alias: "Notify when security status changes"
     trigger:
       platform: state

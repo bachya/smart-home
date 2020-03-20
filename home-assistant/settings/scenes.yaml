@@ -38,6 +38,10 @@
       state: "on"
     automation.notify_of_low_fuel_subaru:
       state: "on"
+    automation.notify_of_fail2ban_bans:
+      state: "on"
+    automation.notify_of_fail2ban_failures:
+      state: "on"
     automation.notify_on_bad_outdoor_aqi:
       state: "on"
     automation.notify_on_return_from_bad_outdoor_aqi:
