@@ -57,34 +57,6 @@ class BaseSwitch(Base):
             self.turn_off(self.args["switch"])
 
 
-class BaseZwaveSwitch(BaseSwitch):
-    """Define a Zwave switch."""
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_event(
-            self.on_double_tap_up,
-            "zwave.node_event",
-            entity_id=self.args["zwave_device"],
-            basic_level=255,
-        )
-
-        self.listen_event(
-            self.on_double_tap_down,
-            "zwave.node_event",
-            entity_id=self.args["zwave_device"],
-            basic_level=0,
-        )
-
-    def on_double_tap_down(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Stub out method signature."""
-        pass
-
-    def on_double_tap_up(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Stub out method signature."""
-        pass
-
-
 class SleepTimer(BaseSwitch):
     """Define a feature to turn a switch off after an amount of time."""
 
