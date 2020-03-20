@@ -136,7 +136,7 @@ automation:
       service: notify.slack
       data_template:
         message: >
-          📥 The house's security has changed: {{ trigger.to_state.state }}
+          🔐 The house's security has changed: {{ trigger.to_state.state }}
 
   - alias: "Turn lights off when person detected at nighttime leaves"
     trigger:
