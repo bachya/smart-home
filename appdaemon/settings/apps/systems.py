@@ -118,7 +118,7 @@ class EntityPowerIssues(Base):
             self.data[notification_handle] = send_notification(
                 self,
                 "slack",
-                f"❓ `{name}` is offline or has a low battery.",
+                f"🤔 `{name}` is offline or has a low battery.",
                 when=self.datetime(),
                 interval=self.args[CONF_NOTIFICATION_INTERVAL],
             )
