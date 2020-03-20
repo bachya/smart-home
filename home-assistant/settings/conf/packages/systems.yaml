@@ -14,6 +14,17 @@ automation:
             📥 Home Assistant Notification:
             {{ trigger.event.data.service_data.message }}
 
+  - alias: "Notify on HACS updates"
+    trigger:
+      platform: state
+      entity_id: sensor.hacs
+    action:
+      service: notify.slack
+      data:
+        message: >
+          💿 There's a change in the number of HACS updates:
+          {{ trigger.to_state.state }}
+
   - alias: "Notify when media center left on"
     trigger:
       platform: state

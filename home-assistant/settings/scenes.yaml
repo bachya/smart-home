@@ -44,6 +44,8 @@
       state: "on"
     automation.notify_on_bad_outdoor_aqi:
       state: "on"
+    automation.notify_on_hacs_updates:
+      state: "on"
     automation.notify_on_return_from_bad_outdoor_aqi:
       state: "on"
     automation.notify_when_media_center_left_on:
