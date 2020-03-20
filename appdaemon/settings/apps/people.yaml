@@ -8,6 +8,7 @@ aaron:
   geocoded_location: sensor.aarons_geocoded_location
   notifiers:
     - "slack:@aaron"
+    - mobile_app_aarons_iphone
   person: person.aaron
   presence_status_sensor: sensor.aaron_presence_status
 
