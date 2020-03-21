@@ -18,7 +18,7 @@ esphome_dashboard:
 healtchecks:
   title: Healthchecks.io
   url: !secret panel_url_healthchecks
-  icon: mdi:weather-cloudy
+  icon: mdi:server
 octopi:
   title: OctoPi
   url: !secret panel_url_octopi

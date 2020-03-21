@@ -260,6 +260,12 @@ sensor:
         precision: 2
 
   - platform: rest
+    name: Healthchecks.io Ping
+    resource: !secret healthchecksio_status_url
+    scan_interval:
+      minutes: 5
+
+  - platform: rest
     name: Healthchecks.io Status
     resource: !secret healthchecksio_ping_url
     scan_interval:
@@ -274,25 +280,19 @@ sensor:
       healthchecks_down_checks:
         friendly_name: Healthchecks.io Down Checks
         value_template: >
-          {{ state_attr("sensor.healthchecks_io_status", "down") }}
+          {{ states.sensor.json_time.attributes["down"] }}
       healthchecks_grace_checks:
         friendly_name: Healthchecks.io Grace Checks
         value_template: >
-          {{ state_attr("sensor.healthchecks_io_status", "grace") }}
+          {{ states.sensor.json_time.attributes["grace"] }}
       healthchecks_overall_status:
         friendly_name: Healthchecks.io Overall Status
         value_template: >
-          {{ state_attr("sensor.healthchecks_io_status", "status") }}
+          {{ states.sensor.json_time.attributes["status"] }}
       healthchecks_total_checks:
         friendly_name: Healthchecks.io Total Checks
         value_template: >
-          {{ state_attr("sensor.healthchecks_io_status", "total") }}
-
-  - platform: rest
-    name: Healthchecks.io Status
-    resource: !secret healthchecksio_status_url
-    scan_interval:
-      minutes: 5
+          {{ states.sensor.json_time.attributes["total"] }}
 
   - platform: sql
     db_url: !secret recorder_db_url
