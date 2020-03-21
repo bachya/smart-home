@@ -55,7 +55,7 @@ function update() {
     # If the repo is dirty, we shouldn't try to deploy:
     if [ ! "$(remote_git diff --quiet)" ]; then
         send_slack_message \
-            "😒 Refusing to deploy when the repo is dirty." \
+            "😣 Refusing to deploy when the local repo is dirty." \
             "$SLACK_COLOR_YELLOW"
         return 1
     fi
