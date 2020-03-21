@@ -7,7 +7,7 @@ services:
     container_name: almond
     image: "stanfordoval/almond-server:v${ALMOND_SERVER_VERSION}-portable"
     network_mode: "host"
-    restart: unless-stopped
+    restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - almond-config:/var/lib/almond-server
@@ -19,7 +19,7 @@ services:
     image: "acockburn/appdaemon:${APPDAEMON_VERSION}"
     ports:
       - "127.0.0.1:5051:5051"
-    restart: unless-stopped
+    restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - appdaemon-config:/conf
@@ -28,7 +28,7 @@ services:
     container_name: esphome-dashboard
     image: "esphome/esphome:${ESPHOME_VERSION}"
     network_mode: "host"
-    restart: unless-stopped
+    restart: always
     volumes:
       - ./esphome:/config
       - /etc/localtime:/etc/localtime:ro
@@ -45,7 +45,7 @@ services:
       F2B_IPTABLES_CHAIN: INPUT
     image: "crazymax/fail2ban:${FAIL2BAN_CONTAINER_VERSION}"
     network_mode: "host"
-    restart: unless-stopped
+    restart: always
     volumes:
       - ./fail2ban/settings/jail.local:/etc/fail2ban/jail.local
       - /etc/localtime:/etc/localtime:ro
@@ -58,7 +58,7 @@ services:
     command: /entry.sh
     container_name: fail2ban-mqtt-notifier
     image: bachya/fail2ban-mqtt-notifier:latest
-    restart: unless-stopped
+    restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/log/nginx:/var/log/nginx:ro
@@ -74,7 +74,7 @@ services:
     image: bachya/glances
     ports:
       - "61208:61208/tcp"
-    restart: unless-stopped
+    restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - glances-config:/etc/glances:ro
@@ -89,7 +89,7 @@ services:
       - "/dev/zwave:/dev/zwave"
     image: "homeassistant/home-assistant:${HOME_ASSISTANT_CORE_VERSION}"
     network_mode: "host"
-    restart: unless-stopped
+    restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
@@ -105,7 +105,7 @@ services:
     image: bianjp/mariadb-alpine:latest
     ports:
       - "3306:3306/tcp"
-    restart: unless-stopped
+    restart: always
     volumes:
       - mysql-hass-data:/var/lib/mysql
 
@@ -128,7 +128,7 @@ services:
       - vernemq
     image: bachya/nginx
     network_mode: "host"
-    restart: unless-stopped
+    restart: always
     volumes:
       - ./nginx/settings/conf.d:/etc/nginx/conf.d
       - ./nginx/settings/dhparams.pem:/etc/nginx/dhparams.pem
@@ -148,7 +148,7 @@ services:
     image: "portainer/portainer:${PORTAINER_VERSION}"
     ports:
       - "127.0.0.1:9000:9000/tcp"
-    restart: unless-stopped
+    restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
@@ -181,7 +181,7 @@ services:
     ports:
       - "1883:1883/tcp"
       - "127.0.0.1:8888:8888/tcp"
-    restart: unless-stopped
+    restart: always
     user: root
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -197,7 +197,7 @@ services:
     environment:
       TZ: America/Denver
     image: "koenkk/zigbee2mqtt:${Z2M_VERSION}"
-    restart: unless-stopped
+    restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - zigbee2mqtt-config:/app/data
@@ -213,7 +213,7 @@ services:
     image: "carldebilly/zigbee2mqttassistant:${Z2M_ASSISTANT_VERSION}"
     ports:
       - "127.0.0.1:8880:80/tcp"
-    restart: unless-stopped
+    restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - zigbee2mqtt-config:/app/data
