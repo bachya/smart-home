@@ -280,19 +280,19 @@ sensor:
       healthchecks_down_checks:
         friendly_name: Healthchecks.io Down Checks
         value_template: >
-          {{ states.sensor.json_time.attributes["down"] }}
+          {{ state_attr("sensor.healthchecks_io_status", "down") }}
       healthchecks_grace_checks:
         friendly_name: Healthchecks.io Grace Checks
         value_template: >
-          {{ states.sensor.json_time.attributes["grace"] }}
+          {{ state_attr("sensor.healthchecks_io_status", "grace") }}
       healthchecks_overall_status:
         friendly_name: Healthchecks.io Overall Status
         value_template: >
-          {{ states.sensor.json_time.attributes["status"] }}
+          {{ state_attr("sensor.healthchecks_io_status", "status") }}
       healthchecks_total_checks:
         friendly_name: Healthchecks.io Total Checks
         value_template: >
-          {{ states.sensor.json_time.attributes["total"] }}
+          {{ state_attr("sensor.healthchecks_io_status", "total") }}
 
   - platform: sql
     db_url: !secret recorder_db_url
