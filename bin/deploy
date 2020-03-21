@@ -74,7 +74,9 @@ function update() {
     remote_git fetch
     status_result=$(remote_git status | grep -c "behind" || true)
     if [ "$status_result" -eq "0" ]; then
-        send_slack_message "No new changes to deploy" "$SLACK_COLOR_BLUE"
+        send_slack_message \
+            "😑 No new changes to deploy." \
+            "$SLACK_COLOR_BLUE"
         return 0
     fi
 
@@ -82,28 +84,31 @@ function update() {
     # to all finish):
     if [[ "$(num_of_running_builds)" -gt "1" ]]; then
         send_slack_message \
-            "Waiting for other CI/CD jobs to finish before deploying" \
+            "😴 Waiting for other CI/CD jobs to finish before deploying." \
             "$SLACK_COLOR_BLUE"
         return 0
     fi
-
-    new_commits="$(remote_git --no-pager log --format="• \`%h\` %s" HEAD...FETCH_HEAD)"
 
     # If the merge doesn't go well, abort:
     git_merge_result="$(remote_git merge FETCH_HEAD > /dev/null 2>&1)"
     if [ "$git_merge_result" == "1" ]; then
         send_slack_message \
-            "Deployment failed due to failed Git merge on target host" \
+            "😢 Deployment failed due to failed Git merge in local repo." \
             "$SLACK_COLOR_RED"
         return 1
     fi
 
     # shellcheck disable=SC1117
-    send_slack_message "Deployment started:\n$new_commits" "$SLACK_COLOR_BLUE"
+    new_commits="$(remote_git --no-pager log --format="• \`%h\` %s" HEAD...FETCH_HEAD)"
+    send_slack_message \
+        "😎 Deployment started:\n$new_commits" \
+        "$SLACK_COLOR_BLUE"
 
     "$REPO_PATH"/bin/build
 
-    send_slack_message "Deployment completed" "$SLACK_COLOR_GREEN"
+    send_slack_message \
+        "🥳 Deployment completed!" \
+        "$SLACK_COLOR_GREEN"
 }
 
 sleep 2
