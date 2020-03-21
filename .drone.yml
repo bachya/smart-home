@@ -87,14 +87,6 @@ depends_on:
   - Pre-Flight
 
 steps:
-  - name: "Config Check: Dev"
-    image: homeassistant/home-assistant:dev
-    pull: always
-    failure: ignore
-    commands:
-      - cd /usr/src/homeassistant
-      - "python -m homeassistant -c /drone/src/home-assistant/settings \
-         --script check_config"
   - name: "Config Check: RC"
     image: homeassistant/home-assistant:rc
     pull: always
@@ -105,13 +97,6 @@ steps:
          --script check_config"
   - name: "Config Check: Latest"
     image: homeassistant/home-assistant:latest
-    pull: always
-    commands:
-      - cd /usr/src/homeassistant
-      - "python -m homeassistant -c /drone/src/home-assistant/settings \
-         --script check_config"
-  - name: "Config Check: Stable"
-    image: homeassistant/home-assistant:stable
     pull: always
     commands:
       - cd /usr/src/homeassistant
