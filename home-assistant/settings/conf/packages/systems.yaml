@@ -269,7 +269,7 @@ sensor:
     name: Healthchecks.io Status
     resource: !secret healthchecksio_status_url
     scan_interval:
-      minutes: 5
+      minutes: 1
     json_attributes:
       - status
       - total
