@@ -52,6 +52,14 @@ function update() {
     local local_branch
     local status_result
 
+    # If the repo is dirty, we shouldn't try to deploy:
+    if [ ! "$(remote_git diff --quiet)" ]; then
+        send_slack_message \
+            "😒 Refusing to deploy when the repo is dirty." \
+            "$SLACK_COLOR_YELLOW"
+        return 1
+    fi
+
     # If the repo has a branch other than the target one checked out, don't trigger
     # a build:
     local_branch="$(remote_git rev-parse --abbrev-ref HEAD)"
@@ -59,7 +67,6 @@ function update() {
         send_slack_message \
             "Refusing to deploy to local branch: $local_branch" \
             "$SLACK_COLOR_YELLOW"
-        echo "false"
         return 1
     fi
 
