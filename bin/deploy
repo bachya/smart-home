@@ -107,7 +107,7 @@ function update() {
     "$REPO_PATH"/bin/build
 
     send_slack_message \
-        "🥳 Deployment completed!" \
+        "🤩 Deployment completed!" \
         "$SLACK_COLOR_GREEN"
 }
 
