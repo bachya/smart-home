@@ -289,6 +289,12 @@ sensor:
         friendly_name: Healthchecks.io Overall Status
         value_template: >
           {{ state_attr("sensor.healthchecks_io_status", "status") }}
+        icon_template: >
+          {% if is_state("sensor.healthchecks_overall_status", "up") %}
+            mdi:check-circle
+          {% else %}
+            mdi:alert-circle
+          {% endif %}
       healthchecks_total_checks:
         friendly_name: Healthchecks.io Total Checks
         value_template: >
