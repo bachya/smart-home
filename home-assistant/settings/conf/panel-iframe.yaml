@@ -15,10 +15,6 @@ esphome_dashboard:
   title: ESPHome Dashboard
   url: !secret panel_url_esphome_dashboard
   icon: mdi:chip
-healtchecks:
-  title: Healthchecks.io
-  url: !secret panel_url_healthchecks
-  icon: mdi:server
 octopi:
   title: OctoPi
   url: !secret panel_url_octopi
