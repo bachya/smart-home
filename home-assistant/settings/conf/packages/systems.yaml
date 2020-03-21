@@ -261,13 +261,13 @@ sensor:
 
   - platform: rest
     name: Healthchecks.io Ping
-    resource: !secret healthchecksio_status_url
+    resource: !secret healthchecksio_ping_url
     scan_interval:
       minutes: 5
 
   - platform: rest
     name: Healthchecks.io Status
-    resource: !secret healthchecksio_ping_url
+    resource: !secret healthchecksio_status_url
     scan_interval:
       minutes: 5
     json_attributes:
