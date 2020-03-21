@@ -299,6 +299,14 @@ sensor:
         friendly_name: Healthchecks.io Total Checks
         value_template: >
           {{ state_attr("sensor.healthchecks_io_status", "total") }}
+      healthchecks_up_checks:
+        friendly_name: Healthchecks.io Up Checks
+        value_template: >
+          {{
+            states("sensor.healthchecks_total_checks")|int -
+            states("sensor.healthchecks_grace_checks")|int -
+            states("sensor.healthchecks_down_checks")|int
+          }}
 
   - platform: sql
     db_url: !secret recorder_db_url
