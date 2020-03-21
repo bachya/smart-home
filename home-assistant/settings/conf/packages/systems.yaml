@@ -232,7 +232,6 @@ sensor:
     value_template: "{{ value_json.tag_name }}"
     scan_interval: 1800
 
-
   - platform: dnsip
     hostname: !secret base_domain_name
 
