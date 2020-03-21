@@ -16,10 +16,8 @@ RUN apk update \
     && pip3 install --upgrade \
       pip \
       glances==${version} \
-      bottle \
-      docker \
-      hddtemp \
-      pySMART.smartx \
+      bottle==0.12.13 \
+      docker==2.4.2 \
     && rm -rf /var/cache/apk/*
 
 # Get timezone stuff set up correctly:
