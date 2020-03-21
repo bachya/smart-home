@@ -65,7 +65,7 @@ function update() {
     local_branch="$(remote_git rev-parse --abbrev-ref HEAD)"
     if [ "$local_branch" != "$DRONE_BRANCH" ]; then
         send_slack_message \
-            "Refusing to deploy to local branch: $local_branch" \
+            "😣 Refusing to deploy to unauthorized branch (\`$local_branch\`)." \
             "$SLACK_COLOR_YELLOW"
         return 1
     fi
