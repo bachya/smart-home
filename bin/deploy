@@ -89,6 +89,8 @@ function update() {
         return 0
     fi
 
+    new_commits="$(remote_git --no-pager log --format="• \`%h\` %s" HEAD...FETCH_HEAD)"
+
     # If the merge doesn't go well, abort:
     git_merge_result="$(remote_git merge FETCH_HEAD > /dev/null 2>&1)"
     if [ "$git_merge_result" == "1" ]; then
@@ -98,8 +100,6 @@ function update() {
         return 1
     fi
 
-    # shellcheck disable=SC1117
-    new_commits="$(remote_git --no-pager log --format="• \`%h\` %s" HEAD...FETCH_HEAD)"
     send_slack_message \
         "😎 Deployment started:\n$new_commits" \
         "$SLACK_COLOR_BLUE"
