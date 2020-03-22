@@ -5,13 +5,6 @@ glances:
 
 sensor:
   - platform: command_line
-    name: Hub CPU Temperature
-    command: >
-      cat /sys/class/thermal/thermal_zone*/temp 2>/dev/null |
-      awk \'{ sum += $1; n++ } END { if (n > 0) print (sum / n) / 1000; }\'
-    unit_of_measurement: "°C"
-
-  - platform: command_line
     name: Hub Uptime
     command: >
       cat /proc/uptime | awk \'{ print $1 / 86400 }\' | cut -f1 -d"."
