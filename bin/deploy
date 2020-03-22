@@ -104,7 +104,7 @@ function update() {
         "😎 Deployment started:\n$new_commits" \
         "$SLACK_COLOR_BLUE"
 
-    "$REPO_PATH"/bin/build
+    "$REPO_PATH/bin/build"
 
     send_slack_message \
         "🤩 Deployment completed!" \
