@@ -297,7 +297,6 @@ sensor:
           {% else %}
             mdi:alert-circle
           {% endif %}
-        unit_of_measurement: checks
       healthchecks_total_checks:
         friendly_name: Healthchecks.io Total Checks
         value_template: >
