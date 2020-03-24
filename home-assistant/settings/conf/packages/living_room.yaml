@@ -46,7 +46,8 @@ binary_sensor:
     sensors:
       fiddle_leaf_fig_moisture_low_and_at_home:
         value_template: >-
-          {{ states("sensor.fiddle_leaf_fig_moisture") | int < 15
+          {{ not is_state("sensor.fiddle_leaf_fig_moisture", "unknown")
+          and states("sensor.fiddle_leaf_fig_moisture") | int < 15
           and is_state("sensor.proximity_zone", "Home") }}
 
 group:
