@@ -311,6 +311,7 @@ sensor:
             states("sensor.healthchecks_grace_checks")|int -
             states("sensor.healthchecks_down_checks")|int
           }}
+        unit_of_measurement: checks
 
   - platform: sql
     db_url: !secret recorder_db_url
