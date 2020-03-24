@@ -281,10 +281,12 @@ sensor:
         friendly_name: Healthchecks.io Down Checks
         value_template: >
           {{ state_attr("sensor.healthchecks_io_status", "down") }}
+        unit_of_measurement: checks
       healthchecks_grace_checks:
         friendly_name: Healthchecks.io Grace Checks
         value_template: >
           {{ state_attr("sensor.healthchecks_io_status", "grace") }}
+        unit_of_measurement: checks
       healthchecks_overall_status:
         friendly_name: Healthchecks.io Overall Status
         value_template: >
@@ -295,10 +297,12 @@ sensor:
           {% else %}
             mdi:alert-circle
           {% endif %}
+        unit_of_measurement: checks
       healthchecks_total_checks:
         friendly_name: Healthchecks.io Total Checks
         value_template: >
           {{ state_attr("sensor.healthchecks_io_status", "total") }}
+        unit_of_measurement: checks
       healthchecks_up_checks:
         friendly_name: Healthchecks.io Up Checks
         value_template: >
