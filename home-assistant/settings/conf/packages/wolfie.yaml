@@ -10,11 +10,9 @@ alert:
       - 120
     notifiers:
       - mobile_app_aarons_iphone
-      - mobile_app_brittany_bachs_iphone
 
   wolfie_stuck:
     name: "🤖 Wolfie is stuck on something and needs help."
-    done_message: ✅ Wolfie has been unstuck.
     title: Wolfie is Stuck
     entity_id: binary_sensor.wolfie_stuck_and_home
     state: "on"
