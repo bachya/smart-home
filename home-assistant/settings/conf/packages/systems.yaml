@@ -118,6 +118,26 @@ sensor:
     scan_interval: 1800
 
   - platform: command_line
+    name: Grafana Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/grafana/grafana/releases/latest
+    value_template: '{{ value_json.tag_name[1:] }}'
+    scan_interval: 1800
+
+  - platform: command_line
+    name: InfluxDB Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/influxdata/influxdb/tags
+    value_template: '{{ value_json[0].name[1:] }}'
+    scan_interval: 1800
+
+  - platform: command_line
     name: Latest Drone Build
     command: "curl -s 'https://bf5959ab-1a7e-47b7-9528-19651d1b8018.bachyaprodu\
       ctions.com:18884/api/repos/bachya/hub/builds?per_page=1' \

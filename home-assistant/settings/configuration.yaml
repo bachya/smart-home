@@ -7,6 +7,7 @@ conversation:
 default_config:
 frontend: !include conf/frontend.yaml
 http: !include conf/http.yaml
+influxdb: !include conf/influxdb.yaml
 logger: !include conf/logger.yaml
 lovelace:
 panel_custom: !include conf/panel-custom.yaml

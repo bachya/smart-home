@@ -79,11 +79,28 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - glances-config:/etc/glances:ro
 
+  grafana:
+    container_name: grafana
+    depends_on:
+      - influxdb
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD}"
+      GF_SECURITY_ADMIN_USER: "${GRAFANA_ADMIN_USERNAME}"
+      GF_SERVER_DOMAIN: "${GRAFANA_DOMAIN}"
+    image: "grafana/grafana:${GRAFANA_VERSION}"
+    ports:
+      - "127.0.0.1:3000:3000/tcp"
+    restart: unless-stopped
+    user: "104"
+    volumes:
+      - grafana-config:/var/lib/grafana
+
   hass:
     container_name: hass
     depends_on:
       - glances
       - mysql-hass
+      - influxdb
       - vernemq
     devices:
       - "/dev/zwave:/dev/zwave"
@@ -94,6 +111,19 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - hass-config:/config
+
+  influxdb:
+    container_name: influxdb
+    image: "influxdb:${INFLUXDB_VERSION}-alpine"
+    environment:
+      INFLUXDB_DB: "${INFLUXDB_DB}"
+      INFLUXDB_USER: "${INFLUXDB_USER}"
+      INFLUXDB_USER_PASSWORD: "${INFLUXDB_PASSWORD}"
+    ports:
+      - "8086:8086/tcp"
+    restart: unless-stopped
+    volumes:
+      - influxdb-config:/var/lib/influxdb
 
   mysql-hass:
     container_name: mysql-hass
@@ -123,6 +153,7 @@ services:
     depends_on:
       - appdaemon
       - esphome-dashboard
+      - grafana
       - hass
       - portainer
       - vernemq
@@ -225,7 +256,9 @@ volumes:
   fail2ban-config:
   fail2ban-log:
   glances-config:
+  grafana-config:
   hass-config:
+  influxdb-config:
   mysql-hass-data:
   portainer-config:
   zigbee2mqtt-config:

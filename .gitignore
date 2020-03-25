@@ -13,6 +13,7 @@ docs/
 emulated_hue_ids.json
 entity_registry.yaml
 google_calendars.yaml
+grafana
 harmony_basement_tv.conf
 harmony_living_room_tv.conf
 home-assistant/settings/.storage
