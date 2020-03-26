@@ -10,6 +10,9 @@ alert:
       - 120
     notifiers:
       - mobile_app_aarons_iphone
+    data:
+      push:
+        category: WOLFIE
 
   wolfie_stuck:
     name: "🤖 Wolfie is stuck on something and needs help."
@@ -61,6 +64,18 @@ automation:
       service: alarm_control_panel.alarm_arm_away
       data:
         entity_id: alarm_control_panel.8673_e_55th_avenue
+
+  - alias: "iOS Action: Empty Dishwasher"
+    trigger:
+      - platform: event
+        event_type: ios.notification_action_fired
+        event_data:
+          action_name: WOLFIE_EMPTY
+    action:
+      service: input_select.select_option
+      data:
+        entity_id: input_select.wolfie_bin_status
+        option: Empty
 
   - alias: "Notify when time for Wolfie to run"
     trigger:
