@@ -15,7 +15,7 @@ alert:
       - slack
     data:
       push:
-        category: "GARAGE"
+        category: GARAGE
 
   house_empty_and_insecure:
     name: "🚨 The house isn't secure and no one is home."
@@ -33,7 +33,7 @@ alert:
       - slack
     data:
       push:
-        category: "SECURITY"
+        category: SECURITY
 
   smoke_detected:
     name: "🚨 Smoke has been detected."
