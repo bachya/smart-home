@@ -31,6 +31,9 @@ alert:
       - mobile_app_aarons_iphone
       - mobile_app_brittany_bachs_iphone
       - slack
+    data:
+      push:
+        category: "SECURITY"
 
   smoke_detected:
     name: "🚨 Smoke has been detected."
@@ -121,6 +124,17 @@ automation:
       service: cover.close_cover
       data:
         entity_id: cover.garage_door
+
+  - alias: "iOS Action: Secure the House"
+    trigger:
+      - platform: event
+        event_type: ios.notification_action_fired
+        event_data:
+          action_name: SECURITY_SECURE
+    action:
+      service: scene.turn_on
+      data:
+        entity_id: scene.depart_home
 
   - alias: "Notify of Fail2Ban bans"
     trigger:
