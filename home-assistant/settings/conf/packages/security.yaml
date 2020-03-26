@@ -13,6 +13,9 @@ alert:
       - mobile_app_aarons_iphone
       - mobile_app_brittany_bachs_iphone
       - slack
+    data:
+      push:
+        category: "GARAGE"
 
   house_empty_and_insecure:
     name: "🚨 The house isn't secure and no one is home."
@@ -107,6 +110,17 @@ automation:
         message: >
             📥 SimpliSafe Notification:
             {{ trigger.event.data.service_data.message }}
+
+  - alias: "iOS Action: Close Garage"
+    trigger:
+      - platform: event
+        event_type: ios.notification_action_fired
+        event_data:
+          action_name: GARAGE_CLOSE_DOOR
+    action:
+      service: cover.close_cover
+      data:
+        entity_id: cover.garage_door
 
   - alias: "Notify of Fail2Ban bans"
     trigger:
