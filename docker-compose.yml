@@ -89,7 +89,7 @@ services:
       GF_SERVER_DOMAIN: "${GRAFANA_DOMAIN}"
     image: "grafana/grafana:${GRAFANA_VERSION}"
     ports:
-      - "127.0.0.1:3000:3000/tcp"
+      - "127.0.0.1:8878:3000/tcp"
     restart: unless-stopped
     user: "104"
     volumes:
