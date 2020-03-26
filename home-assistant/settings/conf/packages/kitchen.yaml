@@ -12,6 +12,9 @@ alert:
     skip_first: true
     notifiers:
       - mobile_app_aarons_iphone
+    data:
+      push:
+        category: DISHWASHER
 
   kitchen_sink_leak:
     name: 💦 Leak detected under the kitchen sink!
@@ -30,6 +33,18 @@ alert:
         category: WATER
 
 automation:
+  - alias: "iOS Action: Empty Dishwasher"
+    trigger:
+      - platform: event
+        event_type: ios.notification_action_fired
+        event_data:
+          action_name: DISHWASHER_EMPTY
+    action:
+      service: input_select.select_option
+      data:
+        entity_id: input_select.dishwasher_status
+        option: Dirty
+
   - alias: 'Set dishwasher state to "Running"'
     trigger:
       platform: numeric_state
