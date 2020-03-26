@@ -25,6 +25,9 @@ alert:
       - mobile_app_aarons_iphone
       - mobile_app_brittany_bachs_iphone
       - slack
+    data:
+      push:
+        category: WATER
 
 automation:
   - alias: 'Set dishwasher state to "Running"'

@@ -12,6 +12,9 @@ alert:
       - mobile_app_aarons_iphone
       - mobile_app_brittany_bachs_iphone
       - slack
+    data:
+      push:
+        category: WATER
 
 apple_tv:
   - host: 172.16.10.64
@@ -20,6 +23,18 @@ apple_tv:
       D3E25683444DED1E26AB409A493D6"
     name: Basement Apple TV
     start_off: true
+
+automation:
+  - alias: "iOS Action: Close Water Main"
+    trigger:
+      - platform: event
+        event_type: ios.notification_action_fired
+        event_data:
+          action_name: WATER_CLOSE_MAIN
+    action:
+      service: switch.turn_off
+      data:
+        entity_id: switch.water_main
 
 remote:
   - platform: harmony
