@@ -4,7 +4,7 @@ alert:
     name: 🤖 Wolfie has finished cleaning and can be emptied.
     done_message: ✅ Wolfie's bin has been emptied.
     title: Wolfie is Full
-    entity_id: binary_sensor.wolfie_full_bin_and_home
+    entity_id: binary_sensor.should_notify_wolfie_full
     state: "on"
     repeat:
       - 120
@@ -17,7 +17,7 @@ alert:
   wolfie_stuck:
     name: "🤖 Wolfie is stuck on something and needs help."
     title: Wolfie is Stuck
-    entity_id: binary_sensor.wolfie_stuck_and_home
+    entity_id: binary_sensor.should_notify_wolfie_stuck
     state: "on"
     repeat:
       - 10
@@ -131,15 +131,21 @@ automation:
 binary_sensor:
   - platform: template
     sensors:
-      wolfie_full_bin_and_home:
+      should_notify_wolfie_full:
         value_template: >-
-          {{ is_state("input_select.wolfie_bin_status", "Full") and
-          is_state("sensor.proximity_zone", "Home") }}
+          {{
+            is_state("input_select.wolfie_bin_status", "Full") and
+            is_state("person.aaron", "home") and
+            is_state("input_boolean.blackout_mode", "off")
+          }}
 
-      wolfie_stuck_and_home:
+      should_notify_wolfie_stuck:
         value_template: >-
-          {{ is_state("vacuum.xiaomi_vacuum_cleaner", "error") and
-          is_state("sensor.proximity_zone", "Home") }}
+          {{
+            is_state("vacuum.xiaomi_vacuum_cleaner", "error") and
+            is_state("sensor.proximity_zone", "Home") and
+            is_state("input_boolean.blackout_mode", "off")
+          }}
 
 input_select:
   wolfie_bin_status:
