@@ -70,7 +70,7 @@ automation:
       - platform: event
         event_type: ios.notification_action_fired
         event_data:
-          action_name: WOLFIE_EMPTY
+          actionName: WOLFIE_EMPTY
     action:
       service: input_select.select_option
       data:

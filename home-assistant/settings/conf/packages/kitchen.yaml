@@ -38,7 +38,7 @@ automation:
       - platform: event
         event_type: ios.notification_action_fired
         event_data:
-          action_name: DISHWASHER_EMPTY
+          actionName: DISHWASHER_EMPTY
     action:
       service: input_select.select_option
       data:

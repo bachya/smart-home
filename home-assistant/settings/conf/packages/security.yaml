@@ -119,7 +119,7 @@ automation:
       - platform: event
         event_type: ios.notification_action_fired
         event_data:
-          action_name: GARAGE_CLOSE_DOOR
+          actionName: GARAGE_CLOSE_DOOR
     action:
       service: cover.close_cover
       data:
@@ -130,7 +130,7 @@ automation:
       - platform: event
         event_type: ios.notification_action_fired
         event_data:
-          action_name: SECURITY_SECURE
+          actionName: SECURITY_SECURE
     action:
       service: scene.turn_on
       data:

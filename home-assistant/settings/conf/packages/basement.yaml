@@ -30,7 +30,7 @@ automation:
       - platform: event
         event_type: ios.notification_action_fired
         event_data:
-          action_name: WATER_CLOSE_MAIN
+          actionName: WATER_CLOSE_MAIN
     action:
       service: switch.turn_off
       data:
