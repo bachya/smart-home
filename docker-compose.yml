@@ -218,6 +218,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/ssl:/etc/ssl:ro
       - /usr/share/ca-certificates:/usr/share/ca-certificates:ro
+      - vernemq-data:/vernemq/data
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
@@ -261,4 +262,5 @@ volumes:
   influxdb-config:
   mysql-hass-data:
   portainer-config:
+  vernemq-data:
   zigbee2mqtt-config:
