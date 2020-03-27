@@ -65,7 +65,7 @@ automation:
       data:
         entity_id: alarm_control_panel.8673_e_55th_avenue
 
-  - alias: "iOS Action: Empty Dishwasher"
+  - alias: "iOS Action: Empty Wolfie's Bin"
     trigger:
       - platform: event
         event_type: ios.notification_action_fired
