@@ -49,26 +49,6 @@ automation:
       data:
         entity_id: switch.master_bedroom_salt_lamp
 
-binary_sensor:
-  - platform: bayesian
-    name: In Bed
-    probability_threshold: 0.95
-    prior: 0.33
-    observations:
-      - entity_id: sun.sun
-        platform: state
-        to_state: below_horizon
-        prob_given_true: 0.75
-      - entity_id: group.people
-        platform: state
-        to_state: home
-        prob_given_true: 0.90
-      - entity_id: sensor.battery_state_7
-        platform: state
-        to_state: Charging
-        prob_given_true: 0.95
-        prob_given_false: 0.25
-
 input_boolean:
   master_bathroom_fan_sleep_timer_automation:
     icon: mdi:sleep
