@@ -27,7 +27,7 @@ automation:
     action:
       service: switch.turn_on
       data:
-        entity_id: group.living_room_lights
+        entity_id: switch.reading_lamp
 
   - alias: "Turn powder room fan back on if someone turns it off"
     trigger:
