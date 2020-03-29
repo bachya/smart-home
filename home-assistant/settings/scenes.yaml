@@ -90,7 +90,7 @@
       state: "on"
     automation.turn_lights_on_when_person_detected_at_nighttime:
       state: "on"
-    automation.turn_living_room_lights_on:
+    automation.turn_living_room_lights_on_when_we_arrive:
       state: "on"
     automation.turn_master_bedroom_lights_on_at_sunset:
       state: "on"
@@ -105,6 +105,8 @@
     automation.turn_on_garage_lights_when_garage_door_opens_while_it_s_dark:
       state: "on"
     automation.turn_powder_room_fan_back_on_if_someone_turns_it_off:
+      state: "on"
+    automation.turn_reading_lamp_on_at_sunset:
       state: "on"
     automation.update_openuv_every_30_minutes_during_the_daytime:
       state: "on"

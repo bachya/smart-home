@@ -13,17 +13,24 @@ alert:
       - mobile_app_brittany_bachs_iphone
 
 automation:
-  - alias: "Turn living room lights on"
+  - alias: "Turn living room lights on when we arrive"
     trigger:
-      - platform: state
-        entity_id: sensor.proximity_zone
-        to: Home
-      - platform: sun
-        event: sunset
+      platform: state
+      entity_id: sensor.proximity_zone
+      to: Home
     condition:
       condition: state
       entity_id: sun.sun
       state: below_horizon
+    action:
+      service: switch.turn_on
+      data:
+        entity_id: group.living_room_lights
+
+  - alias: "Turn reading lamp on at sunset"
+    trigger:
+      platform: sun
+      event: sunset
     action:
       service: switch.turn_on
       data:
