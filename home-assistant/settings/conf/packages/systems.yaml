@@ -1,5 +1,23 @@
 ---
 automation:
+  - alias: "Change to dark theme at night"
+    trigger:
+      platform: time
+      at: "19:00:00"
+    action:
+      service: frontend.set_theme
+      data:
+        name: midnight
+
+  - alias: "Change to light theme in the morning"
+    trigger:
+      platform: time
+      at: "07:00:00"
+    action:
+      service: frontend.set_theme
+      data:
+        name: default
+
   - alias: "Forward HASS persistent notifications to Slack"
     trigger:
       platform: event
