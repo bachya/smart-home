@@ -1,38 +1,68 @@
 ---
 kind: pipeline
-name: Pre-Flight
-
-trigger:
-  ref:
-    - refs/heads/master
-    - refs/heads/feature/*
-    - refs/tags/*
+name: Pre-Commit
 
 steps:
-  - name: Docker Compose
+  - name: Restore Cache
+    image: meltwater/drone-cache:master-9a52545
+    settings:
+      archive_format: gzip
+      backend: filesystem
+      cache_key: "pre_commit"
+      mount:
+        - /drone/src/.pre-commit-cache
+      restore: true
+    volumes:
+      - name: cache
+        path: /tmp/cache
+
+  - name: Run All Hooks
     image: python:3
-    commands:
-      - pip install docker-compose
-      - docker-compose config -q
-  - name: "Pre-Commit Hooks"
-    image: python:3
+    environment:
+      PRE_COMMIT_HOME: /drone/src/.pre-commit-cache
     commands:
       - pip3 install pre-commit
       - pre-commit install-hooks --config .pre-commit-config.yaml
       - pre-commit run --all-files
 
+  - name: Rebuild Cache
+    image: meltwater/drone-cache:master-9a52545
+    settings:
+      archive_format: gzip
+      backend: filesystem
+      cache_key: "pre_commit"
+      mount:
+        - /drone/src/.pre-commit-cache
+      rebuild: true
+    volumes:
+      - name: cache
+        path: /tmp/cache
+
+volumes:
+  - name: cache
+    host:
+      path: /var/lib/cache
+
+---
+kind: pipeline
+name: Docker Compose
+
+depends_on:
+  - Pre-Commit
+
+steps:
+  - name: Check docker-compose.yml
+    image: python:3
+    commands:
+      - pip install docker-compose
+      - docker-compose config -q
+
 ---
 kind: pipeline
 name: ESPHome
 
-trigger:
-  ref:
-    - refs/heads/master
-    - refs/heads/feature/*
-    - refs/tags/*
-
 depends_on:
-  - Pre-Flight
+  - Pre-Commit
 
 steps:
   - name: "Config Check: Beta"
@@ -42,6 +72,7 @@ steps:
     commands:
       - "for file in $(find /drone/src/esphome -type f -name \"*.yaml\" -not \
          -name \"secrets.yaml\"); do esphome \"$file\" config; done"
+
   - name: "Config Check: Latest"
     image: esphome/esphome:latest
     pull: always
@@ -53,14 +84,8 @@ steps:
 kind: pipeline
 name: Fail2Ban
 
-trigger:
-  ref:
-    - refs/heads/master
-    - refs/heads/feature/*
-    - refs/tags/*
-
 depends_on:
-  - Pre-Flight
+  - Pre-Commit
 
 steps:
   - name: "Config Check"
@@ -77,14 +102,8 @@ steps:
 kind: pipeline
 name: Home Assistant
 
-trigger:
-  ref:
-    - refs/heads/master
-    - refs/heads/feature/*
-    - refs/tags/*
-
 depends_on:
-  - Pre-Flight
+  - Pre-Commit
 
 steps:
   - name: "Config Check: RC"
@@ -95,6 +114,7 @@ steps:
       - cd /usr/src/homeassistant
       - "python -m homeassistant -c /drone/src/home-assistant/settings \
          --script check_config"
+
   - name: "Config Check: Latest"
     image: homeassistant/home-assistant:latest
     pull: always
@@ -107,14 +127,8 @@ steps:
 kind: pipeline
 name: NGINX
 
-trigger:
-  ref:
-    - refs/heads/master
-    - refs/heads/feature/*
-    - refs/tags/*
-
 depends_on:
-  - Pre-Flight
+  - Pre-Commit
 
 steps:
   - name: "Config Check"
@@ -123,6 +137,7 @@ steps:
       - apk update && apk add --no-cache nginx
       - ln -s /drone/src/nginx/settings /etc/nginx
       - nginx -t -c /etc/nginx/nginx.conf -g 'pid /tmp/nginx.pid; daemon off;'
+
   - name: "Static Analysis"
     image: yandex/gixy:latest
     pull: always
@@ -133,12 +148,6 @@ steps:
 ---
 kind: pipeline
 name: Deploy
-
-trigger:
-  branch:
-    - master
-  status:
-    - success
 
 depends_on:
   - ESPHome
@@ -160,6 +169,8 @@ steps:
         from_secret: deploy_ssh_key
       command_timeout: 5m
     when:
+      branch:
+        - master
       status:
         - success
 
@@ -173,10 +184,7 @@ trigger:
     - failure
 
 depends_on:
-  - ESPHome
-  - Fail2Ban
-  - Home Assistant
-  - NGINX
+  - Deploy
 
 steps:
   - name: Send Notification
