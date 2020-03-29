@@ -150,6 +150,7 @@ kind: pipeline
 name: Deploy
 
 depends_on:
+  - Docker Compose
   - ESPHome
   - Fail2Ban
   - Home Assistant
@@ -184,6 +185,11 @@ trigger:
     - failure
 
 depends_on:
+  - Docker Compose
+  - ESPHome
+  - Fail2Ban
+  - Home Assistant
+  - NGINX
   - Deploy
 
 steps:
