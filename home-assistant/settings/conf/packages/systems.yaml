@@ -67,6 +67,20 @@ automation:
       data:
         message: "🎮 The PS4 has been on for 12 hours."
 
+  - alias: "Pick the correct theme on HASS start"
+    trigger:
+      platform: homeassistant
+      at: start
+    action:
+      service: frontend.set_theme
+      data_template:
+        name: >
+          {% if is_state("sun.sun", "above_horizon") %}
+            Orange light
+          {% else %}
+            Orange Dark
+          {% endif %}
+
   - alias: "Power media center off (backup)"
     trigger:
       platform: time
