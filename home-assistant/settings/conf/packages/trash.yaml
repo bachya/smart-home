@@ -1,4 +1,31 @@
 ---
+automation:
+  - alias: Notify of next trash pickup the night before
+    trigger:
+      platform: time
+      at: "20:00:00"
+    condition:
+      condition: template
+      value_template: >
+        {{
+          (states("sensor.recollect_waste") | as_timestamp()
+          - now() | as_timestamp())/60/60 < 24
+        }}
+    action:
+      - service: notify.mobile_app_aarons_iphone
+        data_template:
+          message: >
+            🚮 Tomorrow's pickup will include: {{
+              [
+                "binary_sensor.recollect_next_pickup_includes_compost",
+                "binary_sensor.recollect_next_pickup_includes_extra_trash",
+                "binary_sensor.recollect_next_pickup_includes_recycling",
+                "binary_sensor.recollect_next_pickup_includes_trash"
+              ] | expand | selectattr("state", "equalto", "on")
+              | join(", ", attribute="attributes.friendly_name")
+            }}
+          title: Tomorrow's Trash Pickup
+
 binary_sensor:
   - platform: template
     sensors:
@@ -30,11 +57,6 @@ binary_sensor:
           {{ "garbage" in state_attr(
             "sensor.recollect_waste", "pickup_types"
           ) }}
-
-input_boolean:
-  notify_of_trash_pickup_automation:
-    icon: mdi:delete
-    name: Notify of pickups
 
 sensor:
   - platform: recollect_waste

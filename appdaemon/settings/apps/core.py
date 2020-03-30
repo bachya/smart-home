@@ -51,11 +51,6 @@ class Base(Hass):  # pylint: disable=too-many-public-methods
             if not getattr(self, app, None):
                 setattr(self, app, self.get_app(app))
 
-        # Define a reference to the "manager app" – for example, a trash-
-        # related app might carry a reference to TrashManager:
-        if self.args.get(CONF_APP):
-            self.app = getattr(self, self.args[CONF_APP])
-
         # Set the entity ID of the input boolean that will control whether
         # this app is enabled or not:
         if self.args.get(CONF_ENABLED_TOGGLE_ENTITY_ID):

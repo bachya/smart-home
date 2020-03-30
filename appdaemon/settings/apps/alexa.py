@@ -1,4 +1,6 @@
 """Define an app for working with Alexa."""
+from datetime import datetime
+from math import ceil
 from typing import Tuple
 
 from const import CONF_PEOPLE
@@ -8,6 +10,7 @@ from helpers import (
     relative_search_dict,
     relative_search_list,
     random_affirmative_response,
+    suffix_strftime,
 )
 from util.string import camel_to_underscore
 
@@ -66,7 +69,32 @@ class Alexa(Base):
 
     def in_next_trash_pickup_intent(self, data: dict) -> Tuple[str, str, str]:
         """Define a handler for the InNextTrashPickupIntent intent."""
-        _, speech = self.trash_manager.in_next_pickup_str()
+        date = datetime.strptime(self.get_state("sensor.recollect_waste"), "%Y-%m-%d")
+        sensors = [
+            "binary_sensor.recollect_next_pickup_includes_compost",
+            "binary_sensor.recollect_next_pickup_includes_extra_trash",
+            "binary_sensor.recollect_next_pickup_includes_recycling",
+            "binary_sensor.recollect_next_pickup_includes_trash",
+        ]
+
+        to_pickup = []
+        for sensor in sensors:
+            state = self.get_state(sensor, attribute="all")
+            if state["state"] == "on":
+                to_pickup.append(state["attributes"]["friendly_name"])
+        grammatical_types = grammatical_list_join(to_pickup)
+
+        delta = ceil((date - self.datetime()).total_seconds() / 60 / 60 / 24)
+        if delta == 1:
+            relative_date_string = "tomorrow"
+        else:
+            relative_date_string = f"in {delta} days"
+        grammatical_time = suffix_strftime("%A, %B {TH}", date)
+
+        speech = (
+            f"The next pickup is {relative_date_string} on {grammatical_time}. "
+            f"It includes {grammatical_types}."
+        )
 
         return speech, speech, "In the Next Trash Pickup"
 
