@@ -7,7 +7,7 @@ automation:
     action:
       service: frontend.set_theme
       data:
-        name: midnight
+        name: Orange Dark
 
   - alias: "Change to light theme in the morning"
     trigger:
@@ -16,7 +16,7 @@ automation:
     action:
       service: frontend.set_theme
       data:
-        name: default
+        name: Orange light
 
   - alias: "Forward HASS persistent notifications to Slack"
     trigger:
