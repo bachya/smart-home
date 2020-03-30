@@ -2,8 +2,8 @@
 automation:
   - alias: "Change to dark theme at night"
     trigger:
-      platform: time
-      at: "19:00:00"
+      platform: sun
+      event: sunset
     action:
       service: frontend.set_theme
       data:
@@ -11,8 +11,8 @@ automation:
 
   - alias: "Change to light theme in the morning"
     trigger:
-      platform: time
-      at: "07:00:00"
+      platform: sun
+      event: sunrise
     action:
       service: frontend.set_theme
       data:
