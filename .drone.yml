@@ -204,7 +204,7 @@ steps:
           `{{repo.name}}/{{build.branch}}`: Build #{{build.number}} successful
         {{else}}
           `{{repo.name}}/{{build.branch}}`: Build #{{build.number}} failed
-          (details: #{{build.link}})
+          {{build.link}}
         {{/success}}
     when:
       status:
