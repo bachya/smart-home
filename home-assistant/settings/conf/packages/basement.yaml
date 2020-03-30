@@ -9,8 +9,7 @@ alert:
     repeat:
       - 1
     notifiers:
-      - mobile_app_aarons_iphone
-      - mobile_app_brittany_bachs_iphone
+      - phones
       - slack
     data:
       push:

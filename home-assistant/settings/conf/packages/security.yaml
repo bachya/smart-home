@@ -10,8 +10,7 @@ alert:
       - 10
     skip_first: true
     notifiers:
-      - mobile_app_aarons_iphone
-      - mobile_app_brittany_bachs_iphone
+      - phones
       - slack
     data:
       push:
@@ -28,8 +27,7 @@ alert:
       - 5
     skip_first: true
     notifiers:
-      - mobile_app_aarons_iphone
-      - mobile_app_brittany_bachs_iphone
+      - phones
       - slack
     data:
       push:
@@ -44,8 +42,7 @@ alert:
     repeat:
       - 1
     notifiers:
-      - mobile_app_aarons_iphone
-      - mobile_app_brittany_bachs_iphone
+      - phones
       - slack
 
 automation:

@@ -1,4 +1,10 @@
 ---
+- platform: group
+  name: phones
+  services:
+    - service: mobile_app_aarons_iphone
+    - service: mobile_app_brittany_bachs_iphone
+
 - platform: slack
   name: slack
   api_key: !secret slack_api_key
