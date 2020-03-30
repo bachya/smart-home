@@ -70,7 +70,7 @@ automation:
   - alias: "Pick the correct theme on HASS start"
     trigger:
       platform: homeassistant
-      at: start
+      event: start
     action:
       service: frontend.set_theme
       data_template:
