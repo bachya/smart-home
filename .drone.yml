@@ -52,9 +52,8 @@ depends_on:
 
 steps:
   - name: Check docker-compose.yml
-    image: python:3
+    image: wernight/docker-compose:1.24.0
     commands:
-      - pip install docker-compose
       - docker-compose config -q
 
 ---
