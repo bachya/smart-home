@@ -144,7 +144,7 @@ services:
       - NET_ADMIN
     container_name: nginx
     image: "50e49b6b-b382-4336-bf43-a74c32e762a0.bachyaproductions.com:18884\
-            /bachya/nginx-geoip:1.17.9"
+            /bachya/nginx-geoip:${NGINX_VERSION}"
     network_mode: "host"
     restart: always
     volumes:
