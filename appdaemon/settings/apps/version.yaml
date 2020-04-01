@@ -3,7 +3,6 @@ new_almond_server_version_automation:
   module: version
   class: NewPortainerVersionNotification
   constrain_enabled: true
-  dependencies:
   available: sensor.almond_server_available
   installed: sensor.almond_server_installed
   app_name: Almond Server
@@ -19,7 +18,6 @@ new_appdaemon_version_automation:
   module: version
   class: NewPortainerVersionNotification
   constrain_enabled: true
-  dependencies:
   available: sensor.appdaemon_available
   installed: sensor.appdaemon_installed
   app_name: AppDaemon
@@ -35,7 +33,6 @@ new_esphome_version_automation:
   module: version
   class: NewMultiSensorVersionNotification
   constrain_enabled: true
-  dependencies:
   available: sensor.esphome_available
   installed: sensor.esphome_installed
   version_sensors:
@@ -52,8 +49,6 @@ new_esphome_version_automation:
 new_grafana_version_automation:
   module: version
   class: NewPortainerVersionNotification
-  dependencies:
-    - presence_manager
   available: sensor.grafana_available
   installed: sensor.grafana_installed
   app_name: Grafana
@@ -69,7 +64,6 @@ new_hass_version_automation:
   module: version
   class: NewVersionNotification
   constrain_enabled: true
-  dependencies:
   available: sensor.hass_available
   installed: sensor.hass_installed
   app_name: Home Assistant
@@ -93,7 +87,6 @@ new_portainer_version_automation:
   module: version
   class: NewPortainerVersionNotification
   constrain_enabled: true
-  dependencies:
   available: sensor.portainer_available
   installed: sensor.portainer_installed
   app_name: Portainer
@@ -109,7 +102,6 @@ new_vernemq_version_automation:
   module: version
   class: NewPortainerVersionNotification
   constrain_enabled: true
-  dependencies:
   available: sensor.vernemq_available
   installed: sensor.vernemq_installed
   app_name: VerneMQ
@@ -125,7 +117,6 @@ new_yi_hack_version_automation:
   module: version
   class: NewVersionNotification
   constrain_enabled: true
-  dependencies:
   available: sensor.yi_hack_available
   installed: sensor.yi_hack_installed
   app_name: Yi Hack
@@ -135,7 +126,6 @@ new_zigbee2mqtt_version_automation:
   module: version
   class: NewPortainerVersionNotification
   constrain_enabled: true
-  dependencies:
   available: sensor.zigbee2mqtt_available
   installed: sensor.zigbee2mqtt_installed
   app_name: Almond Server
