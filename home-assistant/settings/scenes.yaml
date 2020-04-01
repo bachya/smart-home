@@ -20,7 +20,7 @@
       state: "on"
     automation.backyard_light_switch_via_kitchen_patio_light_on:
       state: "on"
-    automation.cycle_toilet_fan_during_the_day:
+    automation.cycle_master_toilet_fan_during_the_day:
       state: "on"
     automation.disable_simplisafe_sounds_in_blackout_mode:
       state: "on"
@@ -178,7 +178,7 @@
   entities:
     alarm_control_panel.8673_e_55th_avenue:
       state: armed_away
-    automation.cycle_toilet_fan_during_the_day:
+    automation.cycle_master_toilet_fan_during_the_day:
       state: "off"
     cover.garage_door:
       state: closed
@@ -266,7 +266,7 @@
       state: "off"
     automation.automatically_lock_up_when_we_depart:
       state: "off"
-    automation.cycle_toilet_fan_during_the_day:
+    automation.cycle_master_toilet_fan_during_the_day:
       state: "off"
     automation.notify_of_next_trash_pickup_the_night_before:
       state: "off"
@@ -286,7 +286,7 @@
 - id: vacation_mode
   name: Vacation Mode
   entities:
-    automation.cycle_toilet_fan_during_the_day:
+    automation.cycle_master_toilet_fan_during_the_day:
       state: "off"
     automation.notify_of_next_trash_pickup_the_night_before:
       state: "off"
