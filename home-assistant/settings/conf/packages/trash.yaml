@@ -7,10 +7,11 @@ automation:
     condition:
       condition: template
       value_template: >
-        {{
-          (states("sensor.recollect_waste") | as_timestamp()
-          - now() | as_timestamp())/60/60 < 24
-        }}
+        {%
+          set delta = ("2020-04-01" | as_timestamp() - now()
+          | as_timestamp())/60/60
+        %}
+        {{ delta > 0 and delta < 24 }}
     action:
       - service: notify.mobile_app_aarons_iphone
         data_template:
