@@ -82,10 +82,6 @@
       state: "on"
     automation.set_dishwasher_state_to_running:
       state: "on"
-    automation.slack_interactive_command_home_assistant_app:
-      state: "on"
-    automation.slack_slash_command_home_assistant_app:
-      state: "on"
     automation.turn_bar_cart_lights_on:
       state: "on"
     automation.turn_lights_off_when_person_detected_at_nighttime_leaves:
