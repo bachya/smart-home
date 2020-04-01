@@ -32,6 +32,8 @@
       state: "on"
     automation.forward_simplisafe_notifications_to_slack:
       state: "on"
+    automation.notify_of_next_trash_pickup_the_night_before:
+      state: "on"
     automation.set_sleep_timer_on_master_bathroom_fan_when_switch_double_tapped:
       state: "on"
     automation.set_sleep_timer_on_master_toilet_fan_when_switch_double_tapped:
@@ -121,8 +123,6 @@
     input_boolean.notify_of_low_batteries_automation:
       state: "on"
     input_boolean.notify_of_new_versions_automation:
-      state: "on"
-    input_boolean.notify_of_trash_pickup_automation:
       state: "on"
     input_boolean.notify_when_person_on_camera_automation:
       state: "off"
@@ -272,13 +272,13 @@
       state: "off"
     automation.cycle_toilet_fan_during_the_day:
       state: "off"
+    automation.notify_of_next_trash_pickup_the_night_before:
+      state: "off"
     input_boolean.adjust_climate_on_proximity_automation:
       state: "off"
     input_boolean.notify_of_low_batteries_automation:
       state: "off"
     input_boolean.notify_of_new_versions:
-      state: "off"
-    input_boolean.notify_of_trash_pickup_automation:
       state: "off"
     input_boolean.notify_ps4_left_on_automation:
       state: "off"
@@ -291,6 +291,8 @@
   name: Vacation Mode
   entities:
     automation.cycle_toilet_fan_during_the_day:
+      state: "off"
+    automation.notify_of_next_trash_pickup_the_night_before:
       state: "off"
     automation.notify_on_bad_outdoor_aqi:
       state: "off"
@@ -325,8 +327,6 @@
     input_boolean.notify_of_low_batteries_automation:
       state: "off"
     input_boolean.notify_of_new_versions_automation:
-      state: "off"
-    input_boolean.notify_of_trash_pickup_automation:
       state: "off"
     input_boolean.notify_when_person_on_camera_automation:
       state: "on"
