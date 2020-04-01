@@ -140,24 +140,11 @@ services:
       - mysql-hass-data:/var/lib/mysql
 
   nginx:
-    build:
-      context: ./nginx/docker
-      args:
-        libmaxminddb_version: "${LIBMAXMINDDB_VERSION}"
-        nginx_version: "${NGINX_VERSION}"
-        ngx_http_geoip2_module_version: "${NGX_HTTP_GEOIP2_MODULE_VERSION}"
     cap_add:
       - NET_ADMIN
-    command: /usr/bin/supervisord -c /etc/supervisor.conf
     container_name: nginx
-    depends_on:
-      - appdaemon
-      - esphome-dashboard
-      - grafana
-      - hass
-      - portainer
-      - vernemq
-    image: bachya/nginx
+    image: "50e49b6b-b382-4336-bf43-a74c32e762a0.bachyaproductions.com:18884\
+            /bachya/nginx-geoip:1.17.9"
     network_mode: "host"
     restart: always
     volumes:
