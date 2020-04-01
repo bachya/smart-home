@@ -54,22 +54,16 @@ new_grafana_version_automation:
   class: NewPortainerVersionNotification
   dependencies:
     - presence_manager
-  entity_ids:
-    available: sensor.grafana_available
-    installed: sensor.grafana_installed
-  properties:
-    app_name: Grafana
-    created_entity_id: sensor.grafana_installed
-    endpoint_id: 1
-    friendly_name: Grafana Installed
-    icon: mdi:chart-bar
-    image_name: grafana/grafana
-    update_interval: 300
-  enabled_config:
-    toggle_name: notify_of_new_versions
-    name: Notify of new versions
-    icon: mdi:home-assistant
-    initial: true
+  available: sensor.grafana_available
+  installed: sensor.grafana_installed
+  app_name: Grafana
+  created_entity_id: sensor.grafana_installed
+  endpoint_id: 1
+  friendly_name: Grafana Installed
+  icon: mdi:chart-bar
+  image_name: grafana/grafana
+  interval: 300
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
 
 new_hass_version_automation:
   module: version
@@ -84,24 +78,16 @@ new_hass_version_automation:
 new_influxdb_version_automation:
   module: version
   class: NewPortainerVersionNotification
-  dependencies:
-    - presence_manager
-  entity_ids:
-    available: sensor.influxdb_available
-    installed: sensor.influxdb_installed
-  properties:
-    app_name: InfluxDB
-    created_entity_id: sensor.influxdb_installed
-    endpoint_id: 1
-    friendly_name: InfluxDB Installed
-    icon: mdi:database
-    image_name: influxdb
-    update_interval: 300
-  enabled_config:
-    toggle_name: notify_of_new_versions
-    name: Notify of new versions
-    icon: mdi:home-assistant
-    initial: true
+  available: sensor.influxdb_available
+  installed: sensor.influxdb_installed
+  app_name: InfluxDB
+  created_entity_id: sensor.influxdb_installed
+  endpoint_id: 1
+  friendly_name: InfluxDB Installed
+  icon: mdi:database
+  image_name: influxdb
+  interval: 300
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
 
 new_portainer_version_automation:
   module: version
