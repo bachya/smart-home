@@ -1,9 +1,9 @@
 ---
 kind: pipeline
-name: Pre-Commit
+name: Pre-Flight
 
 steps:
-  - name: Restore Cache
+  - name: Restore .pre-commit cache
     image: meltwater/drone-cache:master-9a52545
     settings:
       archive_format: gzip
@@ -16,7 +16,7 @@ steps:
       - name: cache
         path: /tmp/cache
 
-  - name: Run All Hooks
+  - name: Run all .pre-commit hooks
     image: python:3
     environment:
       PRE_COMMIT_HOME: /drone/src/.pre-commit-cache
@@ -25,7 +25,7 @@ steps:
       - pre-commit install-hooks --config .pre-commit-config.yaml
       - pre-commit run --all-files
 
-  - name: Rebuild Cache
+  - name: Rebuild .pre-commit cache
     image: meltwater/drone-cache:master-9a52545
     settings:
       archive_format: gzip
@@ -38,6 +38,11 @@ steps:
       - name: cache
         path: /tmp/cache
 
+  - name: validate docker-compose.yml
+    image: wernight/docker-compose:1.24.0
+    commands:
+      - docker-compose config -q
+
 volumes:
   - name: cache
     host:
@@ -45,23 +50,10 @@ volumes:
 
 ---
 kind: pipeline
-name: Docker Compose
-
-depends_on:
-  - Pre-Commit
-
-steps:
-  - name: Check docker-compose.yml
-    image: wernight/docker-compose:1.24.0
-    commands:
-      - docker-compose config -q
-
----
-kind: pipeline
 name: ESPHome
 
 depends_on:
-  - Pre-Commit
+  - Pre-Flight
 
 steps:
   - name: "Config Check: Beta"
