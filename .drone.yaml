@@ -76,7 +76,7 @@ kind: pipeline
 name: Fail2Ban
 
 depends_on:
-  - Pre-Commit
+  - Pre-Flight
 
 steps:
   - name: "Config Check"
@@ -95,7 +95,7 @@ kind: pipeline
 name: Home Assistant
 
 depends_on:
-  - Pre-Commit
+  - Pre-Flight
 
 steps:
   - name: "Config Check: RC"
@@ -120,7 +120,7 @@ kind: pipeline
 name: NGINX
 
 depends_on:
-  - Pre-Commit
+  - Pre-Flight
 
 steps:
   - name: "Config Check"
@@ -142,7 +142,6 @@ kind: pipeline
 name: Deploy
 
 depends_on:
-  - Docker Compose
   - ESPHome
   - Fail2Ban
   - Home Assistant
@@ -177,11 +176,6 @@ trigger:
     - failure
 
 depends_on:
-  - Docker Compose
-  - ESPHome
-  - Fail2Ban
-  - Home Assistant
-  - NGINX
   - Deploy
 
 steps:
