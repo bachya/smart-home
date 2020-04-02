@@ -3,7 +3,7 @@ kind: pipeline
 name: Pre-Flight
 
 steps:
-  - name: Restore .pre-commit cache
+  - name: Restore .pre-commit Cache
     image: meltwater/drone-cache:master-9a52545
     settings:
       archive_format: gzip
@@ -16,7 +16,7 @@ steps:
       - name: cache
         path: /tmp/cache
 
-  - name: Run all .pre-commit hooks
+  - name: Run All .pre-commit Hooks
     image: python:3
     environment:
       PRE_COMMIT_HOME: /drone/src/.pre-commit-cache
@@ -25,7 +25,7 @@ steps:
       - pre-commit install-hooks --config .pre-commit-config.yaml
       - pre-commit run --all-files
 
-  - name: Rebuild .pre-commit cache
+  - name: Rebuild .pre-commit Cache
     image: meltwater/drone-cache:master-9a52545
     settings:
       archive_format: gzip
@@ -38,7 +38,7 @@ steps:
       - name: cache
         path: /tmp/cache
 
-  - name: validate docker-compose.yml
+  - name: Validate docker-compose.yml
     image: wernight/docker-compose:1.24.0
     commands:
       - docker-compose config -q
@@ -85,8 +85,9 @@ steps:
       - apk update && apk add --no-cache fail2ban
       - ln -s ./fail2ban/settings /etc/fail2ban
       - touch /var/log/messages
-      - "mkdir -p /var/log/nginx && touch /var/log/nginx/access.log \
-         && touch /var/log/nginx/error.log"
+      - mkdir -p /var/log/nginx
+      - touch /var/log/nginx/access.log
+      - touch /var/log/nginx/error.log
       - fail2ban-client -t
 
 ---
@@ -127,7 +128,7 @@ steps:
     commands:
       - apk update && apk add --no-cache nginx
       - ln -s /drone/src/nginx/settings /etc/nginx
-      - "nginx -t -c /etc/nginx/nginx.conf -g pid /tmp/nginx.pid; daemon off;"
+      - nginx -t -c /etc/nginx/nginx.conf -g pid /tmp/nginx.pid; daemon off;
 
   - name: "Static Analysis"
     image: yandex/gixy:latest
