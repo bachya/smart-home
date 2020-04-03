@@ -3,7 +3,7 @@ alert:
   fiddle_leaf_fig_moisture:
     name: "🌴 Fred is low on moisture and needs a drink."
     done_message: "🌴 Fred is nicely hydrated!"
-    title: Fred is Dry
+    title: Fred's Moisture
     entity_id: binary_sensor.should_notify_about_fred_dry
     state: "on"
     repeat:

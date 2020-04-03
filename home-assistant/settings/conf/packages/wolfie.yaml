@@ -3,7 +3,7 @@ alert:
   wolfie_cycle_complete:
     name: 🤖 Wolfie has finished cleaning and can be emptied.
     done_message: ✅ Wolfie's bin has been emptied.
-    title: Wolfie is Full
+    title: Wolfie
     entity_id: binary_sensor.should_notify_wolfie_full
     state: "on"
     repeat:
@@ -16,7 +16,7 @@ alert:
 
   wolfie_stuck:
     name: "🤖 Wolfie is stuck on something and needs help."
-    title: Wolfie is Stuck
+    title: Wolfie
     entity_id: binary_sensor.should_notify_wolfie_stuck
     state: "on"
     repeat:
