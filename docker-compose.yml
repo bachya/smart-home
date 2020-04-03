@@ -6,7 +6,7 @@ services:
   almond:
     container_name: almond
     image: "stanfordoval/almond-server:v${ALMOND_SERVER_VERSION}-portable"
-    network_mode: "host"
+    network_mode: host
     restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -27,7 +27,7 @@ services:
   esphome-dashboard:
     container_name: esphome-dashboard
     image: "esphome/esphome:${ESPHOME_VERSION}"
-    network_mode: "host"
+    network_mode: host
     restart: always
     volumes:
       - ./esphome:/config
@@ -44,7 +44,7 @@ services:
       F2B_MAX_RETRY: 3
       F2B_IPTABLES_CHAIN: INPUT
     image: "crazymax/fail2ban:${FAIL2BAN_CONTAINER_VERSION}"
-    network_mode: "host"
+    network_mode: host
     restart: always
     volumes:
       - ./fail2ban/settings/jail.local:/etc/fail2ban/jail.local
@@ -65,18 +65,16 @@ services:
       - fail2ban-log:/var/log/fail2ban:ro
 
   glances:
-    build:
-      context: ./glances/docker
-      args:
-        version: "${GLANCES_VERSION}"
-    command: /usr/bin/supervisord -c /etc/supervisor.conf
     container_name: glances
-    image: bachya/glances
-    ports:
-      - "61208:61208/tcp"
+    environment:
+      GLANCES_OPT: -w --enable-plugin smart
+    image: vimagick/glances:latest
+    network_mode: host
+    pid: host
     restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - glances-config:/etc/glances:ro
 
   grafana:
@@ -105,7 +103,7 @@ services:
     devices:
       - "/dev/zwave:/dev/zwave"
     image: "homeassistant/home-assistant:${HOME_ASSISTANT_CORE_VERSION}"
-    network_mode: "host"
+    network_mode: host
     restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -145,7 +143,7 @@ services:
     container_name: nginx
     image: "50e49b6b-b382-4336-bf43-a74c32e762a0.bachyaproductions.com:18884\
             /bachya/nginx-geoip:${NGINX_VERSION}"
-    network_mode: "host"
+    network_mode: host
     restart: always
     volumes:
       - ./nginx/settings/conf.d:/etc/nginx/conf.d
