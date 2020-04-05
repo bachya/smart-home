@@ -38,7 +38,7 @@ automation:
       entity_id: sensor.hacs
     action:
       service: notify.slack
-      data:
+      data_template:
         message: >
           💿 There's a change in the number of HACS updates:
           {{ trigger.to_state.state }}
