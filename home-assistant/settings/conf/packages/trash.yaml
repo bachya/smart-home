@@ -8,8 +8,11 @@ automation:
       condition: template
       value_template: >
         {%
-          set delta = ("2020-04-01" | as_timestamp() - now()
-          | as_timestamp())/60/60
+          set delta = (
+            states("sensor.recollect_waste")
+            | as_timestamp() - now()
+            | as_timestamp()
+          )/60/60
         %}
         {{ delta > 0 and delta < 24 }}
     action:
