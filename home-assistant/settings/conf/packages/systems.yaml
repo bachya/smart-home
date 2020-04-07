@@ -36,12 +36,15 @@ automation:
     trigger:
       platform: state
       entity_id: sensor.hacs
+    condition:
+      condition: numeric_state
+      entity_id: sensor.hacs
+      above: 0
     action:
       service: notify.slack
       data_template:
         message: >
-          💿 There's a change in the number of HACS updates:
-          {{ trigger.to_state.state }}
+          💿 There are new HACS updates: {{ trigger.to_state.state }}
 
   - alias: "Notify when media center left on"
     trigger:
