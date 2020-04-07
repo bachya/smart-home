@@ -9,9 +9,8 @@ automation:
       value_template: >
         {%
           set delta = (
-            states("sensor.recollect_waste")
-            | as_timestamp() - now()
-            | as_timestamp()
+            states("sensor.recollect_waste") | as_timestamp()
+            - now() | as_timestamp()
           )/60/60
         %}
         {{ delta > 0 and delta < 24 }}
