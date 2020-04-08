@@ -40,12 +40,10 @@ media_player.living_room_roku:
 scene.depart_home:
   icon: mdi:garage
 scene.drive_home:
-  emulated_hue_hidden: true
   icon: mdi:garage-open
 scene.good_night:
   icon: mdi:sleep
 scene.walk_home:
-  emulated_hue_hidden: true
   icon: mdi:home
 scene.watch_plex:
   icon: mdi:plex

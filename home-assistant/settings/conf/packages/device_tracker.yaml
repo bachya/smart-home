@@ -8,12 +8,3 @@ device_tracker:
 owntracks:
   max_gps_accuracy: 200
   mqtt_topic: !secret mqtt_topic_owntracks
-
-unifi:
-  controllers:
-    - host: cloud-key.phil.lan
-      site: !secret unifi_site
-      detection_time: 60
-      ssid_filter:
-        - "Phil?"
-        - "Phil?_IoT"
