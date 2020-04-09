@@ -190,8 +190,8 @@ switch:
             is_state("switch.3d_printer", "on") }}
         turn_off:
           - service: rest_command.turn_off_octopi
-          - wait_template: >
-              {{ is_state("sensor.ender_3_state", "unavailable") }}
+          - delay:
+              seconds: 10
           - service: switch.turn_off
             data:
               entity_id: switch.3d_printer
