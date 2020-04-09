@@ -23,6 +23,9 @@ automation:
       conditions:
         - condition: sun
           after: sunset
+          # This condition ensures that when  sensor.proximity_zone goes from
+          # unavailable to Home (e.g., after a deployment), the lights don't
+          # turn on:
         - condition: numeric_state
           entity_id: proximity.home
           above: 0
