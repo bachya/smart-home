@@ -19,9 +19,13 @@ automation:
       entity_id: sensor.proximity_zone
       to: Home
     condition:
-      condition: state
-      entity_id: sun.sun
-      state: below_horizon
+      condition: and
+      conditions:
+        - condition: sun
+          after: sunset
+        - condition: numeric_state
+          entity_id: proximity.home
+          above: 0
     action:
       service: switch.turn_on
       data:
