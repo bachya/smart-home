@@ -40,18 +40,11 @@ automation:
         data:
           entity_id: switch.toggle_3d_printer
 
-binary_sensor:
-  - platform: mqtt
-    name: Ender 3 Error State
-    state_topic: "octoPrint/progress/printing"
-    value_template: >
-      {{ value_json.printer_data.state.flags.error }}
-    payload_off: false
-    payload_on: true
-    availability_topic: "octoPrint/mqtt"
-    payload_available: connected
-    payload_not_available: disconnected
-    device_class: problem
+octoprint:
+  host: octopi.phil.iot
+  api_key: !secret octoprint_api_key
+  bed: true
+  number_of_tools: 1
 
 rest_command:
   turn_off_octopi:
@@ -79,108 +72,7 @@ sensor:
       cat /proc/uptime | awk \'{ print $1 / 86400 }\' | cut -f1 -d"."
     unit_of_measurement: "days"
 
-  - platform: mqtt
-    name: Ender 3 Bed Temperature (Actual)
-    unit_of_measurement: "°F"
-    state_topic: "octoPrint/temperature/bed"
-    value_template: "{{ value_json.actual }}"
-    availability_topic: "octoPrint/mqtt"
-    payload_available: connected
-    payload_not_available: disconnected
-    icon: mdi:home-thermometer
-
-  - platform: mqtt
-    name: Ender 3 Bed Temperature (Target)
-    unit_of_measurement: "°F"
-    state_topic: "octoPrint/temperature/bed"
-    value_template: "{{ value_json.target }}"
-    availability_topic: "octoPrint/mqtt"
-    payload_available: connected
-    payload_not_available: disconnected
-    icon: mdi:home-thermometer
-
-  - platform: mqtt
-    name: Ender 3 Extruder Temperature (Actual)
-    unit_of_measurement: "°F"
-    state_topic: "octoPrint/temperature/tool0"
-    value_template: "{{ value_json.actual }}"
-    availability_topic: "octoPrint/mqtt"
-    payload_available: connected
-    payload_not_available: disconnected
-    icon: mdi:home-thermometer
-
-  - platform: mqtt
-    name: Ender 3 Extruder Temperature (Target)
-    unit_of_measurement: "°F"
-    state_topic: "octoPrint/temperature/tool0"
-    value_template: "{{ value_json.target }}"
-    availability_topic: "octoPrint/mqtt"
-    payload_available: connected
-    payload_not_available: disconnected
-    icon: mdi:home-thermometer
-
-  - platform: mqtt
-    name: Ender 3 Filename
-    state_topic: "octoPrint/progress/printing"
-    value_template: >
-      {{ value_json.printer_data.job.file.name }}
-    availability_topic: "octoPrint/mqtt"
-    payload_available: connected
-    payload_not_available: disconnected
-    icon: mdi:file
-
-  - platform: mqtt
-    name: Ender 3 Total Print Time Elapsed
-    unit_of_measurement: "seconds"
-    state_topic: "octoPrint/progress/printing"
-    value_template: >
-      {{ value_json.printer_data.progress.printTime | int }}
-    availability_topic: "octoPrint/mqtt"
-    payload_available: connected
-    payload_not_available: disconnected
-    icon: mdi:timer
-
-  - platform: mqtt
-    name: Ender 3 Total Print Time Remaining
-    unit_of_measurement: "seconds"
-    state_topic: "octoPrint/progress/printing"
-    value_template: >
-      {{ value_json.printer_data.progress.printTimeLeft | int }}
-    availability_topic: "octoPrint/mqtt"
-    payload_available: connected
-    payload_not_available: disconnected
-    icon: mdi:timer
-
-  - platform: mqtt
-    name: Ender 3 Percent Complete
-    unit_of_measurement: "%"
-    state_topic: "octoPrint/progress/printing"
-    value_template: >
-      {{ value_json.printer_data.progress.completion | round(2) }}
-    availability_topic: "octoPrint/mqtt"
-    payload_available: connected
-    payload_not_available: disconnected
-    icon: mdi:progress-clock
-
-  - platform: mqtt
-    name: Ender 3 State
-    state_topic: "octoPrint/progress/printing"
-    value_template: "{{ value_json.printer_data.state.text }}"
-    availability_topic: "octoPrint/mqtt"
-    payload_available: connected
-    payload_not_available: disconnected
-    icon: mdi:printer-3d
-
 switch:
-  - platform: mqtt
-    name: MQTT State
-    command_topic: octoPrint/mqtt
-    payload_on: connected
-    state_topic: octoPrint/mqtt
-    state_off: disconnected
-    state_on: connected
-    icon: mdi:recycle
-
   - platform: template
     switches:
       toggle_3d_printer:
