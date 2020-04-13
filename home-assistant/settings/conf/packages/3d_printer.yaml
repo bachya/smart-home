@@ -3,31 +3,29 @@ automation:
   - alias: Notify when 3D print completes
     trigger:
       platform: state
-      entity_id: sensor.ender_3_state
+      entity_id: sensor.octoprint_current_state
       from: Printing
       to: Operational
     action:
       service: notify.slack
       data_template:
-        message: >
-          🦿 3D print completed: {{ states("sensor.ender_3_filename") }}
+        message: "🦿 3D print completed"
 
   - alias: Notify when 3D print starts
     trigger:
       platform: state
-      entity_id: sensor.ender_3_state
+      entity_id: sensor.octoprint_current_state
       from: Operational
       to: Printing
     action:
       service: notify.slack
       data_template:
-        message: >
-          🦿 3D print started: {{ states("sensor.ender_3_filename") }}
+        message: "🦿 3D print started"
 
   - alias: "Turn off when 3D print completes"
     trigger:
       platform: state
-      entity_id: sensor.ender_3_state
+      entity_id: sensor.octoprint_current_state
       from: Printing
       to: Operational
       for:
