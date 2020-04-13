@@ -83,17 +83,31 @@ automation:
         entity_id: input_select.dishwasher_status
         option: Clean
 
-  - alias: "Turn bar cart lights on"
+  - alias: "Turn bar cart lights on at sunset"
     trigger:
-      - platform: state
-        entity_id: sensor.proximity_zone
-        to: Home
-      - platform: sun
-        event: sunset
+      platform: sun
+      event: sunset
+    action:
+      service: switch.turn_on
+      data:
+        entity_id: switch.bar_cart
+
+  - alias: "Turn bar cart lights on when we arrive"
+    trigger:
+      platform: state
+      entity_id: sensor.proximity_zone
+      to: Home
     condition:
-      condition: state
-      entity_id: sun.sun
-      state: below_horizon
+      condition: and
+      conditions:
+        - condition: sun
+          after: sunset
+          # This condition ensures that when  sensor.proximity_zone goes from
+          # unavailable to Home (e.g., after a deployment), the lights don't
+          # turn on:
+        - condition: numeric_state
+          entity_id: proximity.home
+          above: 0
     action:
       service: switch.turn_on
       data:
