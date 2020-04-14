@@ -97,8 +97,7 @@ automation:
       service: notify.slack
       data_template:
         message: >
-            📥 SimpliSafe Event:
-            {{ trigger.event.data.service_data.last_event_info }}
+            📥 SimpliSafe Event: {{ trigger.event.data.last_event_info }}
 
   - alias: "Forward SimpliSafe notifications to Slack"
     trigger:
@@ -108,8 +107,7 @@ automation:
       service: notify.slack
       data_template:
         message: >
-            📥 SimpliSafe Notification:
-            {{ trigger.event.data.service_data.message }}
+            📥 SimpliSafe Notification: {{ trigger.event.data.message }}
 
   - alias: "iOS Action: Close Garage"
     trigger:
