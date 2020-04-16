@@ -50,10 +50,17 @@ automation:
     trigger:
       platform: time
       at: "00:00:00"
+    condition:
+      condition: state
+      entity_id: binary_sensore.secure_status
+      state: "on"
     action:
-      service: scene.turn_on
-      data:
-        entity_id: scene.good_night
+      - service: notify.slack
+        data:
+          message: "🔒 Running automatic nighttime lockup"
+      - service: scene.turn_on
+        data:
+          entity_id: scene.good_night
 
   - alias: "Automatically lock up when we depart"
     trigger:
@@ -206,6 +213,7 @@ binary_sensor:
             is_state("binary_sensor.secure_status", "on") and
             not is_state("sensor.proximity_zone", "Home")
           }}
+      
       secure_status:
         friendly_name: Security Status
         entity_id:
