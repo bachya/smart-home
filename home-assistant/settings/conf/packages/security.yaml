@@ -118,10 +118,10 @@ automation:
 
   - alias: "iOS Action: Close Garage"
     trigger:
-      - platform: event
-        event_type: ios.notification_action_fired
-        event_data:
-          actionName: GARAGE_CLOSE_DOOR
+      platform: event
+      event_type: ios.notification_action_fired
+      event_data:
+        actionName: GARAGE_CLOSE_DOOR
     action:
       service: cover.close_cover
       data:
@@ -129,10 +129,10 @@ automation:
 
   - alias: "iOS Action: Secure the House"
     trigger:
-      - platform: event
-        event_type: ios.notification_action_fired
-        event_data:
-          actionName: SECURITY_SECURE
+      platform: event
+      event_type: ios.notification_action_fired
+      event_data:
+        actionName: SECURITY_SECURE
     action:
       service: scene.turn_on
       data:
@@ -140,8 +140,8 @@ automation:
 
   - alias: "Notify of Fail2Ban bans"
     trigger:
-      - platform: state
-        entity_id: sensor.fail2ban_last_ban_ip
+      platform: state
+      entity_id: sensor.fail2ban_last_ban_ip
     action:
       service: notify.slack
       data:
@@ -150,8 +150,8 @@ automation:
 
   - alias: "Notify of Fail2Ban failures"
     trigger:
-      - platform: state
-        entity_id: sensor.fail2ban_last_failure_ip
+      platform: state
+      entity_id: sensor.fail2ban_last_failure_ip
     action:
       service: notify.slack
       data:
