@@ -30,6 +30,10 @@ alert:
     data:
       push:
         category: WATER
+      sound:
+        name: default
+        critical: 1
+        volume: 0.75
 
 automation:
   - alias: "iOS Action: Empty Dishwasher"

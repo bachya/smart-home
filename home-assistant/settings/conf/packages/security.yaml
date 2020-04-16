@@ -11,6 +11,11 @@ alert:
     notifiers:
       - phones
       - slack
+    data:
+      sound:
+        name: default
+        critical: 1
+        volume: 0.75
 
   garage_left_open:
     name: 🚗 The garage has been left open.
@@ -27,6 +32,10 @@ alert:
     data:
       push:
         category: GARAGE
+      sound:
+        name: default
+        critical: 1
+        volume: 0.75
 
   house_empty_and_insecure:
     name: "🚨 The house isn't secure and no one is home."
@@ -44,6 +53,10 @@ alert:
     data:
       push:
         category: SECURITY
+      sound:
+        name: default
+        critical: 1
+        volume: 0.75
 
   smoke_detected:
     name: "🚨 Smoke has been detected."
@@ -56,6 +69,11 @@ alert:
     notifiers:
       - phones
       - slack
+    data:
+      sound:
+        name: default
+        critical: 1
+        volume: 0.75
 
 automation:
   - alias: "Automatically lock up at night"
