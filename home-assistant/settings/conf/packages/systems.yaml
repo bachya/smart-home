@@ -58,18 +58,6 @@ automation:
       data:
         message: "🎥 The media center has been on for 12 hours."
 
-  - alias: "Notify when PS4 left on"
-    trigger:
-      platform: state
-      entity_id: media_player.playstation_4
-      to: idle
-      for:
-        hours: 12
-    action:
-      service: notify.slack
-      data:
-        message: "🎮 The PS4 has been on for 12 hours."
-
   - alias: "Pick the correct theme on HASS start"
     trigger:
       platform: homeassistant
