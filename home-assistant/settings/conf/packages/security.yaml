@@ -1,5 +1,17 @@
 ---
 alert:
+  alarm_triggered:
+    name: "🚨 The alarm has been triggered."
+    done_message: "✅ The alarm has been canceled."
+    title: Alarm Triggered
+    entity_id: alarm_control_panel.8673_e_55th_avenue
+    state: triggered
+    repeat:
+      - 1
+    notifiers:
+      - phones
+      - slack
+
   garage_left_open:
     name: 🚗 The garage has been left open.
     done_message: ✅ The garage is now closed.
