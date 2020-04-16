@@ -33,7 +33,7 @@ alert:
       sound:
         name: default
         critical: 1
-        volume: 0.75
+        volume: 0.3
 
 automation:
   - alias: "iOS Action: Empty Dishwasher"

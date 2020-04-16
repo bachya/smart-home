@@ -17,7 +17,7 @@ alert:
       sound:
         name: default
         critical: 1
-        volume: 0.75
+        volume: 0.3
 
 apple_tv:
   - host: 172.16.10.64
