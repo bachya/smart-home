@@ -243,7 +243,7 @@ binary_sensor:
             is_state("binary_sensor.secure_status", "on") and
             not is_state("sensor.proximity_zone", "Home")
           }}
-      
+
       secure_status:
         friendly_name: Security Status
         entity_id:
