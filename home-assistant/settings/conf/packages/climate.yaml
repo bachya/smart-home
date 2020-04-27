@@ -124,6 +124,16 @@ sensor:
         value_template: >
           {{ states("sensor.moon") | replace('_', ' ') | title }}
         icon_template: mdi:weather-night
+      schedy_scheduled_temperature:
+        friendly_name: "Scheduled Temperature"
+        entity_id: schedy_room.thermostat_schedule_whole_house
+        value_template: >
+          {{
+            state_attr(
+              "schedy_room.thermostat_schedule_whole_house",
+              "scheduled_value"
+            )
+          }}
       side_yard_solar_rad_log:
         friendly_name: "Side Yard: Brightness (Perception)"
         entity_id: sensor.side_yard_solar_rad
