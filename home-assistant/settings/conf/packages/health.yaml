@@ -51,6 +51,3 @@ iqvia:
 
 openuv:
   api_key: !secret openuv_api_key
-
-sensor:
-  - platform: flunearyou
