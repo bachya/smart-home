@@ -103,6 +103,10 @@ sensor:
 
   - platform: template
     sensors:
+      climate_schedy_target_temperature:
+        value_template: >
+          {{ states("schedy_room.thermostat_schedule_whole_house") }}
+        device_class: temperature
       dark_sky_temperature:
         value_template: "{{ state_attr('weather.weather', 'temperature') }}"
         icon_template: mdi:thermometer
