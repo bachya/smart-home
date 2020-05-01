@@ -281,7 +281,7 @@ class ClimateManager(Base):  # pylint: disable=too-many-public-methods
 
     def bump_temperature(self, value: int) -> None:
         """Bump the current temperature."""
-        if HVAC_MODE_COOL in (self.hvac_mode, self._last_hvac_mode):
+        if self.hvac_mode == HVAC_MODE_COOL:
             value *= -1
         self.set_temperature(self.target_temperature + value)
 
