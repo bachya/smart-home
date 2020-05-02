@@ -128,7 +128,7 @@
       state: "off"
     input_boolean.randomize_nighttime_tvs_automation:
       state: "off"
-    switch.water_main:
+    switch.guardian_30aea4f007c8_valve:
       state: "on"
 
 - id: blackout_mode
@@ -330,7 +330,7 @@
       state: "on"
     input_boolean.randomize_nighttime_tvs_automation:
       state: "on"
-    switch.water_main:
+    switch.guardian_30aea4f007c8_valve:
       state: "off"
 
 - id: walk_home

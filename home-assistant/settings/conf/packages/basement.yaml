@@ -37,7 +37,7 @@ automation:
     action:
       service: switch.turn_off
       data:
-        entity_id: switch.water_main
+        entity_id: switch.guardian_30aea4f007c8_valve
 
 remote:
   - platform: harmony
