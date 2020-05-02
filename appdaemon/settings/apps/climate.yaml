@@ -41,8 +41,8 @@ thermostat_schedule:
 
   schedule_snippets:
     cooling_season:
-      - x: "72 if in_blackout() else Next()"
-      - v: 75
+      - x: "70 if in_blackout() else Next()"
+      - v: 74
     heating_season:
       - x: "68 if in_blackout() else Next()"
       - v: 69
