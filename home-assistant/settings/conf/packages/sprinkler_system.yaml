@@ -19,7 +19,7 @@ automation:
     condition:
       condition: state
       entity_id: input_number.flower_box_zone_timer
-      state: 0
+      state: "0"
     action:
       service: rainmachine.stop_zone
       data_template:
@@ -44,7 +44,7 @@ automation:
     condition:
       condition: state
       entity_id: input_number.landscaping_zone_timer
-      state: 0
+      state: "0"
     action:
       service: rainmachine.stop_zone
       data_template:
