@@ -1,4 +1,74 @@
 ---
+automation:
+  - alias: "Start RainMachine Zone: Flower Box"
+    trigger:
+      platform: numeric_state
+      entity_id: input_number.flower_box_zone_timer
+      above: 0
+    action:
+      - service: rainmachine.start_zone
+        data_template:
+          zone_id: 2
+          zone_run_time: >
+            {{ states("input_number.flower_box_zone_timer") | int * 60 }}
+
+  - alias: "Stop RainMachine Zone: Flower Box"
+    trigger:
+      platform: state
+      entity_id: input_number.flower_box_zone_timer
+    condition:
+      condition: state
+      entity_id: input_number.flower_box_zone_timer
+      state: 0
+    action:
+      service: rainmachine.stop_zone
+      data_template:
+        zone_id: 2
+
+  - alias: "Start RainMachine Zone: Landscaping"
+    trigger:
+      platform: numeric_state
+      entity_id: input_number.landscaping_zone_timer
+      above: 0
+    action:
+      - service: rainmachine.start_zone
+        data_template:
+          zone_id: 2
+          zone_run_time: >
+            {{ states("input_number.landscaping_zone_timer") | int * 60 }}
+
+  - alias: "Stop RainMachine Zone: Landscaping"
+    trigger:
+      platform: state
+      entity_id: input_number.landscaping_zone_timer
+    condition:
+      condition: state
+      entity_id: input_number.landscaping_zone_timer
+      state: 0
+    action:
+      service: rainmachine.stop_zone
+      data_template:
+        zone_id: 2
+
+input_number:
+  flower_box_zone_timer:
+    name: Flower Box Timer
+    initial: 0
+    min: 0
+    max: 60
+    step: 5
+    unit_of_measurement: minutes
+    icon: mdi:timer
+
+  landscaping_zone_timer:
+    name: Landscaping Timer
+    initial: 0
+    min: 0
+    max: 60
+    step: 5
+    unit_of_measurement: minutes
+    icon: mdi:timer
+
 rainmachine:
   controllers:
     - ip_address: rainmachine.phil.iot
