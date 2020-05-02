@@ -1,0 +1,5 @@
+---
+rainmachine:
+  controllers:
+    - ip_address: rainmachine.phil.iot
+      password: !secret rainmachine_password
