@@ -4,7 +4,7 @@ alert:
     name: 💦 Leak detected in the basement!
     done_message: ✅ The leak has been fixed.
     title: Basement Leak
-    entity_id: binary_sensor.basement_sensor_leak_detector
+    entity_id: binary_sensor.basement_leak_detected
     state: "on"
     repeat:
       - 1
@@ -38,6 +38,18 @@ automation:
       service: switch.turn_off
       data:
         entity_id: switch.guardian_30aea4f007c8_valve
+
+binary_sensor:
+  - platform: template
+    sensors:
+      basement_leak_detected:
+        friendly_name: Basement Leak Detected
+        value_template: >
+          {{
+            states("binary_sensor.basement_sensor_leak_detector") == "on"
+            or
+            states("binary_sensor.guardian_30aea4f007c8_leak_detected") == "on"
+          }}
 
 remote:
   - platform: harmony
