@@ -12,10 +12,10 @@ binary_sensor:
       - switch.toggle: relay
 
   - platform: status
-    name: "Gosund Smart Plug 1 Status"
+    name: "Gosund Smart Plug 2 Status"
 
 esphome:
-  name: gosund_smart_plug_1
+  name: gosund_smart_plug_2
   platform: ESP8266
   board: esp8285
 
@@ -35,7 +35,7 @@ switch:
     inverted: true
 
   - platform: gpio
-    name: "Gosund Smart Plug 1 Smart Plug"
+    name: "Gosund Smart Plug 2 Smart Plug"
     pin: GPIO14
     id: relay
     on_turn_on:
@@ -45,13 +45,13 @@ switch:
 
 text_sensor:
   - platform: template
-    name: "Gosund Smart Plug 1: ESPHome Version (Short)"
+    name: "Gosund Smart Plug 2: ESPHome Version (Short)"
     lambda: |-
       auto state = id(esphome_version).state;
       return state.substr(0, state.find(' '));
 
   - platform: version
-    name: "Gosund Smart Plug 1: ESPHome Version"
+    name: "Gosund Smart Plug 2: ESPHome Version"
     id: esphome_version
 
 wifi:
@@ -60,6 +60,6 @@ wifi:
   fast_connect: true
   output_power: 20dB
   manual_ip:
-    static_ip: 172.16.11.65
+    static_ip: 172.16.11.141
     gateway: 172.16.11.1
     subnet: 255.255.255.0
