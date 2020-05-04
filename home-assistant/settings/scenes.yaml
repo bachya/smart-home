@@ -2,6 +2,14 @@
 - id: base
   name: Base
   entities:
+    alert.dishwasher_clean:
+      state: "on"
+    alert.fiddle_leaf_fig_moisture:
+      state: "on"
+    alert.wolfie_cycle_complete:
+      state: "on"
+    alert.wolfie_stuck:
+      state: "on"
     automation.adjust_automations_in_blackout_mode:
       state: "on"
     automation.adjust_automations_in_guest_mode:
@@ -132,6 +140,14 @@
 - id: blackout_mode
   name: Blackout Mode
   entities:
+    alert.dishwasher_clean:
+      state: "off"
+    alert.fiddle_leaf_fig_moisture:
+      state: "off"
+    alert.wolfie_cycle_complete:
+      state: "off"
+    alert.wolfie_stuck:
+      state: "off"
     automation.alter_armed_alarm_when_wolfie_cleans:
       state: "off"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
@@ -172,6 +188,14 @@
   entities:
     alarm_control_panel.8673_e_55th_avenue:
       state: armed_away
+    alert.dishwasher_clean:
+      state: "off"
+    alert.fiddle_leaf_fig_moisture:
+      state: "off"
+    alert.wolfie_cycle_complete:
+      state: "off"
+    alert.wolfie_stuck:
+      state: "off"
     automation.cycle_master_toilet_fan_during_the_day:
       state: "off"
     cover.garage_door:
@@ -278,6 +302,14 @@
 - id: vacation_mode
   name: Vacation Mode
   entities:
+    alert.dishwasher_clean:
+      state: "off"
+    alert.fiddle_leaf_fig_moisture:
+      state: "off"
+    alert.wolfie_cycle_complete:
+      state: "off"
+    alert.wolfie_stuck:
+      state: "off"
     automation.cycle_master_toilet_fan_during_the_day:
       state: "off"
     automation.notify_of_next_trash_pickup_the_night_before:

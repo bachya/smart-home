@@ -4,8 +4,8 @@ alert:
     name: 🍽 The dishwasher is clean and can be emptied.
     done_message: ✅ The dishwasher has been emptied.
     title: Dishwasher
-    entity_id: binary_sensor.should_notify_about_dishwasher_clean
-    state: "on"
+    entity_id: input_select.dishwasher_status
+    state: Clean
     repeat:
       - 15
       - 120
@@ -116,17 +116,6 @@ automation:
       service: switch.turn_on
       data:
         entity_id: switch.bar_cart
-
-binary_sensor:
-  - platform: template
-    sensors:
-      should_notify_about_dishwasher_clean:
-        value_template: >-
-          {{
-            is_state("input_select.dishwasher_status", "Clean") and
-            is_state("person.aaron", "home") and
-            is_state("input_boolean.blackout_mode", "off")
-          }}
 
 input_select:
   dishwasher_status:
