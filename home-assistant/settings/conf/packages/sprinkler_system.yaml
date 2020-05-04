@@ -2,10 +2,16 @@
 automation:
   - alias: "Start RainMachine Zone: Flower Box"
     trigger:
-      platform: numeric_state
+      platform: state
       entity_id: input_number.flower_box_zone_timer
-      above: 0
+    condition:
+      condition: template
+      value_template: >
+        {{ states('input_number.flower_box_zone_timer') | int != 0 }}
     action:
+      - service: rainmachine.stop_zone
+        data_template:
+          zone_id: 2
       - service: rainmachine.start_zone
         data_template:
           zone_id: 2
@@ -17,9 +23,9 @@ automation:
       platform: state
       entity_id: input_number.flower_box_zone_timer
     condition:
-      condition: state
-      entity_id: input_number.flower_box_zone_timer
-      state: "0"
+      condition: template
+      value_template: >
+        {{ states('input_number.flower_box_zone_timer') | int == 0 }}
     action:
       service: rainmachine.stop_zone
       data_template:
@@ -27,13 +33,19 @@ automation:
 
   - alias: "Start RainMachine Zone: Landscaping"
     trigger:
-      platform: numeric_state
+      platform: state
       entity_id: input_number.landscaping_zone_timer
-      above: 0
+    condition:
+      condition: template
+      value_template: >
+        {{ states('input_number.landscaping_zone_timer') | int != 0 }}
     action:
+      - service: rainmachine.stop_zone
+        data_template:
+          zone_id: 1
       - service: rainmachine.start_zone
         data_template:
-          zone_id: 2
+          zone_id: 1
           zone_run_time: >
             {{ states("input_number.landscaping_zone_timer") | int * 60 }}
 
@@ -42,9 +54,9 @@ automation:
       platform: state
       entity_id: input_number.landscaping_zone_timer
     condition:
-      condition: state
-      entity_id: input_number.landscaping_zone_timer
-      state: "0"
+      condition: template
+      value_template: >
+        {{ states('input_number.flower_box_zone_timer') | int == 0 }}
     action:
       service: rainmachine.stop_zone
       data_template:
