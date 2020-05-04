@@ -338,8 +338,6 @@
       state: "off"
     automation.turn_bar_cart_lights_on_when_we_arrive:
       state: "off"
-    input_boolean.blackout_schedule_automation:
-      state: "off"
     input_boolean.lightning_detected_automation:
       state: "off"
     automation.turn_master_bedroom_lights_on_at_sunset:
