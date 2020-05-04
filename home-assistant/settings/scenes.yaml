@@ -38,8 +38,6 @@
       state: "on"
     automation.set_sleep_timer_on_master_toilet_fan_when_switch_double_tapped:
       state: "on"
-    automation.notify_of_low_fuel_subaru:
-      state: "on"
     automation.notify_of_fail2ban_bans:
       state: "on"
     automation.notify_of_fail2ban_failures:
@@ -137,8 +135,6 @@
     automation.alter_armed_alarm_when_wolfie_cleans:
       state: "off"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
-      state: "off"
-    automation.notify_of_low_fuel_subaru:
       state: "off"
     automation.notify_on_bad_outdoor_aqi:
       state: "off"

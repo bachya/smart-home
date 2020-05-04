@@ -1,18 +1,5 @@
 ---
 automation:
-  - alias: "Notify of low fuel: Subaru"
-    trigger:
-      platform: template
-      value_template: >
-        {% set entity = "device_tracker.2010_subaru_legacy" %}
-        {% if state_attr(entity, "fuel_level") < 10 %}
-          true
-        {% endif %}
-    action:
-      service: notify.slack
-      data:
-        message: ⛽️ Aaron's car needs some gas.
-
   - alias: "Turn on garage lights when garage door opens while it's dark"
     trigger:
       platform: state

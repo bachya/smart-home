@@ -1,10 +1,4 @@
 ---
-device_tracker:
-  - platform: automatic
-    client_id: !secret automatic_client_id
-    secret: !secret automatic_secret
-    current_location: true
-
 owntracks:
   max_gps_accuracy: 200
   mqtt_topic: !secret mqtt_topic_owntracks
