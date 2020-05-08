@@ -31,8 +31,6 @@ automation:
       platform: state
       entity_id: sensor.proximity_zone
       from: Home
-      for:
-        minutes: 5
     condition:
       condition: template
       value_template: >
