@@ -3,6 +3,89 @@ ambient_station:
   api_key: !secret pws_api_key
   app_key: !secret pws_app_key
 
+automation:
+  - alias: "Set climate away mode when leaving in extreme temperatures"
+    trigger:
+      platform: state
+      entity_id: sensor.proximity_zone
+      to: Away
+    condition:
+      condition: template
+      template: >
+        {{
+          states("sensor.side_yard_feels_like") <= states(
+            "input_number.outdoor_extreme_low_threshold"
+          )
+          or
+          states("sensor.side_yard_feels_like") >= states(
+            "input_number.outdoor_extreme_high_threshold"
+          )
+        }}
+    action:
+      service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.climate_away_mode
+
+  - alias: "Set climate away mode when leaving in normal temperatures"
+    trigger:
+      platform: state
+      entity_id: sensor.proximity_zone
+      from: Home
+      for:
+        minutes: 5
+    condition:
+      condition: template
+      template: >
+        {{
+          states("input_number.outdoor_extreme_low_threshold") <=
+          states("sensor.side_yard_feels_like") <=
+          states("input_number.outdoor_extreme_high_threshold")
+        }}
+    action:
+      service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.climate_away_mode
+
+  - alias: "Unset climate away mode when arriving in extreme temperatures"
+    trigger:
+      platform: state
+      entity_id: sensor.proximity_zone
+      from: Away
+    condition:
+      condition: template
+      template: >
+        {{
+          states("sensor.side_yard_feels_like") <= states(
+            "input_number.outdoor_extreme_low_threshold"
+          )
+          or
+          states("sensor.side_yard_feels_like") >= states(
+            "input_number.outdoor_extreme_high_threshold"
+          )
+        }}
+    action:
+      service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.climate_away_mode
+
+  - alias: "Unset climate away mode when arriving in normal temperatures"
+    trigger:
+      platform: state
+      entity_id: sensor.proximity_zone
+      to: Nearby
+    condition:
+      condition: template
+      template: >
+        {{
+          states("input_number.outdoor_extreme_low_threshold") <=
+          states("sensor.side_yard_feels_like") <=
+          states("input_number.outdoor_extreme_high_threshold")
+        }}
+    action:
+      service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.climate_away_mode
+
 input_boolean:
   adjust_climate_on_proximity_automation:
     icon: mdi:car-side

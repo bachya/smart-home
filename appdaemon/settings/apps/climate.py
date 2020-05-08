@@ -2,7 +2,6 @@
 from typing import Union
 
 import voluptuous as vol
-from const import EVENT_PRESENCE_CHANGE, EVENT_PROXIMITY_CHANGE
 from core import APP_SCHEMA, Base
 from helpers import config_validation as cv
 
@@ -33,46 +32,6 @@ HVAC_MODE_HEAT = "heat"
 HVAC_MODE_OFF = "off"
 
 HANDLE_ECO_MODE = "eco_mode"
-
-
-class AdjustOnProximity(Base):  # pylint: disable=too-few-public-methods
-    """Define a feature to adjust climate based on proximity to home."""
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_event(
-            self._on_arrive_home,
-            EVENT_PRESENCE_CHANGE,
-            new=self.presence_manager.HomeStates.just_arrived.value,
-            first=True,
-        )
-
-        self.listen_event(self._on_proximity_change, EVENT_PROXIMITY_CHANGE)
-
-    def _on_arrive_home(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Last ditch: turn the thermostat to home when someone arrives."""
-        if self.climate_manager.away_mode:
-            self.log('Last ditch: setting thermostat to "Home" (arrived)')
-            self.climate_manager.set_home()
-
-    def _on_proximity_change(self, event_name: str, data: dict, kwargs: dict) -> None:
-        """Respond to "PROXIMITY_CHANGE" events."""
-        if self.climate_manager.outdoor_temperature_extreme:
-            # Scenario 1: Anything -> Away (Extreme Temps)
-            if data["new"] == self.presence_manager.ProximityZones.away.value:
-                self.climate_manager.set_away()
-
-            # Scenario 2: Away -> Anything (Extreme Temps)
-            elif data["old"] == self.presence_manager.ProximityZones.away.value:
-                self.climate_manager.set_home()
-        else:
-            # Scenario 3: Home -> Anything
-            if data["old"] == self.presence_manager.ProximityZones.home.value:
-                self.climate_manager.set_away()
-
-            # Scenario 4: Anything -> Nearby
-            elif data["new"] == self.presence_manager.ProximityZones.nearby.value:
-                self.climate_manager.set_home()
 
 
 class ClimateManager(Base):  # pylint: disable=too-many-public-methods

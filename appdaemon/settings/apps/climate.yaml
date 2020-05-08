@@ -1,12 +1,4 @@
 ---
-adjust_climate_on_proximity_automation:
-  module: climate
-  class: AdjustOnProximity
-  constrain_enabled: true
-  dependencies:
-    - climate_manager
-    - presence_manager
-
 climate_manager:
   module: climate
   class: ClimateManager
