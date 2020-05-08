@@ -11,7 +11,7 @@ automation:
       to: Away
     condition:
       condition: template
-      template: >
+      value_template: >
         {{
           states("sensor.side_yard_feels_like") <= states(
             "input_number.outdoor_extreme_low_threshold"
@@ -35,7 +35,7 @@ automation:
         minutes: 5
     condition:
       condition: template
-      template: >
+      value_template: >
         {{
           states("input_number.outdoor_extreme_low_threshold") <=
           states("sensor.side_yard_feels_like") <=
@@ -53,7 +53,7 @@ automation:
       from: Away
     condition:
       condition: template
-      template: >
+      value_template: >
         {{
           states("sensor.side_yard_feels_like") <= states(
             "input_number.outdoor_extreme_low_threshold"
@@ -75,7 +75,7 @@ automation:
       to: Nearby
     condition:
       condition: template
-      template: >
+      value_template: >
         {{
           states("input_number.outdoor_extreme_low_threshold") <=
           states("sensor.side_yard_feels_like") <=
