@@ -152,6 +152,7 @@ services:
       - /etc/ssl:/etc/ssl:ro
       - /var/log/nginx_access.log:/var/log/nginx_access.log
       - /var/log/nginx_error.log:/var/log/nginx_error.log
+      - nginx-config:/etc/nginx
 
   portainer:
     container_name: portainer
@@ -240,6 +241,7 @@ volumes:
   hass-config:
   influxdb-config:
   mysql-hass-data:
+  nginx-config:
   portainer-config:
   vernemq-data:
   zigbee2mqtt-config:
