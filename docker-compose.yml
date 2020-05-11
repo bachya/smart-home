@@ -61,7 +61,8 @@ services:
     restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /var/log/nginx:/var/log/nginx:ro
+      - /var/log/nginx_access.log:/var/log/nginx_access.log:ro
+      - /var/log/nginx_error.log:/var/log/nginx_error.log:ro
       - fail2ban-log:/var/log/fail2ban:ro
 
   glances:
@@ -146,18 +147,11 @@ services:
     network_mode: host
     restart: always
     volumes:
-      - ./nginx/settings/conf.d:/etc/nginx/conf.d
-      - ./nginx/settings/dhparams.pem:/etc/nginx/dhparams.pem
-      - ./nginx/settings/geoip.rules:/etc/nginx/geoip.rules
-      - ./nginx/settings/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/settings/proxy.conf:/etc/nginx/proxy.conf
-      - ./nginx/settings/security.conf:/etc/nginx/security.conf
-      - ./nginx/settings/ssl.conf:/etc/nginx/ssl.conf
-      - ./nginx/settings/useragents.rules:/etc/nginx/useragents.rules
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /etc/localtime:/etc/localtime:ro
       - /etc/ssl:/etc/ssl:ro
-      - /var/log/nginx:/var/log/nginx
+      - /var/log/nginx_access.log:/var/log/nginx_access.log
+      - /var/log/nginx_error.log:/var/log/nginx_error.log
 
   portainer:
     container_name: portainer
