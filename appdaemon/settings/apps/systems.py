@@ -1,11 +1,8 @@
 """Define automations for various home systems."""
 # pylint: disable=too-few-public-methods
-from typing import Callable, List, Optional, Union
+from typing import Union
 
-import voluptuous as vol
-from const import CONF_NOTIFICATION_INTERVAL
-from core import APP_SCHEMA, Base
-from helpers import config_validation as cv
+from core import Base
 from helpers.notification import send_notification
 
 CONF_AARON_ROUTER_TRACKER = "aaron_router_tracker"
@@ -59,101 +56,6 @@ class AppDaemonLogs(Base):
         self.call_service(
             "python_script/log", level=level, message="{0}: {1}".format(name, message)
         )
-
-
-class EntityPowerIssues(Base):
-    """Define a feature to notify us of low batteries."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            vol.Required(CONF_ENTITIES_TO_MONITOR): cv.ensure_list,
-            vol.Required(CONF_BATTERY_LEVEL_THRESHOLD): cv.positive_int,
-            vol.Required(CONF_NOTIFICATION_INTERVAL): vol.All(
-                cv.time_period, lambda value: value.seconds
-            ),
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self._registered = []  # type: List[str]
-        self._send_notification_func = None  # type: Optional[Callable]
-
-        for entity in self.args[CONF_ENTITIES_TO_MONITOR]:
-            if entity.split(".")[0] == "binary_sensor":
-                self.listen_state(
-                    self._on_entity_change, entity, new="on", attribute="all"
-                )
-            else:
-                self.listen_state(self._on_entity_change, entity, attribute="all")
-
-    def _on_entity_change(
-        self,
-        entity: Union[str, dict],
-        attribute: str,
-        old: str,
-        new: dict,
-        kwargs: dict,
-    ) -> None:
-        """Notify whenever an entity has issues."""
-        name = new["attributes"]["friendly_name"]
-
-        try:
-            value = float(new["state"])
-        except ValueError:
-            # If we're looking at a binary sensor, hardcode some appropriate numeric
-            # values:
-            if new["state"] == "unavailable":
-                return
-
-            if new["state"] == "on":
-                value = 100
-            else:
-                value = 0
-
-        notification_handle = f"{HANDLE_BATTERY_LOW}_{name}"
-
-        def _send_notification():
-            """Send the notification."""
-            self.data[notification_handle] = send_notification(
-                self,
-                "slack",
-                f"🤔 `{name}` is offline or has a low battery.",
-                when=self.datetime(),
-                interval=self.args[CONF_NOTIFICATION_INTERVAL],
-            )
-
-        if value < self.args[CONF_BATTERY_LEVEL_THRESHOLD]:
-            # If we've already registered that the battery is low, don't repeatedly
-            # register it:
-            if name in self._registered:
-                return
-
-            self.log(f"Entity power issue detected: {name}")
-            self._registered.append(name)
-
-            # If the automation is enabled when a battery is low, send a notification;
-            # if not, remember that we should send the notification when the automation
-            # becomes enabled:
-            if self.enabled:
-                _send_notification()
-            else:
-                self._send_notification_func = _send_notification
-        else:
-            try:
-                self._registered.remove(name)
-                self._send_notification_func = None
-                if notification_handle in self.data:
-                    cancel = self.data.pop(notification_handle)
-                    cancel()
-            except ValueError:
-                return
-
-    def on_enable(self) -> None:
-        """Send the notification once the automation is enabled (if appropriate)."""
-        if self._send_notification_func:
-            self._send_notification_func()
-            self._send_notification_func = None
 
 
 class NotifyOfDeadZwaveDevices(Base):

@@ -46,6 +46,58 @@ automation:
         message: >
           💿 There are new HACS updates: {{ trigger.to_state.state }}
 
+  - alias: "Notify when battery is low"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.aeotec_nanomote_quad_aaron_bedside_battery
+        below: 20
+        for:
+          minutes: 5
+      - platform: numeric_state
+        entity_id: sensor.fiddle_leaf_fig_battery
+        below: 20
+        for:
+          minutes: 5
+      - platform: numeric_state
+        entity_id: sensor.front_door_lock_battery
+        below: 20
+        for:
+          minutes: 5
+      - platform: numeric_state
+        entity_id: sensor.garage_fire_door_lock_battery
+        below: 20
+        for:
+          minutes: 5
+      - platform: numeric_state
+        entity_id: sensor.kitchen_sink_sensor_battery
+        below: 20
+        for:
+          minutes: 5
+      - platform: state
+        entity_id: binary_sensor.basement_sensor_low_battery
+        to: "on"
+        for:
+          minutes: 5
+      - platform: state
+        entity_id: binary_sensor.guest_bedroom_sensor_low_battery
+        to: "on"
+        for:
+          minutes: 5
+      - platform: state
+        entity_id: binary_sensor.kitchen_sensor_low_battery
+        to: "on"
+        for:
+          minutes: 5
+      - platform: state
+        entity_id: binary_sensor.upstairs_hallway_sensor_low_battery
+        to: "on"
+        for:
+          minutes: 5
+    action:
+      service: notify.slack
+      data_template:
+        message: "🔋 @aaron {{ trigger.entity_id }} is low."
+
   - alias: "Notify when media center left on"
     trigger:
       platform: state
@@ -57,6 +109,48 @@ automation:
       service: notify.slack
       data:
         message: "🎥 The media center has been on for 12 hours."
+
+  - alias: "Notify when sensor goes offline"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.basement_sensor_missing
+        to: "off"
+        for:
+          minutes: 5
+      - platform: state
+        entity_id: binary_sensor.guest_bedroom_sensor_missing
+        to: "off"
+        for:
+          minutes: 5
+      - platform: state
+        entity_id: binary_sensor.kitchen_sensor_missing
+        to: "off"
+        for:
+          minutes: 5
+      - platform: state
+        entity_id: binary_sensor.master_bathroom_climate_sensor_status
+        to: "off"
+        for:
+          minutes: 5
+      - platform: state
+        entity_id: binary_sensor.master_bedroom_salt_lamp_status
+        to: "off"
+        for:
+          minutes: 5
+      - platform: state
+        entity_id: binary_sensor.office_salt_lamp_status
+        to: "off"
+        for:
+          minutes: 5
+      - platform: state
+        entity_id: binary_sensor.upstairs_hallway_sensor_missing
+        to: "off"
+        for:
+          minutes: 5
+    action:
+      service: notify.slack
+      data_template:
+        message: "🤔 @aaron {{ trigger.entity_id }} is offline."
 
   - alias: "Pick the correct theme on HASS start"
     trigger:
