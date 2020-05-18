@@ -122,8 +122,6 @@
       state: "on"
     input_boolean.notify_of_dead_zwave_devices_automation:
       state: "on"
-    input_boolean.notify_of_low_batteries_automation:
-      state: "on"
     input_boolean.notify_of_new_versions_automation:
       state: "on"
     input_boolean.notify_when_person_on_camera_automation:
@@ -177,8 +175,6 @@
     input_boolean.lightning_detected_automation:
       state: "off"
     input_boolean.notify_of_dead_zwave_devices_automation:
-      state: "off"
-    input_boolean.notify_of_low_batteries_automation:
       state: "off"
     input_boolean.notify_of_new_versions_automation:
       state: "off"
@@ -290,8 +286,6 @@
       state: "off"
     input_boolean.adjust_climate_on_proximity_automation:
       state: "off"
-    input_boolean.notify_of_low_batteries_automation:
-      state: "off"
     input_boolean.notify_of_new_versions:
       state: "off"
     input_boolean.notify_when_person_on_camera_automation:
@@ -343,8 +337,6 @@
     automation.turn_master_bedroom_lights_on_at_sunset:
       state: "off"
     input_boolean.notify_of_dead_zwave_devices_automation:
-      state: "off"
-    input_boolean.notify_of_low_batteries_automation:
       state: "off"
     input_boolean.notify_of_new_versions_automation:
       state: "off"

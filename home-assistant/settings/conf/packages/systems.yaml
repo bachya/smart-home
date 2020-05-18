@@ -193,9 +193,6 @@ input_boolean:
   notify_of_dead_zwave_devices_automation:
     icon: mdi:z-wave
     name: Notify of dead Z-Wave devices
-  notify_of_low_batteries_automation:
-    icon: mdi:battery
-    name: Notify of low batteries
   notify_of_new_versions_automation:
     icon: mdi:home-assistant
     name: Notify of new versions
