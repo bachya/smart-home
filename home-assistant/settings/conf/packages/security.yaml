@@ -157,6 +157,17 @@ automation:
       data:
         entity_id: cover.garage_door
 
+  - alias: "iOS Action: Ignore Garage Open"
+    trigger:
+      platform: event
+      event_type: ios.notification_action_fired
+      event_data:
+        actionName: GARAGE_IGNORE
+    action:
+      service: alert.turn_off
+      data:
+        entity_id: alert.garage_left_open
+
   - alias: "iOS Action: Secure the House"
     trigger:
       platform: event
