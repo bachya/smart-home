@@ -244,6 +244,7 @@ sensor:
       - sensor.kitchen_sensor_temperature
       - sensor.kitchen_sink_sensor_temperature
       - sensor.master_bathroom_temperature
+      - sensor.office_node_pro_temperature
       - sensor.side_yard_inside_temp
       - sensor.thermostat_temperature
       - sensor.upstairs_hallway_sensor_temperature
