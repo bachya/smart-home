@@ -179,15 +179,15 @@ services:
       DOCKER_VERNEMQ_USER_WYZE: "${VERNEMQ_PASSWORD_WYZE}"
       DOCKER_VERNEMQ_USER_ZIGBEE2MQTTASSISTANT: >
         ${VERNEMQ_PASSWORD_Z2M_ASSISTANT}
-      DOCKER_VERNEMQ_PLUGINS.VMQ_BRIDGE: "on"
-      DOCKER_VERNEMQ_VMQ_BRIDGE.SSL.BR0.CAFILE: >
+      DOCKER_VERNEMQ_PLUGINS.vmq_bridge: "on"
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.cafile: >
         /etc/ssl/certs/DST_Root_CA_X3.pem
-      DOCKER_VERNEMQ_VMQ_BRIDGE.SSL.BR0.INSECURE: "on"
-      DOCKER_VERNEMQ_VMQ_BRIDGE.SSL.BR0.MAX_OUTGOING_BUFFERED_MESSAGES: 100
-      DOCKER_VERNEMQ_VMQ_BRIDGE.SSL.BR0.PASSWORD: "${VERNEMQ_BRIDGE_PASSWORD}"
-      DOCKER_VERNEMQ_VMQ_BRIDGE.SSL.BR0.TOPIC.1: "* in"
-      DOCKER_VERNEMQ_VMQ_BRIDGE.SSL.BR0.USERNAME: hub_mqtt
-      DOCKER_VERNEMQ_VMQ_BRIDGE.SSL.BR0: "${VERNEMQ_BRIDGE_HOST}"
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.insecure: "on"
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.max_outgoing_buffered_messages: 100
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.password: "${VERNEMQ_BRIDGE_PASSWORD}"
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.topic.1: "* in"
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.username: hub_mqtt
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0: "${VERNEMQ_BRIDGE_HOST}"
     image: "vernemq/vernemq:${VERNEMQ_VERSION}-alpine"
     ports:
       - "1883:1883/tcp"
