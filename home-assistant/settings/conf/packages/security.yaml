@@ -30,6 +30,23 @@ alert:
       - phones
       - slack
     data:
+      blocks:
+        - type: section
+          text:
+            type: plain_text
+            text: This is a message!
+        - type: actions
+          elements:
+            - type: button
+              text:
+                type: plain_text
+                text: Close Garage
+              action_id: GARAGE_CLOSE_DOOR
+            - type: button
+              text:
+                type: plain_text
+                text: Ignore
+              action_id: GARAGE_IGNORE
       push:
         category: GARAGE
       sound:
@@ -146,7 +163,7 @@ automation:
         message: >
             📥 SimpliSafe Notification: {{ trigger.event.data.message }}
 
-  - alias: "iOS Action: Close Garage"
+  - alias: "Garage Response: Close (iOS)"
     trigger:
       platform: event
       event_type: ios.notification_action_fired
@@ -157,7 +174,17 @@ automation:
       data:
         entity_id: cover.garage_door
 
-  - alias: "iOS Action: Ignore Garage Open"
+  - alias: "Garage Response: Close (Slack)"
+    trigger:
+      platform: webhook
+      webhook_id: !secret slack_webhook_id
+    action:
+      service: persistent_notification.create
+      data:
+        title: New Slack Webhook
+        message: "{{ trigger.data }} ::: {{ trigger.json }}"
+
+  - alias: "Garage Response: Ignore (iOS)"
     trigger:
       platform: event
       event_type: ios.notification_action_fired
@@ -168,7 +195,7 @@ automation:
       data:
         entity_id: alert.garage_left_open
 
-  - alias: "iOS Action: Secure the House"
+  - alias: "Security Response: Secure the House (iOS)"
     trigger:
       platform: event
       event_type: ios.notification_action_fired
