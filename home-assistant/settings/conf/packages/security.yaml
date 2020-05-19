@@ -34,7 +34,7 @@ alert:
         - type: section
           text:
             type: plain_text
-            text: This is a message!
+            text: 🚗 The garage has been left open.
         - type: actions
           elements:
             - type: button
@@ -179,10 +179,14 @@ automation:
       platform: webhook
       webhook_id: !secret slack_webhook_id
     action:
-      service: persistent_notification.create
-      data:
-        title: New Slack Webhook
-        message: "{{ trigger.data }} ::: {{ trigger.json }}"
+      service_template: >
+        {% if trigger.data.actions[0].action_id == "GARAGE_CLOSE_DOOR" %}
+          cover.close_cover
+        {% endif %}
+      data_template: >
+        {% if trigger.data.actions[0].action_id == "GARAGE_CLOSE_DOOR" %}
+          cover.garage_door
+        {% endif %}
 
   - alias: "Garage Response: Ignore (iOS)"
     trigger:
@@ -194,6 +198,20 @@ automation:
       service: alert.turn_off
       data:
         entity_id: alert.garage_left_open
+
+  - alias: "Garage Response: Ignore (Slack)"
+    trigger:
+      platform: webhook
+      webhook_id: !secret slack_webhook_id
+    action:
+      service_template: >
+        {% if trigger.data.actions[0].action_id == "GARAGE_IGNORE" %}
+          alert.turn_off
+        {% endif %}
+      data_template: >
+        {% if trigger.data.actions[0].action_id == "GARAGE_IGNORE" %}
+          alert.garage_left_open
+        {% endif %}
 
   - alias: "Security Response: Secure the House (iOS)"
     trigger:
