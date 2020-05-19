@@ -183,10 +183,11 @@ automation:
         {% if trigger.data.actions[0].action_id == "GARAGE_CLOSE_DOOR" %}
           cover.close_cover
         {% endif %}
-      data_template: >
-        {% if trigger.data.actions[0].action_id == "GARAGE_CLOSE_DOOR" %}
-          cover.garage_door
-        {% endif %}
+      data_template:
+        entity_id: >
+          {% if trigger.data.actions[0].action_id == "GARAGE_CLOSE_DOOR" %}
+            cover.garage_door
+          {% endif %}
 
   - alias: "Garage Response: Ignore (iOS)"
     trigger:
@@ -208,10 +209,11 @@ automation:
         {% if trigger.data.actions[0].action_id == "GARAGE_IGNORE" %}
           alert.turn_off
         {% endif %}
-      data_template: >
-        {% if trigger.data.actions[0].action_id == "GARAGE_IGNORE" %}
-          alert.garage_left_open
-        {% endif %}
+      data_template:
+        entity_id: >
+          {% if trigger.data.actions[0].action_id == "GARAGE_IGNORE" %}
+            alert.garage_left_open
+          {% endif %}
 
   - alias: "Security Response: Secure the House (iOS)"
     trigger:
