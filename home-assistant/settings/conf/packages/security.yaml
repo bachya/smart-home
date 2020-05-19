@@ -180,12 +180,14 @@ automation:
       webhook_id: !secret slack_webhook_id
     action:
       service_template: >
-        {% if trigger.data.actions[0].action_id == "GARAGE_CLOSE_DOOR" %}
+        {% set slack_action_id = trigger.data.payload.actions[0].action_id %}
+        {% if slack_action_id == "GARAGE_CLOSE_DOOR" %}
           cover.close_cover
         {% endif %}
       data_template:
         entity_id: >
-          {% if trigger.data.actions[0].action_id == "GARAGE_CLOSE_DOOR" %}
+          {% set slack_action_id = trigger.data.payload.actions[0].action_id %}
+          {% if slack_action_id == "GARAGE_CLOSE_DOOR" %}
             cover.garage_door
           {% endif %}
 
@@ -206,12 +208,14 @@ automation:
       webhook_id: !secret slack_webhook_id
     action:
       service_template: >
-        {% if trigger.data.actions[0].action_id == "GARAGE_IGNORE" %}
+        {% set slack_action_id = trigger.data.payload.actions[0].action_id %}
+        {% if slack_action_id == "GARAGE_IGNORE" %}
           alert.turn_off
         {% endif %}
       data_template:
         entity_id: >
-          {% if trigger.data.actions[0].action_id == "GARAGE_IGNORE" %}
+          {% set slack_action_id = trigger.data.payload.actions[0].action_id %}
+          {% if slack_action_id == "GARAGE_IGNORE" %}
             alert.garage_left_open
           {% endif %}
 
