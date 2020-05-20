@@ -31,7 +31,6 @@ cover:
     covers:
       garage_door:
         friendly_name: Garage Door
-        device_class: garage
         optimistic: false
         availability_template: >
           {{
