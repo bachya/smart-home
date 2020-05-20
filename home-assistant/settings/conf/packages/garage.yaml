@@ -27,7 +27,17 @@ automation:
         entity_id: switch.garage_lights
 
 cover:
-  - platform: myq
-    username: !secret chamberlain_myq_username
-    password: !secret chamberlain_myq_password
-    type: chamberlain
+  - platform: template
+    covers:
+      garage_door:
+        friendly_name: Garage Door
+        device_class: garage
+        value_template: "{{ is_state('binary_sensor.garage_door', 'on') }}"
+        open_cover:
+          service: switch.turn_on
+          data:
+            entity_id: switch.garage_door_control
+        close_cover:
+          service: switch.turn_on
+          data:
+            entity_id: switch.garage_door_control
