@@ -175,6 +175,7 @@ sensor:
     round_digits: 1
     entity_ids:
       - sensor.master_bathroom_humidity
+      - sensor.office_node_pro_humidity
       - sensor.side_yard_humidity_in
       - sensor.thermostat_humidity
 
