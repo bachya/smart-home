@@ -1,16 +1,9 @@
 ---
 office_lights_sleep_timer_automation:
   module: switches
-  class: ServiceSleepTimer
+  class: SleepTimer
   constrain_enabled: true
   dependencies:
     - presence_manager
+  switch: switch.office_salt_lamp
   timer_slider: input_number.office_salt_lamp_timer
-  sleep_timer_start_service:
-    service: "switch/turn_on"
-    service_data:
-      entity_id: switch.office_salt_lamp
-  sleep_timer_stop_service:
-    service: "switch/turn_off"
-    service_data:
-      entity_id: switch.office_salt_lamp

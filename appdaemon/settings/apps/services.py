@@ -25,11 +25,8 @@ CONF_SERVICE_DOWN_DATA = "service_down_data"
 CONF_SERVICE_ORDER = "service_order"
 CONF_SERVICE_UP = "service_up"
 CONF_SERVICE_UP_DATA = "service_up_data"
-CONF_SLEEP_TIMER_START_SERVICE = "sleep_timer_start_service"
-CONF_SLEEP_TIMER_STOP_SERVICE = "sleep_timer_stop_service"
 CONF_TARGET_ENTITY_ID = "target_entity_id"
 CONF_TARGET_VALUE = "target_value"
-CONF_TIMER_SLIDER = "timer_slider"
 CONF_ZWAVE_DEVICE = "zwave_device"
 
 SERVICE_ORDER_RANDOM = "random"
@@ -40,7 +37,6 @@ DEFAULT_RANDOM_TICK_LOWER_END = 5 * 60
 DEFAULT_RANDOM_TICK_UPPER_END = 60 * 60
 
 HANDLE_TICK = "tick"
-HANDLE_TIMER = "timer"
 
 SERVICE_CALL_SCHEMA = vol.Schema(
     {
@@ -183,48 +179,3 @@ class ServiceOnTime(Base):
             self.args[CONF_SERVICES][CONF_SERVICE],
             **self.args[CONF_SERVICES][CONF_SERVICE_DATA]
         )
-
-
-class ServiceSleepTimer(Base):
-    """Define an automation to call two services bracketing an interval."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            vol.Required(CONF_TIMER_SLIDER): cv.entity_id,
-            vol.Required(CONF_SLEEP_TIMER_START_SERVICE): SERVICE_CALL_SCHEMA,
-            vol.Required(CONF_SLEEP_TIMER_STOP_SERVICE): SERVICE_CALL_SCHEMA,
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_state(self._on_timer_change, self.args[CONF_TIMER_SLIDER])
-
-    def _on_timer_change(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Start/stop a sleep timer."""
-        minutes = int(float(new))
-
-        if minutes == 0:
-            self.log("Deactivating sleep timer")
-            self.call_service(
-                self.args[CONF_SLEEP_TIMER_STOP_SERVICE][CONF_SERVICE],
-                **self.args[CONF_SLEEP_TIMER_START_SERVICE][CONF_SERVICE_DATA]
-            )
-
-            if HANDLE_TIMER in self.data:
-                cancel = self.data.pop(HANDLE_TIMER)
-                self.cancel_timer(cancel)
-        else:
-            self.log("Activating sleep timer: %s minutes", minutes)
-            self.call_service(
-                self.args[CONF_SLEEP_TIMER_STOP_SERVICE][CONF_SERVICE],
-                **self.args[CONF_SLEEP_TIMER_STOP_SERVICE][CONF_SERVICE_DATA]
-            )
-            self.data[HANDLE_TIMER] = self.run_in(self._on_timer_complete, minutes * 60)
-
-    def _on_timer_complete(self, kwargs: dict) -> None:
-        """Turn off a switch at the end of sleep timer."""
-        self.log("Sleep timer over; turning switch off")
-        self.set_value(self.args[CONF_TIMER_SLIDER], 0)
