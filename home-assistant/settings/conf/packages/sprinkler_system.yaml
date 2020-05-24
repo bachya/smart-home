@@ -1,5 +1,16 @@
 ---
 automation:
+  - alias: "Reset RainMachine Zone: Flower Box"
+    trigger:
+      platform: state
+      entity_id: switch.flower_box
+      to: "off"
+    action:
+      service: input_number.set_value
+      data:
+        entity_id: input_number.flower_box_zone_timer
+        value: 0
+
   - alias: "Start RainMachine Zone: Flower Box"
     trigger:
       platform: state
@@ -10,7 +21,7 @@ automation:
         {{ states('input_number.flower_box_zone_timer') | int != 0 }}
     action:
       - service: rainmachine.stop_zone
-        data_template:
+        data:
           zone_id: 2
       - service: rainmachine.start_zone
         data_template:
@@ -28,8 +39,19 @@ automation:
         {{ states('input_number.flower_box_zone_timer') | int == 0 }}
     action:
       service: rainmachine.stop_zone
-      data_template:
+      data:
         zone_id: 2
+
+  - alias: "Reset RainMachine Zone: Landscaping"
+    trigger:
+      platform: state
+      entity_id: switch.landscaping
+      to: "off"
+    action:
+      service: input_number.set_value
+      data:
+        entity_id: input_number.landscaping_zone_timer
+        value: 0
 
   - alias: "Start RainMachine Zone: Landscaping"
     trigger:
@@ -41,7 +63,7 @@ automation:
         {{ states('input_number.landscaping_zone_timer') | int != 0 }}
     action:
       - service: rainmachine.stop_zone
-        data_template:
+        data:
           zone_id: 1
       - service: rainmachine.start_zone
         data_template:
@@ -59,7 +81,7 @@ automation:
         {{ states('input_number.flower_box_zone_timer') | int == 0 }}
     action:
       service: rainmachine.stop_zone
-      data_template:
+      data:
         zone_id: 2
 
 input_number:
