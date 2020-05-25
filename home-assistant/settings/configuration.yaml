@@ -29,6 +29,5 @@ notion: !include conf/notion.yaml
 notify: !include conf/notifiers.yaml
 proximity: !include conf/proximity.yaml
 wemo: !include conf/wemo.yaml
-wwlln: !include conf/wwlln.yaml
 zone: !include conf/zones.yaml
 zwave: !include conf/zwave.yaml
