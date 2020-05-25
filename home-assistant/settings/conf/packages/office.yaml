@@ -22,9 +22,8 @@ automation:
 
   - alias: Set office salt lamp sleep timer
     trigger:
-      platform: numeric_state
+      platform: state
       entity_id: input_number.office_salt_lamp_timer
-      above: 0
     action:
       - service: switch.turn_on
         data:
