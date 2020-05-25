@@ -9,6 +9,10 @@ automation:
         entity_id: switch.office_salt_lamp
         to: "off"
     action:
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.office_salt_lamp_timer
+          value: 0
       - service: switch.turn_off
         data:
           entity_id: switch.office_salt_lamp
