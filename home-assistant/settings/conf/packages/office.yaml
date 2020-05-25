@@ -1,5 +1,27 @@
 ---
 automation:
+  - alias: Cancel office salt lamp sleep timer
+    trigger:
+      platform: numeric_state
+      entity_id: input_number.office_salt_lamp_timer
+      below: 1
+    action:
+      service: timer.cancel
+      data:
+        entity_id: timer.office_salt_lamp_timer
+
+  - alias: Set office salt lamp sleep timer
+    trigger:
+      platform: numeric_state
+      entity_id: input_number.office_salt_lamp_timer
+      above: 0
+    action:
+      service: timer.start
+      data_template:
+        entity_id: timer.office_salt_lamp_timer
+        duration: >
+          {{ states("input_number.office_salt_lamp_timer") | int * 60 }}
+
   - alias: "Turn office lights off at 10pm"
     trigger:
       platform: time
@@ -18,17 +40,16 @@ automation:
       data:
         entity_id: switch.office_salt_lamp
 
-input_boolean:
-  office_lights_sleep_timer_automation:
-    icon: mdi:sleep
-    name: Enable sleep timer
-
 input_number:
   office_salt_lamp_timer:
     name: Sleep Timer
     initial: 0
     min: 0
     max: 90
-    step: 5
+    step: 1
     unit_of_measurement: minutes
     icon: mdi:timer
+
+timer:
+  office_salt_lamp_timer:
+    name: Sleep Timer Remaining

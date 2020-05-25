@@ -1,9 +1,0 @@
----
-office_lights_sleep_timer_automation:
-  module: switches
-  class: SleepTimer
-  constrain_enabled: true
-  dependencies:
-    - presence_manager
-  switch: switch.office_salt_lamp
-  timer_slider: input_number.office_salt_lamp_timer
