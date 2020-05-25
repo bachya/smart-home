@@ -2,9 +2,12 @@
 automation:
   - alias: Cancel office salt lamp sleep timer
     trigger:
-      platform: numeric_state
-      entity_id: input_number.office_salt_lamp_timer
-      below: 1
+      - platform: numeric_state
+        entity_id: input_number.office_salt_lamp_timer
+        below: 1
+      - platform: state
+        entity_id: switch.office_salt_lamp
+        to: "off"
     action:
       - service: switch.turn_off
         data:
