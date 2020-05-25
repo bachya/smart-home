@@ -100,3 +100,9 @@ rainmachine:
   controllers:
     - ip_address: rainmachine.phil.iot
       password: !secret rainmachine_password
+
+timer:
+  flower_box_timer:
+    name: Sleep Timer Remaining
+  landscaping_timer:
+    name: Sleep Timer Remaining
