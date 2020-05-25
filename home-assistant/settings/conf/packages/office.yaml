@@ -8,6 +8,9 @@ automation:
       - platform: state
         entity_id: switch.office_salt_lamp
         to: "off"
+      - platform: state
+        entity_id: timer.office_salt_lamp_timer
+        to: idle
     action:
       - service: input_number.set_value
         data:
