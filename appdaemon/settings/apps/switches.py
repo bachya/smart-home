@@ -1,9 +1,5 @@
 """Define automations for switches."""
-from typing import Union
-
-import voluptuous as vol
-from core import APP_SCHEMA, Base
-from helpers import config_validation as cv
+from core import Base
 
 CONF_RETURN_DELAY = "return_delay"
 CONF_SWITCH = "switch"
@@ -55,48 +51,3 @@ class BaseSwitch(Base):
         elif self.state == "on" and _state == "off":
             self.log("Turning off: %s", self.args["switch"])
             self.turn_off(self.args["switch"])
-
-
-class SleepTimer(BaseSwitch):
-    """Define a feature to turn a switch off after an amount of time."""
-
-    APP_SCHEMA = APP_SCHEMA.extend(
-        {
-            vol.Required(CONF_SWITCH): cv.entity_id,
-            vol.Required(CONF_TIMER_SLIDER): cv.entity_id,
-        }
-    )
-
-    def configure(self) -> None:
-        """Configure."""
-        self.listen_state(self._on_switch_turned_off, self.args[CONF_SWITCH], new="off")
-        self.listen_state(self._on_timer_change, self.args[CONF_TIMER_SLIDER])
-
-    def _on_timer_change(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Start/stop a sleep timer for this switch."""
-        minutes = int(float(new))
-
-        if minutes == 0:
-            self.log("Deactivating sleep timer")
-            self.toggle(state="off")
-
-            if HANDLE_TIMER in self.data:
-                cancel = self.data.pop(HANDLE_TIMER)
-                self.cancel_timer(cancel)
-        else:
-            self.log("Activating sleep timer: %s minutes", minutes)
-            self.toggle(state="on")
-            self.data[HANDLE_TIMER] = self.run_in(self._on_timer_complete, minutes * 60)
-
-    def _on_switch_turned_off(
-        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
-    ) -> None:
-        """Reset the sleep timer when the switch turns off."""
-        self.set_value(self.args[CONF_TIMER_SLIDER], 0)
-
-    def _on_timer_complete(self, kwargs: dict) -> None:
-        """Turn off a switch at the end of sleep timer."""
-        self.log("Sleep timer over; turning switch off")
-        self.set_value(self.args[CONF_TIMER_SLIDER], 0)

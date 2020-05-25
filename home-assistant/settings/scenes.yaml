@@ -96,7 +96,7 @@
       state: "on"
     automation.turn_living_room_lights_on_when_we_arrive:
       state: "on"
-    automation.turn_master_bedroom_lights_on_at_sunset:
+    automation.turn_master_bedroom_salt_lamp_on_at_sunset:
       state: "on"
     automation.turn_off_garage_lights_after_garage_door_closes:
       state: "on"
@@ -170,7 +170,7 @@
       state: "off"
     automation.notify_when_wolfie_needs_a_new_side_brush:
       state: "off"
-    automation.turn_master_bedroom_lights_on_at_sunset:
+    automation.turn_master_bedroom_salt_lamp_on_at_sunset:
       state: "off"
     input_boolean.lightning_detected_automation:
       state: "off"
@@ -334,7 +334,7 @@
       state: "off"
     input_boolean.lightning_detected_automation:
       state: "off"
-    automation.turn_master_bedroom_lights_on_at_sunset:
+    automation.turn_master_bedroom_salt_lamp_on_at_sunset:
       state: "off"
     input_boolean.notify_of_dead_zwave_devices_automation:
       state: "off"

@@ -1,18 +1,38 @@
 ---
 automation:
-  - alias: "Cycle master toilet fan during the day"
+  - alias: Cancel master bathroom fan timer
     trigger:
-      platform: time_pattern
-      hours: "/1"
-    condition:
-      condition: time
-      after: "10:00:00"
-      before: "17:00:00"
+      - platform: numeric_state
+        entity_id: input_number.master_bathroom_fan_timer
+        below: 1
+      - platform: state
+        entity_id: switch.master_bathroom_fan
+        to: "off"
     action:
-      service: input_number.set_value
-      data:
-        entity_id: input_number.master_bathroom_toilet_fan_timer
-        value: 15
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.master_bathroom_fan_timer
+          value: 0
+      - service: switch.turn_off
+        data:
+          entity_id: switch.master_bathroom_fan
+      - service: timer.cancel
+        data:
+          entity_id: timer.master_bathroom_fan
+
+  - alias: Set master bathroom fan timer
+    trigger:
+      platform: state
+      entity_id: input_number.master_bathroom_fan_timer
+    action:
+      - service: switch.turn_on
+        data:
+          entity_id: switch.master_bathroom_fan
+      - service: timer.start
+        data_template:
+          entity_id: timer.master_bathroom_fan_timer
+          duration: >
+            {{ states("input_number.master_bathroom_fan_timer") | int * 60 }}
 
   - alias: "Set sleep timer on master bathroom fan when switch double tapped"
     trigger:
@@ -27,6 +47,40 @@ automation:
         entity_id: input_number.master_bathroom_fan_timer
         value: 30
 
+  - alias: Cancel master toilet fan timer
+    trigger:
+      - platform: numeric_state
+        entity_id: input_number.master_toilet_fan_timer
+        below: 1
+      - platform: state
+        entity_id: switch.master_toilet_fan
+        to: "off"
+    action:
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.master_toilet_fan_timer
+          value: 0
+      - service: switch.turn_off
+        data:
+          entity_id: switch.master_toilet_fan
+      - service: timer.cancel
+        data:
+          entity_id: timer.master_toilet_fan
+
+  - alias: Set master toilet fan timer
+    trigger:
+      platform: state
+      entity_id: input_number.master_toilet_fan_timer
+    action:
+      - service: switch.turn_on
+        data:
+          entity_id: switch.master_toilet_fan
+      - service: timer.start
+        data_template:
+          entity_id: timer.master_toilet_fan_timer
+          duration: >
+            {{ states("input_number.master_toilet_fan_timer") | int * 60 }}
+
   - alias: "Set sleep timer on master toilet fan when switch double tapped"
     trigger:
       platform: event
@@ -37,10 +91,60 @@ automation:
     action:
       service: input_number.set_value
       data:
-        entity_id: input_number.master_bathroom_toilet_fan_timer
+        entity_id: input_number.master_toilet_fan_timer
         value: 10
 
-  - alias: "Turn master bedroom lights on at sunset"
+  - alias: Cycle master toilet fan during the day
+    trigger:
+      platform: time_pattern
+      hours: "/1"
+    condition:
+      condition: time
+      after: "10:00:00"
+      before: "17:00:00"
+    action:
+      service: input_number.set_value
+      data:
+        entity_id: input_number.master_toilet_fan_timer
+        value: 15
+
+  - alias: Cancel master bedroom salt lamp sleep timer
+    trigger:
+      - platform: numeric_state
+        entity_id: input_number.master_bedroom_salt_lamp_timer
+        below: 1
+      - platform: state
+        entity_id: switch.master_bedroom_salt_lamp
+        to: "off"
+    action:
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.master_bedroom_salt_lamp_timer
+          value: 0
+      - service: switch.turn_off
+        data:
+          entity_id: switch.master_bedroom_salt_lamp
+      - service: timer.cancel
+        data:
+          entity_id: timer.master_bedroom_salt_lamp
+
+  - alias: Set master bedroom salt lamp sleep timer
+    trigger:
+      platform: state
+      entity_id: input_number.master_bedroom_salt_lamp_timer
+    action:
+      - service: switch.turn_on
+        data:
+          entity_id: switch.master_bedroom_salt_lamp
+      - service: timer.start
+        data_template:
+          entity_id: timer.master_bedroom_salt_lamp_timer
+          duration: >
+            {{
+              states("input_number.master_bedroom_salt_lamp_timer") | int * 60
+            }}
+
+  - alias: "Turn master bedroom salt lamp on at sunset"
     trigger:
       platform: sun
       event: sunset
@@ -49,42 +153,29 @@ automation:
       data:
         entity_id: switch.master_bedroom_salt_lamp
 
-input_boolean:
-  master_bathroom_fan_sleep_timer_automation:
-    icon: mdi:sleep
-    name: "Bathroom: enable sleep timer"
-  master_bedroom_lights_sleep_timer_automation:
-    icon: mdi:sleep
-    name: Enable sleep timer
-  master_toilet_fan_sleep_timer_automation:
-    icon: mdi:sleep
-    name: "Toilet: enable sleep timer"
-
 input_number:
   master_bathroom_fan_timer:
     name: Sleep Timer
     initial: 0
     min: 0
     max: 90
-    step: 5
+    step: 1
     unit_of_measurement: minutes
     icon: mdi:timer
-
-  master_bathroom_toilet_fan_timer:
+  master_toilet_fan_timer:
     name: Sleep Timer
     initial: 0
     min: 0
     max: 90
-    step: 5
+    step: 1
     unit_of_measurement: minutes
     icon: mdi:timer
-
   master_bedroom_salt_lamp_timer:
     name: Sleep Timer
     initial: 0
     min: 0
     max: 90
-    step: 5
+    step: 1
     unit_of_measurement: minutes
     icon: mdi:timer
 
@@ -111,11 +202,9 @@ sensor:
     unit_of_measurement: "hPa"
 
 timer:
-  master_bathroom_fan:
-    duration: "00:30:00"
-
-  master_bedroom_salt_lamp:
-    duration: "00:15:00"
-
-  master_toilet_fan:
-    duration: "00:10:00"
+  master_bathroom_fan_timer:
+    name: Sleep Timer Remaining
+  master_bedroom_salt_lamp_timer:
+    name: Sleep Timer Remaining
+  master_toilet_fan_timer:
+    name: Sleep Timer Remaining
