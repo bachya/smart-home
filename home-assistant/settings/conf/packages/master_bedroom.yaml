@@ -18,7 +18,7 @@ automation:
           entity_id: switch.master_bathroom_fan
       - service: timer.cancel
         data:
-          entity_id: timer.master_bathroom_fan
+          entity_id: timer.master_bathroom_fan_timer
 
   - alias: Set master bathroom fan timer
     trigger:
@@ -65,7 +65,7 @@ automation:
           entity_id: switch.master_toilet_fan
       - service: timer.cancel
         data:
-          entity_id: timer.master_toilet_fan
+          entity_id: timer.master_toilet_fan_timer
 
   - alias: Set master toilet fan timer
     trigger:
@@ -126,7 +126,7 @@ automation:
           entity_id: switch.master_bedroom_salt_lamp
       - service: timer.cancel
         data:
-          entity_id: timer.master_bedroom_salt_lamp
+          entity_id: timer.master_bedroom_salt_lamp_timer
 
   - alias: Set master bedroom salt lamp sleep timer
     trigger:
