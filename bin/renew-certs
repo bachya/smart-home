@@ -23,6 +23,7 @@ ask_for_sudo
 sudo docker run --name certbot -it --rm \
   -v /etc/letsencrypt:/etc/letsencrypt \
   -v /var/lib/letsencrypt:/var/lib/letsencrypt \
+  -v /var/log/letsencrypt:/var/log/letsencrypt \
   -v "$REPO_PATH":/repo \
   --entrypoint="" \
   certbot/dns-linode:amd64-v1.2.0 \
