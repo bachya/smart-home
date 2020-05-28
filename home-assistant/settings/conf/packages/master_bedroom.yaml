@@ -162,6 +162,12 @@ automation:
       data:
         entity_id: switch.master_bedroom_salt_lamp
 
+group:
+  bathroom_fans:
+    entities:
+      - switch.master_bathroom_fan
+      - switch.master_toilet_fan
+
 input_number:
   master_bathroom_fan_timer:
     name: Sleep Timer
