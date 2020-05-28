@@ -2,6 +2,8 @@
 auth_providers: !include auth_providers.yaml
 customize: !include customize.yaml
 elevation: !secret base_elevation
+external_url: !secret hass_url_external
+internal_url: !secret hass_url_internal
 latitude: !secret base_latitude
 longitude: !secret base_longitude
 name: !secret base_name
