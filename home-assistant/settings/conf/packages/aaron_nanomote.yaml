@@ -3,18 +3,6 @@
 # Scene Data: 7680 for a short press, 7800 for a long press
 
 automation:
-  - alias: "Button 1 Long: 15-minute Sleep Timer on Master Bedroom Salt Lamp"
-    trigger:
-      platform: event
-      event_type: zwave.scene_activated
-      event_data:
-        scene_id: 1
-        scene_data: 7800
-    action:
-      - service: input_number.set_value
-        data:
-          entity_id: 15
-
   - alias: "Button 1 Short: Toggle Master Bedroom Salt Lamp"
     trigger:
       platform: event
@@ -71,7 +59,7 @@ automation:
       platform: event
       event_type: zwave.scene_activated
       event_data:
-        scene_id: 3
+        scene_id: 4
         scene_data: 7680
     action:
       - service: homeassistant.turn_off
