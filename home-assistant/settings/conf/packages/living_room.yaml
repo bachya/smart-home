@@ -1,4 +1,65 @@
 ---
+alert:
+  fiddle_leaf_fig_moisture:
+    name: "🌴 Fred is low on moisture and needs a drink."
+    done_message: "🌴 Fred is nicely hydrated!"
+    title: Fred's Moisture
+    entity_id: binary_sensor.should_notify_about_fred_dry
+    state: "on"
+    repeat:
+      - 60
+    skip_first: true
+    notifiers:
+      - mobile_app_brittany_bachs_iphone
+
+automation:
+  - alias: "Turn living room lights on when we arrive"
+    trigger:
+      platform: state
+      entity_id: sensor.proximity_zone
+      to: Home
+    condition:
+      condition: state
+      entity_id: sun.sun
+      state: below_horizon
+    action:
+      service: switch.turn_on
+      data:
+        entity_id: group.living_room_lights
+
+  - alias: "Turn reading lamp on at sunset"
+    trigger:
+      platform: sun
+      event: sunset
+    action:
+      service: switch.turn_on
+      data:
+        entity_id: switch.reading_lamp
+
+  - alias: "Turn powder room fan back on if someone turns it off"
+    trigger:
+      platform: state
+      entity_id: switch.powder_room_fan
+      to: "off"
+      for:
+        minutes: 1
+    action:
+      service: switch.turn_on
+      data:
+        entity_id: switch.powder_room_fan
+
+binary_sensor:
+  - platform: template
+    sensors:
+      should_notify_about_fred_dry:
+        value_template: >-
+          {{
+            not is_state("sensor.fiddle_leaf_fig_moisture", "unknown") and
+            states("sensor.fiddle_leaf_fig_moisture") | int < 15 and
+            is_state("person.britt", "home") and
+            is_state("input_boolean.blackout_mode", off)
+          }}
+
 group:
   living_room_lights:
     entities:
@@ -13,9 +74,99 @@ remote:
     activity: 22580039
 
 roku:
-  - host: 172.16.10.33
+  - host: 172.16.11.38
+
+script:
+  start_random_stream_on_living_room_roku:
+    sequence:
+      - service: remote.turn_on
+        data:
+          entity_id: remote.living_room_tv
+      - delay: "00:00:15"
+      - service: media_player.select_source
+        data:
+          entity_id: media_player.living_room_roku
+          source: Locast.org
+      - delay: "00:00:10"
+      - service: remote.send_command
+        data:
+          entity_id: remote.living_room_roku
+          command: select
+      - service: media_player.volume_set
+        data:
+          entity_id: media_player.sonos_playbar
+          volume_level: 0.25
+
+  stop_random_stream_on_living_room_roku:
+    sequence:
+      - service: media_player.select_source
+        data:
+          entity_id: media_player.living_room_roku
+          source: Home
+      - delay: "00:00:05"
+      - service: remote.turn_off
+        data:
+          entity_id: remote.living_room_tv
 
 sensor:
+  - platform: filter
+    name: "Filtered Fiddle Leaf Fig Brightness (%)"
+    entity_id: sensor.fiddle_leaf_fig_light_intensity_log
+    filters:
+      - filter: range
+        upper_bound: 100
+
+  - platform: mqtt
+    name: Fiddle Leaf Fig Moisture
+    state_topic: "miflora/FiddleLeafFig"
+    value_template: "{{ value_json.moisture }}"
+    unit_of_measurement: "%"
+    icon: "mdi:water-percent"
+    force_update: true
+
+  - platform: mqtt
+    name: Fiddle Leaf Fig Light Intensity
+    state_topic: "miflora/FiddleLeafFig"
+    value_template: "{{ value_json.light }}"
+    device_class: illuminance
+    unit_of_measurement: "lx"
+    force_update: true
+
+  - platform: mqtt
+    name: Fiddle Leaf Fig Temperature
+    state_topic: "miflora/FiddleLeafFig"
+    value_template: "{{ value_json.temperature }}"
+    device_class: temperature
+    unit_of_measurement: "°C"
+    force_update: true
+
+  - platform: mqtt
+    name: Fiddle Leaf Fig Conductivity
+    state_topic: "miflora/FiddleLeafFig"
+    value_template: "{{ value_json.conductivity }}"
+    unit_of_measurement: "µS/cm"
+    icon: "mdi:test-tube"
+    force_update: true
+
+  - platform: mqtt
+    name: Fiddle Leaf Fig Battery
+    state_topic: "miflora/FiddleLeafFig"
+    value_template: "{{ value_json.battery }}"
+    device_class: battery
+    unit_of_measurement: "%"
+    force_update: true
+
+  - platform: template
+    sensors:
+      fiddle_leaf_fig_light_intensity_log:
+        friendly_name: "Living Room: Brightness (Perception)"
+        value_template: >
+          {{ (
+            states("sensor.fiddle_leaf_fig_light_intensity") | int | log(10)/5
+          ) | round(2) * 100 }}
+        unit_of_measurement: "%"
+        device_class: illuminance
+
   - platform: template
     sensors:
       front_door_lock_battery:
@@ -28,13 +179,13 @@ sensor:
         device_class: battery
       roku_source:
         friendly_name: Roku Source
+        entity_id: media_player.living_room_roku
         value_template: >
           {{ states.media_player.living_room_roku.attributes.app_name }}
         icon_template: >
-          {%
-            set state =
-              states.media_player.living_room_roku.attributes.app_name
-          %}
+          {% set state = state_attr(
+            "media_player.living_room_roku", "app_name"
+            ) %}
           {% if state == 'Netflix'%}
             mdi:netflix
           {% elif state == 'Hulu'%}
@@ -50,3 +201,23 @@ sensor:
           {% else %}
             mdi:apps
           {% endif %}
+
+switch:
+  - platform: template
+    switches:
+      presence_aware_fireplace:
+        friendly_name: Fireplace
+        value_template: "{{ is_state('switch.fireplace', 'on') }}"
+        turn_on:
+          service: switch.turn_on
+          data_template:
+            entity_id: >
+              {% if is_state("sensor.proximity_zone", "Home") %}
+                switch.fireplace
+              {% else %}
+                switch.fireplace_no_one_home
+              {% endif %}
+        turn_off:
+          service: switch.turn_off
+          data:
+            entity_id: switch.fireplace

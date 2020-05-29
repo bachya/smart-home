@@ -1,154 +1,206 @@
 """Define automations for various home systems."""
-from typing import Union
+# pylint: disable=too-few-public-methods
+from typing import Callable, List, Optional, Union
 
 import voluptuous as vol
-
+from const import CONF_NOTIFICATION_INTERVAL
 from core import APP_SCHEMA, Base
-from const import (
-    CONF_DURATION, CONF_ENTITY, CONF_ENTITY_IDS, CONF_NOTIFICATION_INTERVAL,
-    CONF_PROPERTIES, CONF_STATE, TOGGLE_STATES)
 from helpers import config_validation as cv
+from helpers.notification import send_notification
 
-CONF_BATTERIES_TO_MONITOR = 'batteries_to_monitor'
-CONF_BATTERY_LEVEL_THRESHOLD = 'battery_level_threshold'
-CONF_EXPIRY_THRESHOLD = 'expiry_threshold'
-CONF_SSL_EXPIRY = 'ssl_expiry'
+CONF_AARON_ROUTER_TRACKER = "aaron_router_tracker"
+CONF_ENTITIES_TO_MONITOR = "batteries_to_monitor"
+CONF_BATTERY_LEVEL_THRESHOLD = "battery_level_threshold"
+CONF_DURATION = "duration"
+CONF_EXPIRY_THRESHOLD = "expiry_threshold"
 
-HANDLE_BATTERY_LOW = 'battery_low'
+HANDLE_BATTERY_LOW = "battery_low"
+
+WARNING_LOG_BLACKLIST = [
+    "Disconnected from Home Assistant",
+    "HVAC mode support has been disabled",
+    "not found in namespace",
+]
 
 
-class LowBatteries(Base):
-    """Define a feature to notify us of low batteries."""
-
-    APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS: vol.Schema({
-            vol.Required(CONF_BATTERIES_TO_MONITOR): cv.ensure_list,
-        }, extra=vol.ALLOW_EXTRA),
-        CONF_PROPERTIES: vol.Schema({
-            vol.Required(CONF_BATTERY_LEVEL_THRESHOLD): int,
-            vol.Required(CONF_NOTIFICATION_INTERVAL): int,
-        }, extra=vol.ALLOW_EXTRA),
-    })
+class AppDaemonLogs(Base):
+    """Define a feature to notify us of AppDaemon error/warning logs."""
 
     def configure(self) -> None:
         """Configure."""
-        self._registered = []  # type: ignore
-        self.handles[HANDLE_BATTERY_LOW] = {}
+        self.listen_log(self._on_log_found, "ERROR")
+        self.listen_log(self._on_log_found, "WARNING")
 
-        for entity in self.entity_ids[CONF_BATTERIES_TO_MONITOR]:
-            self.listen_state(
-                self.low_battery_detected,
-                entity,
-                attribute='all',
-                constrain_input_boolean=self.enabled_entity_id)
-
-    def low_battery_detected(
-            self, entity: Union[str, dict], attribute: str, old: str,
-            new: dict, kwargs: dict) -> None:
-        """Create OmniFocus todos whenever there's a low battery."""
-        name = new['attributes']['friendly_name']
-
-        try:
-            value = int(new['state'])
-        except ValueError:
+    def _on_log_found(
+        self,
+        name: str,
+        data: dict,
+        level: str,
+        log_type: str,
+        message: str,
+        kwargs: dict,
+    ):
+        """Log a warning or error log if appropriate."""
+        if any(
+            blacklisted_string
+            for blacklisted_string in WARNING_LOG_BLACKLIST
+            if blacklisted_string in message
+        ):
             return
 
-        if value < self.properties[CONF_BATTERY_LEVEL_THRESHOLD]:
+        if "Traceback" in message:
+            self.call_service(
+                "python_script/log",
+                level="ERROR",
+                message="{0}: {1}".format(name, message),
+            )
+            return
+
+        self.call_service(
+            "python_script/log", level=level, message="{0}: {1}".format(name, message)
+        )
+
+
+class EntityPowerIssues(Base):
+    """Define a feature to notify us of low batteries."""
+
+    APP_SCHEMA = APP_SCHEMA.extend(
+        {
+            vol.Required(CONF_ENTITIES_TO_MONITOR): cv.ensure_list,
+            vol.Required(CONF_BATTERY_LEVEL_THRESHOLD): cv.positive_int,
+            vol.Required(CONF_NOTIFICATION_INTERVAL): vol.All(
+                cv.time_period, lambda value: value.seconds
+            ),
+        }
+    )
+
+    def configure(self) -> None:
+        """Configure."""
+        self._registered = []  # type: List[str]
+        self._send_notification_func = None  # type: Optional[Callable]
+
+        for entity in self.args[CONF_ENTITIES_TO_MONITOR]:
+            if entity.split(".")[0] == "binary_sensor":
+                self.listen_state(
+                    self._on_entity_change, entity, new="on", attribute="all"
+                )
+            else:
+                self.listen_state(self._on_entity_change, entity, attribute="all")
+
+    def _on_entity_change(
+        self,
+        entity: Union[str, dict],
+        attribute: str,
+        old: str,
+        new: dict,
+        kwargs: dict,
+    ) -> None:
+        """Notify whenever an entity has issues."""
+        name = new["attributes"]["friendly_name"]
+
+        try:
+            value = float(new["state"])
+        except ValueError:
+            # If we're looking at a binary sensor, hardcode some appropriate numeric
+            # values:
+            if new["state"] == "unavailable":
+                return
+
+            if new["state"] == "on":
+                value = 100
+            else:
+                value = 0
+
+        notification_handle = f"{HANDLE_BATTERY_LOW}_{name}"
+
+        def _send_notification():
+            """Send the notification."""
+            self.data[notification_handle] = send_notification(
+                self,
+                "slack",
+                f"🤔 `{name}` is offline or has a low battery.",
+                when=self.datetime(),
+                interval=self.args[CONF_NOTIFICATION_INTERVAL],
+            )
+
+        if value < self.args[CONF_BATTERY_LEVEL_THRESHOLD]:
+            # If we've already registered that the battery is low, don't repeatedly
+            # register it:
             if name in self._registered:
                 return
 
-            self.log('Low battery detected: {0}'.format(name))
-
+            self.log(f"Entity power issue detected: {name}")
             self._registered.append(name)
 
-            self.handles[HANDLE_BATTERY_LOW][
-                name] = self.notification_manager.repeat(
-                    '{0} has low batteries ({1})%. Replace them ASAP!'.format(
-                        name, value),
-                    self.properties[CONF_NOTIFICATION_INTERVAL],
-                    target='slack')
+            # If the automation is enabled when a battery is low, send a notification;
+            # if not, remember that we should send the notification when the automation
+            # becomes enabled:
+            if self.enabled:
+                _send_notification()
+            else:
+                self._send_notification_func = _send_notification
         else:
             try:
                 self._registered.remove(name)
-                if name in self.handles[HANDLE_BATTERY_LOW]:
-                    self.handles[HANDLE_BATTERY_LOW].pop(name)()
+                self._send_notification_func = None
+                if notification_handle in self.data:
+                    cancel = self.data.pop(notification_handle)
+                    cancel()
             except ValueError:
                 return
 
+    def on_enable(self) -> None:
+        """Send the notification once the automation is enabled (if appropriate)."""
+        if self._send_notification_func:
+            self._send_notification_func()
+            self._send_notification_func = None
 
-class LeftInState(Base):
-    """Define a feature to monitor whether an entity is left in a state."""
 
-    APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS: vol.Schema({
-            vol.Required(CONF_ENTITY): cv.entity_id,
-        }, extra=vol.ALLOW_EXTRA),
-        CONF_PROPERTIES: vol.Schema({
-            vol.Required(CONF_DURATION): int,
-            vol.Required(CONF_STATE): vol.In(TOGGLE_STATES),
-        }, extra=vol.ALLOW_EXTRA),
-    })
+class NotifyOfDeadZwaveDevices(Base):
+    """Define a feature to notify me of dead Z-Wave devices."""
 
     def configure(self) -> None:
         """Configure."""
-        self.listen_state(
-            self.limit_reached,
-            self.entity_ids[CONF_ENTITY],
-            new=self.properties[CONF_STATE],
-            duration=self.properties[CONF_DURATION],
-            constrain_input_boolean=self.enabled_entity_id)
+        for entity_id in self.get_state("zwave").keys():
+            self.listen_state(
+                self._on_dead_device_found, entity_id, new="dead",
+            )
 
-    def limit_reached(
-            self, entity: Union[str, dict], attribute: str, old: str, new: str,
-            kwargs: dict) -> None:
-        """Notify when the threshold is reached."""
-
-        def turn_off():
-            """Turn the entity off."""
-            self.turn_off(self.entity_ids[CONF_ENTITY])
-
-        self.slack_app_home_assistant.ask(
-            'The {0} has been left {1} for {2} minutes. Turn it off?'.format(
-                self.get_state(
-                    self.entity_ids[CONF_ENTITY], attribute='friendly_name'),
-                self.properties[CONF_STATE],
-                int(self.properties[CONF_DURATION]) / 60),
-            {
-                'Yes': {
-                    'callback': turn_off,
-                    'response_text': 'You got it; turning it off now.'
-                },
-                'No': {
-                    'response_text': 'Keep devouring electricity, little guy.'
-                }
-            })
+    def _on_dead_device_found(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """React when a dead device is found."""
+        send_notification(self, "person:Aaron", f"A Z-Wave device just died: {entity}")
 
 
-class SslExpiration(Base):
-    """Define a feature to notify me when the SSL cert is expiring."""
-
-    APP_SCHEMA = APP_SCHEMA.extend({
-        CONF_ENTITY_IDS: vol.Schema({
-            vol.Required(CONF_SSL_EXPIRY): cv.entity_id,
-        }, extra=vol.ALLOW_EXTRA),
-        CONF_PROPERTIES: vol.Schema({
-            vol.Required(CONF_EXPIRY_THRESHOLD): int,
-        }, extra=vol.ALLOW_EXTRA),
-    })
+class StartHomeKitOnZwaveReady(Base):
+    """Define a feature to start HomeKit when the Z-Wave network is ready."""
 
     def configure(self) -> None:
         """Configure."""
-        self.listen_state(
-            self.ssl_expiration_approaching,
-            self.entity_ids[CONF_SSL_EXPIRY],
-            constrain_input_boolean=self.enabled_entity_id)
+        self._on_scan({})
 
-    def ssl_expiration_approaching(
-            self, entity: Union[str, dict], attribute: str, old: str, new: str,
-            kwargs: dict) -> None:
-        """When SSL is about to expire, make an OmniFocus todo."""
-        if int(new) < self.properties[CONF_EXPIRY_THRESHOLD]:
-            self.log('SSL certificate about to expire: {0} days'.format(new))
+    @property
+    def network_ready(self) -> bool:
+        """Return whether the Z-Wave network is ready."""
+        zwave_devices = [
+            v
+            for k, v in self.get_state("zwave").items()
+            if k not in self.args["to_exclude"]
+        ]
+        for attrs in zwave_devices:
+            try:
+                if attrs["state"] != "ready":
+                    return False
+            except TypeError:
+                return False
+        return True
 
-            self.notification_manager.create_omnifocus_task(
-                'SSL expires in less than {0} days'.format(new))
+    def _on_scan(self, kwargs: dict) -> None:
+        """Start the _on_scanning process."""
+        if self.network_ready:
+            self.log("Z-Wave network is ready for HomeKit to start")
+            self.call_service("homekit/start")
+            return
+
+        self.run_in(self._on_scan, 60)

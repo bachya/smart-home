@@ -1,16 +1,85 @@
 ---
+automation:
+  - alias: "Adjust automations in Blackout Mode"
+    trigger:
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: scene
+          service: turn_on
+          service_data:
+            entity_id: scene.good_night
+      - platform: state
+        entity_id: input_boolean.blackout_mode
+        to: "on"
+    action:
+      service: scene.turn_on
+      data:
+        entity_id: scene.blackout_mode
+
+  - alias: "Adjust automations in Guest Mode"
+    trigger:
+      platform: state
+      entity_id: input_boolean.guest_mode
+      to: "on"
+    action:
+      service: scene.turn_on
+      data:
+        entity_id: scene.guest_mode
+
+  - alias: "Adjust automations in Vacation Mode"
+    trigger:
+      platform: state
+      entity_id: input_boolean.vacation_mode
+      to: "on"
+    action:
+      service: scene.turn_on
+      data:
+        entity_id: scene.vacation_mode
+
+  - alias: "Reset automations when no mode is active"
+    trigger:
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: scene
+          service: turn_on
+          service_data:
+            entity_id: scene.drive_home
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: scene
+          service: turn_on
+          service_data:
+            entity_id: scene.walk_home
+      - platform: state
+        entity_id: input_boolean.blackout_mode
+        to: "off"
+      - platform: state
+        entity_id: input_boolean.guest_mode
+        to: "off"
+      - platform: state
+        entity_id: input_boolean.vacation_mode
+        to: "off"
+      - platform: state
+        entity_id: sensor.proximity_zone
+        to: Home
+    action:
+      service: scene.turn_on
+      data:
+        entity_id: scene.base
+
 input_boolean:
-  mode_do_not_disturb:
-    icon: mdi:bell-off
-    initial: false
-    name: Do Not Disturb
-
-  mode_guest_mode:
+  blackout_mode:
+    icon: mdi:weather-night
+    name: Blackout Mode
+  blackout_schedule_automation:
+    icon: mdi:brightness-4
+    name: Blackout Schedule
+  guest_mode:
     icon: mdi:hotel
-    initial: false
     name: Guest Mode
-
-  mode_vacation_mode:
+  vacation_mode:
     icon: mdi:beach
-    initial: false
     name: Vacation Mode

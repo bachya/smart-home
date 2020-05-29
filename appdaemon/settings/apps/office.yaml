@@ -2,52 +2,8 @@
 office_lights_sleep_timer_automation:
   module: switches
   class: SleepTimer
+  constrain_enabled: true
   dependencies:
     - presence_manager
-  entity_ids:
-    switch: light.salt_lamp_office
-    timer_slider: input_number.office_salt_lamp_timer
-  enabled_config:
-    name: Enable sleep timer
-    icon: mdi:sleep
-    initial: true
-
-office_lights_off_at_10pm_automation:
-  module: switches
-  class: ToggleAtTime
-  dependencies:
-    - guest_mode
-    - presence_manager
-    - vacation_mode
-  entity_ids:
-    switch: light.salt_lamp_office
-  properties:
-    schedule_time: "22:00:00"
-    state: "off"
-  mode_alterations:
-    guest_mode: disable
-    vacation_mode: disable
-  enabled_config:
-    name: Turn off at 10pm
-    icon: mdi:lightbulb
-    initial: true
-
-office_lights_on_at_sunset_automation:
-  module: switches
-  class: ToggleAtTime
-  dependencies:
-    - guest_mode
-    - presence_manager
-    - vacation_mode
-  entity_ids:
-    switch: light.salt_lamp_office
-  properties:
-    schedule_time: sunset
-    state: "on"
-  mode_alterations:
-    guest_mode: disable
-    vacation_mode: disable
-  enabled_config:
-    name: Turn on at sunset
-    icon: mdi:weather-sunset-down
-    initial: true
+  switch: switch.office_salt_lamp
+  timer_slider: input_number.office_salt_lamp_timer

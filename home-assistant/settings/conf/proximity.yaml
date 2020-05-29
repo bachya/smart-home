@@ -1,0 +1,7 @@
+---
+home:
+  devices:
+    - person.aaron
+    - person.britt
+  tolerance: 50
+  unit_of_measurement: ft

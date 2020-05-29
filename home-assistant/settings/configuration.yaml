@@ -3,28 +3,32 @@
 homeassistant: !include conf/homeassistant.yaml
 
 # Core Configuration
+conversation:
 default_config:
 frontend: !include conf/frontend.yaml
 http: !include conf/http.yaml
+influxdb: !include conf/influxdb.yaml
 logger: !include conf/logger.yaml
 lovelace:
 panel_custom: !include conf/panel-custom.yaml
 panel_iframe: !include conf/panel-iframe.yaml
+python_script:
 recorder: !include conf/recorder.yaml
+stream:
+scene: !include scenes.yaml
 
-# Components:
-cloud: !include_dir_merge_named conf/cloud/
-emulated_hue: !include conf/platforms/emulated-hue.yaml
-ffmpeg: !include conf/platforms/ffmpeg.yaml
-group: !include_dir_named conf/groups/
-ifttt: !include conf/platforms/ifttt.yaml
-input_boolean: !include_dir_merge_named conf/input-booleans/
-ios: !include conf/platforms/ios.yaml
-mqtt: !include conf/platforms/mosquitto.yaml
-nest: !include conf/platforms/nest.yaml
-notify: !include conf/platforms/notifiers.yaml
-proximity: !include conf/platforms/proximity.yaml
-tts: !include conf/platforms/tts.yaml
-wemo: !include conf/platforms/wemo.yaml
+# Inteegrations:
+almond: !include conf/almond.yaml
+ffmpeg: !include conf/ffmpeg.yaml
+google: !include conf/google.yaml
+hacs: !include conf/hacs.yaml
+ifttt: !include conf/ifttt.yaml
+mqtt: !include conf/mqtt.yaml
+nest: !include conf/nest.yaml
+notion: !include conf/notion.yaml
+notify: !include conf/notifiers.yaml
+proximity: !include conf/proximity.yaml
+wemo: !include conf/wemo.yaml
+wwlln: !include conf/wwlln.yaml
 zone: !include conf/zones.yaml
-zwave: !include conf/platforms/zwave.yaml
+zwave: !include conf/zwave.yaml

@@ -1,40 +1,54 @@
 ---
+alert:
+  basement_leak:
+    name: 💦 Leak detected in the basement!
+    done_message: ✅ The leak has been fixed.
+    title: Basement Leak
+    entity_id: binary_sensor.basement_sensor_leak_detector
+    state: "on"
+    repeat:
+      - 1
+    notifiers:
+      - phones
+      - slack
+    data:
+      push:
+        category: WATER
+
 apple_tv:
-  - host: apple-tv-1.phil.lan
+  - host: 172.16.10.64
     login_id: 00000000-1012-d722-4d49-70717fb642c1
+    credentials: "242C1C557B5DD7F5:0018F0AA80A42DCA62364861F4ED6BCDB4F\
+      D3E25683444DED1E26AB409A493D6"
     name: Basement Apple TV
+    start_off: true
+
+automation:
+  - alias: "iOS Action: Close Water Main"
+    trigger:
+      - platform: event
+        event_type: ios.notification_action_fired
+        event_data:
+          actionName: WATER_CLOSE_MAIN
+    action:
+      service: switch.turn_off
+      data:
+        entity_id: switch.water_main
 
 remote:
   - platform: harmony
     name: Basement TV
-    host: harmony-hub-2.phil.lan
+    host: harmony-hub-2.phil.iot
     activity: 37549209
 
 shell_command:
-  turn_off_media_center: 'ssh bachya@media-center.phil.lan sudo /sbin/poweroff'
+  turn_off_media_center: >
+    ssh -i /config/id_ed25519 -o StrictHostKeyChecking=no
+    hass@media-center.phil.lan sudo /sbin/poweroff
 
 switch:
-  - platform: command_line
-    switches:
-      ps4:
-        friendly_name: Playstation 4
-        command_off: >
-          ps4-waker
-          -c /config/.ps4-wake.credentials.json
-          -d 172.16.10.35
-          standby
-        command_on: >
-          ps4-waker
-          -c /config/.ps4-wake.credentials.json
-          -d 172.16.10.35
-        command_state: >
-          ps4-waker
-          -c /config/.ps4-wake.credentials.json
-          -d 172.16.10.35
-          search
-        value_template: "{{ value_json.status == 'Ok' }}"
   - platform: wake_on_lan
-    mac_address: 4C:CC:6A:69:90:D4
+    mac: 4C:CC:6A:69:90:D4
     name: Media Center
     host: media-center.phil.lan
     turn_off:

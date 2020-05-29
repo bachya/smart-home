@@ -1,0 +1,355 @@
+---
+- id: base
+  name: Base
+  entities:
+    automation.adjust_automations_in_blackout_mode:
+      state: "on"
+    automation.adjust_automations_in_guest_mode:
+      state: "on"
+    automation.adjust_automations_in_vacation_mode:
+      state: "on"
+    automation.alter_armed_alarm_when_wolfie_cleans:
+      state: "on"
+    automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
+      state: "on"
+    automation.automatically_lock_up_at_night:
+      state: "on"
+    automation.automatically_lock_up_when_we_depart:
+      state: "on"
+    automation.backyard_light_switch_via_kitchen_patio_light_off:
+      state: "on"
+    automation.backyard_light_switch_via_kitchen_patio_light_on:
+      state: "on"
+    automation.cycle_master_toilet_fan_during_the_day:
+      state: "on"
+    automation.disable_simplisafe_sounds_in_blackout_mode:
+      state: "on"
+    automation.enable_simplisafe_sounds_when_leaving_blackout_mode:
+      state: "on"
+    automation.forward_hass_persistent_notifications_to_slack:
+      state: "on"
+    automation.forward_simplisafe_events_to_slack:
+      state: "on"
+    automation.forward_simplisafe_notifications_to_slack:
+      state: "on"
+    automation.notify_of_next_trash_pickup_the_night_before:
+      state: "on"
+    automation.set_sleep_timer_on_master_bathroom_fan_when_switch_double_tapped:
+      state: "on"
+    automation.set_sleep_timer_on_master_toilet_fan_when_switch_double_tapped:
+      state: "on"
+    automation.notify_of_low_fuel_subaru:
+      state: "on"
+    automation.notify_of_fail2ban_bans:
+      state: "on"
+    automation.notify_of_fail2ban_failures:
+      state: "on"
+    automation.notify_on_bad_outdoor_aqi:
+      state: "on"
+    automation.notify_on_hacs_updates:
+      state: "on"
+    automation.notify_on_return_from_bad_outdoor_aqi:
+      state: "on"
+    automation.notify_when_media_center_left_on:
+      state: "on"
+    automation.notify_when_3d_print_completes:
+      state: "on"
+    automation.notify_when_3d_print_starts:
+      state: "on"
+    automation.notify_when_ps4_left_on:
+      state: "on"
+    automation.notify_when_time_for_wolfie_to_run:
+      state: "on"
+    automation.notify_when_wolfie_needs_a_new_filter:
+      state: "on"
+    automation.notify_when_wolfie_needs_a_new_main_brush:
+      state: "on"
+    automation.notify_when_wolfie_needs_a_sensor_cleaning:
+      state: "on"
+    automation.notify_when_wolfie_needs_a_new_side_brush:
+      state: "on"
+    automation.notify_when_security_status_changes:
+      state: "off"
+    automation.power_media_center_off_backup:
+      state: "on"
+    automation.power_media_center_on_backup:
+      state: "on"
+    automation.reset_automations_when_no_mode_is_active:
+      state: "on"
+    automation.set_dishwasher_state_to_clean:
+      state: "on"
+    automation.set_dishwasher_state_to_drying:
+      state: "on"
+    automation.set_dishwasher_state_to_running:
+      state: "on"
+    automation.turn_bar_cart_lights_on:
+      state: "on"
+    automation.turn_lights_off_when_person_detected_at_nighttime_leaves:
+      state: "on"
+    automation.turn_lights_on_when_person_detected_at_nighttime:
+      state: "on"
+    automation.turn_living_room_lights_on_when_we_arrive:
+      state: "on"
+    automation.turn_master_bedroom_lights_on_at_sunset:
+      state: "on"
+    automation.turn_off_garage_lights_after_garage_door_closes:
+      state: "on"
+    automation.turn_off_when_3d_print_completes:
+      state: "on"
+    automation.turn_office_lights_off_at_10pm:
+      state: "on"
+    automation.turn_office_lights_on_at_sunset:
+      state: "on"
+    automation.turn_on_garage_lights_when_garage_door_opens_while_it_s_dark:
+      state: "on"
+    automation.turn_powder_room_fan_back_on_if_someone_turns_it_off:
+      state: "on"
+    automation.turn_reading_lamp_on_at_sunset:
+      state: "on"
+    automation.update_openuv_every_30_minutes_during_the_daytime:
+      state: "on"
+    input_boolean.adjust_climate_on_proximity_automation:
+      state: "on"
+    input_boolean.blackout_schedule_automation:
+      state: "on"
+    input_boolean.lightning_detected_automation:
+      state: "on"
+    input_boolean.notify_of_dead_zwave_devices_automation:
+      state: "on"
+    input_boolean.notify_of_low_batteries_automation:
+      state: "on"
+    input_boolean.notify_of_new_versions_automation:
+      state: "on"
+    input_boolean.notify_when_person_on_camera_automation:
+      state: "off"
+    input_boolean.outdoor_lights_schedule_automation:
+      state: "on"
+    input_boolean.randomize_nighttime_lighting_automation:
+      state: "off"
+    input_boolean.randomize_nighttime_tvs_automation:
+      state: "off"
+    switch.water_main:
+      state: "on"
+
+- id: blackout_mode
+  name: Blackout Mode
+  entities:
+    automation.alter_armed_alarm_when_wolfie_cleans:
+      state: "off"
+    automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
+      state: "off"
+    automation.notify_of_low_fuel_subaru:
+      state: "off"
+    automation.notify_on_bad_outdoor_aqi:
+      state: "off"
+    automation.notify_on_return_from_bad_outdoor_aqi:
+      state: "off"
+    automation.notify_when_media_center_left_on:
+      state: "off"
+    automation.notify_when_3d_print_completes:
+      state: "off"
+    automation.notify_when_3d_print_starts:
+      state: "off"
+    automation.notify_when_ps4_left_on:
+      state: "off"
+    automation.notify_when_time_for_wolfie_to_run:
+      state: "off"
+    automation.notify_when_wolfie_needs_a_new_filter:
+      state: "off"
+    automation.notify_when_wolfie_needs_a_new_main_brush:
+      state: "off"
+    automation.notify_when_wolfie_needs_a_sensor_cleaning:
+      state: "off"
+    automation.notify_when_wolfie_needs_a_new_side_brush:
+      state: "off"
+    automation.turn_master_bedroom_lights_on_at_sunset:
+      state: "off"
+    input_boolean.lightning_detected_automation:
+      state: "off"
+    input_boolean.notify_of_dead_zwave_devices_automation:
+      state: "off"
+    input_boolean.notify_of_low_batteries_automation:
+      state: "off"
+    input_boolean.notify_of_new_versions_automation:
+      state: "off"
+
+- id: depart_home
+  name: Depart Home
+  entities:
+    alarm_control_panel.8673_e_55th_avenue:
+      state: armed_away
+    automation.cycle_master_toilet_fan_during_the_day:
+      state: "off"
+    cover.garage_door:
+      state: closed
+    input_boolean.notify_when_person_on_camera_automation:
+      state: "on"
+    input_boolean.randomize_nighttime_lighting_automation:
+      state: "on"
+    input_boolean.randomize_nighttime_tvs_automation:
+      state: "on"
+    lock.front_door:
+      state: locked
+    lock.garage_fire_door:
+      state: locked
+    group.living_room_lights:
+      state: "off"
+    media_player.house_audio:
+      state: paused
+    media_player.sonos_playbar:
+      state: paused
+    remote.basement_tv:
+      state: "off"
+    remote.living_room_tv:
+      state: "off"
+    switch.bar_cart:
+      state: "off"
+    switch.basement_lights:
+      state: "off"
+    switch.garage_lights:
+      state: "off"
+    switch.fireplace:
+      state: "off"
+
+- id: drive_home
+  name: Drive Home
+  entities:
+    alarm_control_panel.8673_e_55th_avenue:
+      state: disarmed
+    cover.garage_door:
+      state: open
+    lock.garage_fire_door:
+      state: unlocked
+
+- id: good_night
+  name: Good Night
+  entities:
+    alarm_control_panel.8673_e_55th_avenue:
+      state: armed_home
+    cover.garage_door:
+      state: closed
+    lock.front_door:
+      state: locked
+    lock.garage_fire_door:
+      state: locked
+    group.living_room_lights:
+      state: "off"
+    group.office_lights:
+      state: "off"
+    group.master_bathroom:
+      state: "off"
+    media_player.house_audio:
+      state: paused
+    media_player.sonos_playbar:
+      state: paused
+    remote.basement_tv:
+      state: "off"
+    remote.living_room_tv:
+      state: "off"
+    switch.bar_cart:
+      state: "off"
+    switch.basement_lights:
+      state: "off"
+    switch.garage_lights:
+      state: "off"
+    switch.fireplace:
+      state: "off"
+
+- id: guest_mode
+  name: Guest Mode
+  entities:
+    automation.alter_armed_alarm_when_wolfie_cleans:
+      state: "off"
+    automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
+      state: "off"
+    automation.automatically_lock_up_at_night:
+      state: "off"
+    automation.automatically_lock_up_when_we_depart:
+      state: "off"
+    automation.cycle_master_toilet_fan_during_the_day:
+      state: "off"
+    automation.notify_of_next_trash_pickup_the_night_before:
+      state: "off"
+    input_boolean.adjust_climate_on_proximity_automation:
+      state: "off"
+    input_boolean.notify_of_low_batteries_automation:
+      state: "off"
+    input_boolean.notify_of_new_versions:
+      state: "off"
+    input_boolean.notify_ps4_left_on_automation:
+      state: "off"
+    input_boolean.notify_when_person_on_camera_automation:
+      state: "off"
+    automation.notify_when_time_for_wolfie_to_run:
+      state: "off"
+
+- id: vacation_mode
+  name: Vacation Mode
+  entities:
+    automation.cycle_master_toilet_fan_during_the_day:
+      state: "off"
+    automation.notify_of_next_trash_pickup_the_night_before:
+      state: "off"
+    automation.notify_on_bad_outdoor_aqi:
+      state: "off"
+    automation.notify_on_return_from_bad_outdoor_aqi:
+      state: "off"
+    automation.notify_when_3d_print_completes:
+      state: "off"
+    automation.notify_when_3d_print_starts:
+      state: "off"
+    automation.notify_when_security_status_changes:
+      state: "on"
+    automation.notify_when_time_for_wolfie_to_run:
+      state: "off"
+    automation.notify_when_wolfie_needs_a_new_filter:
+      state: "off"
+    automation.notify_when_wolfie_needs_a_new_main_brush:
+      state: "off"
+    automation.notify_when_wolfie_needs_a_sensor_cleaning:
+      state: "off"
+    automation.notify_when_wolfie_needs_a_new_side_brush:
+      state: "off"
+    automation.turn_bar_cart_lights_on:
+      state: "off"
+    input_boolean.blackout_schedule_automation:
+      state: "off"
+    input_boolean.lightning_detected_automation:
+      state: "off"
+    automation.turn_master_bedroom_lights_on_at_sunset:
+      state: "off"
+    input_boolean.notify_of_dead_zwave_devices_automation:
+      state: "off"
+    input_boolean.notify_of_low_batteries_automation:
+      state: "off"
+    input_boolean.notify_of_new_versions_automation:
+      state: "off"
+    input_boolean.notify_when_person_on_camera_automation:
+      state: "on"
+    input_boolean.office_lights_schedule_automation:
+      state: "off"
+    input_boolean.randomize_nighttime_lighting_automation:
+      state: "on"
+    input_boolean.randomize_nighttime_tvs_automation:
+      state: "on"
+    switch.water_main:
+      state: "off"
+
+- id: walk_home
+  name: Walk Home
+  entities:
+    alarm_control_panel.8673_e_55th_avenue:
+      state: disarmed
+    lock.front_door:
+      state: unlocked
+
+- id: watch_plex
+  name: Watch Plex
+  entities:
+    switch.media_center:
+      state: "on"
+    remote.living_room_tv:
+      state: "on"
+    media_player.living_room_roku:
+      state: "on"
+      source: "Plex - Stream Free TV & Movies"

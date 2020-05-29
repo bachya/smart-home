@@ -1,4 +1,65 @@
 ---
+automation:
+  - alias: "Cycle master toilet fan during the day"
+    trigger:
+      platform: time_pattern
+      hours: "/1"
+    condition:
+      condition: time
+      after: "10:00:00"
+      before: "17:00:00"
+    action:
+      service: input_number.set_value
+      data:
+        entity_id: input_number.master_bathroom_toilet_fan_timer
+        value: 15
+
+  - alias: "Set sleep timer on master bathroom fan when switch double tapped"
+    trigger:
+      platform: event
+      event_type: zwave.node_event
+      event_data:
+        entity_id: zwave.master_bathroom_fan
+        basic_level: 255
+    action:
+      service: input_number.set_value
+      data:
+        entity_id: input_number.master_bathroom_fan_timer
+        value: 30
+
+  - alias: "Set sleep timer on master toilet fan when switch double tapped"
+    trigger:
+      platform: event
+      event_type: zwave.node_event
+      event_data:
+        entity_id: zwave.master_toilet_fan
+        basic_level: 255
+    action:
+      service: input_number.set_value
+      data:
+        entity_id: input_number.master_bathroom_toilet_fan_timer
+        value: 10
+
+  - alias: "Turn master bedroom lights on at sunset"
+    trigger:
+      platform: sun
+      event: sunset
+    action:
+      service: switch.turn_on
+      data:
+        entity_id: switch.master_bedroom_salt_lamp
+
+input_boolean:
+  master_bathroom_fan_sleep_timer_automation:
+    icon: mdi:sleep
+    name: "Bathroom: enable sleep timer"
+  master_bedroom_lights_sleep_timer_automation:
+    icon: mdi:sleep
+    name: Enable sleep timer
+  master_toilet_fan_sleep_timer_automation:
+    icon: mdi:sleep
+    name: "Toilet: enable sleep timer"
+
 input_number:
   master_bathroom_fan_timer:
     name: Sleep Timer
@@ -27,19 +88,6 @@ input_number:
     unit_of_measurement: minutes
     icon: mdi:timer
 
-light:
-  - platform: mqtt
-    name: "Salt Lamp (Master Bedroom)"
-    state_topic: "stat/salt-lamp-1/POWER1"
-    command_topic: "cmnd/salt-lamp-1/POWER1"
-    availability_topic: "tele/salt-lamp-1/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    retain: false
-
 sensor:
   - platform: mqtt
     name: "Climate 2 Temperature"
@@ -61,3 +109,13 @@ sensor:
     state_topic: "tele/climate-sensor-2/SENSOR"
     value_template: "{{ value_json['BME280'].Pressure }}"
     unit_of_measurement: "hPa"
+
+timer:
+  master_bathroom_fan:
+    duration: "00:30:00"
+
+  master_bedroom_salt_lamp:
+    duration: "00:15:00"
+
+  master_toilet_fan:
+    duration: "00:10:00"

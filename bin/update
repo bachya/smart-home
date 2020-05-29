@@ -1,5 +1,7 @@
 #!/bin/bash
-set -euxo pipefail
+set -euo pipefail
+
+REPO_PATH="$( dirname "$( cd "$(dirname "$0")" ; pwd -P )" )"
 
 function ask_for_sudo() {
   sudo -v &> /dev/null
@@ -29,48 +31,16 @@ function copy_config_data() {
 
 # Input the sudo and key passwords once:
 ask_for_sudo
-eval `ssh-agent`
+eval "$(ssh-agent)"
 ssh-add ~/.ssh/id_ed25519
 
 # Make sure the OS is up to date:
 sudo apt update && sudo apt upgrade -y
 
 # Pull the latest repo information:
-git pull origin $(git rev-parse --abbrev-ref HEAD)
+git pull origin "$(git rev-parse --abbrev-ref HEAD)"
 git submodule update --init --recursive
 git remote prune origin
 
-# Update AppDaemon configs:
-copy_config_data "hub_appdaemon-config" "/appdaemon/settings"
-
-# Update amazon-dash configs:
-copy_config_data "hub_amazon-dash-config" "/amazon-dash/settings"
-sudo chown -R root:root /var/lib/docker/volumes/hub_amazon-dash-config/_data/
-
-# Update Glances configs:
-copy_config_data "hub_glances-config" "/glances/settings"
-
-# Update Home Assistant configs:
-copy_config_data "hub_hass-config" "/home-assistant/settings"
-
-# Update Mosquitto configs:
-copy_config_data "hub_mosquitto-config" "/mosquitto/settings"
-
-# Update NGINX configs:
-copy_config_data "hub_fail2ban-config" "/nginx/settings/fail2ban"
-copy_config_data "hub_nginx-config" "/nginx/settings/nginx"
-
-# Re-build the containers if necessary:
-docker-compose build
-
-# Restart the containers:
-docker-compose down --remove-orphans
-docker image prune -f
-docker container prune -f
-docker-compose up -d
-docker network prune -f
-docker volume prune -f
-
-# Restart AppDaemon (just in case it hasn't gotten its data yet - bug):
-sleep 10
-docker-compose restart appdaemon
+# Build the stack:
+"$REPO_PATH"/bin/build

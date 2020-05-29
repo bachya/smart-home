@@ -1,39 +1,150 @@
 ---
-input_boolean:
-  vacuum_schedule_monday:
-    name: "Monday"
-    icon: mdi:calendar
-    initial: true
+alert:
+  wolfie_cycle_complete:
+    name: 🤖 Wolfie has finished cleaning and can be emptied.
+    done_message: ✅ Wolfie's bin has been emptied.
+    title: Wolfie
+    entity_id: binary_sensor.should_notify_wolfie_full
+    state: "on"
+    repeat:
+      - 120
+    notifiers:
+      - mobile_app_aarons_iphone
+    data:
+      push:
+        category: WOLFIE
 
-  vacuum_schedule_tuesday:
-    name: "Tuesday"
-    icon: mdi:calendar
-    initial: false
+  wolfie_stuck:
+    name: "🤖 Wolfie is stuck on something and needs help."
+    title: Wolfie
+    entity_id: binary_sensor.should_notify_wolfie_stuck
+    state: "on"
+    repeat:
+      - 10
+    notifiers:
+      - phones
 
-  vacuum_schedule_wednesday:
-    name: "Wednesday"
-    icon: mdi:calendar
-    initial: false
+automation:
+  - alias: "Alter armed alarm when Wolfie cleans"
+    trigger:
+      platform: state
+      entity_id: vacuum.xiaomi_vacuum_cleaner
+      to: cleaning
+    condition:
+      condition: state
+      entity_id: alarm_control_panel.8673_e_55th_avenue
+      state: armed_away
+    action:
+      - service: vacuum.pause
+        data:
+          entity_id: vacuum.xiaomi_vacuum_cleaner
+      - service: alarm_control_panel.alarm_arm_home
+        data:
+          entity_id: alarm_control_panel.8673_e_55th_avenue
+      - wait_template: >
+          {{ is_state("alarm_control_panel.8673_e_55th_avenue", "armed_home") }}
+        timeout: "00:01:00"
+        continue_on_timeout: false
+      - service: vacuum.start
+        data:
+          entity_id: vacuum.xiaomi_vacuum_cleaner
 
-  vacuum_schedule_thursday:
-    name: "Thursday"
-    icon: mdi:calendar
-    initial: true
+  - alias: "Arm alarm when Wolfie finishes cleaning an empty house"
+    trigger:
+      platform: state
+      entity_id: input_select.wolfie_bin_status
+      to: Full
+    condition:
+      condition: template
+      value_template: >
+        {{ not is_state('sensor.proximity_zone', 'Home') and
+        not is_state("alarm_control_panel.8673_e_55th_avenue", "armed_away") }}
+    action:
+      service: alarm_control_panel.alarm_arm_away
+      data:
+        entity_id: alarm_control_panel.8673_e_55th_avenue
 
-  vacuum_schedule_friday:
-    name: "Friday"
-    icon: mdi:calendar
-    initial: false
+  - alias: "iOS Action: Empty Wolfie's Bin"
+    trigger:
+      - platform: event
+        event_type: ios.notification_action_fired
+        event_data:
+          actionName: WOLFIE_EMPTY
+    action:
+      service: input_select.select_option
+      data:
+        entity_id: input_select.wolfie_bin_status
+        option: Empty
 
-  vacuum_schedule_saturday:
-    name: "Saturday"
-    icon: mdi:calendar
-    initial: false
+  - alias: "Notify when time for Wolfie to run"
+    trigger:
+      platform: state
+      entity_id: calendar.wolfie_schedule
+      to: "on"
+    action:
+      service: notify.mobile_app_brittany_bachs_iphone
+      data:
+        message: 🤖 It's time to run Wolfie!
+        title: Vacuum Time
 
-  vacuum_schedule_sunday:
-    name: "Sunday"
-    icon: mdi:calendar
-    initial: false
+  - alias: "Notify when Wolfie needs a new filter"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.vacuum_filter_remaining
+      below: 5
+    action:
+      service: notify.slack
+      data:
+        message: 🤖 Wolfie's filter is dirty; he needs a new one!
+
+  - alias: "Notify when Wolfie needs a new main brush"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.vacuum_main_brush_remaining
+      below: 5
+    action:
+      service: notify.slack
+      data:
+        message: 🤖 Wolfie's main brush is old; he needs a new one.
+
+  - alias: "Notify when Wolfie needs a sensor cleaning"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.vacuum_sensor_dirtiness_remaining
+      below: 5
+    action:
+      service: notify.slack
+      data:
+        message: 🤖 Wolfie's sensors are dirty; clean them up!
+
+  - alias: "Notify when Wolfie needs a new side brush"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.vacuum_side_brush_remaining
+      below: 5
+    action:
+      service: notify.slack
+      data:
+        message: 🤖 Wolfie's side brush is old; he needs a new one!
+
+binary_sensor:
+  - platform: template
+    sensors:
+      should_notify_wolfie_full:
+        value_template: >-
+          {{
+            is_state("input_select.wolfie_bin_status", "Full") and
+            is_state("person.aaron", "home") and
+            is_state("input_boolean.blackout_mode", "off")
+          }}
+
+      should_notify_wolfie_stuck:
+        value_template: >-
+          {{
+            is_state("vacuum.xiaomi_vacuum_cleaner", "error") and
+            is_state("sensor.proximity_zone", "Home") and
+            is_state("input_boolean.blackout_mode", "off")
+          }}
 
 input_select:
   wolfie_bin_status:
@@ -90,16 +201,15 @@ sensor:
         value_template: >
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.status }}
         icon_template: >
-          {% set val = states.vacuum.xiaomi_vacuum_cleaner.attributes.status %}
-          {% if val == 'Charging' %}
+          {% if is_state("vacuum.xiaomi_vacuum_cleaner", "docked")  %}
             mdi:battery-charging
-          {% elif val == 'Cleaning' %}
+          {% elif is_state("vacuum.xiaomi_vacuum_cleaner", "cleaning")  %}
             mdi:move-resize
-          {% elif val == 'Returning home' %}
+          {% elif is_state("vacuum.xiaomi_vacuum_cleaner", "returning")  %}
             mdi:keyboard-return
-          {% elif val == 'Idle' %}
+          {% elif is_state("vacuum.xiaomi_vacuum_cleaner", "idle")  %}
             mdi:dots-horizontal
-          {% elif val == 'Paused' %}
+          {% elif is_state("vacuum.xiaomi_vacuum_cleaner", "paused")  %}
             mdi:pause-circle
           {% else %}
             mdi:help-circle
@@ -137,13 +247,13 @@ sensor:
 
       vacuum_do_not_disturb:
         friendly_name: Do Not Disturb
+        entity_id: vacuum.xiaomi_vacuum_cleaner
         value_template: >
           {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.do_not_disturb }}
         icon_template: >
-          {%
-            set val =
-              states.vacuum.xiaomi_vacuum_cleaner.attributes.do_not_disturb
-          %}
+          {% set val = state_attr(
+            "vacuum.xiaomi_vacuum_cleaner", "do_not_disturb"
+            ) %}
           {% if val == 'on' %}
             mdi:do-not-disturb
           {% else %}
@@ -158,19 +268,13 @@ sensor:
             ) | timestamp_custom("%m/%d, %I:%M %p") }}
         icon_template: mdi:calendar-check
 
-switch:
-  - platform: template
-    switches:
-      wolfie_cycle:
-        friendly_name: Activate
-        value_template: "{{ is_state('sensor.vacuum_status', 'Cleaning') }}"
-        icon_template: "mdi:google-circles-group"
-        turn_on:
-          event: VACUUM_START
-        turn_off:
-          service: vacuum.return_to_base
-          data:
-            entity_id: vacuum.xiaomi_vacuum_cleaner
+      vacuum_next_run:
+        friendly_name: Next Run Date/Time
+        value_template: >
+          {{ as_timestamp(
+            state_attr("calendar.wolfie_schedule", "start_time")
+          ) | timestamp_custom("%m/%d, %I:%M %p") }}
+        icon_template: mdi:calendar-check
 
 vacuum:
   - platform: xiaomi_miio

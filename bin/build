@@ -1,0 +1,61 @@
+#!/bin/bash
+set -euo pipefail
+
+REPO_PATH="$( dirname "$( cd "$(dirname "$0")" ; pwd -P )" )"
+
+function copy_config_data() {
+  volume_name=$1
+  settings_path=$2
+
+  docker volume create "$volume_name"
+
+  docker run --rm \
+    -v "$settings_path":/src \
+    -v "$volume_name":/data \
+    -w /src \
+    busybox \
+    cp -a . /data
+}
+
+# Change into the repo's dir so that docker-compose .env works correctly:
+pushd "$REPO_PATH"
+
+# Update AppDaemon configs:
+copy_config_data "hub_appdaemon-config" "$REPO_PATH/appdaemon/settings"
+
+# Update Fail2Ban configs:
+copy_config_data "hub_fail2ban-config" "$REPO_PATH/fail2ban/settings"
+
+# Update Glances configs:
+copy_config_data "hub_glances-config" "$REPO_PATH/glances/settings"
+
+# Update Home Assistant configs:
+copy_config_data "hub_hass-config" "$REPO_PATH/home-assistant/settings"
+"$REPO_PATH/bin/clean-hass-refresh-tokens"
+
+# Update Zigbee2MQTT configs:
+copy_config_data "hub_zigbee2mqtt-config" "$REPO_PATH/zigbee2mqtt/settings"
+
+# Re-build the containers if necessary:
+docker-compose build
+
+# Tear the stack down and clean up loose containers and images:
+docker-compose down --remove-orphans
+docker container prune -f
+docker image prune -f
+
+# Bring up the services in a staggered order:
+docker-compose up -d \
+    --scale hass=0 \
+    --scale nginx=0 \
+    --scale zigbee2mqtt=0 \
+    --scale zigbee2mqttassistant=0
+sleep 5
+docker-compose up -d
+
+# Do a final cleanup of unused networks and volumes:
+docker network prune -f
+docker volume prune -f
+
+# Go back to where we started:
+popd

@@ -1,37 +1,169 @@
 ---
+ambient_station:
+  api_key: !secret pws_api_key
+  app_key: !secret pws_app_key
+
+input_boolean:
+  adjust_climate_on_proximity_automation:
+    icon: mdi:car-side
+    name: Adjust on proximity
+  climate_away_mode:
+    name: "Away Mode"
+    icon: mdi:thermostat
+
+input_number:
+  outdoor_extreme_high_threshold:
+    name: "Outdoor: Extreme High"
+    min: 20
+    max: 100
+    step: 1
+    unit_of_measurement: °F
+    icon: mdi:thermometer-chevron-up
+  outdoor_extreme_low_threshold:
+    name: "Outdoor: Extreme Low"
+    min: 20
+    max: 100
+    step: 1
+    unit_of_measurement: °F
+    icon: mdi:thermometer-chevron-down
+  thermostat_eco_high_threshold:
+    name: "Eco: High"
+    min: 50
+    max: 80
+    step: 1
+    unit_of_measurement: °F
+    icon: mdi:thermostat
+  thermostat_eco_low_threshold:
+    name: "Eco: Low"
+    min: 50
+    max: 80
+    step: 1
+    unit_of_measurement: °F
+    icon: mdi:thermostat
+
+input_select:
+  last_hvac_mode:
+    name: "HVAC Mode (Before Away Mode)"
+    options:
+      - cool
+      - heat
+      - heat_cool
+      - "off"
+    icon: mdi:thermostat
+
 sensor:
-  - platform: min_max
-    name: "Average Indoor Temperature"
-    type: "mean"
-    round_digits: 1
-    entity_ids:
-      - sensor.climate_2_temperature
-      - sensor.fiddle_leaf_fig_temperature
-      - sensor.side_yard_inside_temp
-      - sensor.thermostat_thermostat_temperature
+  - platform: darksky
+    api_key: !secret dark_sky_api_key
+    monitored_conditions:
+      - cloud_cover
+
+  - platform: filter
+    name: "Filtered Wind Speed"
+    entity_id: sensor.side_yard_wind_speed
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 1
+
+  - platform: filter
+    name: "Filtered Outdoor Brightness (%)"
+    entity_id: sensor.side_yard_solar_rad_log
+    filters:
+      - filter: range
+        upper_bound: 100
+
+  - platform: filter
+    name: "Filtered Average Indoor Humidity"
+    entity_id: sensor.average_indoor_humidity
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 1
+
+  - platform: filter
+    name: "Filtered Average Indoor Temperature"
+    entity_id: sensor.average_indoor_temperature
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 1
 
   - platform: min_max
     name: "Average Indoor Humidity"
     type: "mean"
     round_digits: 1
     entity_ids:
-      - sensor.climate_2_humidity
+      - sensor.master_bathroom_humidity
       - sensor.side_yard_humidity_in
-      - sensor.thermostat_thermostat_humidity
+      - sensor.thermostat_humidity
 
-switch:
+  - platform: moon
+
+  - platform: season
+
   - platform: template
-    switches:
-      climate_away_mode:
-        friendly_name: Climate Away Mode
+    sensors:
+      dark_sky_temperature:
+        value_template: "{{ state_attr('weather.weather', 'temperature') }}"
+        icon_template: mdi:thermometer
+      friendly_season:
+        friendly_name: Season
+        value_template: "{{ states('sensor.season') | title }}"
+        icon_template: >
+          {% if is_state("sensor.season", "spring") %}
+            mdi:flower
+          {% elif is_state("sensor.season", "summer") %}
+            mdi:sunglasses
+          {% elif is_state("sensor.season", "autumn") %}
+            mdi:leaf
+          {% else %}
+            mdi:snowflake
+          {% endif %}
+      moon_phase:
+        friendly_name: Moon Phase
         value_template: >
-          {{ states.climate.thermostat.attributes.away_mode == 'on'}}
-        icon_template: mdi:arrow-left-drop-circle
-        turn_on:
-          service: nest.set_mode
-          data:
-            home_mode: away
-        turn_off:
-          service: nest.set_mode
-          data:
-            home_mode: home
+          {{ states("sensor.moon") | replace('_', ' ') | title }}
+        icon_template: mdi:weather-night
+      side_yard_solar_rad_log:
+        friendly_name: "Side Yard: Brightness (Perception)"
+        entity_id: sensor.side_yard_solar_rad
+        value_template: >
+          {{ (
+            states("sensor.side_yard_solar_rad_lx") | int | log(10)/5
+          )| round(2) * 100 }}
+        unit_of_measurement: "%"
+        device_class: illuminance
+      sunrise:
+        friendly_name: Next Sunrise
+        value_template: >
+          {{ as_timestamp(
+            state_attr("sun.sun", "next_rising")
+          ) | timestamp_custom(' %I:%M %p') | replace(' 0', '') }}
+        icon_template: mdi:weather-sunset-up
+      sunset:
+        friendly_name: Next Sunset
+        value_template: >
+          {{ as_timestamp(
+            state_attr("sun.sun", "next_setting")
+          ) | timestamp_custom(' %I:%M %p') | replace(' 0', '') }}
+        icon_template: mdi:weather-sunset-down
+
+  - platform: min_max
+    name: "Average Indoor Temperature"
+    type: "mean"
+    round_digits: 1
+    entity_ids:
+      - sensor.guest_bedroom_sensor_temperature
+      - sensor.kitchen_sensor_temperature
+      - sensor.kitchen_sink_sensor_temperature
+      - sensor.master_bathroom_temperature
+      - sensor.side_yard_inside_temp
+      - sensor.thermostat_temperature
+      - sensor.upstairs_hallway_sensor_temperature
+
+sun:
+
+weather:
+  - platform: darksky
+    api_key: !secret dark_sky_api_key
+    name: Weather

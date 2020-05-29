@@ -1,5 +1,5 @@
 ---
-- name: zwave_graph
+- name: zwavegraph2
   sidebar_title: Z-Wave Graph
   sidebar_icon: mdi:z-wave
   url_path: zwave

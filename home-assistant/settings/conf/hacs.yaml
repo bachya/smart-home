@@ -1,0 +1,3 @@
+---
+token: !secret hacs_github_token
+sidepanel_title: HACS

@@ -83,23 +83,12 @@ sensor.speedtest_download:
   icon: mdi:cloud-download
 sensor.speedtest_upload:
   icon: mdi:cloud-upload
-sensor.thermostat_thermostat_humidity:
-  friendly_name: Indoor Humidity
-  icon: mdi:water-percent
-sensor.thermostat_thermostat_hvac_state:
-  friendly_name: Indoor HVAC State
-  icon: mdi:fan
-sensor.thermostat_thermostat_temperature:
-  friendly_name: Indoor Temperature
-  icon: mdi:thermometer
 switch.backyard_lights:
   icon: mdi:lightbulb
 switch.bar_cart:
   icon: mdi:lightbulb
 switch.basement_lights:
   icon: mdi:lightbulb
-switch.christmas_tree:
-  icon: mdi:pine-tree
 switch.fireplace:
   icon: mdi:fire
 switch.front_patio_light:
@@ -122,6 +111,8 @@ switch.garage_lights:
   icon: mdi:lightbulb
 switch.home_assistant:
   icon: mdi:home-assistant
+switch.influxdb:
+  icon: mdi:database
 switch.kitchen_patio_light:
   icon: mdi:lightbulb
 switch.media_center:
@@ -142,8 +133,6 @@ switch.program_evening:
   icon: mdi:water
 switch.program_evening_no_planter:
   icon: mdi:water
-switch.ps4:
-  icon: mdi:playstation
 switch.ravenclaw_hass_elder_bachs:
   friendly_name: Home Assistant
   icon: mdi:home-assistant

@@ -1,4 +1,28 @@
 ---
+automation:
+  - alias: "Turn office lights off at 10pm"
+    trigger:
+      platform: time
+      at: "22:00:00"
+    action:
+      service: switch.turn_off
+      data:
+        entity_id: switch.office_salt_lamp
+
+  - alias: "Turn office lights on at sunset"
+    trigger:
+      platform: sun
+      event: sunset
+    action:
+      service: switch.turn_on
+      data:
+        entity_id: switch.office_salt_lamp
+
+input_boolean:
+  office_lights_sleep_timer_automation:
+    icon: mdi:sleep
+    name: Enable sleep timer
+
 input_number:
   office_salt_lamp_timer:
     name: Sleep Timer
@@ -8,16 +32,3 @@ input_number:
     step: 5
     unit_of_measurement: minutes
     icon: mdi:timer
-
-light:
-  - platform: mqtt
-    name: "Salt Lamp (Office)"
-    state_topic: "stat/salt-lamp-2/POWER1"
-    command_topic: "cmnd/salt-lamp-2/POWER1"
-    availability_topic: "tele/salt-lamp-2/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    retain: false

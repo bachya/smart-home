@@ -1,13 +1,41 @@
 ---
-jupyterlab:
-  title: JupyterLab
-  url: !secret panel_url_jupyterlab
-  icon: mdi:database-search
+almond_server:
+  title: Almond
+  url: !secret panel_url_almond
+  icon: mdi:assistant
+ambient:
+  title: Ambient PWS
+  url: !secret panel_url_ambient
+  icon: mdi:weather-cloudy
+ci_cd:
+  title: CI/CD
+  url: !secret panel_url_drone
+  icon: mdi:lan
+esphome_dashboard:
+  title: ESPHome Dashboard
+  url: !secret panel_url_esphome_dashboard
+  icon: mdi:chip
+grafana:
+  title: Grafana
+  url: !secret panel_url_grafana
+  icon: mdi:chart-bar
+octopi:
+  title: OctoPi
+  url: !secret panel_url_octopi
+  icon: mdi:printer-3d
 portainer:
   title: Portainer
   url: !secret panel_url_portainer
   icon: mdi:database
-tasmoadmin:
-  title: TasmoAdmin
-  url: !secret panel_url_tasmoadmin
-  icon: mdi:lightbulb-on
+rainmachine:
+  title: RainMachine
+  url: !secret panel_url_rainmachine
+  icon: mdi:water
+vernemq:
+  title: VerneMQ
+  url: !secret panel_url_vernemq
+  icon: mdi:wifi
+zigbee2mqtt:
+  title: Zigbee2MQTT
+  url: !secret panel_url_zibee2mqtt
+  icon: mdi:zigbee

@@ -1,12 +1,88 @@
 ---
-sensor:
-  - platform: denvertrash
-    api_key: !secret google_api_key
-    monitored_conditions:
-      - extra_trash
-      - recycling
-      - trash
+automation:
+  - alias: Notify of next trash pickup the night before
+    trigger:
+      platform: time
+      at: "20:00:00"
+    condition:
+      condition: template
+      value_template: >
+        {%
+          set delta = ("2020-04-01" | as_timestamp() - now()
+          | as_timestamp())/60/60
+        %}
+        {{ delta > 0 and delta < 24 }}
+    action:
+      - service: notify.mobile_app_aarons_iphone
+        data_template:
+          message: >
+            🚮 Tomorrow's pickup will include: {{
+              expand("group.trash_sensors")
+              | selectattr("state", "equalto", "on")
+              | join(", ", attribute="attributes.friendly_name")
+            }}
+          title: Tomorrow's Trash Pickup
 
-  # - platform: recollect_waste
-  #   place_id: !secret recollect_place_id
-  #   service_id: !secret recollect_service_id
+binary_sensor:
+  - platform: template
+    sensors:
+      recollect_next_pickup_includes_compost:
+        friendly_name: Compost
+        entity_id: sensor.recollect_waste
+        value_template: >
+          {{ "organics" in state_attr(
+            "sensor.recollect_waste", "pickup_types"
+          ) }}
+      recollect_next_pickup_includes_extra_trash:
+        friendly_name: Extra Trash
+        entity_id: sensor.recollect_waste
+        value_template: >
+          {{ "ExtraTrash_Day" in state_attr(
+            "sensor.recollect_waste", "pickup_types"
+          ) }}
+      recollect_next_pickup_includes_recycling:
+        friendly_name: Recycling
+        entity_id: sensor.recollect_waste
+        value_template: >
+          {{ "recycle" in state_attr(
+            "sensor.recollect_waste", "pickup_types"
+          ) }}
+      recollect_next_pickup_includes_trash:
+        friendly_name: Trash
+        entity_id: sensor.recollect_waste
+        value_template: >
+          {{ "garbage" in state_attr(
+            "sensor.recollect_waste", "pickup_types"
+          ) }}
+
+group:
+  trash_sensors:
+    name: Trash Sensors
+    entities:
+      - binary_sensor.recollect_next_pickup_includes_compost
+      - binary_sensor.recollect_next_pickup_includes_extra_trash
+      - binary_sensor.recollect_next_pickup_includes_recycling
+      - binary_sensor.recollect_next_pickup_includes_trash
+
+sensor:
+  - platform: recollect_waste
+    place_id: !secret recollect_place_id
+    service_id: !secret recollect_service_id
+
+  - platform: template
+    sensors:
+      recollect_waste_friendly_date:
+        friendly_name: Next Pickup
+        value_template: >
+          {% set date = strptime(
+            states("sensor.recollect_waste"), "%Y-%m-%d"
+          ) %}
+          {% set day = date.strftime("%d")|int %}
+          {% if 4 <= day <= 20 or 24 <= day <= 30 %}
+            {% set suffix = "th" %}
+          {% else %}
+            {% set suffix = ["st", "nd", "rd"][day % 10 - 1] %}
+          {% endif %}
+          {{ date.strftime("%A, %B %d").lstrip("0").replace(
+            " 0", " "
+          ) + suffix }}

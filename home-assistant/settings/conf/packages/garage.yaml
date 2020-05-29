@@ -1,6 +1,51 @@
 ---
+automation:
+  - alias: "Notify of low fuel: Subaru"
+    trigger:
+      platform: template
+      value_template: >
+        {% set entity = "device_tracker.2010_subaru_legacy" %}
+        {% if state_attr(entity, "fuel_level") < 10 %}
+          true
+        {% endif %}
+    action:
+      service: notify.slack
+      data:
+        message: ⛽️ Aaron's car needs some gas.
+
+  - alias: "Turn on garage lights when garage door opens while it's dark"
+    trigger:
+      platform: state
+      entity_id: cover.garage_door
+      from: closed
+    condition:
+      condition: numeric_state
+      entity_id: sensor.filtered_outdoor_brightness
+      below: 70
+    action:
+      service: switch.turn_on
+      data:
+        entity_id: switch.garage_lights
+
+  - alias: "Turn off garage lights after garage door closes"
+    trigger:
+      platform: state
+      entity_id: cover.garage_door
+      to: closed
+      for:
+        minutes: 10
+    action:
+      service: switch.turn_off
+      data:
+        entity_id: switch.garage_lights
+
 cover:
   - platform: myq
     username: !secret chamberlain_myq_username
     password: !secret chamberlain_myq_password
     type: chamberlain
+
+rainmachine:
+  controllers:
+    - ip_address: rainmachine.phil.iot
+      password: !secret rainmachine_password

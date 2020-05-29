@@ -2,29 +2,68 @@
 adjust_climate_on_proximity_automation:
   module: climate
   class: AdjustOnProximity
+  constrain_enabled: true
   dependencies:
     - climate_manager
     - presence_manager
-  enabled_config:
-    name: Adjust on proximity
-    icon: mdi:car-side
-    initial: true
 
 climate_manager:
   module: climate
   class: ClimateManager
-  entity_ids:
-    average_humidity_sensor: sensor.average_indoor_humidity
-    average_temperature_sensor: sensor.average_indoor_temperature
-    outside_temp: sensor.dark_sky_temperature
-    thermostat: climate.thermostat
+  away_mode: input_boolean.climate_away_mode
+  eco_high_threshold: input_number.thermostat_eco_high_threshold
+  eco_low_threshold: input_number.thermostat_eco_low_threshold
+  humidity_sensor: sensor.average_indoor_humidity
+  indoor_temperature_sensor: sensor.average_indoor_temperature
+  last_hvac_mode: input_select.last_hvac_mode
+  outdoor_brightness_percent_sensor: sensor.filtered_outdoor_brightness
+  outdoor_brightness_sensor: sensor.side_yard_solar_rad
+  outdoor_high_threshold: input_number.outdoor_extreme_high_threshold
+  outdoor_low_threshold: input_number.outdoor_extreme_low_threshold
+  outdoor_temperature_sensor: sensor.side_yard_temp
+  thermostat: climate.thermostat
 
-cycle_whole_house_fan_automation:
-  module: climate
-  class: CycleFan
-  dependencies:
-    - climate_manager
-  enabled_config:
-    name: Cycle house fan every 15 min.
-    icon: mdi:fan
-    initial: true
+thermostat_schedule:
+  module: hass_apps_loader
+  class: SchedyApp
+
+  actor_type: thermostat
+
+  expression_environment: |
+    def away_mode():
+      return state("input_boolean.climate_away_mode")
+
+    def in_blackout():
+      return state("input_boolean.blackout_mode") == "on"
+
+    def hvac_mode():
+      return state("climate.thermostat")
+
+  schedule_snippets:
+    cooling_season:
+      - x: "72 if in_blackout() else Next()"
+      - v: 75
+    heating_season:
+      - x: "68 if in_blackout() else Next()"
+      - v: 69
+
+  rooms:
+    whole_house:
+      actors:
+        climate.thermostat:
+          supports_hvac_modes: false
+          max_temp: 80
+          min_temp: 60
+
+      rescheduling_delay: 0
+
+      schedule:
+        - x: "IncludeSchedule(schedule_snippets['cooling_season']) \
+            if hvac_mode() == 'cool' and away_mode() == 'off' else Next()"
+        - x: "IncludeSchedule(schedule_snippets['heating_season']) \
+            if hvac_mode() == 'heat' and away_mode() == 'off' else Next()"
+
+  watched_entities:
+    - climate.thermostat
+    - input_boolean.blackout_mode
+    - input_boolean.climate_away_mode

@@ -1,111 +1,67 @@
 ---
 binary_sensor:
-  - platform: mqtt
-    name: "Garage Camera Motion Detected"
-    device_class: motion
-    state_topic: "home/garage-camera/motion"
+  - platform: template
+    sensors:
+      basement_person_detected:
+        entity_id: image_processing.google_coral_basement_camera_person
+        value_template: >
+          {{ states(
+            "image_processing.google_coral_basement_camera_person"
+          ) | int > 0 }}
+        device_class: occupancy
+        friendly_name: Basement Camera
+      garage_person_detected:
+        entity_id: image_processing.google_coral_garage_camera_person
+        value_template: >
+          {{ states.image_processing.google_coral_garage_camera_person.state|int > 0 }}
+        device_class: occupancy
+        friendly_name: Garage Camera
+      guest_bedroom_person_detected:
+        entity_id: image_processing.google_coral_guest_bedroom_camera_person
+        value_template: >
+          {{ states.image_processing.google_coral_guest_bedroom_camera_person.state|int > 0 }}
+        device_class: occupancy
+        friendly_name: Guest Bedroom Camera
+      kitchen_person_detected:
+        entity_id: image_processing.google_coral_kitchen_camera_person
+        value_template: >
+          {{ states.image_processing.google_coral_kitchen_camera_person.state|int > 0 }}
+        device_class: occupancy
+        friendly_name: Kitchen Camera
+
+eufy_security:
+  username: !secret eufy_security_email
+  password: !secret eufy_security_password
 
 camera:
   - platform: ffmpeg
-    name: Garage
+    name: Basement Camera
+    input: -rtsp_transport tcp -i rtsp://basement-camera.phil.iot:8554/unicast
+
+  - platform: ffmpeg
+    name: Garage Camera
     input: -rtsp_transport tcp -i rtsp://garage-camera.myserver.com:8554/unicast
+
+  - platform: ffmpeg
+    name: Kitchen Camera
+    input: -rtsp_transport tcp -i rtsp://yi-camera-kitchen.phil.iot/ch0_0.h264
+
+  - platform: ffmpeg
+    name: Guest Bedroom Camera
+    input: "-rtsp_transport tcp -i rtsp://yi-camera-guest-bedroom.phil.\
+      iot/ch0_0.h264"
 
   - platform: nest
 
-  - platform: yi
-    name: Kitchen
-    host: kitchen-camera.myserver.com
-    username: !secret yi_username
-    password: !secret yi_password
-    ffmpeg_arguments: -s 800x450
-
-  - platform: yi
-    name: Guest Bedroom
-    host: guest-bedroom-camera.myserver.com
-    username: !secret yi_username
-    password: !secret yi_password
-    ffmpeg_arguments: -s 800x450
-
-sensor:
-  - platform: mqtt
-    name: "Garage Camera Detected Brightness"
-    icon: "mdi:brightness-6"
-    state_topic: "home/garage-camera/brightness"
-    unit_of_measurement: "%"
-
-  - platform: mqtt
-    name: "Garage Camera Bitrate"
-    icon: "mdi:speedometer"
-    state_topic: "home/garage-camera"
-    value_template: "{{ value_json.bitrate.split(' ')[0] }}"
-    unit_of_measurement: "Mb/s"
-
-  - platform: mqtt
-    name: "Garage Camera Signal Level"
-    icon: "mdi:signal"
-    state_topic: "home/garage-camera"
-    value_template: "{{ value_json.signal_level[:-1] }}"
-    unit_of_measurement: "%"
-
-  - platform: mqtt
-    name: "Garage Camera Link Quality"
-    icon: "mdi:signal"
-    state_topic: "home/garage-camera"
-    value_template: "{{ value_json.link_quality[:-1] }}"
-    unit_of_measurement: "%"
-
-  - platform: mqtt
-    name: "Garage Camera Noise Level"
-    icon: "mdi:signal"
-    state_topic: "home/garage-camera"
-    value_template: "{{ value_json.noise_level[:-1] }}"
-    unit_of_measurement: "%"
-
-switch:
-  - platform: mqtt
-    name: "Garage Camera Infrared LED"
-    icon: "mdi:led-variant-on"
-    state_topic: "home/garage-camera/leds/ir"
-    command_topic: "home/garage-camera/leds/ir/set"
-    payload_on: "ON"
-    payload_off: "OFF"
-
-  - platform: mqtt
-    name: "Garage Camera Infrared LED Filter"
-    icon: "mdi:led-variant-on"
-    state_topic: "home/garage-camera/ir_cut"
-    command_topic: "home/garage-camera/ir_cut/set"
-    payload_on: "ON"
-    payload_off: "OFF"
-
-  - platform: mqtt
-    name: "Garage Camera Motion Detection"
-    icon: "mdi:walk"
-    state_topic: "home/garage-camera/motion/detection"
-    command_topic: "home/garage-camera/motion/detection/set"
-    payload_on: "ON"
-    payload_off: "OFF"
-
-  - platform: mqtt
-    name: "Garage Camera Night Mode"
-    icon: "mdi:weather-night"
-    state_topic: "home/garage-camera/night_mode"
-    command_topic: "home/garage-camera/night_mode/set"
-    payload_on: "ON"
-    payload_off: "OFF"
-
-  - platform: mqtt
-    name: "Garage Camera RTSP (h264)"
-    icon: "mdi:video"
-    state_topic: "home/garage-camera/rtsp_h264_server"
-    command_topic: "home/garage-camera/night_mode/rtsp_h264_server/set"
-    payload_on: "ON"
-    payload_off: "OFF"
-
-  - platform: mqtt
-    name: "Garage Camera RTSP (MJPEG)"
-    icon: "mdi:video"
-    state_topic: "home/garage-camera/rtsp_mjpeg_server"
-    command_topic: "home/garage-camera/night_mode/rtsp_mjpeg_server/set"
-    payload_on: "ON"
-    payload_off: "OFF"
+image_processing:
+  - platform: google_coral
+    ip_address: gryffindor.phil.lan
+    port: 5000
+    confidence: 60
+    target_object: person
+    source:
+      - entity_id: camera.basement_camera
+      - entity_id: camera.front_door_camera
+      - entity_id: camera.garage_camera
+      - entity_id: camera.guest_bedroom_camera
+      - entity_id: camera.kitchen_camera

@@ -1,0 +1,11 @@
+[MESSAGES CONTROL]
+# Reasons disabled:
+# bad-continuation - Incorrect attack on black
+disable=
+  bad-continuation,
+
+[REPORTS]
+reports=no
+
+[FORMAT]
+expected-line-ending-format=LF

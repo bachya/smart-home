@@ -4,20 +4,16 @@ sonos_house_audio:
   class: SonosSpeaker
   dependencies:
     - sonos_manager
-  entity_ids:
-    speaker: media_player.house_audio
-  properties:
-    volume: 0.5
+  speaker: media_player.house_audio
+  volume: 0.5
 
 sonos_living_room:
   module: sonos
   class: SonosSpeaker
   dependencies:
     - sonos_manager
-  entity_ids:
-    speaker: media_player.sonos_playbar
-  properties:
-    volume: 0.6
+  speaker: media_player.sonos_playbar
+  volume: 0.6
 
 sonos_manager:
   module: sonos
@@ -28,7 +24,5 @@ sonos_office_desk:
   class: SonosSpeaker
   dependencies:
     - sonos_manager
-  entity_ids:
-    speaker: media_player.sonos_office_desk
-  properties:
-    volume: 0.5
+  speaker: media_player.sonos_office_desk
+  volume: 0.5

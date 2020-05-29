@@ -1,22 +1,9 @@
 ---
+glances:
+  name: Gryffindor
+  host: gryffindor.myserver.com
+
 sensor:
-  - platform: glances
-    name: Gryffindor
-    host: gryffindor.myserver.com
-    resources:
-      - disk_use_percent
-      - memory_use_percent
-      - processor_load
-
-  - platform: command_line
-    name: Gryffindor CPU Temperature
-    command: >
-      ssh -i /config/id_ed25519 -o StrictHostKeyChecking=no
-      bachya@gryffindor.myserver.com
-      cat /sys/class/thermal/thermal_zone*/temp 2>/dev/null |
-      awk \'{ sum += $1; n++ } END { if (n > 0) print (sum / n) / 1000; }\'
-    unit_of_measurement: "°C"
-
   - platform: command_line
     name: Gryffindor Uptime
     command: >

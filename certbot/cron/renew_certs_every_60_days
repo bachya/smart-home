@@ -1,0 +1,2 @@
+# Renew the LetsEncrypt certificates every 60 days:
+0 1 * * * root test $(($(date +\%s)/24/60/60\%60)) = 60 && /bin/echo $(/bin/date): $(/home/bachya/git/hub/bin/renew-certs) >> /var/log/certbot_auto_renewal.log

@@ -3,7 +3,16 @@ from enum import Enum
 from typing import Union
 
 from core import Base
-from const import CONF_PEOPLE
+from const import CONF_PEOPLE, EVENT_PROXIMITY_CHANGE
+
+CONF_EDGE_THRESHOLD = "edge_threshold"
+CONF_HOME_THRESHOLD = "home_threshold"
+CONF_NEARBY_THRESHOLD = "nearby_threshold"
+CONF_PROXIMITY_ZONE_SENSOR = "proximity_zone_sensor"
+
+DEFAULT_EDGE_THRESHOLD = 3 * 5280
+DEFAULT_HOME_THRESHOLD = 0 * 5280
+DEFAULT_NEARBY_THRESHOLD = 7 * 5280
 
 
 class PresenceManager(Base):
@@ -12,105 +21,106 @@ class PresenceManager(Base):
     class HomeStates(Enum):
         """Define an enum for presence states."""
 
-        away = 'Away'
-        extended_away = 'Extended Away'
-        home = 'Home'
-        just_arrived = 'Just Arrived'
-        just_left = 'Just Left'
+        away = "Away"
+        extended_away = "Extended Away"
+        home = "Home"
+        just_arrived = "Just Arrived"
+        just_left = "Just Left"
 
-    class ProximityStates(Enum):
+    class ProximityZones(Enum):
         """Define an enum for proximity states."""
 
-        away = 'away'
-        edge = 'edge'
-        home = 'home'
-        nearby = 'nearby'
-
-    PROXIMITY_SENSOR = 'proximity.home'
-
-    HOME_THRESHOLD = 0
-    NEARBY_THRESHOLD = 15840
-    EDGE_THRESHOLD = 31680
+        away = "Away"
+        edge = "Edge"
+        home = "Home"
+        nearby = "Nearby"
 
     def configure(self) -> None:
         """Configure."""
-        if self.proximity == self.HOME_THRESHOLD:
-            self.state = self.ProximityStates.home
-        elif self.HOME_THRESHOLD < self.proximity <= self.NEARBY_THRESHOLD:
-            self.state = self.ProximityStates.nearby
-        else:
-            self.state = self.ProximityStates.away
-
-        self.listen_state(
-            self._proximity_change_cb,
-            self.PROXIMITY_SENSOR,
-            attribute='all',
-            duration=60)
+        # The duration parameter isn't respected unless a specific old or new
+        # state is provided; therefore, we need to loop through all possible states and
+        # create listeners for them:
+        for new_state in (
+            self.ProximityZones.away,
+            self.ProximityZones.edge,
+            self.ProximityZones.home,
+            self.ProximityZones.nearby,
+        ):
+            self.listen_state(
+                self._on_proximity_zone_change,
+                self.args[CONF_PROXIMITY_ZONE_SENSOR],
+                new=new_state.value,
+                duration=60,
+            )
 
     @property
-    def proximity(self) -> int:
-        """Return the current proximity."""
+    def edge_threshold(self) -> int:
+        """Return the number of feet away from home when "edge" starts."""
         try:
-            return int(self.get_state(self.PROXIMITY_SENSOR))
-        except ValueError:
-            return 0
+            return int(self.get_state(self.args[CONF_EDGE_THRESHOLD])) * 5280
+        except TypeError:
+            return DEFAULT_EDGE_THRESHOLD
 
-    def _proximity_change_cb(
-            self, entity: Union[str, dict], attribute: str, old: dict,
-            new: dict, kwargs: dict) -> None:
-        """Lock up when we leave home."""
-        if old['state'] == 'not set' or new['state'] == 'not set':
-            return
+    @property
+    def home_threshold(self) -> int:
+        """Return the number of feet away from home when "home" starts."""
+        try:
+            return int(self.get_state(self.args[CONF_HOME_THRESHOLD])) * 5280
+        except TypeError:
+            return DEFAULT_HOME_THRESHOLD
 
-        new_proximity = int(new['state'])
-        old_state = self.state
+    @property
+    def nearby_threshold(self) -> int:
+        """Return the number of feet away from home when "nearby" starts."""
+        try:
+            return int(self.get_state(self.args[CONF_NEARBY_THRESHOLD])) * 5280
+        except TypeError:
+            return DEFAULT_NEARBY_THRESHOLD
 
-        if (self.state != self.ProximityStates.home
-                and new_proximity == self.HOME_THRESHOLD):
-            self.state = self.ProximityStates.home
-        elif (self.state != self.ProximityStates.nearby and
-              self.HOME_THRESHOLD < new_proximity <= self.NEARBY_THRESHOLD):
-            self.state = self.ProximityStates.nearby
-        elif (self.state != self.ProximityStates.edge and
-              self.NEARBY_THRESHOLD < new_proximity <= self.EDGE_THRESHOLD):
-            self.state = self.ProximityStates.edge
-        elif (self.state != self.ProximityStates.away
-              and new_proximity > self.NEARBY_THRESHOLD):
-            self.state = self.ProximityStates.away
+    @property
+    def proximity_zone(self) -> "ProximityZones":
+        """Return the current proximity zone."""
+        return self.ProximityZones(
+            self.get_state(self.args[CONF_PROXIMITY_ZONE_SENSOR])
+        )
 
-        if self.state != old_state:
-            self.fire_event(
-                'PROXIMITY_CHANGE', old=old_state.value, new=self.state.value)
+    def _on_proximity_zone_change(
+        self, entity: Union[str, dict], attribute: str, old: str, new: str, kwargs: dict
+    ) -> None:
+        """Fire a proximity change event."""
+        self.log("Proximity change: %s -> %s", old, new)
+        self.fire_event(EVENT_PROXIMITY_CHANGE, old=old, new=new)
 
-    def _whos_in_state(self, *states: Enum) -> list:
+    def _whos_in_state(self, *states: "HomeStates") -> list:
         """Return a list people who are in a certain set of states."""
         return [
-            person for person in self.global_vars[CONF_PEOPLE]
-            if person.home_state in states
+            person
+            for person in self.global_vars[CONF_PEOPLE]
+            if person.non_binary_state in states
         ]
 
-    def anyone(self, *states: Enum) -> bool:
+    def anyone(self, *states: "HomeStates") -> bool:
         """Determine whether *any* person is in one or more states."""
         if self._whos_in_state(*states):
             return True
 
         return False
 
-    def everyone(self, *states: Enum) -> bool:
+    def everyone(self, *states: "HomeStates") -> bool:
         """Determine whether *every* person is in one or more states."""
         if self._whos_in_state(*states) == self.global_vars[CONF_PEOPLE]:
             return True
 
         return False
 
-    def noone(self, *states: Enum) -> bool:
+    def noone(self, *states: "HomeStates") -> bool:
         """Determine whether *no* person is in one or more states."""
         if not self._whos_in_state(*states):
             return True
 
         return False
 
-    def only_one(self, *states: Enum) -> bool:
+    def only_one(self, *states: "HomeStates") -> bool:
         """Determine whether *only one* person is in one or more states."""
         return len(self._whos_in_state(*states)) == 1
 
@@ -118,8 +128,10 @@ class PresenceManager(Base):
         """Return a list of notifiers who are away."""
         if include_others:
             return self._whos_in_state(
-                self.HomeStates.away, self.HomeStates.extended_away,
-                self.HomeStates.just_left)
+                self.HomeStates.away,
+                self.HomeStates.extended_away,
+                self.HomeStates.just_left,
+            )
 
         return self._whos_in_state(self.HomeStates.away)
 
@@ -131,7 +143,8 @@ class PresenceManager(Base):
         """Return a list of notifiers who are at home."""
         if include_others:
             return self._whos_in_state(
-                self.HomeStates.home, self.HomeStates.just_arrived)
+                self.HomeStates.home, self.HomeStates.just_arrived
+            )
 
         return self._whos_in_state(self.HomeStates.home)
 

@@ -3,8 +3,5 @@ alexa:
   module: alexa
   class: Alexa
   dependencies:
-    - dishwasher
     - presence_manager
     - security_manager
-    - trash_manager
-    - wolfie

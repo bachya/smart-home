@@ -1,27 +1,310 @@
 ---
-sensor:
+alert:
+  garage_left_open:
+    name: 🚗 The garage has been left open.
+    done_message: ✅ The garage is now closed.
+    title: Garage Door
+    entity_id: cover.garage_door
+    state: open
+    repeat:
+      - 10
+    skip_first: true
+    notifiers:
+      - phones
+      - slack
+    data:
+      push:
+        category: GARAGE
+
+  house_empty_and_insecure:
+    name: "🚨 The house isn't secure and no one is home."
+    done_message: "✅ The house is now secure."
+    title: House Security
+    entity_id: binary_sensor.house_open_and_insecure
+    state: "on"
+    repeat:
+      - 1
+      - 5
+    skip_first: true
+    notifiers:
+      - phones
+      - slack
+    data:
+      push:
+        category: SECURITY
+
+  smoke_detected:
+    name: "🚨 Smoke has been detected."
+    done_message: "✅ The smoke has cleared."
+    title: House Empty and Insecure
+    entity_id: group.smoke_detectors
+    state: "on"
+    repeat:
+      - 1
+    notifiers:
+      - phones
+      - slack
+
+automation:
+  - alias: "Automatically lock up at night"
+    trigger:
+      platform: time
+      at: "00:00:00"
+    action:
+      service: scene.turn_on
+      data:
+        entity_id: scene.good_night
+
+  - alias: "Automatically lock up when we depart"
+    trigger:
+      platform: state
+      entity_id: sensor.proximity_zone
+      from: Home
+    action:
+      service: scene.turn_on
+      data:
+        entity_id: scene.depart_home
+
+  - alias: "Disable SimpliSafe sounds in Blackout Mode"
+    trigger:
+      platform: state
+      entity_id: input_boolean.blackout_mode
+      to: "on"
+    action:
+      service: simplisafe.set_system_properties
+      data:
+        system_id: !secret simplisafe_system_id
+        chime_volume: 0
+        voice_prompt_volume: 0
+
+  - alias: "Enable SimpliSafe sounds when leaving Blackout Mode"
+    trigger:
+      platform: state
+      entity_id: input_boolean.blackout_mode
+      to: "off"
+    action:
+      service: simplisafe.set_system_properties
+      data:
+        system_id: !secret simplisafe_system_id
+        chime_volume: 2
+        voice_prompt_volume: 2
+
+  - alias: "Forward SimpliSafe events to Slack"
+    trigger:
+      - platform: event
+        event_type: SIMPLISAFE_EVENT
+    action:
+      service: notify.slack
+      data_template:
+        message: >
+            📥 SimpliSafe Event:
+            {{ trigger.event.data.service_data.last_event_info }}
+
+  - alias: "Forward SimpliSafe notifications to Slack"
+    trigger:
+      - platform: event
+        event_type: SIMPLISAFE_NOTIFICATION
+    action:
+      service: notify.slack
+      data_template:
+        message: >
+            📥 SimpliSafe Notification:
+            {{ trigger.event.data.service_data.message }}
+
+  - alias: "iOS Action: Close Garage"
+    trigger:
+      - platform: event
+        event_type: ios.notification_action_fired
+        event_data:
+          actionName: GARAGE_CLOSE_DOOR
+    action:
+      service: cover.close_cover
+      data:
+        entity_id: cover.garage_door
+
+  - alias: "iOS Action: Secure the House"
+    trigger:
+      - platform: event
+        event_type: ios.notification_action_fired
+        event_data:
+          actionName: SECURITY_SECURE
+    action:
+      service: scene.turn_on
+      data:
+        entity_id: scene.depart_home
+
+  - alias: "Notify of Fail2Ban bans"
+    trigger:
+      - platform: state
+        entity_id: sensor.fail2ban_last_ban_ip
+    action:
+      service: notify.slack
+      data:
+        message: >
+          ❌ Fail2Ban just banned an IP address: {{ trigger.to_state.state }}
+
+  - alias: "Notify of Fail2Ban failures"
+    trigger:
+      - platform: state
+        entity_id: sensor.fail2ban_last_failure_ip
+    action:
+      service: notify.slack
+      data:
+        message: >
+          ❌ Fail2Ban just failed an IP address: {{ trigger.to_state.state }}
+
+  - alias: "Notify when security status changes"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.secure_status
+    action:
+      service: notify.slack
+      data_template:
+        message: >
+          🔐 The house's security has changed: {{ trigger.to_state.state }}
+
+  - alias: "Turn lights off when person detected at nighttime leaves"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.front_door_camera_person_detected
+      to: "off"
+      for:
+        minutes: 5
+    condition:
+      condition: time
+      after: "23:00:00"
+      before: "04:00:00"
+    action:
+      - service: switch.turn_off
+        data:
+          entity_id: switch.front_patio_light
+      - service: switch.turn_off
+        data:
+          entity_id: group.living_room_lights
+
+  - alias: "Turn lights on when person detected at nighttime"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.front_door_camera_person_detected
+      to: "on"
+    condition:
+      condition: time
+      after: "23:00:00"
+      before: "04:00:00"
+    action:
+      - service: switch.turn_on
+        data:
+          entity_id: switch.front_patio_light
+      - service: switch.turn_on
+        data:
+          entity_id: group.living_room_lights
+
+binary_sensor:
   - platform: template
     sensors:
+      house_open_and_insecure:
+        value_template: >
+          {{
+            is_state("binary_sensor.secure_status", "on") and
+            not is_state("sensor.proximity_zone", "Home")
+          }}
       secure_status:
         friendly_name: Security Status
+        entity_id:
+          - lock.front_door
+          - lock.garage_fire_door
+          - alarm_control_panel.8673_e_55th_avenue
+          - cover.garage_door
         value_template: >
-          {% if is_state('lock.front_door', 'locked')
-             and is_state('lock.garage_fire_door', 'locked')
-             and not is_state('alarm_control_panel.simplisafe', 'disarmed')
-             and is_state('cover.garage_door', 'closed') %}
-            Secure
-          {% else %}
-            Open
-          {% endif %}
-        icon_template: >
-          {% if is_state('lock.front_door', 'locked')
-             and is_state('lock.garage_fire_door', 'locked')
-             and not is_state('alarm_control_panel.simplisafe', 'disarmed')
-             and is_state('cover.garage_door', 'closed') %}
-            mdi:lock
-          {% else %}
-            mdi:lock-open-outline
-          {% endif %}
+          {{ is_state('lock.front_door', 'unlocked')
+             or is_state('lock.garage_fire_door', 'unlocked')
+             or is_state(
+               'alarm_control_panel.8673_e_55th_avenue', 'disarmed'
+             )
+             or is_state('cover.garage_door', 'open') }}
+        device_class: lock
+
+group:
+  smoke_detectors:
+    entities:
+      - binary_sensor.basement_sensor_smoke_carbon_monoxide_detector
+      - binary_sensor.guest_bedroom_sensor_smoke_carbon_monoxide_detector
+      - binary_sensor.kitchen_sensor_smoke_carbon_monoxide_detector
+      - binary_sensor.upstairs_hallway_sensor_smoke_carbon_monoxide_detector
+
+input_boolean:
+  notify_when_person_on_camera_automation:
+    icon: mdi:cctv
+    name: Strange person detected
+  randomize_nighttime_lighting_automation:
+    icon: mdi:timer
+    name: Randomize nighttime lighting
+  randomize_nighttime_tvs_automation:
+    icon: mdi:timer
+    name: Randomize nighttime TVs
+
+sensor:
+  - platform: mqtt
+    state_topic: "stat/fail2ban"
+    name: "Fail2Ban: Failures"
+    unit_of_measurement: failures
+    icon: mdi:message-alert
+    value_template: "{{ value_json.failure_count }}"
+
+  - platform: mqtt
+    state_topic: "stat/fail2ban"
+    name: "Fail2Ban: Last Failure Jail"
+    icon: mdi:target-account
+    value_template: "{{ value_json.last_failure_jail }}"
+
+  - platform: mqtt
+    state_topic: "stat/fail2ban"
+    name: "Fail2Ban: Last Failure IP"
+    icon: mdi:target-account
+    value_template: "{{ value_json.last_failure_ip }}"
+
+  - platform: mqtt
+    state_topic: "stat/fail2ban"
+    name: "Fail2Ban: Last Failure Country"
+    icon: mdi:map-marker
+    value_template: "{{ value_json.last_failure_country }}"
+
+  - platform: mqtt
+    state_topic: "stat/fail2ban"
+    name: "Fail2Ban: Last Failure Timestamp"
+    icon: mdi:timetable
+    value_template: "{{ value_json.last_failure_ts }}"
+
+  - platform: mqtt
+    state_topic: "stat/fail2ban"
+    name: "Fail2Ban: Bans"
+    unit_of_measurement: bans
+    icon: mdi:message-alert
+    value_template: "{{ value_json.ban_count }}"
+
+  - platform: mqtt
+    state_topic: "stat/fail2ban"
+    name: "Fail2Ban: Last Ban Jail"
+    icon: mdi:target-account
+    value_template: "{{ value_json.last_ban_jail }}"
+
+  - platform: mqtt
+    state_topic: "stat/fail2ban"
+    name: "Fail2Ban: Last Ban IP"
+    icon: mdi:target-account
+    value_template: "{{ value_json.last_ban_ip }}"
+
+  - platform: mqtt
+    state_topic: "stat/fail2ban"
+    name: "Fail2Ban: Last Ban Country"
+    icon: mdi:map-marker
+    value_template: "{{ value_json.last_ban_country }}"
+
+  - platform: mqtt
+    state_topic: "stat/fail2ban"
+    name: "Fail2Ban: Last Ban Timestamp"
+    icon: mdi:timetable
+    value_template: "{{ value_json.last_ban_ts }}"
 
 simplisafe:
   accounts:

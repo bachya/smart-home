@@ -1,12 +1,138 @@
 ---
+alert:
+  dishwasher_clean:
+    name: 🍽 The dishwasher is clean and can be emptied.
+    done_message: ✅ The dishwasher has been emptied.
+    title: Dishwasher
+    entity_id: binary_sensor.should_notify_about_dishwasher_clean
+    state: "on"
+    repeat:
+      - 15
+      - 120
+    skip_first: true
+    notifiers:
+      - mobile_app_aarons_iphone
+    data:
+      push:
+        category: DISHWASHER
+
+  kitchen_sink_leak:
+    name: 💦 Leak detected under the kitchen sink!
+    done_message: ✅ The leak has been fixed.
+    title: Kitchen Sink Leak
+    entity_id: binary_sensor.kitchen_sink_sensor_water_leak
+    state: "on"
+    repeat:
+      - 1
+    notifiers:
+      - phones
+      - slack
+    data:
+      push:
+        category: WATER
+
+automation:
+  - alias: "iOS Action: Empty Dishwasher"
+    trigger:
+      - platform: event
+        event_type: ios.notification_action_fired
+        event_data:
+          actionName: DISHWASHER_EMPTY
+    action:
+      service: input_select.select_option
+      data:
+        entity_id: input_select.dishwasher_status
+        option: Dirty
+
+  - alias: 'Set dishwasher state to "Running"'
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.dishwasher_power
+      above: 9
+    action:
+      service: input_select.select_option
+      data:
+        entity_id: input_select.dishwasher_status
+        option: Running
+
+  - alias: 'Set dishwasher state to "Drying"'
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.dishwasher_power
+      below: 4
+    condition:
+      condition: state
+      entity_id: input_select.dishwasher_status
+      state: Running
+    action:
+      service: input_select.select_option
+      data:
+        entity_id: input_select.dishwasher_status
+        option: Drying
+
+  - alias: 'Set dishwasher state to "Clean"'
+    trigger:
+      platform: state
+      entity_id: input_select.dishwasher_status
+      to: Drying
+      for:
+        minutes: 20
+    action:
+      service: input_select.select_option
+      data:
+        entity_id: input_select.dishwasher_status
+        option: Clean
+
+  - alias: "Turn bar cart lights on"
+    trigger:
+      - platform: state
+        entity_id: sensor.proximity_zone
+        to: Home
+      - platform: sun
+        event: sunset
+    condition:
+      condition: state
+      entity_id: sun.sun
+      state: below_horizon
+    action:
+      service: switch.turn_on
+      data:
+        entity_id: switch.bar_cart
+
+binary_sensor:
+  - platform: template
+    sensors:
+      should_notify_about_dishwasher_clean:
+        value_template: >-
+          {{
+            is_state("input_select.dishwasher_status", "Clean") and
+            is_state("person.aaron", "home") and
+            is_state("input_boolean.blackout_mode", "off")
+          }}
+
+input_select:
+  dishwasher_status:
+    name: Status
+    options:
+      - Dirty
+      - Running
+      - Drying
+      - Clean
+
+script:
+  empty_dishwasher:
+    sequence:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.dishwasher_status
+          option: Dirty
+
 sensor:
   - platform: template
     sensors:
       garage_fire_door_lock_battery:
         friendly_name: Garage Fire Door Lock
         value_template: >
-          {% if states('zwave.garage_door') == 'ready' %}
-            {{ states.zwave.garage_door.attributes.battery_level }}
-          {% endif %}
-        unit_of_measurement: '%'
+          {{ state_attr("zwave.garage_door", "battery_level") }}
+        unit_of_measurement: "%"
         device_class: battery

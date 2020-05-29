@@ -1,46 +1,35 @@
 """Define various constants."""
-BLACKOUT_START = '22:00:00'
-BLACKOUT_END = '08:00:00'
-
-# Top level-related config keys:
-CONF_ENTITY_IDS = 'entity_ids'
-CONF_PROPERTIES = 'properties'
-
 # Entity-related config keys:
-CONF_DEVICE_TRACKERS = 'device_trackers'
-CONF_ENTITY = 'entity'
+CONF_DEVICE_TRACKERS = "device_trackers"
+CONF_ENTITY_ID = "entity_id"
+CONF_ICON = "icon"
 
 # Name-related config keys:
-CONF_FRIENDLY_NAME = 'friendly_name'
+CONF_FRIENDLY_NAME = "friendly_name"
 
 # State-related config keys:
-CONF_STATE = 'state'
+CONF_STATE = "state"
 
 # Time-related config keys:
-CONF_DELAY = 'delay'
-CONF_DURATION = 'duration'
-CONF_END_TIME = 'end_time'
-CONF_START_TIME = 'start_time'
-CONF_UPDATE_INTERVAL = 'update_interval'
-
-# Constraint-related config keys:
-CONF_CONSTRAIN_CLOUDY = 'constrain_cloudy'
-CONF_CONSTRAIN_SUN = 'constrain_sun'
+CONF_INTERVAL = "interval"
 
 # Notification-related config keys:
-CONF_NOTIFIERS = 'notifiers'
-CONF_NOTIFICATION_INTERVAL = 'notification_interval'
-CONF_NOTIFICATION_TARGET = 'notification_target'
-
-# Collections of valid inputs:
-OPERATOR_ALL = 'all'
-OPERATOR_ANY = 'any'
-OPERATORS = (OPERATOR_ALL, OPERATOR_ANY)
-TOGGLE_STATES = ('closed', 'off', 'on', 'open')
+CONF_NOTIFICATION_MESSAGE = "notification_message"
+CONF_NOTIFICATION_DATA = "notification_data"
+CONF_NOTIFICATION_INTERVAL = "notification_interval"
+CONF_NOTIFICATION_INTERVAL_SLIDER = "notification_interval_slider"
+CONF_NOTIFICATION_ITERATIONS = "notification_iterations"
+CONF_NOTIFICATION_TARGET = "notification_target"
+CONF_NOTIFICATION_TITLE = "notification_title"
+CONF_NOTIFICATION_WHEN = "notification_when"
+CONF_NOTIFIERS = "notifiers"
 
 # Misc. config keys:
-CONF_PEOPLE = 'people'
-CONF_TRIGGER_FIRST = 'trigger_on_first_only'
+CONF_PEOPLE = "people"
 
-
-THRESHOLD_CLOUDY = 70.0
+# Events:
+CONF_EVENT = "event"
+CONF_EVENT_DATA = "event_data"
+EVENT_ALARM_CHANGE = "ALARM_CHANGE"
+EVENT_PRESENCE_CHANGE = "PRESENCE_CHANGE"
+EVENT_PROXIMITY_CHANGE = "PROXIMITY_CHANGE"

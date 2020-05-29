@@ -1,152 +1,138 @@
 ---
+new_almond_server_version_automation:
+  module: version
+  class: NewPortainerVersionNotification
+  constrain_enabled: true
+  available: sensor.almond_server_available
+  installed: sensor.almond_server_installed
+  app_name: Almond Server
+  created_entity_id: sensor.almond_server_installed
+  endpoint_id: 1
+  friendly_name: Almond Server Installed
+  icon: mdi:language-python
+  image_name: stanfordoval/almond-server
+  interval: 300
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
+
 new_appdaemon_version_automation:
   module: version
   class: NewPortainerVersionNotification
-  dependencies:
-    - notification_manager
-    - presence_manager
-  entity_ids:
-    available: sensor.appdaemon_available
-    installed: sensor.appdaemon_installed
-  properties:
-    app_name: AppDaemon
-    created_entity_id: sensor.appdaemon_installed
-    endpoint_id: 1
-    friendly_name: AppDaemon Installed
-    icon: mdi:language-python
-    image_name: acockburn/appdaemon
-    update_interval: 300
-  enabled_config:
-    toggle_name: notify_of_new_versions
-    name: Notify of new versions
-    icon: mdi:home-assistant
-    initial: true
+  constrain_enabled: true
+  available: sensor.appdaemon_available
+  installed: sensor.appdaemon_installed
+  app_name: AppDaemon
+  created_entity_id: sensor.appdaemon_installed
+  endpoint_id: 1
+  friendly_name: AppDaemon Installed
+  icon: mdi:language-python
+  image_name: acockburn/appdaemon
+  interval: 300
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
+
+new_esphome_version_automation:
+  module: version
+  class: NewMultiSensorVersionNotification
+  constrain_enabled: true
+  available: sensor.esphome_available
+  installed: sensor.esphome_installed
+  version_sensors:
+    - sensor.master_bathroom_climate_sensor_esphome_version_short
+    - sensor.master_bedroom_salt_lamp_esphome_version_short
+    - sensor.office_salt_lamp_esphome_version_short
+  app_name: ESPHome
+  created_entity_id: sensor.esphome_installed
+  friendly_name: ESPHome Installed
+  icon: mdi:chip
+  interval: 300
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
+
+new_grafana_version_automation:
+  module: version
+  class: NewPortainerVersionNotification
+  available: sensor.grafana_available
+  installed: sensor.grafana_installed
+  app_name: Grafana
+  created_entity_id: sensor.grafana_installed
+  endpoint_id: 1
+  friendly_name: Grafana Installed
+  icon: mdi:chart-bar
+  image_name: grafana/grafana
+  interval: 300
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
 
 new_hass_version_automation:
   module: version
   class: NewVersionNotification
-  dependencies:
-    - notification_manager
-    - presence_manager
-  entity_ids:
-    available: sensor.hass_available
-    installed: sensor.hass_installed
-  properties:
-    app_name: Home Assistant
-  enabled_config:
-    toggle_name: notify_of_new_versions
-    name: Notify of new versions
-    icon: mdi:home-assistant
-    initial: true
+  constrain_enabled: true
+  available: sensor.hass_available
+  installed: sensor.hass_installed
+  app_name: Home Assistant
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
 
-new_mosquitto_version_automation:
+new_influxdb_version_automation:
   module: version
   class: NewPortainerVersionNotification
-  dependencies:
-    - notification_manager
-    - presence_manager
-  entity_ids:
-    available: sensor.mosquitto_available
-    installed: sensor.mosquitto_installed
-  properties:
-    app_name: Mosquitto
-    created_entity_id: sensor.mosquitto_installed
-    endpoint_id: 1
-    friendly_name: Mosquitto Installed
-    icon: mdi:wifi
-    image_name: eclipse-mosquitto
-    update_interval: 300
-  enabled_config:
-    toggle_name: notify_of_new_versions
-    name: Notify of new versions
-    icon: mdi:home-assistant
-    initial: true
+  available: sensor.influxdb_available
+  installed: sensor.influxdb_installed
+  app_name: InfluxDB
+  created_entity_id: sensor.influxdb_installed
+  endpoint_id: 1
+  friendly_name: InfluxDB Installed
+  icon: mdi:database
+  image_name: influxdb
+  interval: 300
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
 
 new_portainer_version_automation:
   module: version
   class: NewPortainerVersionNotification
-  dependencies:
-    - notification_manager
-    - presence_manager
-  entity_ids:
-    available: sensor.portainer_available
-    installed: sensor.portainer_installed
-  properties:
-    app_name: Portainer
-    created_entity_id: sensor.portainer_installed
-    endpoint_id: 1
-    friendly_name: Portainer Installed
-    icon: mdi:server
-    image_name: portainer/portainer
-    update_interval: 300
-  enabled_config:
-    toggle_name: notify_of_new_versions
-    name: Notify of new versions
-    icon: mdi:home-assistant
-    initial: true
+  constrain_enabled: true
+  available: sensor.portainer_available
+  installed: sensor.portainer_installed
+  app_name: Portainer
+  created_entity_id: sensor.portainer_installed
+  endpoint_id: 1
+  friendly_name: Portainer Installed
+  icon: mdi:server
+  image_name: portainer/portainer
+  interval: 300
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
 
-new_tasmoadmin_version_automation:
+new_vernemq_version_automation:
   module: version
   class: NewPortainerVersionNotification
-  dependencies:
-    - notification_manager
-    - presence_manager
-  entity_ids:
-    available: sensor.tasmoadmin_available
-    installed: sensor.tasmoadmin_installed
-  properties:
-    app_name: TasmoAdmin
-    created_entity_id: sensor.tasmoadmin_installed
-    endpoint_id: 1
-    friendly_name: TasmoAdmin Installed
-    icon: mdi:lightbulb-on
-    image_name: raymondmm/tasmoadmin
-    update_interval: 300
-  enabled_config:
-    toggle_name: notify_of_new_versions
-    name: Notify of new versions
-    icon: mdi:home-assistant
-    initial: true
-
-new_tasmota_version_automation:
-  module: version
-  class: NewTasmotaVersionNotification
-  dependencies:
-    - notification_manager
-    - presence_manager
-  entity_ids:
-    available: sensor.tasmota_available
-    installed: sensor.lowest_tasmota_installed
-  properties:
-    app_name: Tasmota
-    created_entity_id: sensor.lowest_tasmota_installed
-    friendly_name: Lowest Tasmota Installed
-    icon: mdi:lightbulb-on
-    tasmota_hosts:
-      - climate-sensor-2.phil.iot
-      - rf-bridge.phil.iot
-      - salt-lamp-1.phil.iot
-      - salt-lamp-2.phil.iot
-    update_interval: 300
-  enabled_config:
-    toggle_name: notify_of_new_versions
-    name: Notify of new versions
-    icon: mdi:home-assistant
-    initial: true
+  constrain_enabled: true
+  available: sensor.vernemq_available
+  installed: sensor.vernemq_installed
+  app_name: VerneMQ
+  created_entity_id: sensor.vernemq_installed
+  endpoint_id: 1
+  friendly_name: VerneMQ Installed
+  icon: mdi:wifi
+  image_name: docker-vernemq
+  interval: 300
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
 
 new_yi_hack_version_automation:
   module: version
   class: NewVersionNotification
-  dependencies:
-    - notification_manager
-    - presence_manager
-  entity_ids:
-    available: sensor.yi_hack_available
-    installed: sensor.yi_hack_installed
-  properties:
-    app_name: Yi Hack
-  enabled_config:
-    toggle_name: notify_of_new_versions
-    name: Notify of new versions
-    icon: mdi:home-assistant
-    initial: true
+  constrain_enabled: true
+  available: sensor.yi_hack_available
+  installed: sensor.yi_hack_installed
+  app_name: Yi Hack
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
+
+new_zigbee2mqtt_version_automation:
+  module: version
+  class: NewPortainerVersionNotification
+  constrain_enabled: true
+  available: sensor.zigbee2mqtt_available
+  installed: sensor.zigbee2mqtt_installed
+  app_name: Almond Server
+  created_entity_id: sensor.zigbee2mqtt_installed
+  endpoint_id: 1
+  friendly_name: Zigbee2MQTT Installed
+  icon: mdi:language-python
+  image_name: koenkk/zigbee2mqtt
+  interval: 300
+  enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation

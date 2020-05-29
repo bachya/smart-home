@@ -1,21 +1,9 @@
 ---
+glances:
+  name: Hub
+  host: 0.0.0.0
+
 sensor:
-  - platform: glances
-    name: Hub
-    host: localhost
-    version: 3
-    resources:
-      - disk_use_percent
-      - memory_use_percent
-      - processor_load
-
-  - platform: command_line
-    name: Hub CPU Temperature
-    command: >
-      cat /sys/class/thermal/thermal_zone*/temp 2>/dev/null |
-      awk \'{ sum += $1; n++ } END { if (n > 0) print (sum / n) / 1000; }\'
-    unit_of_measurement: "°C"
-
   - platform: command_line
     name: Hub Uptime
     command: >

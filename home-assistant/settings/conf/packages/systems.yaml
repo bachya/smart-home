@@ -1,25 +1,242 @@
 ---
+automation:
+  - alias: "Change to dark theme at night"
+    trigger:
+      platform: sun
+      event: sunset
+    action:
+      service: frontend.set_theme
+      data:
+        name: Orange Dark
+
+  - alias: "Change to light theme in the morning"
+    trigger:
+      platform: sun
+      event: sunrise
+    action:
+      service: frontend.set_theme
+      data:
+        name: Orange light
+
+  - alias: "Forward HASS persistent notifications to Slack"
+    trigger:
+      platform: event
+      event_type: call_service
+      event_data:
+        domain: persistent_notification
+        service: create
+    action:
+      service: notify.slack
+      data_template:
+        message: >
+            📥 Home Assistant Notification:
+            {{ trigger.event.data.service_data.message }}
+
+  - alias: "Notify on HACS updates"
+    trigger:
+      platform: state
+      entity_id: sensor.hacs
+    action:
+      service: notify.slack
+      data_template:
+        message: >
+          💿 There's a change in the number of HACS updates:
+          {{ trigger.to_state.state }}
+
+  - alias: "Notify when media center left on"
+    trigger:
+      platform: state
+      entity_id: switch.media_center
+      to: "on"
+      for:
+        hours: 12
+    action:
+      service: notify.slack
+      data:
+        message: "🎥 The media center has been on for 12 hours."
+
+  - alias: "Notify when PS4 left on"
+    trigger:
+      platform: state
+      entity_id: media_player.playstation_4
+      to: idle
+      for:
+        hours: 12
+    action:
+      service: notify.slack
+      data:
+        message: "🎮 The PS4 has been on for 12 hours."
+
+  - alias: "Pick the correct theme on HASS start"
+    trigger:
+      platform: homeassistant
+      event: start
+    action:
+      service: frontend.set_theme
+      data_template:
+        name: >
+          {% if is_state("sun.sun", "above_horizon") %}
+            Orange light
+          {% else %}
+            Orange Dark
+          {% endif %}
+
+  - alias: "Power media center off (backup)"
+    trigger:
+      platform: time
+      at: "01:30:00"
+    action:
+      service: switch.turn_off
+      data_template:
+        entity_id: switch.media_center
+
+  - alias: "Power media center on (backup)"
+    trigger:
+      platform: time
+      at: "01:00:00"
+    action:
+      service: switch.turn_on
+      data_template:
+        entity_id: switch.media_center
+
+binary_sensor:
+  - platform: linode
+    nodes:
+      - linode2506384
+
+input_boolean:
+  notify_of_dead_zwave_devices_automation:
+    icon: mdi:z-wave
+    name: Notify of dead Z-Wave devices
+  notify_of_low_batteries_automation:
+    icon: mdi:battery
+    name: Notify of low batteries
+  notify_of_new_versions_automation:
+    icon: mdi:home-assistant
+    name: Notify of new versions
+
+linode:
+  access_token: !secret linode_access_token
+
 sensor:
-  # Available Versions
+  - platform: command_line
+    name: Almond Server Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/stanford-oval/almond-server/releases/latest
+    value_template: "{{ value_json.tag_name[1:] }}"
+    scan_interval: 1800
+
   - platform: command_line
     name: AppDaemon Available
     command: >-
       curl -L
       -H "User-Agent: Home Assistant"
       -H "Content-Type: application/json"
-      https://pypi.python.org/pypi/appdaemon/json
-    value_template: '{{ value_json.info.version }}'
+      https://api.github.com/repos/home-assistant/appdaemon/releases/latest
+    value_template: "{{ value_json.tag_name }}"
     scan_interval: 1800
 
   - platform: command_line
-    name: Mosquitto Available
+    name: ESPHome Available
     command: >-
       curl -L
       -H "User-Agent: Home Assistant"
       -H "Content-Type: application/json"
-      https://api.github.com/repos/eclipse/mosquitto/tags
+      https://api.github.com/repos/esphome/esphome/releases/latest
+    value_template: "{{ value_json.tag_name[1:] }}"
+    scan_interval: 1800
+
+  - platform: command_line
+    name: Grafana Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/grafana/grafana/releases/latest
+    value_template: '{{ value_json.tag_name[1:] }}'
+    scan_interval: 1800
+
+  - platform: command_line
+    name: InfluxDB Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/influxdata/influxdb/tags
     value_template: '{{ value_json[0].name[1:] }}'
     scan_interval: 1800
+
+  - platform: command_line
+    name: Latest Drone Build
+    command: "curl -s 'https://bf5959ab-1a7e-47b7-9528-19651d1b8018.bachyaprodu\
+      ctions.com:18884/api/repos/bachya/hub/builds?per_page=1' \
+      -H 'Authorization: Bearer mKAk7aBngFlvcpWe8ir4FGcSrJ6lgzyd' \
+      -H 'User-Agent: Paw/3.1.8 (Macintosh; OS X/10.14.6)' \
+      | tr -d []"
+    value_template: "{{ value_json.status }}"
+    json_attributes:
+      - finished
+      - message
+      - started
+      - target
+  - platform: template
+    sensors:
+      latest_drone_build_branch:
+        friendly_name: Branch
+        value_template: |
+          {{ state_attr("sensor.latest_drone_build", "target") }}
+      latest_drone_build_duration:
+        friendly_name: Duration
+        value_template: |
+          {% set duration = (
+            state_attr("sensor.latest_drone_build", "finished") -
+            state_attr("sensor.latest_drone_build", "started")) / 60
+          %}
+          {% if duration > 0 %}
+            {{ duration | round(0) }}
+          {% endif %}
+        unit_of_measurement: minutes
+      latest_drone_build_finished:
+        friendly_name: Finished
+        entity_id: sensor.latest_drone_build
+        value_template: |
+          {% set finished = state_attr(
+            "sensor.latest_drone_build", "finished"
+            )
+          %}
+          {% if finished > 0 %}
+            {{ finished|timestamp_local }}
+          {% endif %}
+      latest_drone_build_message:
+        friendly_name: Message
+        value_template: |
+          {{ state_attr("sensor.latest_drone_build", "message") }}
+      latest_drone_build_started:
+        friendly_name: Started
+        value_template: |
+          {{
+            state_attr("sensor.latest_drone_build", "started") |
+            timestamp_local
+          }}
+      latest_drone_build_status:
+        friendly_name: Status
+        value_template: |
+          {{ states("sensor.latest_drone_build").title() }}
+        icon_template: >
+          {% if is_state("sensor.latest_drone_build", "failure")  %}
+            mdi:progress-close
+          {% elif is_state("sensor.latest_drone_build", "killed")  %}
+            mdi:progress-close
+          {% elif is_state("sensor.latest_drone_build", "running")  %}
+            mdi:progress-clock
+          {% elif is_state("sensor.latest_drone_build", "success")  %}
+            mdi:progress-check
+          {% else %}
+            mdi:progress-alert
+          {% endif %}
 
   - platform: command_line
     name: Portainer Available
@@ -28,37 +245,17 @@ sensor:
       -H "User-Agent: Home Assistant"
       -H "Content-Type: application/json"
       https://api.github.com/repos/portainer/portainer/releases/latest
-    value_template: '{{ value_json.tag_name }}'
+    value_template: "{{ value_json.tag_name }}"
     scan_interval: 1800
 
   - platform: command_line
-    name: ps4-waker Available
+    name: VerneMQ Available
     command: >-
       curl -L
       -H "User-Agent: Home Assistant"
       -H "Content-Type: application/json"
-      https://api.github.com/repos/dhleong/ps4-waker/releases/latest
-    value_template: '{{ value_json.tag_name }}'
-    scan_interval: 1800
-
-  - platform: command_line
-    name: TasmoAdmin Available
-    command: >-
-      curl -L
-      -H "User-Agent: Home Assistant"
-      -H "Content-Type: application/json"
-      https://api.github.com/repos/reloxx13/TasmoAdmin/releases/latest
-    value_template: '{{ value_json.tag_name[1:] }}'
-    scan_interval: 1800
-
-  - platform: command_line
-    name: Tasmota Available
-    command: >-
-      curl -L
-      -H "User-Agent: Home Assistant"
-      -H "Content-Type: application/json"
-      https://api.github.com/repos/arendst/Sonoff-Tasmota/releases/latest
-    value_template: '{{ value_json.tag_name[1:] }}'
+      https://api.github.com/repos/vernemq/vernemq/tags
+    value_template: "{{ value_json[0].name }}"
     scan_interval: 1800
 
   - platform: command_line
@@ -67,34 +264,28 @@ sensor:
       curl -L
       -H "User-Agent: Home Assistant"
       -H "Content-Type: application/json"
-      https://api.github.com/repos/shadow-1/yi-hack-v3/releases/latest
-    value_template: '{{ value_json.tag_name }}'
+      https://api.github.com/repos/TheCrypt0/yi-hack-v4/releases/latest
+    value_template: "{{ value_json.tag_name[1:] }}"
     scan_interval: 1800
-
-  - platform: version
-    name: HASS Available
-    source: docker
-    beta: true
-
-  # Installed Versions
-  - platform: command_line
-    name: ps4-waker Installed
-    command: ps4-waker --version
 
   - platform: command_line
     name: Yi Hack Installed
     command: >
       ssh -i /config/id_rsa -o StrictHostKeyChecking=no
-      root@kitchen-camera.phil.lan
-      cat /home/yi-hack-v3/.hackinfo | grep VERSION | awk -F= \'{ print $2 }\'
+      root@yi-camera-guest-bedroom.phil.iot cat version
 
-  - platform: version
-    name: HASS Installed
+  - platform: command_line
+    name: Zigbee2MQTT Available
+    command: >-
+      curl -L
+      -H "User-Agent: Home Assistant"
+      -H "Content-Type: application/json"
+      https://api.github.com/repos/Koenkk/zigbee2mqtt/releases/latest
+    value_template: "{{ value_json.tag_name }}"
+    scan_interval: 1800
 
-    # Networking
-  - platform: cert_expiry
-    name: SSL Expiry
-    host: !secret ssl_cert_host
+  - platform: dnsip
+    hostname: !secret base_domain_name
 
   - platform: filter
     name: Filtered Speedtest Download
@@ -119,5 +310,87 @@ sensor:
       - filter: lowpass
         time_constant: 10
         precision: 2
+
+  - platform: rest
+    name: Healthchecks.io Ping
+    resource: !secret healthchecksio_ping_url
+    scan_interval:
+      minutes: 5
+
+  - platform: rest
+    name: Healthchecks.io Status
+    resource: !secret healthchecksio_status_url
+    scan_interval:
+      minutes: 1
+    json_attributes:
+      - status
+      - total
+      - grace
+      - down
+  - platform: template
+    sensors:
+      healthchecks_down_checks:
+        friendly_name: Healthchecks.io Down Checks
+        value_template: >
+          {{ state_attr("sensor.healthchecks_io_status", "down") }}
+        unit_of_measurement: checks
+      healthchecks_grace_checks:
+        friendly_name: Healthchecks.io Grace Checks
+        value_template: >
+          {{ state_attr("sensor.healthchecks_io_status", "grace") }}
+        unit_of_measurement: checks
+      healthchecks_overall_status:
+        friendly_name: Healthchecks.io Overall Status
+        value_template: >
+          {{ state_attr("sensor.healthchecks_io_status", "status") }}
+        icon_template: >
+          {% if is_state("sensor.healthchecks_overall_status", "up") %}
+            mdi:check-circle
+          {% else %}
+            mdi:alert-circle
+          {% endif %}
+      healthchecks_total_checks:
+        friendly_name: Healthchecks.io Total Checks
+        value_template: >
+          {{ state_attr("sensor.healthchecks_io_status", "total") }}
+        unit_of_measurement: checks
+      healthchecks_up_checks:
+        friendly_name: Healthchecks.io Up Checks
+        value_template: >
+          {{
+            states("sensor.healthchecks_total_checks")|int -
+            states("sensor.healthchecks_grace_checks")|int -
+            states("sensor.healthchecks_down_checks")|int
+          }}
+        unit_of_measurement: checks
+
+  - platform: sql
+    db_url: !secret recorder_db_url
+    queries:
+      - name: HASS DB Size
+        query: |
+          SELECT table_schema "hassdb", Round(Sum(data_length + index_length)
+          / 1024 / 1024, 1) "value" FROM information_schema.tables WHERE
+          table_schema="hassdb" GROUP BY table_schema;
+        column: value
+        unit_of_measurement: MB
+
+  - platform: template
+    sensors:
+      aeotec_nanomote_quad_aaron_bedside_battery:
+        entity_id: zwave.aeotec_nanomote_quad_aaron_bedside
+        friendly_name: Aeotec Nanomote (AMB Bedside) Battery
+        value_template: >
+          {{ states.zwave.aeotec_nanomote_quad_aaron_bedside.attributes.battery_level }}
+        unit_of_measurement: "%"
+        device_class: battery
+
+  - platform: version
+    name: HASS Available
+    source: docker
+    beta: true
+
+  - platform: version
+    name: HASS Installed
 
 speedtestdotnet:

@@ -1,7 +1,28 @@
 ---
-ambient_station:
-  api_key: !secret pws_api_key
-  app_key: !secret pws_app_key
+automation:
+  - alias: "Backyard light switch via kitchen patio light (off)"
+    trigger:
+      platform: event
+      event_type: zwave.node_event
+      event_data:
+        entity_id: zwave.kitchen_patio_light
+        basic_level: 0
+    action:
+      service: switch.turn_off
+      data:
+        entity_id: switch.backyard_lights
+
+  - alias: "Backyard light switch via kitchen patio light (on)"
+    trigger:
+      platform: event
+      event_type: zwave.node_event
+      event_data:
+        entity_id: zwave.kitchen_patio_light
+        basic_level: 255
+    action:
+      service: switch.turn_on
+      data:
+        entity_id: switch.backyard_lights
 
 group:
   outdoor_lights:
@@ -15,61 +36,10 @@ group:
       - switch.front_patio_light
       - switch.kitchen_patio_light
 
-sensor:
-  - platform: darksky
-    api_key: !secret dark_sky_api_key
-    monitored_conditions:
-      - cloud_cover
-
-  - platform: moon
-
-  - platform: season
-
-  - platform: template
-    sensors:
-      dark_sky_temperature:
-        value_template: "{{ states.weather.weather.attributes.temperature }}"
-        icon_template: mdi:thermometer
-      friendly_season:
-        friendly_name: Season
-        value_template: "{{ states.sensor.season.state | title }}"
-        icon_template: >
-          {% if states.sensor.season.state == 'spring' %}
-            mdi:flower
-          {% elif states.sensor.season.state == 'summer' %}
-            mdi:sunglasses
-          {% elif states.sensor.season.state == 'autumn' %}
-            mdi:leaf
-          {% elif states.sensor.season.state == 'winter' %}
-            mdi:snowflake
-          {% endif %}
-      moon_phase:
-        friendly_name: Moon Phase
-        value_template: >
-          {{ states.sensor.moon.state | replace('_', ' ') | title }}
-        icon_template: mdi:weather-night
-      sunrise:
-        friendly_name: Next Sunrise
-        value_template: >
-          {{
-            as_timestamp(states.sun.sun.attributes.next_rising) |
-            timestamp_custom(' %I:%M %p') |
-            replace(' 0', '')
-          }}
-        icon_template: mdi:weather-sunset-up
-      sunset:
-        friendly_name: Next Sunset
-        value_template: >
-          {{
-            as_timestamp(states.sun.sun.attributes.next_setting) |
-            timestamp_custom(' %I:%M %p') |
-            replace(' 0', '')
-          }}
-        icon_template: mdi:weather-sunset-down
-
-sun:
-
-weather:
-  - platform: darksky
-    api_key: !secret dark_sky_api_key
-    name: Weather
+input_boolean:
+  lightning_detected_automation:
+    icon: mdi:flash
+    name: Notify when lightning detected
+  outdoor_lights_schedule_automation:
+    icon: mdi:lightbulb
+    name: Automatic schedule

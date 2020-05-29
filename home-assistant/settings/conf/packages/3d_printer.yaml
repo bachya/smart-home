@@ -1,0 +1,201 @@
+---
+automation:
+  - alias: Notify when 3D print completes
+    trigger:
+      platform: state
+      entity_id: sensor.ender_3_state
+      from: Printing
+      to: Operational
+    action:
+      service: notify.slack
+      data_template:
+        message: >
+          🦿 3D print completed: {{ states("sensor.ender_3_filename") }}
+
+  - alias: Notify when 3D print starts
+    trigger:
+      platform: state
+      entity_id: sensor.ender_3_state
+      from: Operational
+      to: Printing
+    action:
+      service: notify.slack
+      data_template:
+        message: >
+          🦿 3D print started: {{ states("sensor.ender_3_filename") }}
+
+  - alias: "Turn off when 3D print completes"
+    trigger:
+      platform: state
+      entity_id: sensor.ender_3_state
+      from: Printing
+      to: Operational
+      for:
+        minutes: 10
+    action:
+      - service: notify.slack
+        data:
+          message: "🦿 Turning 3D printer off"
+      - service: "switch.turn_off"
+        data:
+          entity_id: switch.toggle_3d_printer
+
+binary_sensor:
+  - platform: mqtt
+    name: Ender 3 Error State
+    state_topic: "octoPrint/progress/printing"
+    value_template: >
+      {{ value_json.printer_data.state.flags.error }}
+    payload_off: false
+    payload_on: true
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    device_class: problem
+
+rest_command:
+  turn_off_octopi:
+    url: "http://octopi.phil.iot/api/system/commands/core/shutdown"
+    method: post
+    headers:
+      Host: octopi.phil.iot
+      X-Api-Key: !secret octoprint_api_key
+
+sensor:
+  - platform: command_line
+    name: OctoPi CPU Temperature
+    command: >
+      ssh -i /config/id_ed25519 -o StrictHostKeyChecking=no
+      bachya@octopi.phil.iot
+      cat /sys/class/thermal/thermal_zone*/temp 2>/dev/null |
+      awk \'{ sum += $1; n++ } END { if (n > 0) print (sum / n) / 1000; }\'
+    unit_of_measurement: "°C"
+
+  - platform: command_line
+    name: OctoPi Uptime
+    command: >
+      ssh -i /config/id_ed25519 -o StrictHostKeyChecking=no
+      bachya@octopi.phil.iot
+      cat /proc/uptime | awk \'{ print $1 / 86400 }\' | cut -f1 -d"."
+    unit_of_measurement: "days"
+
+  - platform: mqtt
+    name: Ender 3 Bed Temperature (Actual)
+    unit_of_measurement: "°F"
+    state_topic: "octoPrint/temperature/bed"
+    value_template: "{{ value_json.actual }}"
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:home-thermometer
+
+  - platform: mqtt
+    name: Ender 3 Bed Temperature (Target)
+    unit_of_measurement: "°F"
+    state_topic: "octoPrint/temperature/bed"
+    value_template: "{{ value_json.target }}"
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:home-thermometer
+
+  - platform: mqtt
+    name: Ender 3 Extruder Temperature (Actual)
+    unit_of_measurement: "°F"
+    state_topic: "octoPrint/temperature/tool0"
+    value_template: "{{ value_json.actual }}"
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:home-thermometer
+
+  - platform: mqtt
+    name: Ender 3 Extruder Temperature (Target)
+    unit_of_measurement: "°F"
+    state_topic: "octoPrint/temperature/tool0"
+    value_template: "{{ value_json.target }}"
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:home-thermometer
+
+  - platform: mqtt
+    name: Ender 3 Filename
+    state_topic: "octoPrint/progress/printing"
+    value_template: >
+      {{ value_json.printer_data.job.file.name }}
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:file
+
+  - platform: mqtt
+    name: Ender 3 Total Print Time Elapsed
+    unit_of_measurement: "seconds"
+    state_topic: "octoPrint/progress/printing"
+    value_template: >
+      {{ value_json.printer_data.progress.printTime | int }}
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:timer
+
+  - platform: mqtt
+    name: Ender 3 Total Print Time Remaining
+    unit_of_measurement: "seconds"
+    state_topic: "octoPrint/progress/printing"
+    value_template: >
+      {{ value_json.printer_data.progress.printTimeLeft | int }}
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:timer
+
+  - platform: mqtt
+    name: Ender 3 Percent Complete
+    unit_of_measurement: "%"
+    state_topic: "octoPrint/progress/printing"
+    value_template: >
+      {{ value_json.printer_data.progress.completion | round(2) }}
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:progress-clock
+
+  - platform: mqtt
+    name: Ender 3 State
+    state_topic: "octoPrint/progress/printing"
+    value_template: "{{ value_json.printer_data.state.text }}"
+    availability_topic: "octoPrint/mqtt"
+    payload_available: connected
+    payload_not_available: disconnected
+    icon: mdi:printer-3d
+
+switch:
+  - platform: mqtt
+    name: MQTT State
+    command_topic: octoPrint/mqtt
+    payload_on: connected
+    state_topic: octoPrint/mqtt
+    state_off: disconnected
+    state_on: connected
+    icon: mdi:recycle
+
+  - platform: template
+    switches:
+      toggle_3d_printer:
+        friendly_name: Power
+        value_template: >
+          {{ not is_state("sensor.ender_3_state", "unavailable") and
+            is_state("switch.3d_printer", "on") }}
+        turn_off:
+          - service: rest_command.turn_off_octopi
+          - wait_template: >
+              {{ is_state("sensor.ender_3_state", "unavailable") }}
+          - service: switch.turn_off
+            data:
+              entity_id: switch.3d_printer
+        turn_on:
+          service: switch.turn_on
+          data:
+            entity_id: switch.3d_printer

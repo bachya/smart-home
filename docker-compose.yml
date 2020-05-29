@@ -1,178 +1,251 @@
 ---
-version: "3"
-
-networks:
-  default:
-    ipam:
-      config:
-        - subnet: 192.168.0.0/16
+version: "2"
 
 services:
 
+  almond:
+    container_name: almond
+    image: "stanfordoval/almond-server:v${ALMOND_SERVER_VERSION}-portable"
+    network_mode: host
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - almond-config:/var/lib/almond-server
+
   appdaemon:
-    build:
-      context: ./appdaemon/docker
-      args:
-        VERSION: 3.0.2
     container_name: appdaemon
-    depends_on:
-      - hass
     environment:
       EXTRA_CMD: -D INFO
-    image: bachya/appdaemon
-    restart: unless-stopped
+    image: "acockburn/appdaemon:${APPDAEMON_VERSION}"
+    ports:
+      - "127.0.0.1:5051:5051"
+    restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - appdaemon-config:/conf
-      - shared:/shared
 
-  amazon-dash:
-    command: amazon-dash run --config /config/amazon-dash.yml
-    container_name: amazon-dash
-    depends_on:
-      - hass
-    image: nekmo/amazon-dash:latest
-    network_mode: "host"
-    restart: unless-stopped
+  esphome-dashboard:
+    container_name: esphome-dashboard
+    image: "esphome/esphome:${ESPHOME_VERSION}"
+    network_mode: host
+    restart: always
+    volumes:
+      - ./esphome:/config
+      - /etc/localtime:/etc/localtime:ro
+
+  fail2ban:
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    container_name: fail2ban
+    environment:
+      TZ: America/Denver
+      F2B_LOG_TARGET: /usr/local/fail2ban-log/fail2ban.log
+      F2B_MAX_RETRY: 3
+      F2B_IPTABLES_CHAIN: INPUT
+    image: "crazymax/fail2ban:${FAIL2BAN_CONTAINER_VERSION}"
+    network_mode: host
+    restart: always
+    volumes:
+      - ./fail2ban/settings/jail.local:/etc/fail2ban/jail.local
+      - /etc/localtime:/etc/localtime:ro
+      - /var/log:/var/log:ro
+      - fail2ban-config:/data
+      - fail2ban-log:/usr/local/fail2ban-log
+
+  fail2ban-mqtt-notifier:
+    build: ./fail2ban-mqtt-notifier/docker
+    command: /entry.sh
+    container_name: fail2ban-mqtt-notifier
+    image: bachya/fail2ban-mqtt-notifier:latest
+    restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - amazon-dash-config:/config:ro
+      - /var/log/nginx:/var/log/nginx:ro
+      - fail2ban-log:/var/log/fail2ban:ro
 
   glances:
-    build:
-      context: ./glances/docker
-      args:
-        version: 3.0
-    command: /usr/bin/supervisord -c /etc/supervisor.conf
     container_name: glances
-    image: bachya/glances
-    ports:
-      - "61208:61208/tcp"
-    restart: unless-stopped
+    environment:
+      GLANCES_OPT: -w --enable-plugin smart
+    image: vimagick/glances:latest
+    network_mode: host
+    pid: host
+    restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - glances-config:/etc/glances:ro
 
+  grafana:
+    container_name: grafana
+    depends_on:
+      - influxdb
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD}"
+      GF_SECURITY_ADMIN_USER: "${GRAFANA_ADMIN_USERNAME}"
+      GF_SERVER_DOMAIN: "${GRAFANA_DOMAIN}"
+    image: "grafana/grafana:${GRAFANA_VERSION}"
+    ports:
+      - "127.0.0.1:8878:3000/tcp"
+    restart: unless-stopped
+    user: "104"
+    volumes:
+      - grafana-config:/var/lib/grafana
+
   hass:
-    build:
-      context: ./home-assistant/docker
-      args:
-        ps4waker_version: 1.6.0
-        hass_version: 0.88.0
     container_name: hass
     depends_on:
       - glances
-      - mosquitto
-      - mysql
+      - mysql-hass
+      - influxdb
+      - vernemq
     devices:
       - "/dev/zwave:/dev/zwave"
-    image: bachya/home-assistant
-    network_mode: "host"
-    restart: unless-stopped
+    image: "homeassistant/home-assistant:${HOME_ASSISTANT_CORE_VERSION}"
+    network_mode: host
+    restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - hass-config:/config
-      - shared:/shared
 
-  jupyterlab:
-    build:
-      context: ./jupyterlab/docker
-    container_name: jupyterlab
-    depends_on:
-      - hass
+  influxdb:
+    container_name: influxdb
+    image: "influxdb:${INFLUXDB_VERSION}-alpine"
     environment:
-      JUPYTER_ENABLE_LAB: "yes"
-    image: bachya/jupyterlab
-    restart: unless-stopped
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - jupyterlab-config:/home/jovyan
-
-  mosquitto:
-    container_name: mosquitto
-    image: eclipse-mosquitto:1.5.6
+      INFLUXDB_DB: "${INFLUXDB_DB}"
+      INFLUXDB_USER: "${INFLUXDB_USER}"
+      INFLUXDB_USER_PASSWORD: "${INFLUXDB_PASSWORD}"
     ports:
-      - "1883:1883/tcp"
+      - "8086:8086/tcp"
     restart: unless-stopped
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/ssl:/etc/ssl:ro
-      - /usr/share/ca-certificates:/usr/share/ca-certificates:ro
-      - mosquitto-config:/mosquitto/config
-      - mosquitto-data:/mosquitto/data
+      - influxdb-config:/var/lib/influxdb
 
-  mysql:
-    container_name: mysql
+  mysql-hass:
+    container_name: mysql-hass
     environment:
-      MYSQL_DATABASE: recorder_db
-      MYSQL_PASSWORD: recorder_password
-      MYSQL_ROOT_PASSWORD: mysql_root_password
-      MYSQL_USER: recorder_user
+      MYSQL_DATABASE: "${MYSQL_HASS_DATABASE}"
+      MYSQL_PASSWORD: "${MYSQL_HASS_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_HASS_ROOT_PASSWORD}"
+      MYSQL_USER: "${MYSQL_HASS_USER}"
     image: bianjp/mariadb-alpine:latest
     ports:
       - "3306:3306/tcp"
-    restart: unless-stopped
+    restart: always
     volumes:
-      - /var/lib/docker/mysql:/var/lib/mysql
+      - mysql-hass-data:/var/lib/mysql
 
   nginx:
-    build:
-      context: ./nginx/docker
-      args:
-        geoip_version: 1.6.12
-        nginx_version: 1.15.6
     cap_add:
       - NET_ADMIN
-    command: /usr/bin/supervisord -c /etc/supervisor.conf
     container_name: nginx
-    depends_on:
-      - appdaemon
-      - hass
-    image: bachya/nginx
-    networks:
-      default:
-        ipv4_address: 192.168.7.7
-    ports:
-      - "443:443/tcp"
-    restart: unless-stopped
+    image: "50e49b6b-b382-4336-bf43-a74c32e762a0.bachyaproductions.com:18884\
+            /bachya/nginx-geoip:${NGINX_VERSION}"
+    network_mode: host
+    restart: always
     volumes:
+      - ./nginx/settings/conf.d:/etc/nginx/conf.d
+      - ./nginx/settings/dhparams.pem:/etc/nginx/dhparams.pem
+      - ./nginx/settings/geoip.rules:/etc/nginx/geoip.rules
+      - ./nginx/settings/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/settings/proxy.conf:/etc/nginx/proxy.conf
+      - ./nginx/settings/security.conf:/etc/nginx/security.conf
+      - ./nginx/settings/ssl.conf:/etc/nginx/ssl.conf
+      - ./nginx/settings/useragents.rules:/etc/nginx/useragents.rules
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /etc/localtime:/etc/localtime:ro
       - /etc/ssl:/etc/ssl:ro
-      - fail2ban-config:/etc/fail2ban
-      - nginx-config:/etc/nginx
+      - /var/log/nginx:/var/log/nginx
 
   portainer:
     container_name: portainer
-    image: portainer/portainer:1.20.1
+    image: "portainer/portainer:${PORTAINER_VERSION}"
     ports:
-      - "9000:9000/tcp"
-    restart: unless-stopped
+      - "127.0.0.1:9000:9000/tcp"
+    restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer-config:/data
 
-  tasmoadmin:
-    container_name: tasmoadmin
-    image: raymondmm/tasmoadmin:v1.6.0
-    restart: unless-stopped
+  vernemq:
+    container_name: vernemq
+    environment:
+      DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
+      DOCKER_VERNEMQ_USER_hass: "${VERNEMQ_PASSWORD_HASS}"
+      DOCKER_VERNEMQ_USER_miflora-mqtt-daemon: >
+        ${VERNEMQ_PASSWORD_MIFLORA_MQTT_DAEMON}
+      DOCKER_VERNEMQ_USER_octoprint2mqtt: >
+        ${VERNEMQ_PASSWORD_OCTOPRINT2MQTT}
+      DOCKER_VERNEMQ_USER_rtlamr: "${VERNEMQ_PASSWORD_RTLAMR}"
+      DOCKER_VERNEMQ_USER_sonoff: "${VERNEMQ_PASSWORD_SONOFF}"
+      DOCKER_VERNEMQ_USER_wyze: "${VERNEMQ_PASSWORD_WYZE}"
+      DOCKER_VERNEMQ_USER_zigbee2mqttassistant: >
+        ${VERNEMQ_PASSWORD_Z2M_ASSISTANT}
+      DOCKER_VERNEMQ_plugins.vmq_bridge: "on"
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.cafile: >
+        /etc/ssl/certs/DST_Root_CA_X3.pem
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.insecure: "on"
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.max_outgoing_buffered_messages: 100
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.password: "${VERNEMQ_BRIDGE_PASSWORD}"
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.topic.1: "* in"
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0.username: hub_mqtt
+      DOCKER_VERNEMQ_vmq_bridge.ssl.br0: "${VERNEMQ_BRIDGE_HOST}"
+    image: "erlio/docker-vernemq:${VERNEMQ_VERSION}-alpine"
+    ports:
+      - "1883:1883/tcp"
+      - "127.0.0.1:8888:8888/tcp"
+    restart: always
+    user: root
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - tasmoadmin-config:/data
+      - /etc/ssl:/etc/ssl:ro
+      - /usr/share/ca-certificates:/usr/share/ca-certificates:ro
+      - vernemq-data:/vernemq/data
+
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    depends_on:
+      - vernemq
+    devices:
+      - "/dev/zigbee:/dev/zigbee"
+    environment:
+      TZ: America/Denver
+    image: "koenkk/zigbee2mqtt:${Z2M_VERSION}"
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - zigbee2mqtt-config:/app/data
+
+  zigbee2mqttassistant:
+    container_name: zigbee2mqttassistant
+    depends_on:
+      - vernemq
+    environment:
+      Z2MA_SETTINGS__MQTTSERVER: vernemq
+      Z2MA_SETTINGS__MQTTUSERNAME: "${Z2M_ASSISTANT_MQTT_USERNAME}"
+      Z2MA_SETTINGS__MQTTPASSWORD: "${Z2M_ASSISTANT_MQTT_PASSWORD}"
+    image: "carldebilly/zigbee2mqttassistant:${Z2M_ASSISTANT_VERSION}"
+    ports:
+      - "127.0.0.1:8880:80/tcp"
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - zigbee2mqtt-config:/app/data
 
 volumes:
 
-  amazon-dash-config:
+  almond-config:
   appdaemon-config:
   fail2ban-config:
+  fail2ban-log:
   glances-config:
+  grafana-config:
   hass-config:
-  jupyterlab-config:
-  mosquitto-config:
-  mosquitto-data:
-  nginx-config:
+  influxdb-config:
+  mysql-hass-data:
   portainer-config:
-  shared:
-  tasmoadmin-config:
+  vernemq-data:
+  zigbee2mqtt-config:

@@ -1,30 +1,56 @@
 ---
+airvisual:
+  api_key: !secret airvisual_api_key
+
+automation:
+  - alias: "Notify on bad outdoor AQI"
+    trigger:
+      platform: state
+      entity_id: sensor.us_air_pollution_level
+      to: Unhealthy for sensitive groups
+    action:
+      - service: notify.phones
+        data:
+          message: 😷 The outdoor air quality is pretty bad.
+          title: Bad AQI
+      - service: notify.slack
+        data:
+          message: 😷 The outdoor air quality is pretty bad.
+
+  - alias: "Notify on return from bad outdoor AQI"
+    trigger:
+      platform: state
+      entity_id: sensor.us_air_pollution_level
+      from: Unhealthy for sensitive groups
+    action:
+      - service: notify.phones
+        data:
+          message: 😅 The outdoor air quality is good again.
+          title: Bad AQI
+      - service: notify.slack
+        data:
+          message: 😅 The outdoor air quality is good again.
+
+  - alias: Update OpenUV every 30 minutes during the daytime
+    initial_state: true
+    trigger:
+      platform: time_pattern
+      hours: "/1"
+    condition:
+      condition: and
+      conditions:
+        - condition: sun
+          after: sunrise
+        - condition: sun
+          before: sunset
+    action:
+      service: openuv.update_data
+
+iqvia:
+  zip_code: !secret iqvia_zip_code
+
 openuv:
   api_key: !secret openuv_api_key
-  sensors:
-    monitored_conditions:
-      - current_ozone_level
-      - current_uv_index
-      - current_uv_level
-      - max_uv_index
-      - safe_exposure_time_type_1
-      - safe_exposure_time_type_3
 
 sensor:
-  - platform: airvisual
-    api_key: !secret airvisual_api_key
-    monitored_conditions:
-      - us
-    show_on_map: false
-
   - platform: flunearyou
-
-  - platform: pollen
-    zip_code: !secret pollen_zip_code
-    monitored_conditions:
-      - allergy_average_forecasted
-      - allergy_average_historical
-      - allergy_index_today
-      - allergy_index_tomorrow
-      - allergy_index_yesterday
-      - disease_average_forecasted

@@ -1,7 +1,0 @@
----
-broker: 0.0.0.0
-port: 1883
-client_id: younger-bachs-hass
-username: !secret mosquitto_username
-password: !secret mosquitto_password
-protocol: 3.1

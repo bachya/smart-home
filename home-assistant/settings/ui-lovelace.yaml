@@ -1,4 +1,0 @@
----
-resources:
-  - url: /local/mini-media-player-bundle.js?v=1.0.0
-    type: module

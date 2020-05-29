@@ -1,21 +1,11 @@
 ---
-automation:
-  alias: Start HomeKit
-  trigger:
-    - platform: event
-      event_type: zwave.network_complete
-    - platform: event
-      event_type: zwave.network_ready
-  action:
-    service: homekit.start
-
 homekit:
   auto_start: false
   filter:
     include_domains:
       - alarm_control_panel
-      - light
       - lock
+      - media_player
     include_entities:
       - climate.thermostat
       - cover.garage_door
@@ -29,8 +19,10 @@ homekit:
       - switch.garage_lights
       - switch.kitchen_patio_light
       - switch.master_bathroom_fan
+      - switch.master_bedroom_salt_lamp
       - switch.master_toilet_fan
       - switch.media_center
+      - switch.office_salt_lamp
       - switch.powder_room_fan
       - switch.reading_lamp
       - switch.sofa_lamp

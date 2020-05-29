@@ -1,0 +1,8 @@
+{
+  "domain": "google_coral",
+  "name": "Google Coral",
+  "documentation": "",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": ["@bachya"]
+}

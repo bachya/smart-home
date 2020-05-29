@@ -1,7 +1,0 @@
----
-home:
-  devices:
-    - device_tracker.aaron_iphone
-    - device_tracker.britt_iphone
-  tolerance: 50
-  unit_of_measurement: ft

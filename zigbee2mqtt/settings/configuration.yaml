@@ -1,0 +1,20 @@
+---
+permit_join: false
+
+homeassistant: true
+
+mqtt:
+  base_topic: zigbee2mqtt
+  homeassistant_discovery_topic: homeassistant
+  homeassistant_status_topic: "hass/status"
+  password: password
+  server: mqtt://vernemq:1883
+  user: zigbee2mqttassistant
+
+serial:
+  port: /dev/zigbee
+
+devices:
+  "0x000d6f00129d168a":
+    friendly_name: Kitchen Sink Sensor
+    retain: true
