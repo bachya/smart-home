@@ -1,5 +1,4 @@
 ---
-binary_sensor:
-  - platform: workday
-    country: US
-    province: CO
+- platform: workday
+  country: US
+  province: CO
