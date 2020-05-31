@@ -1,8 +1,4 @@
 ---
-ambient_station:
-  api_key: !secret pws_api_key
-  app_key: !secret pws_app_key
-
 automation:
   - alias: "Set climate away mode when leaving in extreme temperatures"
     trigger:
