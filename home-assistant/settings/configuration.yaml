@@ -19,6 +19,7 @@ scene: !include scenes.yaml
 
 # Inteegrations:
 almond: !include conf/almond.yaml
+binary_sensor: !include conf/binary_sensors.yaml
 ffmpeg: !include conf/ffmpeg.yaml
 google: !include conf/google.yaml
 hacs: !include conf/hacs.yaml

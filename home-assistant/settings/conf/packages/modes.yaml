@@ -1,5 +1,58 @@
 ---
 automation:
+  - alias: "Activate blackout at 9pm on workdays"
+    trigger:
+      platform: time
+      at: "21:00:00"
+    condition:
+      condition: state
+      entity_id: binary_sensor.workday_sensor
+      state: "on"
+    action:
+      service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.blackout_mode
+
+  - alias: "Activate blackout at 10pm on weekends and holidays"
+    trigger:
+      platform: time
+      at: "22:00:00"
+    condition:
+      condition: state
+      entity_id: binary_sensor.workday_sensor
+      state: "off"
+    action:
+      service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.blackout_mode
+
+  - alias: "Deactivate blackout at 7am on workdays"
+    trigger:
+      platform: time
+      at: "07:00:00"
+    condition:
+      condition: state
+      entity_id: binary_sensor.workday_sensor
+      state: "on"
+    action:
+      service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.blackout_mode
+
+  - alias: "Deactivate blackout at 9am on weekends and holidays"
+    trigger:
+      platform: time
+      at: "09:00:00"
+    condition:
+      condition: state
+      entity_id: binary_sensor.workday_sensor
+      state: "off"
+    action:
+      service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.blackout_mode
+
+
   - alias: "Adjust automations in Blackout Mode"
     trigger:
       - platform: event
