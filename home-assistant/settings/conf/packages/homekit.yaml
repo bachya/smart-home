@@ -11,7 +11,7 @@ homekit:
       - cover.garage_door
       - sensor.fiddle_leaf_fig_moisture
       - switch.backyard_lights
-      - switch.bar_cart
+      - switch.bar_cart_leds
       - switch.basement_lights
       - switch.christmas_tree
       - switch.fireplace

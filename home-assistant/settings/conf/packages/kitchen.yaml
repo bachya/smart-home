@@ -94,7 +94,7 @@ automation:
     action:
       service: switch.turn_on
       data:
-        entity_id: switch.bar_cart
+        entity_id: switch.bar_cart_leds
 
   - alias: "Turn bar cart lights on when we arrive"
     trigger:
@@ -115,7 +115,7 @@ automation:
     action:
       service: switch.turn_on
       data:
-        entity_id: switch.bar_cart
+        entity_id: switch.bar_cart_leds
 
 input_select:
   dishwasher_status:

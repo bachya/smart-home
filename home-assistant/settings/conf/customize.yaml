@@ -83,7 +83,7 @@ sensor.speedtest_upload:
   icon: mdi:cloud-upload
 switch.backyard_lights:
   icon: mdi:lightbulb
-switch.bar_cart:
+switch.bar_cart_leds:
   icon: mdi:lightbulb
 switch.basement_lights:
   icon: mdi:lightbulb

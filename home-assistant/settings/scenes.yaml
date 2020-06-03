@@ -216,7 +216,7 @@
       state: "off"
     remote.living_room_tv:
       state: "off"
-    switch.bar_cart:
+    switch.bar_cart_leds:
       state: "off"
     switch.basement_lights:
       state: "off"
@@ -260,7 +260,7 @@
       state: "off"
     remote.living_room_tv:
       state: "off"
-    switch.bar_cart:
+    switch.bar_cart_leds:
       state: "off"
     switch.basement_lights:
       state: "off"
