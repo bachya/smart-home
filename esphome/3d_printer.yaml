@@ -7,15 +7,15 @@ binary_sensor:
     pin:
       number: GPIO4
       inverted: true
-    name: "Power Button"
+    name: Power Button
     on_press:
       - switch.toggle: relay
 
   - platform: status
-    name: "Gosund Smart Plug Status"
+    name: 3D Printer Status
 
 esphome:
-  name: gosund_smart_plug
+  name: 3d_printer
   platform: ESP8266
   board: esp8285
 
@@ -35,7 +35,7 @@ switch:
     inverted: true
 
   - platform: gpio
-    name: "Gosund Smart Plug Smart Plug"
+    name: 3D Printer
     pin: GPIO14
     id: relay
     on_turn_on:
@@ -45,13 +45,13 @@ switch:
 
 text_sensor:
   - platform: template
-    name: "Gosund Smart Plug: ESPHome Version (Short)"
+    name: "3D Printer: ESPHome Version (Short)"
     lambda: |-
       auto state = id(esphome_version).state;
       return state.substr(0, state.find(' '));
 
   - platform: version
-    name: "Gosund Smart Plug: ESPHome Version"
+    name: "3D Printer: ESPHome Version"
     id: esphome_version
 
 wifi:
@@ -60,6 +60,6 @@ wifi:
   fast_connect: true
   output_power: 20dB
   manual_ip:
-    static_ip: 172.16.11.65
+    static_ip: 172.16.11.141
     gateway: 172.16.11.1
     subnet: 255.255.255.0
