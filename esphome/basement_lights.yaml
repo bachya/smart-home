@@ -11,10 +11,10 @@ binary_sensor:
       - switch.toggle: relay
 
   - platform: status
-    name: Christmas Tree Status
+    name: Basement Lights Status
 
 esphome:
-  name: christmas_tree
+  name: basement_lights
   platform: ESP8266
   board: esp8285
 
@@ -30,7 +30,7 @@ sensor:
     cf_pin: GPIO04
     cf1_pin: GPIO05
     current:
-      name: Christmas Tree Current
+      name: Basement Lights Current
       accuracy_decimals: 3
       filters:
         - calibrate_linear:
@@ -40,7 +40,7 @@ sensor:
             - 0.10284 -> 0.077
         - lambda: if (x < 0.01) return 0; else return (x - 0.013);
     power:
-      name: Christmas Tree Power
+      name: Basement Lights Power
       accuracy_decimals: 0
       filters:
         - calibrate_linear:
@@ -49,7 +49,7 @@ sensor:
             - 8.27489 -> 5.3
         - lambda: if (x < 2) return 0; else return (x - 0.5);
     voltage:
-      name: Christmas Tree Voltage
+      name: Basement Lights Voltage
       accuracy_decimals: 1
       filters:
         - calibrate_linear:
@@ -71,7 +71,7 @@ switch:
     inverted: true
 
   - platform: gpio
-    name: Christmas Tree
+    name: Basement Lights
     pin: GPIO14
     id: relay
     on_turn_on:
@@ -81,13 +81,13 @@ switch:
 
 text_sensor:
   - platform: template
-    name: "Christmas Tree: ESPHome Version (Short)"
+    name: "Basement Lights: ESPHome Version (Short)"
     lambda: |-
       auto state = id(esphome_version).state;
       return state.substr(0, state.find(' '));
 
   - platform: version
-    name: "Christmas Tree: ESPHome Version"
+    name: "Basement Lights: ESPHome Version"
     id: esphome_version
 
 wifi:
