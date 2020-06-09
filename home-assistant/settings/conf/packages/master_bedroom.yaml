@@ -162,6 +162,14 @@ automation:
       data:
         entity_id: switch.master_bedroom_salt_lamp
 
+dyson:
+  username: !secret dyson_email
+  password: !secret dyson_password
+  language: US
+  devices:
+    - device_id: !secret dyson_pure_serial_number
+      device_ip: 172.16.11.65
+
 group:
   bathroom_fans:
     entities:
