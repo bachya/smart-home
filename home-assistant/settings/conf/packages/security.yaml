@@ -3,7 +3,7 @@ alert:
   alarm_triggered:
     name: "🚨 The alarm has been triggered."
     done_message: "✅ The alarm has been canceled."
-    title: Alarm Triggered
+    title: House Alert
     entity_id: alarm_control_panel.8673_e_55th_avenue
     state: triggered
     repeat:
@@ -20,7 +20,7 @@ alert:
   garage_left_open:
     name: 🚗 The garage has been left open.
     done_message: ✅ The garage is now closed.
-    title: Garage Door
+    title: House Alert
     entity_id: cover.garage_door
     state: open
     repeat:
@@ -57,7 +57,7 @@ alert:
   house_empty_and_insecure:
     name: "🚨 The house isn't secure and no one is home."
     done_message: "✅ The house is now secure."
-    title: House Security
+    title: House Alert
     entity_id: binary_sensor.house_open_and_insecure
     state: "on"
     repeat:
@@ -78,7 +78,7 @@ alert:
   smoke_detected:
     name: "🚨 Smoke has been detected."
     done_message: "✅ The smoke has cleared."
-    title: House Empty and Insecure
+    title: House Alert
     entity_id: group.smoke_detectors
     state: "on"
     repeat:
