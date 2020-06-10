@@ -48,6 +48,3 @@ automation:
 
 iqvia:
   zip_code: !secret iqvia_zip_code
-
-openuv:
-  api_key: !secret openuv_api_key
