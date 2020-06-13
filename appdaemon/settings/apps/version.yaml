@@ -109,7 +109,7 @@ new_vernemq_version_automation:
   endpoint_id: 1
   friendly_name: VerneMQ Installed
   icon: mdi:wifi
-  image_name: docker-vernemq
+  image_name: vernemq
   interval: 300
   enabled_toggle_entity_id: input_boolean.notify_of_new_versions_automation
 
