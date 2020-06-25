@@ -37,7 +37,7 @@ automation:
     action:
       service: switch.turn_off
       data:
-        entity_id: switch.guardian_30aea4f007c8_valve
+        entity_id: switch.guardian_b4e62d98118d_valve
 
 binary_sensor:
   - platform: template
@@ -48,7 +48,7 @@ binary_sensor:
           {{
             states("binary_sensor.basement_sensor_leak_detector") == "on"
             or
-            states("binary_sensor.guardian_30aea4f007c8_leak_detected") == "on"
+            states("binary_sensor.guardian_b4e62d98118d_leak_detected") == "on"
           }}
 
 remote:
