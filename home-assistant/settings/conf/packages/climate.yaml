@@ -247,4 +247,29 @@ sensor:
       - sensor.thermostat_temperature
       - sensor.upstairs_hallway_sensor_temperature
 
+  - platform: min_max
+    name: Basement Temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.basement_sensor_temperature
+      - sensor.guardian_b4e62d98118d_temperature
+
+  - platform: min_max
+    name: Kitchen Temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.kitchen_sensor_temperature
+      - sensor.kitchen_sink_sensor_temperature
+      - sensor.thermostat_temperature
+
+  - platform: min_max
+    name: Office Temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.office_node_pro_temperature
+      - sensor.side_yard_inside_temp
+
 sun:
