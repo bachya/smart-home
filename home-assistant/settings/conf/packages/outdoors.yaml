@@ -28,7 +28,7 @@ automation:
       data:
         entity_id: switch.backyard_lights
 
-  - alias: "Turn off backyard lights at 11pm on weekend night"
+  - alias: "Turn off backyard lights at 11pm on weekend/holiday night"
     trigger:
       platform: time
       at: "23:00:00"
