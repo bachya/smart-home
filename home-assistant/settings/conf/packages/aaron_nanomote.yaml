@@ -5,63 +5,73 @@
 automation:
   - alias: "Button 1 Short: Toggle Master Bedroom Salt Lamp"
     trigger:
-      platform: event
-      event_type: zwave.scene_activated
-      event_data:
-        scene_id: 1
-        scene_data: 7680
+      - platform: event
+        event_type: zwave.scene_activated
+        event_data:
+          scene_id: 1
+          scene_data: 7680
+      - platform: event
+        event_type: zwave.scene_activated
+        event_data:
+          scene_id: 2
+          scene_data: 7680
+      - platform: event
+        event_type: zwave.scene_activated
+        event_data:
+          scene_id: 3
+          scene_data: 7680
+      - platform: event
+        event_type: zwave.scene_activated
+        event_data:
+          scene_id: 4
+          scene_data: 7680
     action:
-      - service: switch.toggle
-        data:
-          entity_id: switch.master_bedroom_salt_lamp
-
-  - alias: "Button 2 Short: Bump Climate 2°"
-    trigger:
-      platform: event
-      event_type: zwave.scene_activated
-      event_data:
-        scene_id: 2
-        scene_data: 7680
-    condition:
-      condition: not
-      conditions:
-        - condition: state
-          entity_id: climate.thermostat
-          state: "off"
-    action:
-      - service: climate.set_temperature
-        data_template:
-          entity_id: climate.thermostat
-          temperature: >
-            {%
-              set cur = state_attr("climate.thermostat", "temperature") | int
-            %}
-            {% if states("climate.thermostat") == "cool" %}
-              {{ cur - 2 }}
-            {% elif states("climate.thermostat") == "heat" %}
-              {{ cur + 2 }}
-            {% endif %}
-
-  - alias: 'Button 3 Short: Turn on "Good Night" scene'
-    trigger:
-      platform: event
-      event_type: zwave.scene_activated
-      event_data:
-        scene_id: 3
-        scene_data: 7680
-    action:
-      - service: scene.turn_on
-        data:
-          entity_id: scene.good_night
-
-  - alias: "Button 4 Short: Turn Off Bathroom Fans"
-    trigger:
-      platform: event
-      event_type: zwave.scene_activated
-      event_data:
-        scene_id: 4
-        scene_data: 7680
-    action:
-      - service: homeassistant.turn_off
-        data:
-          entity_id: group.bathroom_fans
+      choose:
+        - conditions:
+            - condition: template
+              value_template: "{{ trigger.event.data.scene_id == 1 }}"
+            - condition: template
+              value_template: "{{ trigger.event.data.scene_data == 7680 }}"
+          sequence:
+            service: switch.toggle
+            data:
+              entity_id: switch.master_bedroom_salt_lamp
+        - conditions:
+            - condition: template
+              value_template: "{{ trigger.event.data.scene_id == 2 }}"
+            - condition: template
+              value_template: "{{ trigger.event.data.scene_data == 7680 }}"
+            - condition: state
+              entity_id: climate.thermostat
+              state: "off"
+          sequence:
+            service: climate.set_temperature
+            data_template:
+              entity_id: climate.thermostat
+              temperature: >
+                {%
+                  set c = state_attr("climate.thermostat", "temperature") | int
+                %}
+                {% if states("climate.thermostat") == "cool" %}
+                  {{ c - 2 }}
+                {% elif states("climate.thermostat") == "heat" %}
+                  {{ c + 2 }}
+                {% endif %}
+        - conditions:
+            - condition: template
+              value_template: "{{ trigger.event.data.scene_id == 3 }}"
+            - condition: template
+              value_template: "{{ trigger.event.data.scene_data == 7680 }}"
+          sequence:
+            service: scene.turn_on
+            data:
+              entity_id: scene.good_night
+        - conditions:
+            - condition: template
+              value_template: "{{ trigger.event.data.scene_id == 4 }}"
+            - condition: template
+              value_template: "{{ trigger.event.data.scene_data == 7680 }}"
+          sequence:
+            service: homeassistant.turn_off
+            data:
+              entity_id: group.bathroom_fans
