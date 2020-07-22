@@ -5,7 +5,7 @@ services:
 
   almond:
     container_name: almond
-    image: "stanfordoval/almond-server:v${ALMOND_SERVER_VERSION}-portable"
+    image: "stanfordoval/almond-server:${ALMOND_SERVER_VERSION}-portable"
     network_mode: host
     restart: always
     volumes:
