@@ -28,6 +28,59 @@ automation:
       data:
         entity_id: switch.backyard_lights
 
+  - alias: "Turn off backyard lights at 11pm on weekend night"
+    trigger:
+      platform: time
+      at: "23:00:00"
+    condition:
+      condition: state
+      entity_id: binary_sensor.workday_tomorrow
+      state: "off"
+    action:
+      service: switch.turn_off
+      data:
+        entity_id: switch.backyard_lights
+
+  - alias: "Turn off backyard lights at 9:30pm on work night"
+    trigger:
+      platform: time
+      at: "21:30:00"
+    condition:
+      condition: state
+      entity_id: binary_sensor.workday_tomorrow
+      state: "on"
+    action:
+      service: switch.turn_off
+      data:
+        entity_id: switch.backyard_lights
+
+  - alias: "Turn on backyard lights at sunset"
+    trigger:
+      platform: sun
+      event: sunset
+    action:
+      service: switch.turn_on
+      data:
+        entity_id: switch.backyard_lights
+
+  - alias: "Turn off patio lights at 11pm"
+    trigger:
+      platform: time
+      at: "23:00:00"
+    action:
+      service: switch.turn_off
+      data:
+        entity_id: group.patio_lights
+
+  - alias: "Turn on backyard lights at sunset"
+    trigger:
+      platform: sun
+      event: sunset
+    action:
+      service: switch.turn_on
+      data:
+        entity_id: group.patio_lights
+
 group:
   outdoor_lights:
     entities:

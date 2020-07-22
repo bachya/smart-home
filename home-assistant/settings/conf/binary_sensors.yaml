@@ -2,3 +2,9 @@
 - platform: workday
   country: US
   province: CO
+
+- platform: workday
+  name: Workday Tomorrow
+  country: US
+  province: CO
+  days_offset: 1
