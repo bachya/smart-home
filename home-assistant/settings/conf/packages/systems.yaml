@@ -193,64 +193,11 @@ input_boolean:
   notify_of_dead_zwave_devices_automation:
     icon: mdi:z-wave
     name: Notify of dead Z-Wave devices
-  notify_of_new_versions_automation:
-    icon: mdi:home-assistant
-    name: Notify of new versions
 
 linode:
   access_token: !secret linode_access_token
 
 sensor:
-  - platform: command_line
-    name: Almond Server Available
-    command: >-
-      curl -L
-      -H "User-Agent: Home Assistant"
-      -H "Content-Type: application/json"
-      https://api.github.com/repos/stanford-oval/almond-server/releases/latest
-    value_template: "{{ value_json.tag_name[1:] }}"
-    scan_interval: 1800
-
-  - platform: command_line
-    name: AppDaemon Available
-    command: >-
-      curl -L
-      -H "User-Agent: Home Assistant"
-      -H "Content-Type: application/json"
-      https://api.github.com/repos/home-assistant/appdaemon/releases/latest
-    value_template: "{{ value_json.tag_name }}"
-    scan_interval: 1800
-
-  - platform: command_line
-    name: ESPHome Available
-    command: >-
-      curl -L
-      -H "User-Agent: Home Assistant"
-      -H "Content-Type: application/json"
-      https://api.github.com/repos/esphome/esphome/releases/latest
-    value_template: "{{ value_json.tag_name[1:] }}"
-    scan_interval: 1800
-
-  - platform: command_line
-    name: Grafana Available
-    command: >-
-      curl -L
-      -H "User-Agent: Home Assistant"
-      -H "Content-Type: application/json"
-      https://api.github.com/repos/grafana/grafana/releases/latest
-    value_template: '{{ value_json.tag_name[1:] }}'
-    scan_interval: 1800
-
-  - platform: command_line
-    name: InfluxDB Available
-    command: >-
-      curl -L
-      -H "User-Agent: Home Assistant"
-      -H "Content-Type: application/json"
-      https://api.github.com/repos/influxdata/influxdb/tags
-    value_template: '{{ value_json[0].name[1:] }}'
-    scan_interval: 1800
-
   - platform: command_line
     name: Latest Drone Build
     command: "curl -s 'https://bf5959ab-1a7e-47b7-9528-19651d1b8018.bachyaprodu\
@@ -319,52 +266,6 @@ sensor:
           {% else %}
             mdi:progress-alert
           {% endif %}
-
-  - platform: command_line
-    name: Portainer Available
-    command: >-
-      curl -L
-      -H "User-Agent: Home Assistant"
-      -H "Content-Type: application/json"
-      https://api.github.com/repos/portainer/portainer/releases/latest
-    value_template: "{{ value_json.tag_name }}"
-    scan_interval: 1800
-
-  - platform: command_line
-    name: VerneMQ Available
-    command: >-
-      curl -L
-      -H "User-Agent: Home Assistant"
-      -H "Content-Type: application/json"
-      https://api.github.com/repos/vernemq/vernemq/tags
-    value_template: "{{ value_json[0].name }}"
-    scan_interval: 1800
-
-  - platform: command_line
-    name: Yi Hack Available
-    command: >-
-      curl -L
-      -H "User-Agent: Home Assistant"
-      -H "Content-Type: application/json"
-      https://api.github.com/repos/TheCrypt0/yi-hack-v4/releases/latest
-    value_template: "{{ value_json.tag_name[1:] }}"
-    scan_interval: 1800
-
-  - platform: command_line
-    name: Yi Hack Installed
-    command: >
-      ssh -i /config/id_rsa -o StrictHostKeyChecking=no
-      root@yi-camera-guest-bedroom.phil.iot cat version
-
-  - platform: command_line
-    name: Zigbee2MQTT Available
-    command: >-
-      curl -L
-      -H "User-Agent: Home Assistant"
-      -H "Content-Type: application/json"
-      https://api.github.com/repos/Koenkk/zigbee2mqtt/releases/latest
-    value_template: "{{ value_json.tag_name }}"
-    scan_interval: 1800
 
   - platform: dnsip
     hostname: !secret base_domain_name
