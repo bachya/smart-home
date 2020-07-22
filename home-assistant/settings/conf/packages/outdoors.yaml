@@ -4,29 +4,32 @@ ambient_station:
   app_key: !secret pws_app_key
 
 automation:
-  - alias: "Backyard light switch via kitchen patio light (off)"
+  - alias: "Handle backyard lights via double-tapping the kitchen patio light"
     trigger:
-      platform: event
-      event_type: zwave.node_event
-      event_data:
-        entity_id: zwave.kitchen_patio_light
-        basic_level: 0
+      - platform: event
+        event_type: zwave.node_event
+        event_data:
+          entity_id: zwave.kitchen_patio_light
+          basic_level: 0
+      - platform: event
+        event_type: zwave.node_event
+        event_data:
+          entity_id: zwave.kitchen_patio_light
+          basic_level: 255
     action:
-      service: switch.turn_off
-      data:
-        entity_id: switch.backyard_lights
-
-  - alias: "Backyard light switch via kitchen patio light (on)"
-    trigger:
-      platform: event
-      event_type: zwave.node_event
-      event_data:
-        entity_id: zwave.kitchen_patio_light
-        basic_level: 255
-    action:
-      service: switch.turn_on
-      data:
-        entity_id: switch.backyard_lights
+      choose:
+        - conditions:
+            condition: template
+            value_template: "{{ trigger.event.data.basic_level == 0 }}"
+          sequence:
+            - service: switch.turn_off
+              entity_id: switch.backyard_lights
+        - conditions:
+            condition: template
+            value_template: "{{ trigger.event.data.basic_level == 255 }}"
+          sequence:
+            - service: switch.turn_on
+              entity_id: switch.backyard_lights
 
   - alias: "Turn off backyard lights at 11pm on weekend/holiday night"
     trigger:
