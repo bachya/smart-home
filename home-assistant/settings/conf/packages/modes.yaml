@@ -6,7 +6,7 @@ automation:
       at: "21:00:00"
     condition:
       condition: state
-      entity_id: binary_sensor.workday_sensor
+      entity_id: binary_sensor.workday_tomorrow
       state: "on"
     action:
       service: input_boolean.turn_on
@@ -19,7 +19,7 @@ automation:
       at: "22:00:00"
     condition:
       condition: state
-      entity_id: binary_sensor.workday_sensor
+      entity_id: binary_sensor.workday_tomorrow
       state: "off"
     action:
       service: input_boolean.turn_on
@@ -46,7 +46,7 @@ automation:
       at: "07:00:00"
     condition:
       condition: state
-      entity_id: binary_sensor.workday_sensor
+      entity_id: binary_sensor.workday_tomorrow
       state: "on"
     action:
       service: input_boolean.turn_off
@@ -59,7 +59,7 @@ automation:
       at: "09:00:00"
     condition:
       condition: state
-      entity_id: binary_sensor.workday_sensor
+      entity_id: binary_sensor.workday_tomorrow
       state: "off"
     action:
       service: input_boolean.turn_off
