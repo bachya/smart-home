@@ -26,6 +26,20 @@ automation:
       data:
         entity_id: input_boolean.blackout_mode
 
+  - alias: "Activate blackout when the Good Night scene activates"
+    trigger:
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: scene
+          service: turn_on
+          service_data:
+            entity_id: scene.good_night
+    action:
+      service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.blackout_mode
+
   - alias: "Deactivate blackout at 7am on workdays"
     trigger:
       platform: time

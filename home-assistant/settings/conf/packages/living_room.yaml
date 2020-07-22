@@ -38,6 +38,14 @@ automation:
     trigger:
       platform: sun
       event: sunset
+    condition:
+      # If we've already gone to bed, we will have turned on the "Good Night"
+      # scene (which automatically activates blackout mode); in that case, we
+      # prevent the light from turning on (otherwise it'll stay on all night
+      # since there isn't a subsequent automation to turn it off):
+      condition: state
+      entity_id: input_boolean.blackout_mode
+      state: "off"
     action:
       service: switch.turn_on
       data:
