@@ -64,6 +64,28 @@ automation:
         - service: switch.turn_on
           entity_id: switch.backyard_lights
 
+  - alias: "Backyard lights schedule"
+    trigger:
+      - platform: time
+        at: "23:00:00"
+      - platform: sun
+        event: sunset
+    condition:
+    action:
+      choose:
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.workday_tomorrow
+              state: "on"
+            - condition: time
+              after: "23:00:00"
+          sequence:
+            - service: switch.turn_off
+              entity_id: group.patio_lights
+      default:
+        - service: switch.turn_on
+          entity_id: group.patio_lights
+
 group:
   outdoor_lights:
     entities:
