@@ -93,18 +93,6 @@ alert:
         volume: 0.3
 
 automation:
-  - alias: "Arm SimpliSafe away when double-tapping front patio light switch up"
-    trigger:
-      platform: event
-      event_type: zwave.node_event
-      event_data:
-        entity_id: zwave.front_patio_light
-        basic_level: 255
-    action:
-      service: alarm_control_panel.alarm_arm_away
-      data:
-        entity_id: alarm_control_panel.8673_e_55th_avenue
-
   - alias: "Automatically lock up at night"
     trigger:
       platform: time
@@ -142,18 +130,6 @@ automation:
         system_id: !secret simplisafe_system_id
         chime_volume: 0
         voice_prompt_volume: 0
-
-  - alias: "Disarm SimpliSafe when double-tapping front patio light switch down"
-    trigger:
-      platform: event
-      event_type: zwave.node_event
-      event_data:
-        entity_id: zwave.front_patio_light
-        basic_level: 0
-    action:
-      service: alarm_control_panel.alarm_disarm
-      data:
-        entity_id: alarm_control_panel.8673_e_55th_avenue
 
   - alias: "Enable SimpliSafe sounds when leaving Blackout Mode"
     trigger:
@@ -298,7 +274,7 @@ automation:
     action:
       - service: switch.turn_off
         data:
-          entity_id: switch.front_patio_light
+          entity_id: switch.front_patio_light_switch
       - service: switch.turn_off
         data:
           entity_id: group.living_room_lights
@@ -315,7 +291,7 @@ automation:
     action:
       - service: switch.turn_on
         data:
-          entity_id: switch.front_patio_light
+          entity_id: switch.front_patio_light_switch
       - service: switch.turn_on
         data:
           entity_id: group.living_room_lights
@@ -333,13 +309,13 @@ binary_sensor:
       secure_status:
         friendly_name: Security Status
         entity_id:
-          - lock.front_door
-          - lock.garage_fire_door
+          - lock.front_door_locked
+          - lock.garage_door_locked
           - alarm_control_panel.8673_e_55th_avenue
           - cover.garage_door
         value_template: >
-          {{ is_state('lock.front_door', 'unlocked')
-             or is_state('lock.garage_fire_door', 'unlocked')
+          {{ is_state('lock.front_door_locked', 'unlocked')
+             or is_state('lock.garage_door_locked', 'unlocked')
              or is_state(
                'alarm_control_panel.8673_e_55th_avenue', 'disarmed'
              )

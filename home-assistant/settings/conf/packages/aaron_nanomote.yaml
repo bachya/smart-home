@@ -1,37 +1,34 @@
 ---
-# Scene ID: the button that's being pressed
-# Scene Data: 7680 for a short press, 7800 for a long press
-
 automation:
   - alias: "Button 1 Short: Toggle Master Bedroom Salt Lamp"
     trigger:
       - platform: event
-        event_type: zwave.scene_activated
+        event_type: ozw.scene_activated
         event_data:
           scene_id: 1
-          scene_data: 7680
+          scene_value_id: 1
       - platform: event
-        event_type: zwave.scene_activated
+        event_type: ozw.scene_activated
         event_data:
           scene_id: 2
-          scene_data: 7680
+          scene_value_id: 1
       - platform: event
-        event_type: zwave.scene_activated
+        event_type: ozw.scene_activated
         event_data:
           scene_id: 3
-          scene_data: 7680
+          scene_value_id: 1
       - platform: event
-        event_type: zwave.scene_activated
+        event_type: ozw.scene_activated
         event_data:
           scene_id: 4
-          scene_data: 7680
+          scene_value_id: 1
     action:
       choose:
         - conditions:
             - condition: template
               value_template: "{{ trigger.event.data.scene_id == 1 }}"
             - condition: template
-              value_template: "{{ trigger.event.data.scene_data == 7680 }}"
+              value_template: "{{ trigger.event.data.scene_value_id == 1 }}"
           sequence:
             service: switch.toggle
             data:
@@ -40,28 +37,32 @@ automation:
             - condition: template
               value_template: "{{ trigger.event.data.scene_id == 2 }}"
             - condition: template
-              value_template: "{{ trigger.event.data.scene_data == 7680 }}"
-            - condition: state
-              entity_id: climate.thermostat
-              state: "off"
+              value_template: "{{ trigger.event.data.scene_value_id == 1 }}"
+            - condition: not
+              conditions:
+                condition: state
+                entity_id: climate.adc_t2000_thermostat_mode
+                state: "off"
           sequence:
             service: climate.set_temperature
             data_template:
-              entity_id: climate.thermostat
+              entity_id: climate.adc_t2000_thermostat_mode
               temperature: >
                 {%
-                  set c = state_attr("climate.thermostat", "temperature") | int
+                  set c = state_attr(
+                    "climate.adc_t2000_thermostat_mode", "temperature"
+                  ) | int
                 %}
-                {% if states("climate.thermostat") == "cool" %}
+                {% if states("climate.adc_t2000_thermostat_mode") == "cool" %}
                   {{ c - 2 }}
-                {% elif states("climate.thermostat") == "heat" %}
+                {% elif states("climate.adc_t2000_thermostat_mode") == "heat" %}
                   {{ c + 2 }}
                 {% endif %}
         - conditions:
             - condition: template
               value_template: "{{ trigger.event.data.scene_id == 3 }}"
             - condition: template
-              value_template: "{{ trigger.event.data.scene_data == 7680 }}"
+              value_template: "{{ trigger.event.data.scene_value_id == 1 }}"
           sequence:
             service: scene.turn_on
             data:
@@ -70,7 +71,7 @@ automation:
             - condition: template
               value_template: "{{ trigger.event.data.scene_id == 4 }}"
             - condition: template
-              value_template: "{{ trigger.event.data.scene_data == 7680 }}"
+              value_template: "{{ trigger.event.data.scene_value_id == 1 }}"
           sequence:
             service: homeassistant.turn_off
             data:

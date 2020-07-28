@@ -128,10 +128,10 @@ security_manager:
   garage_door: cover.garage_door
   overall_security_status_sensor: binary_sensor.secure_status
   secure_status_mapping:
-    - entity_id: lock.garage_fire_door
+    - entity_id: lock.garage_door_locked
       friendly_name: the door to the garage
       state: unlocked
-    - entity_id: lock.front_door
+    - entity_id: lock.front_door_locked
       friendly_name: the front door
       state: unlocked
     - entity_id: cover.garage_door

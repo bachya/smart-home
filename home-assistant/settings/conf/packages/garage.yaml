@@ -12,7 +12,7 @@ automation:
     action:
       service: switch.turn_on
       data:
-        entity_id: switch.garage_lights
+        entity_id: switch.garage_lights_switch
 
   - alias: "Turn off garage lights after garage door closes"
     trigger:
@@ -24,4 +24,4 @@ automation:
     action:
       service: switch.turn_off
       data:
-        entity_id: switch.garage_lights
+        entity_id: switch.garage_lights_switch

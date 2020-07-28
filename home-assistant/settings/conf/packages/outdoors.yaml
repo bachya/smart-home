@@ -6,30 +6,28 @@ ambient_station:
 automation:
   - alias: "Handle backyard lights via double-tapping the kitchen patio light"
     trigger:
-      - platform: event
-        event_type: zwave.node_event
-        event_data:
-          entity_id: zwave.kitchen_patio_light
-          basic_level: 0
-      - platform: event
-        event_type: zwave.node_event
-        event_data:
-          entity_id: zwave.kitchen_patio_light
-          basic_level: 255
+      - platform: state
+        entity_id: sensor.kitchen_patio_light_switch_basic
+        from: "0"
+        to: "255"
+      - platform: state
+        entity_id: sensor.kitchen_patio_light_switch_basic
+        from: "255"
+        to: "0"
     action:
       choose:
         - conditions:
             condition: template
-            value_template: "{{ trigger.event.data.basic_level == 0 }}"
+            value_template: "{{ trigger.to_state.state == 0 }}"
           sequence:
             - service: switch.turn_off
-              entity_id: switch.backyard_lights
+              entity_id: switch.backyard_lights_switch
         - conditions:
             condition: template
-            value_template: "{{ trigger.event.data.basic_level == 255 }}"
+            value_template: "{{ trigger.to_state.state == 255 }}"
           sequence:
             - service: switch.turn_on
-              entity_id: switch.backyard_lights
+              entity_id: switch.backyard_lights_switch
 
   - alias: "Backyard lights schedule"
     trigger:
@@ -50,7 +48,7 @@ automation:
               after: "21:30:00"
           sequence:
             - service: switch.turn_off
-              entity_id: switch.backyard_lights
+              entity_id: switch.backyard_lights_switch
         - conditions:
             - condition: state
               entity_id: binary_sensor.workday_tomorrow
@@ -59,10 +57,10 @@ automation:
               after: "23:00:00"
           sequence:
             - service: switch.turn_off
-              entity_id: switch.backyard_lights
+              entity_id: switch.backyard_lights_switch
       default:
         - service: switch.turn_on
-          entity_id: switch.backyard_lights
+          entity_id: switch.backyard_lights_switch
 
   - alias: "Backyard lights schedule"
     trigger:
@@ -89,14 +87,14 @@ automation:
 group:
   outdoor_lights:
     entities:
-      - switch.backyard_lights
-      - switch.front_patio_light
-      - switch.kitchen_patio_light
+      - switch.backyard_lights_switch
+      - switch.front_patio_light_switch
+      - switch.kitchen_patio_light_switch
 
   patio_lights:
     entities:
-      - switch.front_patio_light
-      - switch.kitchen_patio_light
+      - switch.front_patio_light_switch
+      - switch.kitchen_patio_light_switch
 
 input_boolean:
   lightning_detected_automation:

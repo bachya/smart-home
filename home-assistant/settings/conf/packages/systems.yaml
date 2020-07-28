@@ -59,12 +59,12 @@ automation:
         for:
           minutes: 5
       - platform: numeric_state
-        entity_id: sensor.front_door_lock_battery
+        entity_id: sensor.front_door_battery_level
         below: 20
         for:
           minutes: 5
       - platform: numeric_state
-        entity_id: sensor.garage_fire_door_lock_battery
+        entity_id: sensor.garage_door_battery_level
         below: 20
         for:
           minutes: 5

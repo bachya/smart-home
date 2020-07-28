@@ -7,23 +7,23 @@ homekit:
       - lock
       - media_player
     include_entities:
-      - climate.thermostat
+      - climate.adc_t2000_thermostat_mode
       - cover.garage_door
       - sensor.fiddle_leaf_fig_moisture
-      - switch.backyard_lights
+      - switch.backyard_lights_switch
       - switch.bar_cart_leds
       - switch.basement_lights
       - switch.christmas_tree
-      - switch.fireplace
-      - switch.front_patio_light
-      - switch.garage_lights
-      - switch.kitchen_patio_light
-      - switch.master_bathroom_fan
+      - switch.fireplace_switch
+      - switch.front_patio_light_switch
+      - switch.garage_lights_switch
+      - switch.kitchen_patio_light_switch
+      - switch.master_bathroom_fan_switch
       - switch.master_bedroom_salt_lamp
-      - switch.master_toilet_fan
+      - switch.master_toilet_fan_switch
       - switch.media_center
       - switch.office_salt_lamp
-      - switch.powder_room_fan
+      - switch.powder_room_fan_switch
       - switch.reading_lamp
       - switch.sofa_lamp
       - switch.wolfie_cycle

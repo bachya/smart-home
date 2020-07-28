@@ -101,8 +101,8 @@ services:
       - mysql-hass
       - influxdb
       - vernemq
-    devices:
-      - "/dev/zwave:/dev/zwave"
+    # devices:
+    #   - "/dev/zwave:/dev/zwave"
     image: "homeassistant/home-assistant:${HOME_ASSISTANT_CORE_VERSION}"
     network_mode: host
     restart: always
@@ -154,6 +154,27 @@ services:
       - /var/log/nginx_error.log:/var/log/nginx_error.log
       - nginx-config:/etc/nginx
 
+  openzwave:
+    container_name: openzwave
+    image: "openzwave/ozwdaemon:allinone-amd64-${OPENZWAVE_VERSION}"
+    devices:
+      - "/dev/zwave:/dev/zwave"
+    environment:
+      MQTT_PASSWORD: "${VERNEMQ_PASSWORD_OPEN_ZWAVE}"
+      MQTT_SERVER: vernemq
+      MQTT_USERNAME: open_zwave
+      OZW_NETWORK_KEY: "${OPENZWAVE_NETWORK_KEY}"
+      USB_PATH: /dev/zwave
+    ports:
+      - "1983:1983/tcp"
+      - "5901:5901/tcp"
+      - "7800:7800/tcp"
+    restart: always
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - openzwave-config:/opt/ozw/config
+
   portainer:
     container_name: portainer
     image: "portainer/portainer:${PORTAINER_VERSION}"
@@ -174,6 +195,7 @@ services:
         ${VERNEMQ_PASSWORD_MIFLORA_MQTT_DAEMON}
       DOCKER_VERNEMQ_USER_OCTOPRINT2MQTT: >
         ${VERNEMQ_PASSWORD_OCTOPRINT2MQTT}
+      DOCKER_VERNEMQ_USER_OPEN_ZWAVE: "${VERNEMQ_PASSWORD_OPEN_ZWAVE}"
       DOCKER_VERNEMQ_USER_RTLAMR: "${VERNEMQ_PASSWORD_RTLAMR}"
       DOCKER_VERNEMQ_USER_SONOFF: "${VERNEMQ_PASSWORD_SONOFF}"
       DOCKER_VERNEMQ_USER_WYZE: "${VERNEMQ_PASSWORD_WYZE}"
@@ -242,6 +264,7 @@ volumes:
   influxdb-config:
   mysql-hass-data:
   nginx-config:
+  openzwave-config:
   portainer-config:
   vernemq-data:
   zigbee2mqtt-config:

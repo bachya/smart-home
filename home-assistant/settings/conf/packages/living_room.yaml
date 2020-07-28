@@ -54,14 +54,14 @@ automation:
   - alias: "Turn powder room fan back on if someone turns it off"
     trigger:
       platform: state
-      entity_id: switch.powder_room_fan
+      entity_id: switch.powder_room_fan_switch
       to: "off"
       for:
         minutes: 1
     action:
       service: switch.turn_on
       data:
-        entity_id: switch.powder_room_fan
+        entity_id: switch.powder_room_fan_switch
 
 binary_sensor:
   - platform: template
@@ -182,14 +182,6 @@ sensor:
 
   - platform: template
     sensors:
-      front_door_lock_battery:
-        friendly_name: Front Door Lock
-        value_template: >
-          {% if states('zwave.front_door') == 'ready' %}
-            {{ states.zwave.front_door.attributes.battery_level }}
-          {% endif %}
-        unit_of_measurement: "%"
-        device_class: battery
       roku_source:
         friendly_name: Roku Source
         entity_id: media_player.living_room_roku
@@ -220,17 +212,17 @@ switch:
     switches:
       presence_aware_fireplace:
         friendly_name: Fireplace
-        value_template: "{{ is_state('switch.fireplace', 'on') }}"
+        value_template: "{{ is_state('switch.fireplace_switch_switch', 'on') }}"
         turn_on:
           service: switch.turn_on
           data_template:
             entity_id: >
               {% if is_state("sensor.proximity_zone", "Home") %}
-                switch.fireplace
+                switch.fireplace_switch_switch
               {% else %}
-                switch.fireplace_no_one_home
+                switch.fireplace_switch_switch_no_one_home
               {% endif %}
         turn_off:
           service: switch.turn_off
           data:
-            entity_id: switch.fireplace
+            entity_id: switch.fireplace_switch_switch

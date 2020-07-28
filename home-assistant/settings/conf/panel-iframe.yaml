@@ -23,6 +23,10 @@ octopi:
   title: OctoPi
   url: !secret panel_url_octopi
   icon: mdi:printer-3d
+openzwave:
+  title: OpenZWave
+  url: !secret panel_url_openzwave
+  icon: mdi:z-wave
 portainer:
   title: Portainer
   url: !secret panel_url_portainer

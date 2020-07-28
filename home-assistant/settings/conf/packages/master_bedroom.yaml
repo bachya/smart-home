@@ -6,7 +6,7 @@ automation:
         entity_id: input_number.master_bathroom_fan_timer
         below: 1
       - platform: state
-        entity_id: switch.master_bathroom_fan
+        entity_id: switch.master_bathroom_fan_switch
         to: "off"
       - platform: state
         entity_id: timer.master_bathroom_fan_timer
@@ -18,7 +18,7 @@ automation:
           value: 0
       - service: switch.turn_off
         data:
-          entity_id: switch.master_bathroom_fan
+          entity_id: switch.master_bathroom_fan_switch
       - service: timer.cancel
         data:
           entity_id: timer.master_bathroom_fan_timer
@@ -30,7 +30,7 @@ automation:
     action:
       - service: switch.turn_on
         data:
-          entity_id: switch.master_bathroom_fan
+          entity_id: switch.master_bathroom_fan_switch
       - service: timer.start
         data_template:
           entity_id: timer.master_bathroom_fan_timer
@@ -39,11 +39,10 @@ automation:
 
   - alias: "Set sleep timer on master bathroom fan when switch double tapped"
     trigger:
-      platform: event
-      event_type: zwave.node_event
-      event_data:
-        entity_id: zwave.master_bathroom_fan
-        basic_level: 255
+      platform: state
+      entity_id: sensor.master_bathroom_fan_basic
+      from: "0"
+      to: "255"
     action:
       service: input_number.set_value
       data:
@@ -56,7 +55,7 @@ automation:
         entity_id: input_number.master_toilet_fan_timer
         below: 1
       - platform: state
-        entity_id: switch.master_toilet_fan
+        entity_id: switch.master_toilet_fan_switch
         to: "off"
       - platform: state
         entity_id: timer.master_toilet_fan_timer
@@ -68,7 +67,7 @@ automation:
           value: 0
       - service: switch.turn_off
         data:
-          entity_id: switch.master_toilet_fan
+          entity_id: switch.master_toilet_fan_switch
       - service: timer.cancel
         data:
           entity_id: timer.master_toilet_fan_timer
@@ -80,7 +79,7 @@ automation:
     action:
       - service: switch.turn_on
         data:
-          entity_id: switch.master_toilet_fan
+          entity_id: switch.master_toilet_fan_switch
       - service: timer.start
         data_template:
           entity_id: timer.master_toilet_fan_timer
@@ -89,11 +88,10 @@ automation:
 
   - alias: "Set sleep timer on master toilet fan when switch double tapped"
     trigger:
-      platform: event
-      event_type: zwave.node_event
-      event_data:
-        entity_id: zwave.master_toilet_fan
-        basic_level: 255
+      platform: state
+      entity_id: sensor.master_toilet_fan_basic
+      from: "0"
+      to: "255"
     action:
       service: input_number.set_value
       data:
@@ -173,8 +171,8 @@ dyson:
 group:
   bathroom_fans:
     entities:
-      - switch.master_bathroom_fan
-      - switch.master_toilet_fan
+      - switch.master_bathroom_fan_switch
+      - switch.master_toilet_fan_switch
 
 input_number:
   master_bathroom_fan_timer:

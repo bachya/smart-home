@@ -51,7 +51,7 @@ automation:
   - alias: 'Set dishwasher state to "Running"'
     trigger:
       platform: numeric_state
-      entity_id: sensor.dishwasher_power
+      entity_id: sensor.dishwasher_electric_w
       above: 9
     action:
       service: input_select.select_option
@@ -62,7 +62,7 @@ automation:
   - alias: 'Set dishwasher state to "Drying"'
     trigger:
       platform: numeric_state
-      entity_id: sensor.dishwasher_power
+      entity_id: sensor.dishwasher_electric_w
       below: 4
     condition:
       condition: state
@@ -133,13 +133,3 @@ script:
         data:
           entity_id: input_select.dishwasher_status
           option: Dirty
-
-sensor:
-  - platform: template
-    sensors:
-      garage_fire_door_lock_battery:
-        friendly_name: Garage Fire Door Lock
-        value_template: >
-          {{ state_attr("zwave.garage_door", "battery_level") }}
-        unit_of_measurement: "%"
-        device_class: battery
