@@ -2,6 +2,10 @@
 kind: pipeline
 name: Pre-Flight
 
+trigger:
+  event:
+    - push
+
 steps:
   - name: Restore .pre-commit Cache
     image: meltwater/drone-cache:master-9a52545
@@ -52,6 +56,10 @@ volumes:
 kind: pipeline
 name: ESPHome
 
+trigger:
+  event:
+    - push
+
 depends_on:
   - Pre-Flight
 
@@ -75,6 +83,10 @@ steps:
 kind: pipeline
 name: Fail2Ban
 
+trigger:
+  event:
+    - push
+
 depends_on:
   - Pre-Flight
 
@@ -93,6 +105,10 @@ steps:
 ---
 kind: pipeline
 name: Home Assistant
+
+trigger:
+  event:
+    - push
 
 depends_on:
   - Pre-Flight
@@ -119,6 +135,10 @@ steps:
 kind: pipeline
 name: NGINX
 
+trigger:
+  event:
+    - push
+
 depends_on:
   - Pre-Flight
 
@@ -139,44 +159,20 @@ steps:
 
 ---
 kind: pipeline
-name: Deploy
+name: Build Notification
+
+trigger:
+  event:
+    - push
+  status:
+    - success
+    - failure
 
 depends_on:
   - ESPHome
   - Fail2Ban
   - Home Assistant
   - NGINX
-
-steps:
-  - name: Deploy
-    image: appleboy/drone-ssh
-    settings:
-      host:
-        from_secret: deploy_ssh_host
-      username:
-        from_secret: deploy_ssh_username
-      port:
-        from_secret: deploy_ssh_port
-      key:
-        from_secret: deploy_ssh_key
-      command_timeout: 5m
-    when:
-      branch:
-        - master
-      status:
-        - success
-
----
-kind: pipeline
-name: Build Notification
-
-trigger:
-  status:
-    - success
-    - failure
-
-depends_on:
-  - Deploy
 
 steps:
   - name: Send Notification
@@ -197,3 +193,27 @@ steps:
       status:
         - failure
         - success
+
+---
+kind: pipeline
+name: Deploy
+
+trigger:
+  event:
+    - promote
+  target:
+    - production
+
+steps:
+  - name: Deploy
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: deploy_ssh_host
+      username:
+        from_secret: deploy_ssh_username
+      port:
+        from_secret: deploy_ssh_port
+      key:
+        from_secret: deploy_ssh_key
+      command_timeout: 5m
