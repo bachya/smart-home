@@ -41,21 +41,21 @@ automation:
             - condition: not
               conditions:
                 condition: state
-                entity_id: climate.adc_t2000_thermostat_mode
+                entity_id: climate.thermostat_mode
                 state: "off"
           sequence:
             service: climate.set_temperature
             data_template:
-              entity_id: climate.adc_t2000_thermostat_mode
+              entity_id: climate.thermostat_mode
               temperature: >
                 {%
                   set c = state_attr(
-                    "climate.adc_t2000_thermostat_mode", "temperature"
+                    "climate.thermostat_mode", "temperature"
                   ) | int
                 %}
-                {% if states("climate.adc_t2000_thermostat_mode") == "cool" %}
+                {% if states("climate.thermostat_mode") == "cool" %}
                   {{ c - 2 }}
-                {% elif states("climate.adc_t2000_thermostat_mode") == "heat" %}
+                {% elif states("climate.thermostat_mode") == "heat" %}
                   {{ c + 2 }}
                 {% endif %}
         - conditions:

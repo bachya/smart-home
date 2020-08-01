@@ -13,7 +13,7 @@ thermostat_schedule:
       return state("input_boolean.blackout_mode") == "on"
 
     def hvac_mode():
-      return state("climate.adc_t2000_thermostat_mode")
+      return state("climate.thermostat_mode")
 
   schedule_snippets:
     cooling_season:
@@ -26,7 +26,7 @@ thermostat_schedule:
   rooms:
     whole_house:
       actors:
-        climate.adc_t2000_thermostat_mode:
+        climate.thermostat_mode:
           supports_hvac_modes: false
           max_temp: 80
           min_temp: 60
@@ -40,6 +40,6 @@ thermostat_schedule:
             if hvac_mode() == 'heat' and away_mode() == 'off' else Next()"
 
   watched_entities:
-    - climate.adc_t2000_thermostat_mode
+    - climate.thermostat_mode
     - input_boolean.blackout_mode
     - input_boolean.climate_away_mode

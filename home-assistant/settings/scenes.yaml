@@ -202,9 +202,9 @@
       state: "on"
     input_boolean.randomize_nighttime_tvs_automation:
       state: "on"
-    lock.front_door_locked:
+    lock.front_door_lock_locked:
       state: locked
-    lock.garage_door_locked:
+    lock.garage_fire_door_lock_locked:
       state: locked
     group.living_room_lights:
       state: "off"
@@ -232,7 +232,7 @@
       state: disarmed
     cover.garage_door:
       state: open
-    lock.garage_door_locked:
+    lock.garage_fire_door_lock_locked:
       state: unlocked
 
 - id: good_night
@@ -242,9 +242,9 @@
       state: armed_home
     cover.garage_door:
       state: closed
-    lock.front_door_locked:
+    lock.front_door_lock_locked:
       state: locked
-    lock.garage_door_locked:
+    lock.garage_fire_door_lock_locked:
       state: locked
     group.living_room_lights:
       state: "off"
@@ -356,7 +356,7 @@
   entities:
     alarm_control_panel.8673_e_55th_avenue:
       state: disarmed
-    lock.front_door_locked:
+    lock.front_door_lock_locked:
       state: unlocked
 
 - id: watch_plex

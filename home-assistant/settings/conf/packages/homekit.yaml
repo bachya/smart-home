@@ -7,7 +7,7 @@ homekit:
       - lock
       - media_player
     include_entities:
-      - climate.adc_t2000_thermostat_mode
+      - climate.thermostat_mode
       - cover.garage_door
       - sensor.fiddle_leaf_fig_moisture
       - switch.backyard_lights_switch
