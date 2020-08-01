@@ -100,9 +100,8 @@ services:
       - glances
       - mysql-hass
       - influxdb
+      - openzwave
       - vernemq
-    # devices:
-    #   - "/dev/zwave:/dev/zwave"
     image: "homeassistant/home-assistant:${HOME_ASSISTANT_CORE_VERSION}"
     network_mode: host
     restart: always
@@ -156,6 +155,8 @@ services:
 
   openzwave:
     container_name: openzwave
+    depends_on:
+      - vernemq
     image: "openzwave/ozwdaemon:allinone-amd64-${OPENZWAVE_VERSION}"
     devices:
       - "/dev/zwave:/dev/zwave"
