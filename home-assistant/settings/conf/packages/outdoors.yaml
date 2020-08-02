@@ -62,7 +62,7 @@ automation:
         - service: switch.turn_on
           entity_id: switch.backyard_lights_switch
 
-  - alias: "Backyard lights schedule"
+  - alias: "Patio lights schedule"
     trigger:
       - platform: time
         at: "23:00:00"
