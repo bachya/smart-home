@@ -78,10 +78,10 @@ automation:
             - condition: time
               after: "23:00:00"
           sequence:
-            - service: switch.turn_off
+            - service: homeassistant.turn_off
               entity_id: group.patio_lights
       default:
-        - service: switch.turn_on
+        - service: homeassistant.turn_on
           entity_id: group.patio_lights
 
 group:
