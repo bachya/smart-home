@@ -182,11 +182,13 @@ steps:
         from_secret: slack_webhook
       channel:
         from_secret: slack_channel_name
-      template: >
+      template: >-
         {{#success build.status}}
-          `{{repo.name}}/{{build.branch}}`: Build #{{build.number}} successful ({{build.link}})
+          `{{repo.name}}/{{build.branch}}`: Build #{{build.number}}
+          successful ({{build.link}})
         {{else}}
-          `{{repo.name}}/{{build.branch}}`: Build #{{build.number}} failed ({{build.link}})
+          `{{repo.name}}/{{build.branch}}`: Build #{{build.number}}
+          failed ({{build.link}})
         {{/success}}
     when:
       status:
