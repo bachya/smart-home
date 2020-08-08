@@ -1,8 +1,4 @@
 ---
-glances:
-  name: Ravenclaw
-  host: ravenclaw.myserver.com
-
 sensor:
   - platform: command_line
     name: Ravenclaw Uptime

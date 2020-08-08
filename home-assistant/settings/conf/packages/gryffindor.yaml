@@ -1,8 +1,4 @@
 ---
-glances:
-  name: Gryffindor
-  host: gryffindor.myserver.com
-
 sensor:
   - platform: command_line
     name: Gryffindor Uptime

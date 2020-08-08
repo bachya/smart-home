@@ -65,41 +65,10 @@ services:
       - /var/log/nginx_error.log:/var/log/nginx_error.log:ro
       - fail2ban-log:/var/log/fail2ban:ro
 
-  glances:
-    container_name: glances
-    environment:
-      GLANCES_OPT: -w --enable-plugin smart
-    image: vimagick/glances:latest
-    network_mode: host
-    pid: host
-    restart: always
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - glances-config:/etc/glances:ro
-
-  grafana:
-    container_name: grafana
-    depends_on:
-      - influxdb
-    environment:
-      GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD}"
-      GF_SECURITY_ADMIN_USER: "${GRAFANA_ADMIN_USERNAME}"
-      GF_SERVER_DOMAIN: "${GRAFANA_DOMAIN}"
-    image: "grafana/grafana:${GRAFANA_VERSION}"
-    ports:
-      - "127.0.0.1:8878:3000/tcp"
-    restart: unless-stopped
-    user: "104"
-    volumes:
-      - grafana-config:/var/lib/grafana
-
   hass:
     container_name: hass
     depends_on:
-      - glances
       - mysql-hass
-      - influxdb
       - openzwave
       - vernemq
     image: "homeassistant/home-assistant:${HOME_ASSISTANT_CORE_VERSION}"
@@ -110,18 +79,23 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - hass-config:/config
 
-  influxdb:
-    container_name: influxdb
-    image: "influxdb:${INFLUXDB_VERSION}-alpine"
+  metrics2mqtt:
+    build:
+      context: metrics2mqtt/docker
+      args:
+        version: 0.1.18
+    container_name: metrics2mqtt
+    depends_on:
+      - vernemq
     environment:
-      INFLUXDB_DB: "${INFLUXDB_DB}"
-      INFLUXDB_USER: "${INFLUXDB_USER}"
-      INFLUXDB_USER_PASSWORD: "${INFLUXDB_PASSWORD}"
-    ports:
-      - "8086:8086/tcp"
+      COMMAND_OPTIONS_STRING: >
+        --name=hub --interval=60 --cpu=60 --interval=10 --vm --du="/" -vvvvv
+      MQTT_BROKER: vernemq
+      MQTT_PASSWORD: "${VERNEMQ_PASSWORD_METRICS2MQTT}"
+      MQTT_USERNAME: metrics2mqtt
     restart: unless-stopped
     volumes:
-      - influxdb-config:/var/lib/influxdb
+      - /proc:/proc
 
   mysql-hass:
     container_name: mysql-hass
@@ -192,6 +166,7 @@ services:
     environment:
       DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
       DOCKER_VERNEMQ_USER_HASS: "${VERNEMQ_PASSWORD_HASS}"
+      DOCKER_VERNEMQ_USER_METRICS2MQTT: "${VERNEMQ_PASSWORD_METRICS2MQTT}"
       DOCKER_VERNEMQ_USER_MIFLORA-MQTT-DAEMON: >
         ${VERNEMQ_PASSWORD_MIFLORA_MQTT_DAEMON}
       DOCKER_VERNEMQ_USER_OCTOPRINT2MQTT: >
@@ -259,10 +234,7 @@ volumes:
   appdaemon-config:
   fail2ban-config:
   fail2ban-log:
-  glances-config:
-  grafana-config:
   hass-config:
-  influxdb-config:
   mysql-hass-data:
   nginx-config:
   openzwave-config:

@@ -1,8 +1,4 @@
 ---
-glances:
-  name: Hufflepuff
-  host: hufflepuff.myserver.com
-
 sensor:
   - platform: command_line
     name: Hufflepuff Uptime

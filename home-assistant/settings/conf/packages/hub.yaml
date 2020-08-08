@@ -1,8 +1,4 @@
 ---
-glances:
-  name: Hub
-  host: 0.0.0.0
-
 sensor:
   - platform: command_line
     name: Hub Uptime
