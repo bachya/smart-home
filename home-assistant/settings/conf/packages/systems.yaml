@@ -46,6 +46,147 @@ automation:
         message: >
           💿 There are new HACS updates: {{ trigger.to_state.state }}
 
+  - alias: "Notify on high CPU"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.gryffindor_cpu
+        above: 60
+        for:
+          minutes: 5
+      - platform: numeric_state
+        entity_id: sensor.hub_cpu
+        above: 60
+        for:
+          minutes: 5
+      - platform: numeric_state
+        entity_id: sensor.hufflepuff_cpu
+        above: 60
+        for:
+          minutes: 5
+      - platform: numeric_state
+        entity_id: sensor.linode_cpu
+        above: 60
+        for:
+          minutes: 5
+      - platform: numeric_state
+        entity_id: sensor.ravenclaw_cpu
+        above: 60
+        for:
+          minutes: 5
+      - platform: numeric_state
+        entity_id: sensor.slytherin_cpu
+        above: 60
+        for:
+          minutes: 5
+    action:
+      service: notify.slack
+      data_template:
+        message: >
+          {% if trigger.entity_id == "sensor.gryffindor_cpu" %}
+            {% set name = "Gryffindor" %}
+          {% elif trigger.entity_id == "sensor.hub_cpu" %}
+            {% set name = "Hub" %}
+          {% elif trigger.entity_id == "sensor.hufflepuff_cpu" %}
+            {% set name = "Hufflepuff" %}
+          {% elif trigger.entity_id == "sensor.linode_cpu" %}
+            {% set name = "Linode" %}
+          {% elif trigger.entity_id == "sensor.ravenclaw_cpu" %}
+            {% set name = "Ravenclaw" %}
+          {% elif trigger.entity_id == "sensor.slytherin_cpu" %}
+            {% set name = "Slytherin" %}
+
+          🚨 {{ name }} has used more than 60% CPU for more than 5 minutes.
+
+  - alias: "Notify on high disk usage"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.gryffindor_disk_usage_volume
+        above: 85
+      - platform: numeric_state
+        entity_id: sensor.hub_disk_usage_volume
+        above: 85
+      - platform: numeric_state
+        entity_id: sensor.hufflepuff_disk_usage_volume
+        above: 85
+      - platform: numeric_state
+        entity_id: sensor.linode_disk_usage_volume
+        above: 85
+      - platform: numeric_state
+        entity_id: sensor.ravenclaw_disk_usage_volume
+        above: 85
+      - platform: numeric_state
+        entity_id: sensor.slytherin_disk_usage_volume
+        above: 85
+    action:
+      service: notify.slack
+      data_template:
+        message: >
+          {% if trigger.entity_id == "sensor.gryffindor_cpu" %}
+            {% set name = "Gryffindor" %}
+          {% elif trigger.entity_id == "sensor.hub_cpu" %}
+            {% set name = "Hub" %}
+          {% elif trigger.entity_id == "sensor.hufflepuff_cpu" %}
+            {% set name = "Hufflepuff" %}
+          {% elif trigger.entity_id == "sensor.linode_cpu" %}
+            {% set name = "Linode" %}
+          {% elif trigger.entity_id == "sensor.ravenclaw_cpu" %}
+            {% set name = "Ravenclaw" %}
+          {% elif trigger.entity_id == "sensor.slytherin_cpu" %}
+            {% set name = "Slytherin" %}
+
+          🚨 {{ name }} has used more than 85% of its disk space.
+
+  - alias: "Notify on high memory"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.gryffindor_virtual_memory
+        above: 75
+        for:
+          minutes: 5
+      - platform: numeric_state
+        entity_id: sensor.hub_virtual_memory
+        above: 75
+        for:
+          minutes: 5
+      - platform: numeric_state
+        entity_id: sensor.hufflepuff_virtual_memory
+        above: 75
+        for:
+          minutes: 5
+      - platform: numeric_state
+        entity_id: sensor.linode_virtual_memory
+        above: 75
+        for:
+          minutes: 5
+      - platform: numeric_state
+        entity_id: sensor.ravenclaw_virtual_memory
+        above: 75
+        for:
+          minutes: 5
+      - platform: numeric_state
+        entity_id: sensor.slytherin_virtual_memory
+        above: 75
+        for:
+          minutes: 5
+    action:
+      service: notify.slack
+      data_template:
+        message: >
+          {% if trigger.entity_id == "sensor.gryffindor_cpu" %}
+            {% set name = "Gryffindor" %}
+          {% elif trigger.entity_id == "sensor.hub_cpu" %}
+            {% set name = "Hub" %}
+          {% elif trigger.entity_id == "sensor.hufflepuff_cpu" %}
+            {% set name = "Hufflepuff" %}
+          {% elif trigger.entity_id == "sensor.linode_cpu" %}
+            {% set name = "Linode" %}
+          {% elif trigger.entity_id == "sensor.ravenclaw_cpu" %}
+            {% set name = "Ravenclaw" %}
+          {% elif trigger.entity_id == "sensor.slytherin_cpu" %}
+            {% set name = "Slytherin" %}
+
+          🚨 {{ name }} has used more than 75% memory for more than 5 minutes.
+
   - alias: "Notify when battery is low"
     trigger:
       - platform: numeric_state
