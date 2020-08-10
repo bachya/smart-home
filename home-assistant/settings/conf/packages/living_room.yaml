@@ -36,8 +36,8 @@ automation:
 
   - alias: "Turn reading lamp on at sunset"
     trigger:
-      platform: sun
-      event: sunset
+      platform: event
+      event_type: LOCAL_SUNSET
     condition:
       # If we've already gone to bed, we will have turned on the "Good Night"
       # scene (which automatically activates blackout mode); in that case, we

@@ -2,8 +2,8 @@
 automation:
   - alias: "Change to dark theme at night"
     trigger:
-      platform: sun
-      event: sunset
+      platform: event
+      event_type: LOCAL_SUNSET
     action:
       service: frontend.set_theme
       data:

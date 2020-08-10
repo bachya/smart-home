@@ -28,8 +28,8 @@ automation:
 
   - alias: "Turn on garage lights at sunset if the garage is open"
     trigger:
-      event: sunset
-      platform: sun
+      platform: event
+      event_type: LOCAL_SUNSET
     condition:
       condition: state
       entity_id: cover.garage_door

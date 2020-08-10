@@ -89,8 +89,8 @@ automation:
 
   - alias: "Turn bar cart lights on at sunset"
     trigger:
-      platform: sun
-      event: sunset
+      platform: event
+      event_type: LOCAL_SUNSET
     action:
       service: switch.turn_on
       data:

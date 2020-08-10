@@ -4,39 +4,14 @@ ambient_station:
   app_key: !secret pws_app_key
 
 automation:
-  - alias: "Handle backyard lights via double-tapping the kitchen patio light"
-    trigger:
-      - platform: state
-        entity_id: sensor.kitchen_patio_light_basic
-        from: "0"
-        to: "255"
-      - platform: state
-        entity_id: sensor.kitchen_patio_light_basic
-        from: "255"
-        to: "0"
-    action:
-      choose:
-        - conditions:
-            condition: template
-            value_template: "{{ trigger.to_state.state == 0 }}"
-          sequence:
-            - service: switch.turn_off
-              entity_id: switch.backyard_lights_switch
-        - conditions:
-            condition: template
-            value_template: "{{ trigger.to_state.state == 255 }}"
-          sequence:
-            - service: switch.turn_on
-              entity_id: switch.backyard_lights_switch
-
   - alias: "Backyard lights schedule"
     trigger:
       - platform: time
         at: "21:30:00"
       - platform: time
         at: "23:00:00"
-      - platform: sun
-        event: sunset
+      - platform: event
+        event_type: LOCAL_SUNSET
     condition:
     action:
       choose:
@@ -62,12 +37,50 @@ automation:
         - service: switch.turn_on
           entity_id: switch.backyard_lights_switch
 
+  - alias: "Fire local event for weather station-detected sunset"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.filtered_outdoor_brightness
+        below: 70
+      - platform: sun
+        event: sunset
+    condition:
+      condition: time
+      after: "17:00:00"
+    action:
+      - event: LOCAL_SUNSET
+
+  - alias: "Handle backyard lights via double-tapping the kitchen patio light"
+    trigger:
+      - platform: state
+        entity_id: sensor.kitchen_patio_light_basic
+        from: "0"
+        to: "255"
+      - platform: state
+        entity_id: sensor.kitchen_patio_light_basic
+        from: "255"
+        to: "0"
+    action:
+      choose:
+        - conditions:
+            condition: template
+            value_template: "{{ trigger.to_state.state == 0 }}"
+          sequence:
+            - service: switch.turn_off
+              entity_id: switch.backyard_lights_switch
+        - conditions:
+            condition: template
+            value_template: "{{ trigger.to_state.state == 255 }}"
+          sequence:
+            - service: switch.turn_on
+              entity_id: switch.backyard_lights_switch
+
   - alias: "Patio lights schedule"
     trigger:
       - platform: time
         at: "23:00:00"
-      - platform: sun
-        event: sunset
+      - platform: event
+        event_type: LOCAL_SUNSET
     condition:
     action:
       choose:
