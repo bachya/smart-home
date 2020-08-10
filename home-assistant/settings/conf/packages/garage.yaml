@@ -1,5 +1,17 @@
 ---
 automation:
+  - alias: "Turn off garage lights after garage door closes"
+    trigger:
+      platform: state
+      entity_id: cover.garage_door
+      to: closed
+      for:
+        minutes: 10
+    action:
+      service: switch.turn_off
+      data:
+        entity_id: switch.garage_lights_switch
+
   - alias: "Turn on garage lights when garage door opens while it's dark"
     trigger:
       platform: state
@@ -14,14 +26,15 @@ automation:
       data:
         entity_id: switch.garage_lights_switch
 
-  - alias: "Turn off garage lights after garage door closes"
+  - alias: "Turn on garage lights at sunset if the garage is open"
     trigger:
-      platform: state
+      event: sunset
+      platform: sun
+    condition:
+      condition: state
       entity_id: cover.garage_door
-      to: closed
-      for:
-        minutes: 10
+      state: open
     action:
-      service: switch.turn_off
+      service: switch.turn_on
       data:
         entity_id: switch.garage_lights_switch
