@@ -94,6 +94,7 @@ automation:
             {% set name = "Ravenclaw" %}
           {% elif trigger.entity_id == "sensor.slytherin_cpu" %}
             {% set name = "Slytherin" %}
+          {% endif %}
 
           🚨 {{ name }} has used more than 60% CPU for more than 5 minutes.
 
@@ -133,6 +134,7 @@ automation:
             {% set name = "Ravenclaw" %}
           {% elif trigger.entity_id == "sensor.slytherin_cpu" %}
             {% set name = "Slytherin" %}
+          {% endif %}
 
           🚨 {{ name }} has used more than 85% of its disk space.
 
@@ -184,6 +186,7 @@ automation:
             {% set name = "Ravenclaw" %}
           {% elif trigger.entity_id == "sensor.slytherin_cpu" %}
             {% set name = "Slytherin" %}
+          {% endif %}
 
           🚨 {{ name }} has used more than 75% memory for more than 5 minutes.
 
