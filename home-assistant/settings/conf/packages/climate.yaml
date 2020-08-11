@@ -64,9 +64,14 @@ automation:
 
   - alias: "Unset climate away mode when arriving in normal temperatures"
     trigger:
-      platform: state
-      entity_id: sensor.proximity_zone
-      to: Nearby
+      - platform: state
+        entity_id: sensor.proximity_zone
+        from: Edge
+        to: Nearby
+      - platform: state
+        entity_id: sensor.proximity_zone
+        from: Nearby
+        to: Home
     condition:
       condition: template
       value_template: >
