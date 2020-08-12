@@ -45,6 +45,3 @@ automation:
           before: sunset
     action:
       service: openuv.update_data
-
-iqvia:
-  zip_code: !secret iqvia_zip_code
