@@ -85,9 +85,6 @@ automation:
     action:
       choose:
         - conditions:
-            - condition: state
-              entity_id: binary_sensor.workday_tomorrow
-              state: "on"
             - condition: time
               after: "23:00:00"
           sequence:
