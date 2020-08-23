@@ -1,8 +1,0 @@
----
-presence_manager:
-  module: presence
-  class: PresenceManager
-  edge_threshold: input_select.edge_radius
-  home_threshold: input_select.home_radius
-  nearby_threshold: input_select.nearby_radius
-  proximity_zone_sensor: sensor.proximity_zone

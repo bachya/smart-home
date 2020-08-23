@@ -140,9 +140,6 @@ input_boolean:
   blackout_mode:
     icon: mdi:weather-night
     name: Blackout Mode
-  blackout_schedule_automation:
-    icon: mdi:brightness-4
-    name: Blackout Schedule
   guest_mode:
     icon: mdi:hotel
     name: Guest Mode

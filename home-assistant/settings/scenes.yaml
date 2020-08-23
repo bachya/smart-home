@@ -114,24 +114,8 @@
       state: "on"
     automation.update_openuv_every_30_minutes_during_the_daytime:
       state: "on"
-    input_boolean.adjust_climate_on_proximity_automation:
-      state: "on"
-    input_boolean.blackout_schedule_automation:
-      state: "on"
-    input_boolean.lightning_detected_automation:
-      state: "on"
-    input_boolean.notify_of_dead_zwave_devices_automation:
-      state: "on"
     input_boolean.notify_of_new_versions_automation:
       state: "on"
-    input_boolean.notify_when_person_on_camera_automation:
-      state: "off"
-    input_boolean.outdoor_lights_schedule_automation:
-      state: "on"
-    input_boolean.randomize_nighttime_lighting_automation:
-      state: "off"
-    input_boolean.randomize_nighttime_tvs_automation:
-      state: "off"
     switch.guardian_b4e62d98118d_valve:
       state: "on"
 
@@ -172,10 +156,6 @@
       state: "off"
     automation.turn_master_bedroom_salt_lamp_on_at_sunset:
       state: "off"
-    input_boolean.lightning_detected_automation:
-      state: "off"
-    input_boolean.notify_of_dead_zwave_devices_automation:
-      state: "off"
     input_boolean.notify_of_new_versions_automation:
       state: "off"
 
@@ -196,12 +176,6 @@
       state: "off"
     cover.garage_door:
       state: closed
-    input_boolean.notify_when_person_on_camera_automation:
-      state: "on"
-    input_boolean.randomize_nighttime_lighting_automation:
-      state: "on"
-    input_boolean.randomize_nighttime_tvs_automation:
-      state: "on"
     lock.front_door_lock_locked:
       state: locked
     lock.garage_fire_door_lock_locked:
@@ -284,11 +258,7 @@
       state: "off"
     automation.notify_of_next_trash_pickup_the_night_before:
       state: "off"
-    input_boolean.adjust_climate_on_proximity_automation:
-      state: "off"
     input_boolean.notify_of_new_versions:
-      state: "off"
-    input_boolean.notify_when_person_on_camera_automation:
       state: "off"
     automation.notify_when_time_for_wolfie_to_run:
       state: "off"
@@ -332,22 +302,12 @@
       state: "off"
     automation.turn_bar_cart_lights_on_when_we_arrive:
       state: "off"
-    input_boolean.lightning_detected_automation:
-      state: "off"
     automation.turn_master_bedroom_salt_lamp_on_at_sunset:
-      state: "off"
-    input_boolean.notify_of_dead_zwave_devices_automation:
       state: "off"
     input_boolean.notify_of_new_versions_automation:
       state: "off"
-    input_boolean.notify_when_person_on_camera_automation:
-      state: "on"
     input_boolean.office_lights_schedule_automation:
       state: "off"
-    input_boolean.randomize_nighttime_lighting_automation:
-      state: "on"
-    input_boolean.randomize_nighttime_tvs_automation:
-      state: "on"
     switch.guardian_b4e62d98118d_valve:
       state: "off"
 

@@ -1,7 +1,0 @@
----
-alexa:
-  module: alexa
-  class: Alexa
-  dependencies:
-    - presence_manager
-    - security_manager

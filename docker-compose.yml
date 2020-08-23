@@ -12,18 +12,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - almond-config:/var/lib/almond-server
 
-  appdaemon:
-    container_name: appdaemon
-    environment:
-      EXTRA_CMD: -D INFO
-    image: "acockburn/appdaemon:${APPDAEMON_VERSION}"
-    ports:
-      - "127.0.0.1:5051:5051"
-    restart: always
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - appdaemon-config:/conf
-
   esphome-dashboard:
     container_name: esphome-dashboard
     image: "esphome/esphome:${ESPHOME_VERSION}"
@@ -231,7 +219,6 @@ services:
 volumes:
 
   almond-config:
-  appdaemon-config:
   fail2ban-config:
   fail2ban-log:
   hass-config:

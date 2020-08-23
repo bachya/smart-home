@@ -86,9 +86,6 @@ automation:
         entity_id: input_boolean.climate_away_mode
 
 input_boolean:
-  adjust_climate_on_proximity_automation:
-    icon: mdi:car-side
-    name: Adjust on proximity
   climate_away_mode:
     name: "Away Mode"
     icon: mdi:thermostat

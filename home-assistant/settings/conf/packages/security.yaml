@@ -330,17 +330,6 @@ group:
       - binary_sensor.kitchen_sensor_smoke_carbon_monoxide_detector
       - binary_sensor.upstairs_hallway_sensor_smoke_carbon_monoxide_detector
 
-input_boolean:
-  notify_when_person_on_camera_automation:
-    icon: mdi:cctv
-    name: Strange person detected
-  randomize_nighttime_lighting_automation:
-    icon: mdi:timer
-    name: Randomize nighttime lighting
-  randomize_nighttime_tvs_automation:
-    icon: mdi:timer
-    name: Randomize nighttime TVs
-
 sensor:
   - platform: mqtt
     state_topic: "stat/fail2ban"

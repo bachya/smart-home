@@ -20,9 +20,6 @@ function copy_config_data() {
 # Change into the repo's dir so that docker-compose .env works correctly:
 pushd "$REPO_PATH"
 
-# Update AppDaemon configs:
-copy_config_data "hub_appdaemon-config" "$REPO_PATH/appdaemon/settings"
-
 # Update Fail2Ban configs:
 copy_config_data "hub_fail2ban-config" "$REPO_PATH/fail2ban/settings"
 

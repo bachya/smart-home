@@ -105,11 +105,3 @@ group:
     entities:
       - switch.front_patio_light_switch
       - switch.kitchen_patio_light_switch
-
-input_boolean:
-  lightning_detected_automation:
-    icon: mdi:flash
-    name: Notify when lightning detected
-  outdoor_lights_schedule_automation:
-    icon: mdi:lightbulb
-    name: Automatic schedule

@@ -333,11 +333,6 @@ binary_sensor:
     nodes:
       - linode2506384
 
-input_boolean:
-  notify_of_dead_zwave_devices_automation:
-    icon: mdi:z-wave
-    name: Notify of dead Z-Wave devices
-
 linode:
   access_token: !secret linode_access_token
 
