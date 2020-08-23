@@ -1,6 +1,6 @@
 ---
 automation:
-  - alias: "Set climate away mode when leaving in extreme temperatures"
+  - alias: "Set Climate Away Mode when leaving in extreme temperatures"
     trigger:
       platform: state
       entity_id: sensor.proximity_zone
@@ -22,7 +22,7 @@ automation:
       data:
         entity_id: input_boolean.climate_away_mode
 
-  - alias: "Set climate away mode when leaving in normal temperatures"
+  - alias: "Set Climate Away Mode when leaving in normal temperatures"
     trigger:
       platform: state
       entity_id: sensor.proximity_zone
@@ -40,7 +40,7 @@ automation:
       data:
         entity_id: input_boolean.climate_away_mode
 
-  - alias: "Unset climate away mode when arriving in extreme temperatures"
+  - alias: "Unset Climate Away Mode when arriving in extreme temperatures"
     trigger:
       platform: state
       entity_id: sensor.proximity_zone
@@ -62,7 +62,7 @@ automation:
       data:
         entity_id: input_boolean.climate_away_mode
 
-  - alias: "Unset climate away mode when arriving in normal temperatures"
+  - alias: "Unset Climate Away Mode when arriving in normal temperatures"
     trigger:
       - platform: state
         entity_id: sensor.proximity_zone
