@@ -127,7 +127,31 @@ sensor:
       - cloud_cover
 
   - platform: filter
-    name: "Filtered Wind Speed"
+    name: Filtered Average Indoor Air Quality
+    entity_id: sensor.average_indoor_air_quality
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 1
+
+  - platform: filter
+    name: Filtered Average Indoor Humidity
+    entity_id: sensor.average_indoor_humidity
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 1
+
+  - platform: filter
+    name: Filtered Average Indoor Temperature
+    entity_id: sensor.average_indoor_temperature
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 1
+
+  - platform: filter
+    name: Filtered Wind Speed
     entity_id: sensor.side_yard_wind_speed
     filters:
       - filter: lowpass
@@ -141,31 +165,24 @@ sensor:
       - filter: range
         upper_bound: 100
 
-  - platform: filter
-    name: "Filtered Average Indoor Humidity"
-    entity_id: sensor.average_indoor_humidity
-    filters:
-      - filter: lowpass
-        time_constant: 10
-        precision: 1
-
-  - platform: filter
-    name: "Filtered Average Indoor Temperature"
-    entity_id: sensor.average_indoor_temperature
-    filters:
-      - filter: lowpass
-        time_constant: 10
-        precision: 1
-
   - platform: min_max
-    name: "Average Indoor Humidity"
-    type: "mean"
+    name: Average Indoor Air Quality
+    type: mean
     round_digits: 1
     entity_ids:
-      - sensor.thermostat_humidity
+      - air_quality.bedroom
+      - air_quality.office_node_pro_air_quality
+
+  - platform: min_max
+    name: Average Indoor Humidity
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.bedroom_humidity
       - sensor.master_bathroom_humidity
       - sensor.office_node_pro_humidity
       - sensor.side_yard_humidity_in
+      - sensor.thermostat_humidity
 
   - platform: moon
 
@@ -228,15 +245,15 @@ sensor:
     type: mean
     round_digits: 1
     entity_ids:
-      - sensor.thermostat_air_temperature
+      - sensor.bedroom_temperature
       - sensor.fiddle_leaf_fig_temperature
-      - sensor.guardian_b4e62d98118d_temperature
       - sensor.guest_bedroom_sensor_temperature
       - sensor.kitchen_sensor_temperature
       - sensor.kitchen_sink_sensor_temperature
       - sensor.master_bathroom_temperature
       - sensor.office_node_pro_temperature
       - sensor.side_yard_inside_temp
+      - sensor.thermostat_air_temperature
       - sensor.upstairs_hallway_sensor_temperature
 
   - platform: min_max
