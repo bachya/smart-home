@@ -158,8 +158,8 @@ automation:
       to: "off"
     action:
       service: dyson.set_night_mode
-      entity_id: fan.bedroom
       data:
+        entity_id: fan.bedroom
         night_mode: false
 
   - alias: "Turn Dyson's night mode on"
@@ -176,8 +176,8 @@ automation:
         to: "on"
     action:
       service: dyson.set_night_mode
-      entity_id: fan.bedroom
       data:
+        entity_id: fan.bedroom
         night_mode: "true"
 
   - alias: "Turn Dyson higher when it's hot in the bedroom"
@@ -195,13 +195,13 @@ automation:
               }}
           sequence:
             service: fan.set_speed
-            entity_id: fan.bedroom
             data:
+              entity_id: fan.bedroom
               speed: high
       default:
         service: fan.set_speed
-        entity_id: fan.bedroom
         data:
+          entity_id: fan.bedroom
           speed: medium
 
   - alias: "Turn master bedroom salt lamp on at sunset"
