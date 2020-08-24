@@ -174,17 +174,17 @@ automation:
       service: notify.slack
       data_template:
         message: >
-          {% if trigger.entity_id == "sensor.gryffindor_cpu" %}
+          {% if trigger.entity_id == "sensor.gryffindor_virtual_memory" %}
             {% set name = "Gryffindor" %}
-          {% elif trigger.entity_id == "sensor.hub_cpu" %}
+          {% elif trigger.entity_id == "sensor.hub_virtual_memory" %}
             {% set name = "Hub" %}
-          {% elif trigger.entity_id == "sensor.hufflepuff_cpu" %}
+          {% elif trigger.entity_id == "sensor.hufflepuff_virtual_memory" %}
             {% set name = "Hufflepuff" %}
-          {% elif trigger.entity_id == "sensor.linode_cpu" %}
+          {% elif trigger.entity_id == "sensor.linode_virtual_memory" %}
             {% set name = "Linode" %}
-          {% elif trigger.entity_id == "sensor.ravenclaw_cpu" %}
+          {% elif trigger.entity_id == "sensor.ravenclaw_virtual_memory" %}
             {% set name = "Ravenclaw" %}
-          {% elif trigger.entity_id == "sensor.slytherin_cpu" %}
+          {% elif trigger.entity_id == "sensor.slytherin_virtual_memory" %}
             {% set name = "Slytherin" %}
           {% endif %}
 
