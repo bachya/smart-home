@@ -151,6 +151,32 @@ automation:
               states("input_number.master_bedroom_salt_lamp_timer") | int * 60
             }}
 
+  - alias: "Turn Dyson higher when it's hot in the bedroom"
+    trigger:
+      platform: state
+      entity_id: sensor.side_yard_temp
+    condition:
+      condition: state
+      entity_id: input_boolean.blackout_mode
+      state: "off"
+    action:
+      choose:
+        - conditions:
+            condition: template
+            entity_id: >
+              {{
+                float(states("sensor.bedroom_temperature")) >
+                float(states("input_number.thermostat_eco_high_threshold"))
+              }}
+          sequence:
+            service: fan.set_speed
+            entity_id: fan.bedroom
+            speed: high
+      default:
+        service: fan.set_speed
+        entity_id: fan.bedroom
+        speed: medium
+
   - alias: "Turn master bedroom salt lamp on at sunset"
     trigger:
       platform: event

@@ -12,7 +12,6 @@ automation:
         at: "23:00:00"
       - platform: event
         event_type: LOCAL_SUNSET
-    condition:
     action:
       choose:
         - conditions:
