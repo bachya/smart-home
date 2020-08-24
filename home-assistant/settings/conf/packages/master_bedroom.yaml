@@ -158,9 +158,8 @@ automation:
       to: "off"
     action:
       service: dyson.set_night_mode
-      service_data:
-        entity_id: fan.bedroom
-        night_mode: false
+      entity_id: fan.bedroom
+      night_mode: false
 
   - alias: "Turn Dyson's night mode on"
     trigger:
