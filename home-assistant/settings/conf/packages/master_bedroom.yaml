@@ -151,6 +151,35 @@ automation:
               states("input_number.master_bedroom_salt_lamp_timer") | int * 60
             }}
 
+  - alias: "Turn Dyson's night off"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.blackout_mode
+        state: "off"
+    action:
+      service: dyson.set_night_mode
+      service_data:
+        entity_id: fan.bedroom
+        night_mode: false
+
+  - alias: "Turn Dyson's night mode"
+    trigger:
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: scene
+          service: turn_on
+          service_data:
+            entity_id: scene.good_night
+      - platform: state
+        entity_id: input_boolean.blackout_mode
+        state: "on"
+    action:
+      service: dyson.set_night_mode
+      service_data:
+        entity_id: fan.bedroom
+        night_mode: true
+
   - alias: "Turn Dyson higher when it's hot in the bedroom"
     trigger:
       platform: state
@@ -170,12 +199,14 @@ automation:
               }}
           sequence:
             service: fan.set_speed
-            entity_id: fan.bedroom
-            speed: high
+            service_data:
+              entity_id: fan.bedroom
+              speed: high
       default:
         service: fan.set_speed
-        entity_id: fan.bedroom
-        speed: medium
+        service_data:
+          entity_id: fan.bedroom
+          speed: medium
 
   - alias: "Turn master bedroom salt lamp on at sunset"
     trigger:
