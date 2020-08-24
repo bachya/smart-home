@@ -60,7 +60,7 @@ automation:
             service: climate.set_temperature
             entity_id: climate.thermostat
             data:
-              temperature: 72
+              temperature: 71
         # Heat Away Mode
         - conditions:
             condition: template
