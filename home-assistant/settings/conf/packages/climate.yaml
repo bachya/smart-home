@@ -2,6 +2,8 @@
 automation:
   - alias: "Climate Schedule"
     trigger:
+      - platform: homeassistant
+        event: start
       - platform: state
         entity_id: input_boolean.blackout_mode
         to: "off"
