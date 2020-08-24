@@ -153,9 +153,9 @@ automation:
 
   - alias: "Turn Dyson's night off"
     trigger:
-      - platform: state
-        entity_id: input_boolean.blackout_mode
-        state: "off"
+      platform: state
+      entity_id: input_boolean.blackout_mode
+      to: "off"
     action:
       service: dyson.set_night_mode
       service_data:
@@ -173,7 +173,7 @@ automation:
             entity_id: scene.good_night
       - platform: state
         entity_id: input_boolean.blackout_mode
-        state: "on"
+        to: "on"
     action:
       service: dyson.set_night_mode
       service_data:
