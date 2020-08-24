@@ -151,7 +151,7 @@ automation:
               states("input_number.master_bedroom_salt_lamp_timer") | int * 60
             }}
 
-  - alias: "Turn Dyson's night off"
+  - alias: "Turn Dyson's night mode off"
     trigger:
       platform: state
       entity_id: input_boolean.blackout_mode
@@ -162,7 +162,7 @@ automation:
         entity_id: fan.bedroom
         night_mode: false
 
-  - alias: "Turn Dyson's night mode"
+  - alias: "Turn Dyson's night mode on"
     trigger:
       - platform: event
         event_type: call_service

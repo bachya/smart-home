@@ -88,6 +88,10 @@
       state: "on"
     automation.turn_dyson_higher_when_it_s_hot_in_the_bedroom:
       state: "on"
+    automation.turn_dyson_s_night_mode_off:
+      state: "on"
+    automation.turn_dyson_s_night_mode_on:
+      state: "on"
     automation.turn_lights_off_when_person_detected_at_nighttime_leaves:
       state: "on"
     automation.turn_lights_on_when_person_detected_at_nighttime:
@@ -293,6 +297,10 @@
     automation.notify_when_wolfie_needs_a_sensor_cleaning:
       state: "off"
     automation.notify_when_wolfie_needs_a_new_side_brush:
+      state: "off"
+    automation.turn_dyson_s_night_mode_off:
+      state: "off"
+    automation.turn_dyson_s_night_mode_on:
       state: "off"
     automation.turn_dyson_higher_when_it_s_hot_in_the_bedroom:
       state: "off"
