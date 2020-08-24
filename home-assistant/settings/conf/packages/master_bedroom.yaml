@@ -183,10 +183,6 @@ automation:
     trigger:
       platform: state
       entity_id: sensor.side_yard_temp
-    condition:
-      condition: state
-      entity_id: input_boolean.blackout_mode
-      state: "off"
     action:
       choose:
         - conditions:
