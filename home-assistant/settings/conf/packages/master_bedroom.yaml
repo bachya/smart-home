@@ -178,7 +178,7 @@ automation:
       service: dyson.set_night_mode
       entity_id: fan.bedroom
       data:
-        night_mode: true
+        night_mode: "true"
 
   - alias: "Turn Dyson higher when it's hot in the bedroom"
     trigger:
