@@ -188,7 +188,7 @@ automation:
       choose:
         - conditions:
             condition: template
-            entity_id: >
+            value_template: >
               {{
                 float(states("sensor.bedroom_temperature")) >
                 float(states("input_number.thermostat_eco_high_threshold"))
