@@ -1,5 +1,104 @@
 ---
 automation:
+  - alias: "Climate Schedule"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.blackout_mode
+        to: "off"
+      - platform: state
+        entity_id: input_boolean.blackout_mode
+        to: "on"
+      - platform: state
+        entity_id: input_boolean.climate_away_mode
+        to: "off"
+      - platform: state
+        entity_id: input_boolean.climate_away_mode
+        to: "on"
+    action:
+      choose:
+        # A/C Away Mode
+        - conditions:
+            condition: template
+            value_template: >
+              {{
+                is_state("climate.thermostat", "cool")
+                and is_state("input_boolean.climate_away_mode", "on")
+              }}
+          sequence:
+            service: climate.set_temperature
+            entity_id: climate.thermostat
+            data_template:
+              temperature: "{{ input_number.thermostat_eco_high_threshold }}"
+        # A/C Daytime
+        - conditions:
+            condition: template
+            value_template: >
+              {{
+                is_state("climate.thermostat", "cool")
+                and is_state("input_boolean.blackout_mode", "off")
+                and is_state("input_boolean.climate_away_mode", "off")
+              }}
+          sequence:
+            service: climate.set_temperature
+            entity_id: climate.thermostat
+            data:
+              temperature: 75
+        # A/C Nighttime
+        - conditions:
+            condition: template
+            value_template: >
+              {{
+                is_state("climate.thermostat", "cool")
+                and is_state("input_boolean.blackout_mode", "off")
+                and is_state("input_boolean.climate_away_mode", "off")
+              }}
+          sequence:
+            service: climate.set_temperature
+            entity_id: climate.thermostat
+            data:
+              temperature: 72
+        # Heat Away Mode
+        - conditions:
+            condition: template
+            value_template: >
+              {{
+                is_state("climate.thermostat", "heat")
+                and is_state("input_boolean.climate_away_mode", "on")
+              }}
+          sequence:
+            service: climate.set_temperature
+            entity_id: climate.thermostat
+            data_template:
+              temperature: "{{ input_number.thermostat_eco_low_threshold }}"
+        # Heat Daytime
+        - conditions:
+            condition: template
+            value_template: >
+              {{
+                is_state("climate.thermostat", "heat")
+                and is_state("input_boolean.blackout_mode", "off")
+                and is_state("input_boolean.climate_away_mode", "off")
+              }}
+          sequence:
+            service: climate.set_temperature
+            entity_id: climate.thermostat
+            data:
+              temperature: 68
+        # Heat Nighttime
+        - conditions:
+            condition: template
+            value_template: >
+              {{
+                is_state("climate.thermostat", "heat")
+                and is_state("input_boolean.blackout_mode", "on")
+                and is_state("input_boolean.climate_away_mode", "off")
+              }}
+          sequence:
+            service: climate.set_temperature
+            entity_id: climate.thermostat
+            data:
+              temperature: 70
+
   - alias: "Set Climate Away Mode when leaving in extreme temperatures"
     trigger:
       platform: state
