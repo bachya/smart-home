@@ -25,7 +25,7 @@ automation:
             condition: template
             value_template: >
               {{
-                is_state("climate.thermostat", "cool")
+                is_state("climate.thermostat_mode", "cool")
                 and is_state("input_boolean.climate_away_mode", "on")
               }}
           sequence:
@@ -38,7 +38,7 @@ automation:
             condition: template
             value_template: >
               {{
-                is_state("climate.thermostat", "cool")
+                is_state("climate.thermostat_mode", "cool")
                 and is_state("input_boolean.blackout_mode", "off")
                 and is_state("input_boolean.climate_away_mode", "off")
               }}
@@ -52,7 +52,7 @@ automation:
             condition: template
             value_template: >
               {{
-                is_state("climate.thermostat", "cool")
+                is_state("climate.thermostat_mode", "cool")
                 and is_state("input_boolean.blackout_mode", "off")
                 and is_state("input_boolean.climate_away_mode", "off")
               }}
@@ -66,7 +66,7 @@ automation:
             condition: template
             value_template: >
               {{
-                is_state("climate.thermostat", "heat")
+                is_state("climate.thermostat_mode", "heat")
                 and is_state("input_boolean.climate_away_mode", "on")
               }}
           sequence:
@@ -79,7 +79,7 @@ automation:
             condition: template
             value_template: >
               {{
-                is_state("climate.thermostat", "heat")
+                is_state("climate.thermostat_mode", "heat")
                 and is_state("input_boolean.blackout_mode", "off")
                 and is_state("input_boolean.climate_away_mode", "off")
               }}
@@ -93,7 +93,7 @@ automation:
             condition: template
             value_template: >
               {{
-                is_state("climate.thermostat", "heat")
+                is_state("climate.thermostat_mode", "heat")
                 and is_state("input_boolean.blackout_mode", "on")
                 and is_state("input_boolean.climate_away_mode", "off")
               }}
