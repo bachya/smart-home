@@ -8,16 +8,8 @@ automation:
         entity_id: climate.thermostat_mode
       - platform: state
         entity_id: input_boolean.blackout_mode
-        to: "off"
-      - platform: state
-        entity_id: input_boolean.blackout_mode
-        to: "on"
       - platform: state
         entity_id: input_boolean.climate_away_mode
-        to: "off"
-      - platform: state
-        entity_id: input_boolean.climate_away_mode
-        to: "on"
       - platform: state
         entity_id: input_boolean.thermostat_eco_high_threshold
       - platform: state
