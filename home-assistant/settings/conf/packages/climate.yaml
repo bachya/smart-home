@@ -9,7 +9,7 @@ automation:
       - platform: state
         entity_id: input_boolean.blackout_mode
       - platform: state
-        entity_id: input_boolean.climate_away_mode
+        entity_id: input_boolean.away_mode
       - platform: state
         entity_id: input_number.thermostat_eco_high_threshold
       - platform: state
@@ -22,7 +22,7 @@ automation:
             value_template: >
               {{
                 is_state("climate.thermostat_mode", "cool")
-                and is_state("input_boolean.climate_away_mode", "on")
+                and is_state("input_boolean.away_mode", "on")
               }}
           sequence:
             service: climate.set_temperature
@@ -36,7 +36,7 @@ automation:
               {{
                 is_state("climate.thermostat_mode", "cool")
                 and is_state("input_boolean.blackout_mode", "off")
-                and is_state("input_boolean.climate_away_mode", "off")
+                and is_state("input_boolean.away_mode", "off")
               }}
           sequence:
             service: climate.set_temperature
@@ -50,7 +50,7 @@ automation:
               {{
                 is_state("climate.thermostat_mode", "cool")
                 and is_state("input_boolean.blackout_mode", "on")
-                and is_state("input_boolean.climate_away_mode", "off")
+                and is_state("input_boolean.away_mode", "off")
               }}
           sequence:
             service: climate.set_temperature
@@ -63,7 +63,7 @@ automation:
             value_template: >
               {{
                 is_state("climate.thermostat_mode", "heat")
-                and is_state("input_boolean.climate_away_mode", "on")
+                and is_state("input_boolean.away_mode", "on")
               }}
           sequence:
             service: climate.set_temperature
@@ -77,7 +77,7 @@ automation:
               {{
                 is_state("climate.thermostat_mode", "heat")
                 and is_state("input_boolean.blackout_mode", "off")
-                and is_state("input_boolean.climate_away_mode", "off")
+                and is_state("input_boolean.away_mode", "off")
               }}
           sequence:
             service: climate.set_temperature
@@ -91,7 +91,7 @@ automation:
               {{
                 is_state("climate.thermostat_mode", "heat")
                 and is_state("input_boolean.blackout_mode", "on")
-                and is_state("input_boolean.climate_away_mode", "off")
+                and is_state("input_boolean.away_mode", "off")
               }}
           sequence:
             service: climate.set_temperature
@@ -119,7 +119,7 @@ automation:
     action:
       service: input_boolean.turn_on
       data:
-        entity_id: input_boolean.climate_away_mode
+        entity_id: input_boolean.away_mode
 
   - alias: "Set Climate Away Mode when leaving in normal temperatures"
     trigger:
@@ -137,7 +137,7 @@ automation:
     action:
       service: input_boolean.turn_on
       data:
-        entity_id: input_boolean.climate_away_mode
+        entity_id: input_boolean.away_mode
 
   - alias: "Unset Climate Away Mode when arriving in extreme temperatures"
     trigger:
@@ -159,7 +159,7 @@ automation:
     action:
       service: input_boolean.turn_off
       data:
-        entity_id: input_boolean.climate_away_mode
+        entity_id: input_boolean.away_mode
 
   - alias: "Unset Climate Away Mode when arriving in normal temperatures"
     trigger:
@@ -182,12 +182,7 @@ automation:
     action:
       service: input_boolean.turn_off
       data:
-        entity_id: input_boolean.climate_away_mode
-
-input_boolean:
-  climate_away_mode:
-    name: "Away Mode"
-    icon: mdi:thermostat
+        entity_id: input_boolean.away_mode
 
 input_number:
   outdoor_extreme_high_threshold:

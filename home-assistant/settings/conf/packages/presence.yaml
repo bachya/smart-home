@@ -6,6 +6,11 @@ group:
       - person.aaron
       - person.britt
 
+input_boolean:
+  away_mode:
+    name: "Away Mode"
+    icon: mdi:home-search
+
 input_number:
   edge_radius:
     name: Edge Radius
