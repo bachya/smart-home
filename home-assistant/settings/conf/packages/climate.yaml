@@ -4,7 +4,7 @@ automation:
     trigger:
       - platform: homeassistant
         event: start
-      - platform: climate
+      - platform: state
         entity_id: climate.thermostat_mode
       - platform: state
         entity_id: input_boolean.blackout_mode
