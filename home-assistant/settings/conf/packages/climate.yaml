@@ -11,9 +11,9 @@ automation:
       - platform: state
         entity_id: input_boolean.climate_away_mode
       - platform: state
-        entity_id: input_boolean.thermostat_eco_high_threshold
+        entity_id: input_number.thermostat_eco_high_threshold
       - platform: state
-        entity_id: input_boolean.thermostat_low_high_threshold
+        entity_id: input_number.thermostat_eco_low_threshold
     action:
       choose:
         # A/C Away Mode
