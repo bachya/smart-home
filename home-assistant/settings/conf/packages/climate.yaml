@@ -41,7 +41,7 @@ automation:
           sequence:
             service: climate.set_temperature
             data:
-              entity_id: climate.thermostat
+              entity_id: climate.thermostat_mode
               temperature: 75
         # A/C Nighttime
         - conditions:
@@ -55,7 +55,7 @@ automation:
           sequence:
             service: climate.set_temperature
             data:
-              entity_id: climate.thermostat
+              entity_id: climate.thermostat_mode
               temperature: 71
         # Heat Away Mode
         - conditions:
@@ -68,7 +68,7 @@ automation:
           sequence:
             service: climate.set_temperature
             data_template:
-              entity_id: climate.thermostat
+              entity_id: climate.thermostat_mode
               temperature: "{{ input_number.thermostat_eco_low_threshold }}"
         # Heat Daytime
         - conditions:
@@ -82,7 +82,7 @@ automation:
           sequence:
             service: climate.set_temperature
             data:
-              entity_id: climate.thermostat
+              entity_id: climate.thermostat_mode
               temperature: 68
         # Heat Nighttime
         - conditions:
@@ -96,7 +96,7 @@ automation:
           sequence:
             service: climate.set_temperature
             data:
-              entity_id: climate.thermostat
+              entity_id: climate.thermostat_mode
               temperature: 70
 
   - alias: "Set Climate Away Mode when leaving in extreme temperatures"
