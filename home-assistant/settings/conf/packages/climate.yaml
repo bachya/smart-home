@@ -6,6 +6,12 @@ automation:
         event: start
       - platform: state
         entity_id: climate.thermostat_mode
+        from: cool
+        to: heat
+      - platform: state
+        entity_id: climate.thermostat_mode
+        from: heat
+        to: cool
       - platform: state
         entity_id: input_boolean.blackout_mode
       - platform: state
