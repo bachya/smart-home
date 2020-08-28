@@ -80,7 +80,7 @@ automation:
       event_type: ZWAVE_DOUBLE_TAP
       event_data:
         entity_id: sensor.master_toilet_fan_basic
-        value: 255
+        value: "255"
     action:
       service: input_number.set_value
       data:

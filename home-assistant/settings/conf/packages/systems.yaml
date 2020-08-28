@@ -337,6 +337,9 @@ automation:
       conditions:
         - condition: template
           value_template: >
+            {{ trigger.from_state.state == trigger.to_state.state }}
+        - condition: template
+          value_template: >
             {{ trigger.from_state.state in ("unavailable", "unknown") }}
         - condition: template
           value_template: >
