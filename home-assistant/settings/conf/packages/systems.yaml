@@ -328,6 +328,28 @@ automation:
       data_template:
         entity_id: switch.media_center
 
+  - alias: "Z-Wave Double-Tab Manager"
+    trigger:
+      - platform: state
+        entity_id: sensor.master_toilet_fan_basic
+    condition:
+      condition: not
+      conditions:
+        - condition: template
+          value_template: >
+            {{ trigger.from_state.state in ("unavailable", "unknown") }}
+        - condition: template
+          value_template: >
+            {{ trigger.to_state.state in ("unavailable", "unknown") }}
+        - condition: template
+          value_template: >
+            {{ not trigger.to_state.state }}
+    action:
+      event: ZWAVE_DOUBLE_TAP
+      event_data_template:
+        entity_id: "{{ trigger.entity_id }}"
+        value: "{{ trigger.to_state.state }}"
+
 binary_sensor:
   - platform: linode
     nodes:
