@@ -335,7 +335,7 @@ automation:
       service: switch.turn_on
       entity_id: switch.media_center
 
-  - alias: "Z-Wave Double-Tab Manager"
+  - alias: "Z-Wave Double-Tap Manager"
     trigger:
       - platform: state
         entity_id: sensor.master_toilet_fan_basic
