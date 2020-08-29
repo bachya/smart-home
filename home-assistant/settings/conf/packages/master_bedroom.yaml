@@ -37,11 +37,10 @@ automation:
           duration: >
             {{ states("input_number.master_bathroom_fan_timer") | int * 60 }}
 
-  - alias: Cancel master toilet fan timer
+  - alias: "Master Toilet Fan Timer"
     trigger:
-      - platform: numeric_state
+      - platform: state
         entity_id: input_number.master_toilet_fan_timer
-        below: 1
       - platform: state
         entity_id: switch.master_toilet_fan_switch
         to: "off"
@@ -49,30 +48,49 @@ automation:
         entity_id: timer.master_toilet_fan_timer
         to: idle
     action:
-      - service: input_number.set_value
-        data:
-          entity_id: input_number.master_toilet_fan_timer
-          value: 0
-      - service: switch.turn_off
-        data:
-          entity_id: switch.master_toilet_fan_switch
-      - service: timer.cancel
-        data:
-          entity_id: timer.master_toilet_fan_timer
-
-  - alias: Set master toilet fan timer
-    trigger:
-      platform: state
-      entity_id: input_number.master_toilet_fan_timer
-    action:
-      - service: switch.turn_on
-        data:
-          entity_id: switch.master_toilet_fan_switch
-      - service: timer.start
-        data_template:
-          entity_id: timer.master_toilet_fan_timer
-          duration: >
-            {{ states("input_number.master_toilet_fan_timer") | int * 60 }}
+      choose:
+        # Input Number gets set to something greater than 0
+        - conditions:
+            - condition: numeric_state
+              entity_id: input_number.master_toilet_fan_timer
+              above: 0
+          sequence:
+            - service: timer.start
+              data_template:
+                entity_id: timer.master_toilet_fan_timer
+                duration: >
+                  {{
+                    states("input_number.master_toilet_fan_timer") | int * 60
+                  }}
+            - service: switch.turn_on
+              entity_id: switch.master_toilet_fan_switch
+        # Input Number gets set to 0
+        - conditions:
+            - condition: numeric_state
+              entity_id: input_number.master_toilet_fan_timer
+              below: 1
+          sequence:
+            - service: timer.cancel
+              entity_id: timer.master_toilet_fan_timer
+            - service: input_number.set_value
+              entity_id: input_number.master_toilet_fan_timer
+              data:
+                value: 0
+            - service: switch.turn_off
+              entity_id: switch.master_toilet_fan_switch
+        # Switch is turned off or timer expires
+        - conditions:
+            - condition: or
+              conditions:
+                - condition: state
+                  entity_id: switch.master_toilet_fan_switch
+                  to: "off"
+                - condition: state
+                  entity_id: timer.master_toilet_fan_timer
+                  to: idle
+          sequence:
+            - service: switch.turn_off
+              entity_id: switch.master_toilet_fan_switch
 
   - alias: "Set sleep timer on master toilet fan when switch double tapped"
     trigger:
