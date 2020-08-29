@@ -48,6 +48,9 @@ automation:
       after: "17:00:00"
     action:
       - event: LOCAL_SUNSET
+      - service: automation.turn_off
+        entity_id: >
+          automation.fire_local_event_for_weather_station_detected_sunset
 
   - alias: "Handle backyard lights via double-tapping the kitchen patio light"
     trigger:
