@@ -84,10 +84,10 @@ automation:
               conditions:
                 - condition: state
                   entity_id: switch.master_toilet_fan_switch
-                  to: "off"
+                  state: "off"
                 - condition: state
                   entity_id: timer.master_toilet_fan_timer
-                  to: idle
+                  state: idle
           sequence:
             - service: switch.turn_off
               entity_id: switch.master_toilet_fan_switch
