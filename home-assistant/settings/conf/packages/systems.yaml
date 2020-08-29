@@ -316,8 +316,7 @@ automation:
       at: "01:30:00"
     action:
       service: switch.turn_off
-      data_template:
-        entity_id: switch.media_center
+      entity_id: switch.media_center
 
   - alias: "Power media center on (backup)"
     trigger:
@@ -325,8 +324,7 @@ automation:
       at: "01:00:00"
     action:
       service: switch.turn_on
-      data_template:
-        entity_id: switch.media_center
+      entity_id: switch.media_center
 
   - alias: "Z-Wave Double-Tab Manager"
     trigger:
