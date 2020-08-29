@@ -44,8 +44,26 @@ automation:
       - platform: sun
         event: sunset
     condition:
-      condition: time
-      after: "17:00:00"
+      condition: and
+      conditions:
+        - condition: time
+          after: "17:00:00"
+          # As it gets darker, this automation has the possibility of firing
+          # multiple times; this conditions forces it to only fire once per day:
+        - condition: template
+          value_template: >
+            {%
+              set last_triggered_day = as_timestamp(
+                state_attr(
+                  "automation.fire_local_event_for_weather_station_detected_sunset",
+                  "last_triggered"
+                )
+              ) | timestamp_custom('%-d')
+            %}
+            {%
+              set today = as_timestamp(now()) | timestamp_custom('%-d')
+            %}
+            {{ last_triggered_day != today }}
     action:
       - event: LOCAL_SUNSET
       - service: automation.turn_off
