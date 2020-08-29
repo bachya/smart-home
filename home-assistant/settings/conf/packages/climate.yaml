@@ -34,7 +34,8 @@ automation:
             service: climate.set_temperature
             data_template:
               entity_id: climate.thermostat
-              temperature: "{{ input_number.thermostat_eco_high_threshold }}"
+              temperature: >
+                {{ states("input_number.thermostat_eco_high_threshold")|int }}
         # A/C Daytime
         - conditions:
             condition: template
@@ -75,7 +76,8 @@ automation:
             service: climate.set_temperature
             data_template:
               entity_id: climate.thermostat_mode
-              temperature: "{{ input_number.thermostat_eco_low_threshold }}"
+              temperature: >
+                {{ states("input_number.thermostat_eco_low_threshold")|int }}
         # Heat Daytime
         - conditions:
             condition: template
