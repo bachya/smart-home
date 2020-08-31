@@ -32,8 +32,8 @@ automation:
               }}
           sequence:
             service: climate.set_temperature
+            entity_id: climate.thermostat_mode
             data_template:
-              entity_id: climate.thermostat
               temperature: >
                 {{ states("input_number.thermostat_eco_high_threshold")|int }}
         # A/C Daytime
@@ -47,8 +47,8 @@ automation:
               }}
           sequence:
             service: climate.set_temperature
+            entity_id: climate.thermostat_mode
             data:
-              entity_id: climate.thermostat_mode
               temperature: 75
         # A/C Nighttime
         - conditions:
@@ -61,9 +61,9 @@ automation:
               }}
           sequence:
             service: climate.set_temperature
+            entity_id: climate.thermostat_mode
             data:
-              entity_id: climate.thermostat_mode
-              temperature: 71
+              temperature: 72
         # Heat Away Mode
         - conditions:
             condition: template
@@ -74,8 +74,8 @@ automation:
               }}
           sequence:
             service: climate.set_temperature
+            entity_id: climate.thermostat_mode
             data_template:
-              entity_id: climate.thermostat_mode
               temperature: >
                 {{ states("input_number.thermostat_eco_low_threshold")|int }}
         # Heat Daytime
@@ -89,8 +89,8 @@ automation:
               }}
           sequence:
             service: climate.set_temperature
+            entity_id: climate.thermostat_mode
             data:
-              entity_id: climate.thermostat_mode
               temperature: 68
         # Heat Nighttime
         - conditions:
@@ -103,8 +103,8 @@ automation:
               }}
           sequence:
             service: climate.set_temperature
+            entity_id: climate.thermostat_mode
             data:
-              entity_id: climate.thermostat_mode
               temperature: 70
 
   - alias: "Set Climate Away Mode when leaving in extreme temperatures"
