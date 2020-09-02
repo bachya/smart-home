@@ -81,8 +81,8 @@ automation:
             - service: timer.cancel
               entity_id: timer.master_toilet_fan_timer
             - service: input_number.set_value
-              entity_id: input_number.master_toilet_fan_timer
               data:
+                entity_id: input_number.master_toilet_fan_timer
                 value: 0
             - service: switch.turn_off
               entity_id: switch.master_toilet_fan_switch
