@@ -44,7 +44,7 @@ automation:
           sequence:
             - service: input_number.set_value
               data:
-                entity_id: input_number.master_toilet_fan_timer
+                entity_id: input_number.master_bathroom_fan_timer
                 value: 30
 
   - alias: "Master Bathroom Fan Timer"
