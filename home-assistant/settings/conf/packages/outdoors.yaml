@@ -72,25 +72,21 @@ automation:
 
   - alias: "Handle backyard lights via double-tapping the kitchen patio light"
     trigger:
-      - platform: state
+      platform: event
+      event_type: ZWAVE_DOUBLE_TAP
+      event_data:
         entity_id: sensor.kitchen_patio_light_basic
-        from: "0"
-        to: "255"
-      - platform: state
-        entity_id: sensor.kitchen_patio_light_basic
-        from: "255"
-        to: "0"
     action:
       choose:
         - conditions:
             condition: template
-            value_template: "{{ trigger.to_state.state == 0 }}"
+            value_template: "{{ trigger.event.data.value == 0 }}"
           sequence:
             - service: switch.turn_off
               entity_id: switch.backyard_lights_switch
         - conditions:
             condition: template
-            value_template: "{{ trigger.to_state.state == 255 }}"
+            value_template: "{{ trigger.event.data.value == 255 }}"
           sequence:
             - service: switch.turn_on
               entity_id: switch.backyard_lights_switch

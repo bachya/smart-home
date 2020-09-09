@@ -338,6 +338,8 @@ automation:
   - alias: "Z-Wave Double-Tap Manager"
     trigger:
       - platform: state
+        entity_id: sensor.kitchen_patio_light_basic
+      - platform: state
         entity_id: sensor.master_bathroom_fan_basic
       - platform: state
         entity_id: sensor.master_toilet_fan_basic
