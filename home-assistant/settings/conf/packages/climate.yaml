@@ -91,7 +91,7 @@ automation:
             service: climate.set_temperature
             entity_id: climate.thermostat_mode
             data:
-              temperature: 68
+              temperature: 70
         # Heat Nighttime
         - conditions:
             condition: template
@@ -105,7 +105,7 @@ automation:
             service: climate.set_temperature
             entity_id: climate.thermostat_mode
             data:
-              temperature: 70
+              temperature: 68
 
   - alias: "Set Climate Away Mode when leaving in extreme temperatures"
     trigger:
