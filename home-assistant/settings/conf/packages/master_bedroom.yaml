@@ -42,14 +42,50 @@ automation:
       - platform: state
         entity_id: input_number.master_toilet_fan_timer
       - platform: state
-        entity_id: switch.master_toilet_fan_switch
-        to: "off"
-      - platform: state
         entity_id: timer.master_toilet_fan_timer
         to: idle
+      - platform: state
+        entity_id: switch.master_toilet_fan_switch
+        to: "off"
     action:
       choose:
-        # Input Number gets set to something greater than 0
+        # 1. The timer expires
+        - conditions:
+            - condition: template
+              value_template: >
+                {{ trigger.to_state.state == "idle" }}
+          sequence:
+            - service: switch.turn_off
+              entity_id: switch.master_toilet_fan_switch
+            - service: input_number.set_value
+              data:
+                entity_id: input_number.master_toilet_fan_timer
+                value: 0
+        # 2. The switch is manually turned off
+        - conditions:
+            - condition: template
+              value_template: >
+                {{ trigger.to_state.state == "off" }}
+          sequence:
+            - service: timer.cancel
+              data_template:
+                entity_id: timer.master_toilet_fan_timer
+            - service: input_number.set_value
+              data:
+                entity_id: input_number.master_toilet_fan_timer
+                value: 0
+        # 3. The slider is dragged to 0
+        - conditions:
+            - condition: numeric_state
+              entity_id: input_number.master_toilet_fan_timer
+              below: 1
+          sequence:
+            - service: timer.cancel
+              data_template:
+                entity_id: timer.master_toilet_fan_timer
+            - service: switch.turn_off
+              entity_id: switch.master_toilet_fan_switch
+        # 4. The slider is dragged above 0
         - conditions:
             - condition: numeric_state
               entity_id: input_number.master_toilet_fan_timer
@@ -63,28 +99,6 @@ automation:
                     states("input_number.master_toilet_fan_timer") | int * 60
                   }}
             - service: switch.turn_on
-              entity_id: switch.master_toilet_fan_switch
-        # Input Number gets set to 0, switch is turned off, or timer expires
-        - conditions:
-            - condition: or
-              conditions:
-                - condition: numeric_state
-                  entity_id: input_number.master_toilet_fan_timer
-                  below: 1
-                - condition: state
-                  entity_id: switch.master_toilet_fan_switch
-                  state: "off"
-                - condition: state
-                  entity_id: timer.master_toilet_fan_timer
-                  state: idle
-          sequence:
-            - service: timer.cancel
-              entity_id: timer.master_toilet_fan_timer
-            - service: input_number.set_value
-              data:
-                entity_id: input_number.master_toilet_fan_timer
-                value: 0
-            - service: switch.turn_off
               entity_id: switch.master_toilet_fan_switch
 
   - alias: "Set sleep timer on master toilet fan when switch double tapped"
