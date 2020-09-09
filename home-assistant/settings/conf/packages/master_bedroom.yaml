@@ -1,41 +1,68 @@
 ---
 automation:
-  - alias: Cancel master bathroom fan timer
+  - alias: "Master Bathroom Fan Timer"
     trigger:
-      - platform: numeric_state
-        entity_id: input_number.master_bathroom_fan_timer
-        below: 1
       - platform: state
-        entity_id: switch.master_bathroom_fan_switch
-        to: "off"
+        entity_id: input_number.master_bathroom_fan_timer
       - platform: state
         entity_id: timer.master_bathroom_fan_timer
         to: idle
+      - platform: state
+        entity_id: switch.master_bathroom_fan_switch
+        to: "off"
     action:
-      - service: input_number.set_value
-        data:
-          entity_id: input_number.master_bathroom_fan_timer
-          value: 0
-      - service: switch.turn_off
-        data:
-          entity_id: switch.master_bathroom_fan_switch
-      - service: timer.cancel
-        data:
-          entity_id: timer.master_bathroom_fan_timer
-
-  - alias: Set master bathroom fan timer
-    trigger:
-      platform: state
-      entity_id: input_number.master_bathroom_fan_timer
-    action:
-      - service: switch.turn_on
-        data:
-          entity_id: switch.master_bathroom_fan_switch
-      - service: timer.start
-        data_template:
-          entity_id: timer.master_bathroom_fan_timer
-          duration: >
-            {{ states("input_number.master_bathroom_fan_timer") | int * 60 }}
+      choose:
+        # 1. The timer expires
+        - conditions:
+            - condition: template
+              value_template: >
+                {{ trigger.to_state.state == "idle" }}
+          sequence:
+            - service: switch.turn_off
+              entity_id: switch.master_bathroom_fan_switch
+            - service: input_number.set_value
+              data:
+                entity_id: input_number.master_bathroom_fan_timer
+                value: 0
+        # 2. The switch is manually turned off
+        - conditions:
+            - condition: template
+              value_template: >
+                {{ trigger.to_state.state == "off" }}
+          sequence:
+            - service: timer.cancel
+              data_template:
+                entity_id: timer.master_bathroom_fan_timer
+            - service: input_number.set_value
+              data:
+                entity_id: input_number.master_bathroom_fan_timer
+                value: 0
+        # 3. The slider is dragged to 0
+        - conditions:
+            - condition: numeric_state
+              entity_id: input_number.master_bathroom_fan_timer
+              below: 1
+          sequence:
+            - service: timer.cancel
+              data_template:
+                entity_id: timer.master_bathroom_fan_timer
+            - service: switch.turn_off
+              entity_id: switch.master_bathroom_fan_switch
+        # 4. The slider is dragged above 0
+        - conditions:
+            - condition: numeric_state
+              entity_id: input_number.master_bathroom_fan_timer
+              above: 0
+          sequence:
+            - service: timer.start
+              data_template:
+                entity_id: timer.master_bathroom_fan_timer
+                duration: >
+                  {{
+                    states("input_number.master_bathroom_fan_timer") | int * 60
+                  }}
+            - service: switch.turn_on
+              entity_id: switch.master_bathroom_fan_switch
 
   - alias: "Master Toilet Fan Timer"
     trigger:
