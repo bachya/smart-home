@@ -1,82 +1,110 @@
 ---
 automation:
-  - alias: Cancel landscaping sleep timer
+  - alias: "Flower Box Timer"
     trigger:
-      - platform: numeric_state
-        entity_id: input_number.landscaping_timer
-        below: 1
       - platform: state
-        entity_id: switch.landscaping
-        to: "off"
-    action:
-      - service: input_number.set_value
-        data:
-          entity_id: input_number.landscaping_timer
-          value: 0
-      - service: rainmachine.stop_zone
-        data:
-          zone_id: 1
-      - service: timer.cancel
-        data:
-          entity_id: timer.landscaping_timer
-
-  - alias: Set landscaping sleep timer
-    trigger:
-      platform: state
-      entity_id: input_number.landscaping_timer
-    action:
-      - service: rainmachine.stop_zone
-        data:
-          zone_id: 1
-      - service: rainmachine.start_zone
-        data_template:
-          zone_id: 1
-          zone_run_time: >
-            {{ states("input_number.landscaping_timer") | int * 60 }}
-      - service: timer.start
-        data_template:
-          entity_id: timer.landscaping_timer
-          duration: >
-            {{ states("input_number.landscaping_timer") | int * 60 }}
-
-  - alias: Cancel flower box sleep timer
-    trigger:
-      - platform: numeric_state
         entity_id: input_number.flower_box_timer
-        below: 1
       - platform: state
-        entity_id: switch.flower_box
-        to: "off"
+        entity_id: timer.flower_box_timer
+        to: idle
     action:
-      - service: input_number.set_value
-        data:
-          entity_id: input_number.flower_box_timer
-          value: 0
-      - service: rainmachine.stop_zone
-        data:
-          zone_id: 2
-      - service: timer.cancel
-        data:
-          entity_id: timer.flower_box_timer
+      choose:
+        # 1. The timer expires
+        - conditions:
+            - condition: template
+              value_template: >
+                {{ trigger.to_state.state == "idle" }}
+          sequence:
+            - service: rainmachine.stop_zone
+              data:
+                zone_id: 2
+            - service: input_number.set_value
+              data:
+                entity_id: input_number.flower_box_timer
+                value: 0
+        # 2. The slider is dragged to 0
+        - conditions:
+            - condition: numeric_state
+              entity_id: input_number.flower_box_timer
+              below: 1
+          sequence:
+            - service: timer.cancel
+              data_template:
+                entity_id: timer.flower_box_timer
+            - service: rainmachine.stop_zone
+              data:
+                zone_id: 2
+        # 3. The slider is dragged above 0
+        - conditions:
+            - condition: numeric_state
+              entity_id: input_number.flower_box_timer
+              above: 0
+          sequence:
+            - service: timer.start
+              data_template:
+                entity_id: timer.flower_box_timer
+                duration: >
+                  {{
+                    states("input_number.flower_box_timer") | int * 60
+                  }}
+            - service: rainmachine.start_zone
+              data_template:
+                zone_id: 1
+                zone_run_time: >
+                  {{ states("input_number.flower_box_timer") | int * 60 }}
 
-  - alias: Set flower box sleep timer
+  - alias: "Landscaping Timer"
     trigger:
-      platform: state
-      entity_id: input_number.flower_box_timer
+      - platform: state
+        entity_id: input_number.landscaping_timer
+      - platform: state
+        entity_id: timer.landscaping_timer
+        to: idle
     action:
-      - service: rainmachine.stop_zone
-        data:
-          zone_id: 2
-      - service: rainmachine.start_zone
-        data_template:
-          zone_id: 2
-          zone_run_time: >
-            {{ states("input_number.flower_box_timer") | int * 60 }}
-      - service: timer.start
-        data_template:
-          entity_id: timer.flower_box_timer
-          duration: >
-            {{ states("input_number.flower_box_timer") | int * 60 }}
+      choose:
+        # 1. The timer expires
+        - conditions:
+            - condition: template
+              value_template: >
+                {{ trigger.to_state.state == "idle" }}
+          sequence:
+            - service: rainmachine.stop_zone
+              data:
+                zone_id: 1
+            - service: input_number.set_value
+              data:
+                entity_id: input_number.landscaping_timer
+                value: 0
+        # 2. The slider is dragged to 0
+        - conditions:
+            - condition: numeric_state
+              entity_id: input_number.landscaping_timer
+              below: 1
+          sequence:
+            - service: timer.cancel
+              data_template:
+                entity_id: timer.landscaping_timer
+            - service: rainmachine.stop_zone
+              data:
+                zone_id: 1
+        # 3. The slider is dragged above 0
+        - conditions:
+            - condition: numeric_state
+              entity_id: input_number.landscaping_timer
+              above: 0
+          sequence:
+            - service: timer.start
+              data_template:
+                entity_id: timer.landscaping_timer
+                duration: >
+                  {{
+                    states("input_number.landscaping_timer") | int * 60
+                  }}
+            - service: rainmachine.start_zone
+              data_template:
+                zone_id: 1
+                zone_run_time: >
+                  {{ states("input_number.landscaping_timer") | int * 60 }}
 
 input_number:
   flower_box_timer:
