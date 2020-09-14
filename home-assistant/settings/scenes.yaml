@@ -220,8 +220,6 @@
   entities:
     alarm_control_panel.8673_e_55th_avenue:
       state: armed_home
-    alert.house_empty_and_insecure:
-      state: "off"
     cover.garage_door:
       state: closed
     lock.front_door_lock_locked:
@@ -252,6 +250,8 @@
 - id: guest_mode
   name: Guest Mode
   entities:
+    alert.house_empty_and_insecure:
+      state: "off"
     automation.alter_armed_alarm_when_wolfie_cleans:
       state: "off"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
