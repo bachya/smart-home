@@ -331,6 +331,33 @@ group:
       - binary_sensor.upstairs_hallway_sensor_smoke_carbon_monoxide_detector
 
 sensor:
+  - platform: history_stats
+    name: "Replay Basement Lights"
+    entity_id: switch.basement_lights
+    state: "on"
+    type: count
+    start: >
+      {{ as_timestamp(now()) - (7*86400) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Living Room Lights"
+    entity_id: group.living_room_lights
+    state: "on"
+    type: count
+    start: >
+      {{ as_timestamp(now()) - (7*86400) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Master Bedroom Salt Lamp"
+    entity_id: switch.master_bedroom_salt_lamp
+    state: "on"
+    type: count
+    start: >
+      {{ as_timestamp(now()) - (7*86400) }}
+    duration: 00:00:30
+
   - platform: mqtt
     state_topic: "stat/fail2ban"
     name: "Fail2Ban: Failures"
