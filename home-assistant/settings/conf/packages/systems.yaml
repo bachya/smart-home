@@ -78,6 +78,11 @@ automation:
         for:
           minutes: 5
       - platform: numeric_state
+        entity_id: sensor.media_center_cpu
+        above: 60
+        for:
+          minutes: 5
+      - platform: numeric_state
         entity_id: sensor.ravenclaw_cpu
         above: 60
         for:
@@ -99,6 +104,8 @@ automation:
             {% set name = "Hufflepuff" %}
           {% elif trigger.entity_id == "sensor.linode_cpu" %}
             {% set name = "Linode" %}
+          {% elif trigger.entity_id == "sensor.media_center_cpu" %}
+            {% set name = "Media Center" %}
           {% elif trigger.entity_id == "sensor.ravenclaw_cpu" %}
             {% set name = "Ravenclaw" %}
           {% elif trigger.entity_id == "sensor.slytherin_cpu" %}
@@ -127,6 +134,15 @@ automation:
       - platform: numeric_state
         entity_id: sensor.slytherin_disk_usage_volume
         above: 85
+      - platform: numeric_state
+        entity_id: sensor.media_center_disk_usage_media_backup_volume
+        above: 85
+      - platform: numeric_state
+        entity_id: sensor.media_center_disk_usage_media_media_volume
+        above: 85
+      - platform: numeric_state
+        entity_id: sensor.media_center_disk_usage_volume
+        above: 85
     action:
       service: notify.slack
       data_template:
@@ -139,13 +155,27 @@ automation:
             {% set name = "Hufflepuff" %}
           {% elif trigger.entity_id == "sensor.linode_cpu" %}
             {% set name = "Linode" %}
+          {%
+            elif trigger.entity_id == "sensor.media_center_disk_usage_volume"
+          %}
+            {% set name = "Media Center (Main)" %}
+          {%
+            elif trigger.entity_id
+            == "sensor.media_center_disk_usage_media_backup_volume"
+          %}
+            {% set name = "Media Center (Backup)" %}
+          {%
+            elif trigger.entity_id
+            == "sensor.linode_disk_usage_media_media_volume"
+          %}
+            {% set name = "Media Center (Media)" %}
           {% elif trigger.entity_id == "sensor.ravenclaw_cpu" %}
             {% set name = "Ravenclaw" %}
           {% elif trigger.entity_id == "sensor.slytherin_cpu" %}
             {% set name = "Slytherin" %}
           {% endif %}
 
-          🚨 {{ name }} has used more than 85% of its disk space.
+          🚨 {{ name }} is at more than 85% of its disk space.
 
   - alias: "Notify on high memory"
     trigger:
@@ -166,6 +196,11 @@ automation:
           minutes: 5
       - platform: numeric_state
         entity_id: sensor.linode_virtual_memory
+        above: 75
+        for:
+          minutes: 5
+      - platform: numeric_state
+        entity_id: sensor.media_center_virtual_memory
         above: 75
         for:
           minutes: 5
@@ -191,6 +226,8 @@ automation:
             {% set name = "Hufflepuff" %}
           {% elif trigger.entity_id == "sensor.linode_virtual_memory" %}
             {% set name = "Linode" %}
+          {% elif trigger.entity_id == "sensor.media_center_virtual_memory" %}
+            {% set name = "Media Center" %}
           {% elif trigger.entity_id == "sensor.ravenclaw_virtual_memory" %}
             {% set name = "Ravenclaw" %}
           {% elif trigger.entity_id == "sensor.slytherin_virtual_memory" %}
