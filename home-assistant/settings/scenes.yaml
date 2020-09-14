@@ -6,6 +6,8 @@
       state: "on"
     alert.fiddle_leaf_fig_moisture:
       state: "on"
+    alert.house_empty_and_insecure:
+      state: "on"
     alert.wolfie_cycle_complete:
       state: "on"
     alert.wolfie_stuck:
@@ -218,6 +220,8 @@
   entities:
     alarm_control_panel.8673_e_55th_avenue:
       state: armed_home
+    alert.house_empty_and_insecure:
+      state: "off"
     cover.garage_door:
       state: closed
     lock.front_door_lock_locked:
