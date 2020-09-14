@@ -92,7 +92,7 @@ services:
       MYSQL_PASSWORD: "${MYSQL_HASS_PASSWORD}"
       MYSQL_ROOT_PASSWORD: "${MYSQL_HASS_ROOT_PASSWORD}"
       MYSQL_USER: "${MYSQL_HASS_USER}"
-    image: bianjp/mariadb-alpine:latest
+    image: "mariadb:${MARIADB_VERSION}"
     ports:
       - "3306:3306/tcp"
     restart: always
