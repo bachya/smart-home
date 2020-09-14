@@ -296,6 +296,49 @@ automation:
         data:
           entity_id: group.living_room_lights
 
+  - alias: "Vacation Mode Lighting"
+    trigger:
+      - platform: state
+        entity_id: sensor.replay_basement_lights
+      - platform: state
+        entity_id: sensor.replay_living_room_lights
+      - platform: state
+        entity_id: sensor.replay_master_bedroom_salt_lamp
+    condition:
+      condition: state
+      entity_id: input_boolean.vacation_mode
+      state: "on"
+    action:
+      choose:
+        - conditions:
+            condition: template
+            value_template: "{{ trigger.to_state.state == '0' }}"
+          sequence:
+            service: switch.turn_off
+            data_template:
+              entity_id: >
+                {% if trigger.entity_id == "sensor.replay_basement_lights" %}
+                  switch.basement_lights
+                {% elif trigger.entity_id == "sensor.replay_living_room_lights" %}
+                  group.living_room_lights
+                {% elif trigger.entity_id == "sensor.replay_master_bedroom_salt_lamp" %}
+                  switch.master_bedroom_salt_lamp
+                {% endif %}
+        - conditions:
+            condition: template
+            value_template: "{{ trigger.to_state.state == '1' }}"
+          sequence:
+            service: switch.turn_on
+            data_template:
+              entity_id: >
+                {% if trigger.entity_id == "sensor.replay_basement_lights" %}
+                  switch.basement_lights
+                {% elif trigger.entity_id == "sensor.replay_living_room_lights" %}
+                  group.living_room_lights
+                {% elif trigger.entity_id == "sensor.replay_master_bedroom_salt_lamp" %}
+                  switch.master_bedroom_salt_lamp
+                {% endif %}
+
 binary_sensor:
   - platform: template
     sensors:

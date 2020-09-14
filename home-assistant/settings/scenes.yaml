@@ -116,6 +116,8 @@
       state: "on"
     automation.update_openuv_every_30_minutes_during_the_daytime:
       state: "on"
+    automation.vacation_mode_lighting:
+      state: "off"
     input_boolean.notify_of_new_versions_automation:
       state: "on"
     switch.guardian_b4e62d98118d_valve:
@@ -306,6 +308,8 @@
       state: "off"
     automation.turn_master_bedroom_salt_lamp_on_at_sunset:
       state: "off"
+    automation.vacation_mode_lighting:
+      state: "on"
     input_boolean.notify_of_new_versions_automation:
       state: "off"
     input_boolean.office_lights_schedule_automation:
