@@ -312,11 +312,15 @@
       state: "off"
     automation.turn_master_bedroom_salt_lamp_on_at_sunset:
       state: "off"
+    automation.turn_reading_lamp_on_at_sunset:
+      state: "off"
     automation.vacation_mode_lighting:
       state: "on"
     input_boolean.notify_of_new_versions_automation:
       state: "off"
     input_boolean.office_lights_schedule_automation:
+      state: "off"
+    fan.bedroom:
       state: "off"
     switch.guardian_b4e62d98118d_valve:
       state: "off"
