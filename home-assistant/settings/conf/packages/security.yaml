@@ -312,7 +312,7 @@ automation:
       choose:
         - conditions:
             condition: template
-            value_template: "{{ trigger.to_state.state == '0' }}"
+            value_template: "{{ trigger.to_state.state|int == 0 }}"
           sequence:
             service: switch.turn_off
             data_template:
@@ -331,7 +331,7 @@ automation:
                 {% endif %}
         - conditions:
             condition: template
-            value_template: "{{ trigger.to_state.state == '1' }}"
+            value_template: "{{ trigger.to_state.state|int > 0 }}"
           sequence:
             service: switch.turn_on
             data_template:
