@@ -56,7 +56,7 @@ services:
   hass:
     container_name: hass
     depends_on:
-      - mysql-hass
+      - hass-db
       - openzwave
       - vernemq
     image: "homeassistant/home-assistant:${HOME_ASSISTANT_CORE_VERSION}"
@@ -66,6 +66,19 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - hass-config:/config
+
+  hass-db:
+    container_name: hass-db
+    environment:
+      POSTGRES_DB: "${HASS_DB_NAME}"
+      POSTGRES_PASSWORD: "${HASS_DB_PASSWORD}"
+      POSTGRES_USER: "${HASS_DB_USER}"
+    image: "postgres:${POSTGRES_VERSION}-alpine"
+    ports:
+      - "5432:5432/tcp"
+    restart: always
+    volumes:
+      - hass-db-data:/var/lib/postgresql/data
 
   metrics2mqtt:
     build:
@@ -84,20 +97,6 @@ services:
     restart: unless-stopped
     volumes:
       - /proc:/proc
-
-  mysql-hass:
-    container_name: mysql-hass
-    environment:
-      MYSQL_DATABASE: "${MYSQL_HASS_DATABASE}"
-      MYSQL_PASSWORD: "${MYSQL_HASS_PASSWORD}"
-      MYSQL_ROOT_PASSWORD: "${MYSQL_HASS_ROOT_PASSWORD}"
-      MYSQL_USER: "${MYSQL_HASS_USER}"
-    image: bianjp/mariadb-alpine:latest
-    ports:
-      - "3306:3306/tcp"
-    restart: always
-    volumes:
-      - mysql-hass-data:/var/lib/mysql
 
   nginx:
     cap_add:
@@ -222,7 +221,7 @@ volumes:
   fail2ban-config:
   fail2ban-log:
   hass-config:
-  mysql-hass-data:
+  hass-db-data:
   nginx-config:
   openzwave-config:
   portainer-config:

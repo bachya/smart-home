@@ -556,17 +556,6 @@ sensor:
           }}
         unit_of_measurement: checks
 
-  - platform: sql
-    db_url: !secret recorder_db_url
-    queries:
-      - name: HASS DB Size
-        query: |
-          SELECT table_schema "hassdb", Round(Sum(data_length + index_length)
-          / 1024 / 1024, 1) "value" FROM information_schema.tables WHERE
-          table_schema="hassdb" GROUP BY table_schema;
-        column: value
-        unit_of_measurement: MB
-
   - platform: template
     sensors:
       aeotec_nanomote_quad_aaron_bedside_battery:
