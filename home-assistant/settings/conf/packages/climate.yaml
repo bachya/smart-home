@@ -6,12 +6,6 @@ automation:
         event: start
       - platform: state
         entity_id: climate.thermostat_mode
-        from: cool
-        to: heat
-      - platform: state
-        entity_id: climate.thermostat_mode
-        from: heat
-        to: cool
       - platform: state
         entity_id: input_boolean.blackout_mode
       - platform: state
@@ -22,20 +16,22 @@ automation:
         entity_id: input_number.thermostat_eco_low_threshold
     action:
       choose:
-        # A/C Away Mode
+        # Away Mode
         - conditions:
             condition: template
-            value_template: >
-              {{
-                is_state("climate.thermostat_mode", "cool")
-                and is_state("input_boolean.away_mode", "on")
-              }}
+            value_template: "{{ is_state('input_boolean.away_mode', 'on') }}"
           sequence:
-            service: climate.set_temperature
-            entity_id: climate.thermostat_mode
-            data_template:
-              temperature: >
-                {{ states("input_number.thermostat_eco_high_threshold")|int }}
+            - service: climate.set_hvac_mode
+              data_template:
+                entity_id: climate.thermostat_mode
+                hvac_mode: heat_cool
+            - service: climate.set_temperature
+              data_template:
+                entity_id: climate.thermostat_mode
+                target_temp_high: >
+                  {{ states("input_number.thermostat_eco_high_threshold")|int }}
+                target_temp_low: >
+                  {{ states("input_number.thermostat_eco_low_threshold")|int }}
         # A/C Daytime
         - conditions:
             condition: template
@@ -64,20 +60,6 @@ automation:
             entity_id: climate.thermostat_mode
             data:
               temperature: 72
-        # Heat Away Mode
-        - conditions:
-            condition: template
-            value_template: >
-              {{
-                is_state("climate.thermostat_mode", "heat")
-                and is_state("input_boolean.away_mode", "on")
-              }}
-          sequence:
-            service: climate.set_temperature
-            entity_id: climate.thermostat_mode
-            data_template:
-              temperature: >
-                {{ states("input_number.thermostat_eco_low_threshold")|int }}
         # Heat Daytime
         - conditions:
             condition: template
