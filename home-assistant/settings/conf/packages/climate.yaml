@@ -1,6 +1,7 @@
 ---
 automation:
   - alias: "Climate Schedule"
+    mode: queued
     trigger:
       - platform: homeassistant
         event: start
@@ -16,13 +17,17 @@ automation:
         entity_id: input_number.thermostat_eco_low_threshold
     action:
       choose:
-        # Away Mode
+        # Away Mode On
         - conditions:
             condition: template
             value_template: "{{ is_state('input_boolean.away_mode', 'on') }}"
           sequence:
-            - service: climate.set_hvac_mode
+            - service: input_select.select_option
               data_template:
+                entity_id: input_select.last_hvac_mode
+                option: "{{ states('climate.thermostat_mode') }}"
+            - service: climate.set_hvac_mode
+              data:
                 entity_id: climate.thermostat_mode
                 hvac_mode: heat_cool
             - service: climate.set_temperature
@@ -32,6 +37,19 @@ automation:
                   {{ states("input_number.thermostat_eco_high_threshold")|int }}
                 target_temp_low: >
                   {{ states("input_number.thermostat_eco_low_threshold")|int }}
+        # Away Mode Off
+        - conditions:
+            condition: template
+            value_template: >
+              {{
+                is_state("climate.thermostat_mode", "heat_cool")
+                and is_state("input_boolean.away_mode", "off")
+              }}
+          sequence:
+            service: climate.set_hvac_mode
+            data_template:
+              entity_id: climate.thermostat_mode
+              hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
         # A/C Daytime
         - conditions:
             condition: template
@@ -203,6 +221,13 @@ input_number:
     step: 1
     unit_of_measurement: °F
     icon: mdi:thermostat
+
+input_select:
+  last_hvac_mode:
+    options:
+      - "off"
+      - cool
+      - heat
 
 sensor:
   - platform: darksky
