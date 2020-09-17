@@ -1,11 +1,10 @@
 ---
 homekit:
-  auto_start: false
+  auto_start: true
   filter:
     include_domains:
       - alarm_control_panel
       - lock
-      - media_player
     include_entities:
       - climate.thermostat_mode
       - cover.garage_door
