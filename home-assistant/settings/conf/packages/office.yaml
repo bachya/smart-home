@@ -31,7 +31,7 @@ automation:
                 {{ trigger.to_state.state == "off" }}
           sequence:
             - service: timer.cancel
-              data_template:
+              data:
                 entity_id: timer.office_salt_lamp_timer
             - service: input_number.set_value
               data:
@@ -44,7 +44,7 @@ automation:
               below: 1
           sequence:
             - service: timer.cancel
-              data_template:
+              data:
                 entity_id: timer.office_salt_lamp_timer
             - service: switch.turn_off
               entity_id: switch.office_salt_lamp
@@ -55,7 +55,7 @@ automation:
               above: 0
           sequence:
             - service: timer.start
-              data_template:
+              data:
                 entity_id: timer.office_salt_lamp_timer
                 duration: >
                   {{

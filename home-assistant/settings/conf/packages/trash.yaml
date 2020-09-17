@@ -16,7 +16,7 @@ automation:
         {{ delta > 0 and delta < 24 }}
     action:
       - service: notify.mobile_app_aarons_iphone
-        data_template:
+        data:
           message: >
             🚮 Tomorrow's pickup will include: {{
               expand("group.trash_sensors")

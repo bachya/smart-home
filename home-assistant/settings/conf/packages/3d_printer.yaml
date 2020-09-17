@@ -8,7 +8,7 @@ automation:
       to: Operational
     action:
       service: notify.slack
-      data_template:
+      data:
         message: "🦿 3D print completed"
 
   - alias: Notify when 3D print starts
@@ -19,7 +19,7 @@ automation:
       to: Printing
     action:
       service: notify.slack
-      data_template:
+      data:
         message: "🦿 3D print started"
 
   - alias: "Turn off when 3D print completes"

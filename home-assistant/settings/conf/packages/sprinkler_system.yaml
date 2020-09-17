@@ -29,7 +29,7 @@ automation:
               below: 1
           sequence:
             - service: timer.cancel
-              data_template:
+              data:
                 entity_id: timer.flower_box_timer
             - service: rainmachine.stop_zone
               data:
@@ -41,14 +41,14 @@ automation:
               above: 0
           sequence:
             - service: timer.start
-              data_template:
+              data:
                 entity_id: timer.flower_box_timer
                 duration: >
                   {{
                     states("input_number.flower_box_timer") | int * 60
                   }}
             - service: rainmachine.start_zone
-              data_template:
+              data:
                 zone_id: 1
                 zone_run_time: >
                   {{ states("input_number.flower_box_timer") | int * 60 }}
@@ -82,7 +82,7 @@ automation:
               below: 1
           sequence:
             - service: timer.cancel
-              data_template:
+              data:
                 entity_id: timer.landscaping_timer
             - service: rainmachine.stop_zone
               data:
@@ -94,14 +94,14 @@ automation:
               above: 0
           sequence:
             - service: timer.start
-              data_template:
+              data:
                 entity_id: timer.landscaping_timer
                 duration: >
                   {{
                     states("input_number.landscaping_timer") | int * 60
                   }}
             - service: rainmachine.start_zone
-              data_template:
+              data:
                 zone_id: 1
                 zone_run_time: >
                   {{ states("input_number.landscaping_timer") | int * 60 }}

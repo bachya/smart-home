@@ -149,7 +149,7 @@ automation:
         event_type: SIMPLISAFE_EVENT
     action:
       service: notify.slack
-      data_template:
+      data:
         message: >
             📥 SimpliSafe Event: {{ trigger.event.data.last_event_info }}
 
@@ -159,7 +159,7 @@ automation:
         event_type: SIMPLISAFE_NOTIFICATION
     action:
       service: notify.slack
-      data_template:
+      data:
         message: >
             📥 SimpliSafe Notification: {{ trigger.event.data.message }}
 
@@ -179,12 +179,12 @@ automation:
       platform: webhook
       webhook_id: !secret slack_webhook_id
     action:
-      service_template: >
+      service: >
         {% set slack_data = trigger.data.payload | from_json %}
         {% if slack_data.actions[0].action_id == "GARAGE_CLOSE_DOOR" %}
           cover.close_cover
         {% endif %}
-      data_template:
+      data:
         entity_id: >
           {% set slack_data = trigger.data.payload | from_json %}
           {% if slack_data.actions[0].action_id == "GARAGE_CLOSE_DOOR" %}
@@ -207,12 +207,12 @@ automation:
       platform: webhook
       webhook_id: !secret slack_webhook_id
     action:
-      service_template: >
+      service: >
         {% set slack_data = trigger.data.payload | from_json %}
         {% if slack_data.actions[0].action_id == "GARAGE_IGNORE" %}
           alert.turn_off
         {% endif %}
-      data_template:
+      data:
         entity_id: >
           {% set slack_data = trigger.data.payload | from_json %}
           {% if slack_data.actions[0].action_id == "GARAGE_IGNORE" %}
@@ -256,7 +256,7 @@ automation:
       entity_id: binary_sensor.secure_status
     action:
       service: notify.slack
-      data_template:
+      data:
         message: >
           🔐 The house's security has changed: {{ trigger.to_state.state }}
 
@@ -315,7 +315,7 @@ automation:
             value_template: "{{ trigger.to_state.state|int == 0 }}"
           sequence:
             service: switch.turn_off
-            data_template:
+            data:
               entity_id: >
                 {% if trigger.entity_id == "sensor.replay_basement_lights" %}
                   switch.basement_lights
@@ -334,7 +334,7 @@ automation:
             value_template: "{{ trigger.to_state.state|int > 0 }}"
           sequence:
             service: switch.turn_on
-            data_template:
+            data:
               entity_id: >
                 {% if trigger.entity_id == "sensor.replay_basement_lights" %}
                   switch.basement_lights

@@ -36,7 +36,7 @@ automation:
         service: create
     action:
       service: notify.slack
-      data_template:
+      data:
         message: >
             📥 Home Assistant Notification:
             {{ trigger.event.data.service_data.message }}
@@ -51,7 +51,7 @@ automation:
       above: 0
     action:
       service: notify.slack
-      data_template:
+      data:
         message: >
           💿 There are new HACS updates: {{ trigger.to_state.state }}
 
@@ -94,7 +94,7 @@ automation:
           minutes: 5
     action:
       service: notify.slack
-      data_template:
+      data:
         message: >
           {% if trigger.entity_id == "sensor.gryffindor_cpu" %}
             {% set name = "Gryffindor" %}
@@ -145,7 +145,7 @@ automation:
         above: 85
     action:
       service: notify.slack
-      data_template:
+      data:
         message: >
           {% if trigger.entity_id == "sensor.gryffindor_cpu" %}
             {% set name = "Gryffindor" %}
@@ -216,7 +216,7 @@ automation:
           minutes: 5
     action:
       service: notify.slack
-      data_template:
+      data:
         message: >
           {% if trigger.entity_id == "sensor.gryffindor_virtual_memory" %}
             {% set name = "Gryffindor" %}
@@ -285,7 +285,7 @@ automation:
           minutes: 5
     action:
       service: notify.slack
-      data_template:
+      data:
         message: "🔋 @aaron {{ trigger.entity_id }} is low."
 
   - alias: "Notify when media center left on"
@@ -339,7 +339,7 @@ automation:
           minutes: 5
     action:
       service: notify.slack
-      data_template:
+      data:
         message: "🤔 @aaron {{ trigger.entity_id }} is offline."
 
   - alias: "Pick the correct theme on HASS start"
@@ -348,7 +348,7 @@ automation:
       event: start
     action:
       service: frontend.set_theme
-      data_template:
+      data:
         name: >
           {% if is_state("sun.sun", "above_horizon") %}
             Orange light
@@ -394,7 +394,7 @@ automation:
             {{ not trigger.to_state.state }}
     action:
       event: ZWAVE_DOUBLE_TAP
-      event_data_template:
+      event_data:
         entity_id: "{{ trigger.entity_id }}"
         value: "{{ trigger.to_state.state }}"
 

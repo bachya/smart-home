@@ -78,7 +78,7 @@ automation:
                 {{ trigger.to_state.state == "off" }}
           sequence:
             - service: timer.cancel
-              data_template:
+              data:
                 entity_id: timer.master_bathroom_fan_timer
             - service: input_number.set_value
               data:
@@ -91,7 +91,7 @@ automation:
               below: 1
           sequence:
             - service: timer.cancel
-              data_template:
+              data:
                 entity_id: timer.master_bathroom_fan_timer
             - service: switch.turn_off
               entity_id: switch.master_bathroom_fan_switch
@@ -102,7 +102,7 @@ automation:
               above: 0
           sequence:
             - service: timer.start
-              data_template:
+              data:
                 entity_id: timer.master_bathroom_fan_timer
                 duration: >
                   {{
@@ -142,7 +142,7 @@ automation:
                 {{ trigger.to_state.state == "off" }}
           sequence:
             - service: timer.cancel
-              data_template:
+              data:
                 entity_id: timer.master_bedroom_salt_lamp_timer
             - service: input_number.set_value
               data:
@@ -155,7 +155,7 @@ automation:
               below: 1
           sequence:
             - service: timer.cancel
-              data_template:
+              data:
                 entity_id: timer.master_bedroom_salt_lamp_timer
             - service: switch.turn_off
               entity_id: switch.master_bedroom_salt_lamp
@@ -166,7 +166,7 @@ automation:
               above: 0
           sequence:
             - service: timer.start
-              data_template:
+              data:
                 entity_id: timer.master_bedroom_salt_lamp_timer
                 duration: >
                   {{
@@ -208,7 +208,7 @@ automation:
                 {{ trigger.to_state.state == "off" }}
           sequence:
             - service: timer.cancel
-              data_template:
+              data:
                 entity_id: timer.master_toilet_fan_timer
             - service: input_number.set_value
               data:
@@ -221,7 +221,7 @@ automation:
               below: 1
           sequence:
             - service: timer.cancel
-              data_template:
+              data:
                 entity_id: timer.master_toilet_fan_timer
             - service: switch.turn_off
               entity_id: switch.master_toilet_fan_switch
@@ -232,7 +232,7 @@ automation:
               above: 0
           sequence:
             - service: timer.start
-              data_template:
+              data:
                 entity_id: timer.master_toilet_fan_timer
                 duration: >
                   {{

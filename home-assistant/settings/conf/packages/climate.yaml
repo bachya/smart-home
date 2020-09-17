@@ -23,7 +23,7 @@ automation:
             value_template: "{{ is_state('input_boolean.away_mode', 'on') }}"
           sequence:
             - service: input_select.select_option
-              data_template:
+              data:
                 entity_id: input_select.last_hvac_mode
                 option: "{{ states('climate.thermostat_mode') }}"
             - service: climate.set_hvac_mode
@@ -31,7 +31,7 @@ automation:
                 entity_id: climate.thermostat_mode
                 hvac_mode: heat_cool
             - service: climate.set_temperature
-              data_template:
+              data:
                 entity_id: climate.thermostat_mode
                 target_temp_high: >
                   {{ states("input_number.thermostat_eco_high_threshold")|int }}
@@ -47,7 +47,7 @@ automation:
               }}
           sequence:
             service: climate.set_hvac_mode
-            data_template:
+            data:
               entity_id: climate.thermostat_mode
               hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
         # A/C Daytime

@@ -45,7 +45,7 @@ automation:
                 state: "off"
           sequence:
             service: climate.set_temperature
-            data_template:
+            data:
               entity_id: climate.thermostat_mode
               temperature: >
                 {%
