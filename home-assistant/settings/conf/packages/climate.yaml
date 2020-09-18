@@ -5,8 +5,17 @@ automation:
     trigger:
       - platform: homeassistant
         event: start
+        # We explictly watch for state changes where the state itself changes; this
+        # prevents manually adjustments to the thermostat from triggerig this
+        # automation:
       - platform: state
         entity_id: climate.thermostat_mode
+        from: cool
+        to: heat
+      - platform: state
+        entity_id: climate.thermostat_mode
+        from: heat
+        to: cool
       - platform: state
         entity_id: input_boolean.blackout_mode
       - platform: state
