@@ -1,5 +1,10 @@
 ---
 - platform: workday
+  name: Workday Today
+  country: US
+  province: CO
+
+- platform: workday
   name: Workday Tomorrow
   country: US
   province: CO
