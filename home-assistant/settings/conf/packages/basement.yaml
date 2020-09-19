@@ -60,7 +60,7 @@ remote:
 shell_command:
   turn_off_media_center: >
     ssh -i /config/id_ed25519 -o StrictHostKeyChecking=no
-    hass@media-center.phil.lan sudo /usr/bin/systemctl poweroff -i
+    hass@media-center.phil.lan sudo /sbin/poweroff
 
 switch:
   - platform: wake_on_lan
