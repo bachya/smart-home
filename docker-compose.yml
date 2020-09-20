@@ -118,7 +118,8 @@ services:
     container_name: openzwave
     depends_on:
       - vernemq
-    image: "openzwave/ozwdaemon:allinone-amd64-${OPENZWAVE_VERSION}"
+    # image: "openzwave/ozwdaemon:allinone-amd64-${OPENZWAVE_VERSION}"
+    image: "openzwave:amb-leviton"
     devices:
       - "/dev/zwave:/dev/zwave"
     environment:
