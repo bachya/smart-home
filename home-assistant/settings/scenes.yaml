@@ -30,6 +30,8 @@
       state: "on"
     automation.backyard_light_switch_via_kitchen_patio_light_on:
       state: "on"
+    automation.blackout_mode_schedule:
+      state: "off"
     automation.cycle_master_toilet_fan_during_the_day:
       state: "on"
     automation.disable_simplisafe_sounds_in_blackout_mode:
@@ -140,6 +142,8 @@
       state: "off"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
       state: "off"
+    automation.dyson_temperature_management:
+      state: "off"
     automation.notify_on_bad_outdoor_aqi:
       state: "off"
     automation.notify_on_return_from_bad_outdoor_aqi:
@@ -159,8 +163,6 @@
     automation.notify_when_wolfie_needs_a_sensor_cleaning:
       state: "off"
     automation.notify_when_wolfie_needs_a_new_side_brush:
-      state: "off"
-    automation.turn_dyson_higher_when_it_s_hot_in_the_bedroom:
       state: "off"
     automation.turn_master_bedroom_salt_lamp_on_at_sunset:
       state: "off"
@@ -280,7 +282,13 @@
       state: "off"
     alert.wolfie_stuck:
       state: "off"
+    automation.blackout_mode_schedule:
+      state: "off"
     automation.cycle_master_toilet_fan_during_the_day:
+      state: "off"
+    automation.dyson_night_mode:
+      state: "off"
+    automation.dyson_temperature_management:
       state: "off"
     automation.notify_of_next_trash_pickup_the_night_before:
       state: "off"
@@ -304,12 +312,6 @@
       state: "off"
     automation.notify_when_wolfie_needs_a_new_side_brush:
       state: "off"
-    automation.turn_dyson_s_night_mode_off:
-      state: "off"
-    automation.turn_dyson_s_night_mode_on:
-      state: "off"
-    automation.turn_dyson_higher_when_it_s_hot_in_the_bedroom:
-      state: "off"
     automation.turn_master_bedroom_salt_lamp_on_at_sunset:
       state: "off"
     automation.turn_reading_lamp_on_at_sunset:
@@ -319,8 +321,6 @@
     input_boolean.notify_of_new_versions_automation:
       state: "off"
     input_boolean.office_lights_schedule_automation:
-      state: "off"
-    fan.bedroom:
       state: "off"
     switch.guardian_b4e62d98118d_valve:
       state: "off"
