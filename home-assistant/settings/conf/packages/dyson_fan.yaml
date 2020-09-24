@@ -1,0 +1,42 @@
+---
+automation:
+  - alias: "Dyson Night Mode"
+    trigger:
+      platform: state
+      entity_id: input_boolean.blackout_mode
+    action:
+      service: dyson.set_night_mode
+      data:
+        entity_id: fan.bedroom
+        night_mode: >
+          {% if states("input_boolean.blackout_mode") == "off" %}
+            false
+          {% else %}
+            true
+          {% endif %}
+
+  - alias: "Dyson Temperature Management"
+    trigger:
+      platform: state
+      entity_id: sensor.side_yard_temp
+    action:
+      service: fan.set_speed
+      data:
+        entity_id: fan.bedroom
+        night_mode: >
+          {% if
+            float(states("sensor.bedroom_temperature"))
+            > float(states("input_number.thermostat_eco_high_threshold"))
+          %}
+            high
+          {% else %}
+            medium
+          {% endif %}
+
+dyson:
+  username: !secret dyson_email
+  password: !secret dyson_password
+  language: US
+  devices:
+    - device_id: !secret dyson_pure_serial_number
+      device_ip: 172.16.11.65

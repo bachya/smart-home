@@ -252,59 +252,6 @@ automation:
       data:
         entity_id: scene.good_night
 
-  - alias: "Turn Dyson's night mode off"
-    trigger:
-      platform: state
-      entity_id: input_boolean.blackout_mode
-      to: "off"
-    action:
-      service: dyson.set_night_mode
-      data:
-        entity_id: fan.bedroom
-        night_mode: false
-
-  - alias: "Turn Dyson's night mode on"
-    trigger:
-      - platform: event
-        event_type: call_service
-        event_data:
-          domain: scene
-          service: turn_on
-          service_data:
-            entity_id: scene.good_night
-      - platform: state
-        entity_id: input_boolean.blackout_mode
-        to: "on"
-    action:
-      service: dyson.set_night_mode
-      data:
-        entity_id: fan.bedroom
-        night_mode: "true"
-
-  - alias: "Turn Dyson higher when it's hot in the bedroom"
-    trigger:
-      platform: state
-      entity_id: sensor.side_yard_temp
-    action:
-      choose:
-        - conditions:
-            condition: template
-            value_template: >
-              {{
-                float(states("sensor.bedroom_temperature")) >
-                float(states("input_number.thermostat_eco_high_threshold"))
-              }}
-          sequence:
-            service: fan.set_speed
-            data:
-              entity_id: fan.bedroom
-              speed: high
-      default:
-        service: fan.set_speed
-        data:
-          entity_id: fan.bedroom
-          speed: medium
-
   - alias: "Turn master bedroom salt lamp on at sunset"
     trigger:
       platform: event
@@ -313,14 +260,6 @@ automation:
       service: switch.turn_on
       data:
         entity_id: switch.master_bedroom_salt_lamp
-
-dyson:
-  username: !secret dyson_email
-  password: !secret dyson_password
-  language: US
-  devices:
-    - device_id: !secret dyson_pure_serial_number
-      device_ip: 172.16.11.65
 
 group:
   bathroom_fans:
