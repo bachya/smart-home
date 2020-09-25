@@ -25,7 +25,7 @@ automation:
               entity_id: input_boolean.blackout_mode
         - conditions:
             - condition: template
-              value_template: "{{ trigger.now.hour == 07 }}"
+              value_template: "{{ trigger.now.hour == 7 }}"
             - condition: state
               entity_id: binary_sensor.workday_today
               state: "on"
@@ -46,7 +46,7 @@ automation:
               entity_id: input_boolean.blackout_mode
         - conditions:
             - condition: template
-              value_template: "{{ trigger.now.hour == 09 }}"
+              value_template: "{{ trigger.now.hour == 9 }}"
             - condition: state
               entity_id: binary_sensor.workday_today
               state: "off"
