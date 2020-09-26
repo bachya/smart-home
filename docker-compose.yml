@@ -140,7 +140,7 @@ services:
 
   portainer:
     container_name: portainer
-    image: "portainer/portainer:${PORTAINER_VERSION}"
+    image: "portainer/portainer-ce:${PORTAINER_VERSION}-alpine"
     ports:
       - "127.0.0.1:9000:9000/tcp"
     restart: always
