@@ -31,7 +31,7 @@
     automation.backyard_light_switch_via_kitchen_patio_light_on:
       state: "on"
     automation.blackout_mode_schedule:
-      state: "off"
+      state: "on"
     automation.cycle_master_toilet_fan_during_the_day:
       state: "on"
     automation.disable_simplisafe_sounds_in_blackout_mode:
