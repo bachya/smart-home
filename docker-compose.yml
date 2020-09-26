@@ -12,6 +12,20 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - almond-config:/var/lib/almond-server
 
+  ecowitt2mqtt:
+    container_name: ecowitt2mqtt
+    depends_on:
+      - vernemq
+    environment:
+      MQTT_BROKER: vernemq
+      MQTT_PASSWORD: "${VERNEMQ_PASSWORD_ECOWITT}"
+      MQTT_USERNAME: ecowitt
+      MQTT_TOPIC: ecowitt2mqtt/GW1000B-WIFI7167
+    image: "bachya/ecowitt2mqtt:${ECOWITT2MQTT_VERSION}"
+    ports:
+      - "8080:8080/tcp"
+    restart: unless-stopped
+
   esphome-dashboard:
     container_name: esphome-dashboard
     image: "esphome/esphome:${ESPHOME_VERSION}"
@@ -153,6 +167,7 @@ services:
     container_name: vernemq
     environment:
       DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
+      DOCKER_VERNEMQ_USER_ECOWITT: "${VERNEMQ_PASSWORD_ECOWITT}"
       DOCKER_VERNEMQ_USER_HASS: "${VERNEMQ_PASSWORD_HASS}"
       DOCKER_VERNEMQ_USER_METRICS2MQTT: "${VERNEMQ_PASSWORD_METRICS2MQTT}"
       DOCKER_VERNEMQ_USER_MIFLORA-MQTT-DAEMON: >
