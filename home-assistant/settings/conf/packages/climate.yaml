@@ -10,6 +10,9 @@ automation:
         # this automation:
       - platform: state
         entity_id: climate.thermostat_mode
+        from: heat_cool
+      - platform: state
+        entity_id: climate.thermostat_mode
         from: cool
         to: heat
       - platform: state
@@ -39,6 +42,8 @@ automation:
               data:
                 entity_id: climate.thermostat_mode
                 hvac_mode: heat_cool
+            - wait_template: >
+                {{ is_state("climate.thermostat_mode", "heat_cool") }}
             - service: climate.set_temperature
               data:
                 entity_id: climate.thermostat_mode
