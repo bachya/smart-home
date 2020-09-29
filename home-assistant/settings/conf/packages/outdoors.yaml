@@ -111,12 +111,6 @@ automation:
           entity_id: group.patio_lights
 
 group:
-  outdoor_lights:
-    entities:
-      - switch.backyard_lights_switch
-      - switch.front_patio_light_switch
-      - switch.kitchen_patio_light_switch
-
   patio_lights:
     entities:
       - switch.front_patio_light_switch
