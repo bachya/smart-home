@@ -378,6 +378,7 @@ sensor:
     entity_ids:
       - sensor.bedroom_temperature
       - sensor.fiddle_leaf_fig_temperature
+      - sensor.firefighter_air_temperature
       - sensor.guest_bedroom_sensor_temperature
       - sensor.kitchen_sensor_temperature
       - sensor.kitchen_sink_sensor_temperature
