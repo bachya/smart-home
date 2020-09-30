@@ -57,6 +57,15 @@ remote:
     host: harmony-hub-2.phil.iot
     activity: 37549209
 
+sensor:
+  - platform: min_max
+    name: Average Basement Temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.basement_sensor_temperature
+      - sensor.firefighter_air_temperature
+
 shell_command:
   turn_off_media_center: >
     ssh -i /config/id_ed25519 -o StrictHostKeyChecking=no
