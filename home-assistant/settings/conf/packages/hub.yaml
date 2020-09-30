@@ -1,7 +1,0 @@
----
-sensor:
-  - platform: command_line
-    name: Hub Uptime
-    command: >
-      cat /proc/uptime | awk \'{ print $1 / 86400 }\' | cut -f1 -d"."
-    unit_of_measurement: "days"

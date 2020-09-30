@@ -1,9 +1,0 @@
----
-sensor:
-  - platform: command_line
-    name: Hufflepuff Uptime
-    command: >
-      ssh -i /config/id_ed25519 -o StrictHostKeyChecking=no
-      bachya@hufflepuff.myserver.com
-      cat /proc/uptime | awk \'{ print $1 / 86400 }\' | cut -f1 -d"."
-    unit_of_measurement: "days"
