@@ -249,6 +249,11 @@ automation:
         for:
           minutes: 5
       - platform: numeric_state
+        entity_id: sensor.firefighter_battery_level
+        below: 20
+        for:
+          minutes: 5
+      - platform: numeric_state
         entity_id: sensor.front_door_lock_battery_level
         below: 20
         for:
