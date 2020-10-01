@@ -174,23 +174,6 @@ automation:
       data:
         entity_id: cover.garage_door
 
-  - alias: "Garage Response: Close (Slack)"
-    trigger:
-      platform: webhook
-      webhook_id: !secret slack_webhook_id
-    action:
-      service: >
-        {% set slack_data = trigger.data.payload | from_json %}
-        {% if slack_data.actions[0].action_id == "GARAGE_CLOSE_DOOR" %}
-          cover.close_cover
-        {% endif %}
-      data:
-        entity_id: >
-          {% set slack_data = trigger.data.payload | from_json %}
-          {% if slack_data.actions[0].action_id == "GARAGE_CLOSE_DOOR" %}
-            cover.garage_door
-          {% endif %}
-
   - alias: "Garage Response: Ignore (iOS)"
     trigger:
       platform: event
@@ -201,23 +184,6 @@ automation:
       service: alert.turn_off
       data:
         entity_id: alert.garage_left_open
-
-  - alias: "Garage Response: Ignore (Slack)"
-    trigger:
-      platform: webhook
-      webhook_id: !secret slack_webhook_id
-    action:
-      service: >
-        {% set slack_data = trigger.data.payload | from_json %}
-        {% if slack_data.actions[0].action_id == "GARAGE_IGNORE" %}
-          alert.turn_off
-        {% endif %}
-      data:
-        entity_id: >
-          {% set slack_data = trigger.data.payload | from_json %}
-          {% if slack_data.actions[0].action_id == "GARAGE_IGNORE" %}
-            alert.garage_left_open
-          {% endif %}
 
   - alias: "Security Response: Secure the House (iOS)"
     trigger:
