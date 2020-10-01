@@ -143,7 +143,6 @@ services:
       OZW_NETWORK_KEY: "${OPENZWAVE_NETWORK_KEY}"
       USB_PATH: /dev/zwave
     ports:
-      - "1983:1983/tcp"
       - "5901:5901/tcp"
       - "7800:7800/tcp"
     restart: always
