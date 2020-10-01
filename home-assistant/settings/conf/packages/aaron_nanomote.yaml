@@ -73,6 +73,6 @@ automation:
             - condition: template
               value_template: "{{ trigger.event.data.scene_value_id == 1 }}"
           sequence:
-            service: homeassistant.turn_off
+            service: switch.toggle
             data:
-              entity_id: group.bathroom_fans
+              entity_id: switch.master_patio_light_switch
