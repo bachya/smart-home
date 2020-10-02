@@ -9,7 +9,6 @@ services:
     network_mode: host
     restart: always
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - almond-config:/var/lib/almond-server
 
   ecowitt2mqtt:
@@ -33,7 +32,6 @@ services:
     restart: always
     volumes:
       - ./esphome:/config
-      - /etc/localtime:/etc/localtime:ro
 
   fail2ban:
     cap_add:
@@ -50,7 +48,6 @@ services:
     restart: always
     volumes:
       - ./fail2ban/settings/jail.local:/etc/fail2ban/jail.local
-      - /etc/localtime:/etc/localtime:ro
       - /var/log:/var/log:ro
       - fail2ban-config:/data
       - fail2ban-log:/usr/local/fail2ban-log
@@ -62,7 +59,6 @@ services:
     image: bachya/fail2ban-mqtt-notifier:latest
     restart: always
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - /var/log/nginx_access.log:/var/log/nginx_access.log:ro
       - /var/log/nginx_error.log:/var/log/nginx_error.log:ro
       - fail2ban-log:/var/log/fail2ban:ro
@@ -77,8 +73,6 @@ services:
     network_mode: host
     restart: always
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock
       - hass-config:/config
 
   hass-db:
@@ -122,7 +116,6 @@ services:
     restart: always
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
-      - /etc/localtime:/etc/localtime:ro
       - /etc/ssl:/etc/ssl:ro
       - /var/log/nginx_access.log:/var/log/nginx_access.log
       - /var/log/nginx_error.log:/var/log/nginx_error.log
@@ -158,7 +151,6 @@ services:
       - "127.0.0.1:9000:9000/tcp"
     restart: always
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer-config:/data
 
@@ -195,7 +187,6 @@ services:
     restart: always
     user: root
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - /etc/ssl:/etc/ssl:ro
       - /usr/share/ca-certificates:/usr/share/ca-certificates:ro
       - vernemq-data:/vernemq/data
@@ -211,7 +202,6 @@ services:
     image: "koenkk/zigbee2mqtt:${Z2M_VERSION}"
     restart: always
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - zigbee2mqtt-config:/app/data
 
   zigbee2mqttassistant:
@@ -227,7 +217,6 @@ services:
       - "127.0.0.1:8880:80/tcp"
     restart: always
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - zigbee2mqtt-config:/app/data
 
 volumes:
