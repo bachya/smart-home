@@ -258,14 +258,6 @@ sensor:
       - cloud_cover
 
   - platform: filter
-    name: Filtered Average Indoor Air Quality
-    entity_id: sensor.average_indoor_air_quality
-    filters:
-      - filter: lowpass
-        time_constant: 10
-        precision: 1
-
-  - platform: filter
     name: Filtered Average Indoor Humidity
     entity_id: sensor.average_indoor_humidity
     filters:
@@ -295,14 +287,6 @@ sensor:
     filters:
       - filter: range
         upper_bound: 100
-
-  - platform: min_max
-    name: Average Indoor Air Quality
-    type: mean
-    round_digits: 1
-    entity_ids:
-      - air_quality.bedroom
-      - air_quality.office_node_pro_air_quality
 
   - platform: min_max
     name: Average Indoor Humidity

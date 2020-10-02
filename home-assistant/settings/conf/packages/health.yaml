@@ -45,3 +45,30 @@ automation:
           before: sunset
     action:
       service: openuv.update_data
+
+sensor:
+  - platform: min_max
+    name: Average Indoor Air Quality
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.bedroom_air_quality_index
+      - sensor.office_air_quality_index
+
+  - platform: template
+    sensors:
+      bedroom_air_quality_index:
+        entity_id: air_quality.bedroom
+        value_template: >
+          {{ state_attr("air_quality.bedroom", "air_quality_index") }}
+        unit_of_measurement: AQI
+      office_air_quality_index:
+        entity_id: air_quality.office_node_pro_air_quality
+        value_template: >
+          {{
+            state_attr(
+              "air_quality.office_node_pro_air_quality",
+              "air_quality_index"
+            )
+          }}
+        unit_of_measurement: AQI
