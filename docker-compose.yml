@@ -1,5 +1,5 @@
 ---
-version: "2"
+version: "3"
 
 services:
 
@@ -172,6 +172,11 @@ services:
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.topic.1: "* in"
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.username: hub_mqtt
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0: "${VERNEMQ_BRIDGE_HOST}"
+    healthcheck:
+      test: [ "CMD", "vernemq", "ping", "|", "grep", "-q", "pong"]
+      interval: 5s
+      timeout: 10s
+      retries: 3
     image: "vernemq/vernemq:${VERNEMQ_VERSION}-alpine"
     ports:
       - "1883:1883/tcp"
