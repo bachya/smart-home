@@ -1,8 +1,4 @@
 ---
-almond_server:
-  title: Almond
-  url: !secret panel_url_almond
-  icon: mdi:assistant
 ambient:
   title: Ambient PWS
   url: !secret panel_url_ambient

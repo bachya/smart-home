@@ -3,14 +3,6 @@ version: "2"
 
 services:
 
-  almond:
-    container_name: almond
-    image: "stanfordoval/almond-server:${ALMOND_SERVER_VERSION}-portable"
-    network_mode: host
-    restart: always
-    volumes:
-      - almond-config:/var/lib/almond-server
-
   ecowitt2mqtt:
     container_name: ecowitt2mqtt
     depends_on:
@@ -221,7 +213,6 @@ services:
 
 volumes:
 
-  almond-config:
   fail2ban-config:
   fail2ban-log:
   hass-config:

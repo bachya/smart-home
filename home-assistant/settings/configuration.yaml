@@ -16,7 +16,6 @@ stream:
 scene: !include scenes.yaml
 
 # Integrations:
-almond: !include conf/almond.yaml
 binary_sensor: !include conf/binary_sensors.yaml
 ffmpeg: !include conf/ffmpeg.yaml
 google: !include conf/google.yaml
