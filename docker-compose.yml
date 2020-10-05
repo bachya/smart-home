@@ -73,6 +73,11 @@ services:
       POSTGRES_DB: "${HASS_DB_NAME}"
       POSTGRES_PASSWORD: "${HASS_DB_PASSWORD}"
       POSTGRES_USER: "${HASS_DB_USER}"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-U", "${HASS_DB_USER}"]
+      interval: 5s
+      timeout: 10s
+      retries: 3
     image: "postgres:${POSTGRES_VERSION}-alpine"
     ports:
       - "5432:5432/tcp"
@@ -173,7 +178,7 @@ services:
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.username: hub_mqtt
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0: "${VERNEMQ_BRIDGE_HOST}"
     healthcheck:
-      test: [ "CMD", "vernemq", "ping", "|", "grep", "-q", "pong"]
+      test: [ "CMD-SHELL", "vernemq", "ping", "|", "grep", "-q", "pong"]
       interval: 5s
       timeout: 10s
       retries: 3
