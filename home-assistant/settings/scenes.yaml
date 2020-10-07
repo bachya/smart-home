@@ -50,10 +50,6 @@
       state: "on"
     automation.set_sleep_timer_on_master_toilet_fan_when_switch_double_tapped:
       state: "on"
-    automation.notify_of_fail2ban_bans:
-      state: "on"
-    automation.notify_of_fail2ban_failures:
-      state: "on"
     automation.notify_on_bad_outdoor_aqi:
       state: "on"
     automation.notify_on_hacs_updates:

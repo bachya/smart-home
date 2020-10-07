@@ -196,26 +196,6 @@ automation:
       data:
         entity_id: scene.depart_home
 
-  - alias: "Notify of Fail2Ban bans"
-    trigger:
-      platform: state
-      entity_id: sensor.fail2ban_last_ban_ip
-    action:
-      service: notify.slack
-      data:
-        message: >
-          ❌ Fail2Ban just banned an IP address: {{ trigger.to_state.state }}
-
-  - alias: "Notify of Fail2Ban failures"
-    trigger:
-      platform: state
-      entity_id: sensor.fail2ban_last_failure_ip
-    action:
-      service: notify.slack
-      data:
-        message: >
-          ❌ Fail2Ban just failed an IP address: {{ trigger.to_state.state }}
-
   - alias: "Notify when security status changes"
     trigger:
       platform: state
@@ -377,65 +357,3 @@ sensor:
     start: >
       {{ as_timestamp(now()) - (7*86400) }}
     duration: 00:00:30
-
-  - platform: mqtt
-    state_topic: "stat/fail2ban"
-    name: "Fail2Ban: Failures"
-    unit_of_measurement: failures
-    icon: mdi:message-alert
-    value_template: "{{ value_json.failure_count }}"
-
-  - platform: mqtt
-    state_topic: "stat/fail2ban"
-    name: "Fail2Ban: Last Failure Jail"
-    icon: mdi:target-account
-    value_template: "{{ value_json.last_failure_jail }}"
-
-  - platform: mqtt
-    state_topic: "stat/fail2ban"
-    name: "Fail2Ban: Last Failure IP"
-    icon: mdi:target-account
-    value_template: "{{ value_json.last_failure_ip }}"
-
-  - platform: mqtt
-    state_topic: "stat/fail2ban"
-    name: "Fail2Ban: Last Failure Country"
-    icon: mdi:map-marker
-    value_template: "{{ value_json.last_failure_country }}"
-
-  - platform: mqtt
-    state_topic: "stat/fail2ban"
-    name: "Fail2Ban: Last Failure Timestamp"
-    icon: mdi:timetable
-    value_template: "{{ value_json.last_failure_ts }}"
-
-  - platform: mqtt
-    state_topic: "stat/fail2ban"
-    name: "Fail2Ban: Bans"
-    unit_of_measurement: bans
-    icon: mdi:message-alert
-    value_template: "{{ value_json.ban_count }}"
-
-  - platform: mqtt
-    state_topic: "stat/fail2ban"
-    name: "Fail2Ban: Last Ban Jail"
-    icon: mdi:target-account
-    value_template: "{{ value_json.last_ban_jail }}"
-
-  - platform: mqtt
-    state_topic: "stat/fail2ban"
-    name: "Fail2Ban: Last Ban IP"
-    icon: mdi:target-account
-    value_template: "{{ value_json.last_ban_ip }}"
-
-  - platform: mqtt
-    state_topic: "stat/fail2ban"
-    name: "Fail2Ban: Last Ban Country"
-    icon: mdi:map-marker
-    value_template: "{{ value_json.last_ban_country }}"
-
-  - platform: mqtt
-    state_topic: "stat/fail2ban"
-    name: "Fail2Ban: Last Ban Timestamp"
-    icon: mdi:timetable
-    value_template: "{{ value_json.last_ban_ts }}"
