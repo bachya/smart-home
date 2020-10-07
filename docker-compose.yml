@@ -49,6 +49,7 @@ services:
     volumes:
       - ./fail2ban/settings/filter.d:/data/filter.d:ro
       - ./fail2ban/settings/jail.d:/data/jail.d:ro
+      - /var/log:/var/log:ro
       - fail2ban-data:/data
 
   hass:
