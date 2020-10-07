@@ -133,32 +133,6 @@ steps:
 
 ---
 kind: pipeline
-name: NGINX
-
-trigger:
-  event:
-    - push
-
-depends_on:
-  - Pre-Flight
-
-steps:
-  - name: "Config Check"
-    image: alpine:3.10.1
-    commands:
-      - apk update && apk add --no-cache nginx
-      - ln -s /drone/src/nginx/settings /etc/nginx
-      - nginx -t -c /etc/nginx/nginx.conf -g 'pid /tmp/nginx.pid; daemon off;'
-
-  - name: "Static Analysis"
-    image: yandex/gixy:latest
-    pull: always
-    commands:
-      - ln -s /drone/src/nginx/settings /etc/nginx
-      - gixy /etc/nginx/nginx.conf
-
----
-kind: pipeline
 name: Build Notification
 
 trigger:
@@ -172,7 +146,6 @@ depends_on:
   - ESPHome
   - Fail2Ban
   - Home Assistant
-  - NGINX
 
 steps:
   - name: Send Notification
