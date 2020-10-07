@@ -12,18 +12,15 @@ pushd "$REPO_PATH"
 # Re-build the containers if necessary:
 docker-compose build --pull
 
-# Tear the stack down and clean up loose containers and images:
-docker-compose down --remove-orphans
-docker container prune -f
-
 # Bring up the stack, focusing on giving critical services time to start up first:
 docker-compose up -d vernemq
 sleep 5
 docker-compose up -d openzwave
 sleep 5
-docker-compose up -d
+docker-compose up -d --remove-orphans
 
 # Do a final cleanup of unused networks and volumes:
+docker container prune -f
 docker image prune -a
 docker network prune -f
 docker volume prune -f
