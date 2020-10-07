@@ -1,6 +1,16 @@
 #!/bin/bash
 set -euo pipefail
 
+function get_container_id() {
+    local name="$1"
+    docker ps -q -f name="^$name$"
+}
+
+function get_last_started_at() {
+    local container_id="$1"
+    docker inspect --format="{{.State.StartedAt}}" "$container_id" | xargs date +%s -d
+}
+
 REPO_PATH="$( dirname "$( cd "$(dirname "$0")" ; pwd -P )" )"
 
 # Change into the repo's dir so that docker-compose .env works correctly:
@@ -12,12 +22,34 @@ pushd "$REPO_PATH"
 # Re-build the containers if necessary:
 docker-compose build --pull
 
+# Track the time right before we bring containers up so we can track which ones weren't
+# created:
+start="$(date +%s)"
+
 # Bring up the stack, focusing on giving critical services time to start up first:
 docker-compose up -d vernemq
 sleep 5
 docker-compose up -d openzwave
 sleep 5
 docker-compose up -d --remove-orphans
+
+# Loop through mounted directories in this repo that have changed; if their associated
+# container wasn't rebuilt, restart the container that exists:
+changed_dirs=$(git diff --name-only HEAD HEAD^ | xargs dirname | cut -d "/" -f1 | uniq)
+echo "$changed_dirs" | while read -r dir; do
+    container_id=$(get_container_id "$dir")
+    if [ -z "$container_id" ]; then
+        continue
+    fi
+
+    container_started_at=$(get_last_started_at "$container_id")
+    if [ "$container_started_at" -ge "$start" ]; then
+        continue
+    fi
+
+    echo "Restarting container with changed volume: $dir"
+    docker-compose restart "$dir"
+done
 
 # Do a final cleanup of unused networks and volumes:
 docker container prune -f
