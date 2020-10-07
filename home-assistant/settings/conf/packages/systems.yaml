@@ -403,14 +403,6 @@ automation:
         entity_id: "{{ trigger.entity_id }}"
         value: "{{ trigger.to_state.state }}"
 
-binary_sensor:
-  - platform: linode
-    nodes:
-      - linode2506384
-
-linode:
-  access_token: !secret linode_access_token
-
 sensor:
   - platform: command_line
     name: Latest Drone Build
@@ -567,7 +559,9 @@ sensor:
         entity_id: zwave.aeotec_nanomote_quad_aaron_bedside
         friendly_name: Aeotec Nanomote (AMB Bedside) Battery
         value_template: >
-          {{ states.zwave.aeotec_nanomote_quad_aaron_bedside.attributes.battery_level }}
+          {{
+            states.zwave.aeotec_nanomote_quad_aaron_bedside.attributes.battery_level
+          }}
         unit_of_measurement: "%"
         device_class: battery
 

@@ -3,22 +3,10 @@ ambient:
   title: Ambient PWS
   url: !secret panel_url_ambient
   icon: mdi:weather-cloudy
-ci_cd:
-  title: CI/CD
-  url: !secret panel_url_drone
-  icon: mdi:lan
 esphome_dashboard:
   title: ESPHome Dashboard
   url: !secret panel_url_esphome_dashboard
   icon: mdi:chip
-octopi:
-  title: OctoPi
-  url: !secret panel_url_octopi
-  icon: mdi:printer-3d
-openzwave:
-  title: OpenZWave
-  url: !secret panel_url_openzwave
-  icon: mdi:z-wave
 portainer:
   title: Portainer
   url: !secret panel_url_portainer
@@ -27,10 +15,10 @@ rainmachine:
   title: RainMachine
   url: !secret panel_url_rainmachine
   icon: mdi:water
-vernemq:
-  title: VerneMQ
-  url: !secret panel_url_vernemq
-  icon: mdi:wifi
+traefik:
+  title: Traefik
+  url: !secret panel_url_traefik
+  icon: mdi:arrow-decision
 zigbee2mqtt:
   title: Zigbee2MQTT
   url: !secret panel_url_zibee2mqtt

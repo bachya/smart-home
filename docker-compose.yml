@@ -19,7 +19,16 @@ services:
 
   esphome-dashboard:
     container_name: esphome-dashboard
+    depends_on:
+      - traefik
     image: "esphome/esphome:${ESPHOME_VERSION}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.esphome.entrypoints=websecure"
+      - "traefik.http.routers.esphome.middlewares=auth,security"
+      - "traefik.http.routers.esphome.rule=Host(`${TRAEFIK_HOST_ESPHOME}`)"
+      - "traefik.http.routers.esphome.tls=true"
+      - "traefik.http.services.esphome.loadbalancer.server.port=6052"
     network_mode: host
     restart: always
     volumes:
@@ -31,40 +40,42 @@ services:
       - NET_RAW
     container_name: fail2ban
     environment:
-      TZ: America/Denver
-      F2B_LOG_TARGET: /usr/local/fail2ban-log/fail2ban.log
+      F2B_DB_PURGE_AGE: 1d
       F2B_MAX_RETRY: 3
-      F2B_IPTABLES_CHAIN: INPUT
+      TZ: America/Denver
     image: "crazymax/fail2ban:${FAIL2BAN_CONTAINER_VERSION}"
-    network_mode: host
+    network_mode: "host"
     restart: always
     volumes:
-      - ./fail2ban/settings/jail.local:/etc/fail2ban/jail.local
-      - /var/log:/var/log:ro
-      - fail2ban-config:/data
-      - fail2ban-log:/usr/local/fail2ban-log
-
-  fail2ban-mqtt-notifier:
-    build: ./fail2ban-mqtt-notifier/docker
-    command: /entry.sh
-    container_name: fail2ban-mqtt-notifier
-    image: bachya/fail2ban-mqtt-notifier:latest
-    restart: always
-    volumes:
-      - /var/log/nginx_access.log:/var/log/nginx_access.log:ro
-      - /var/log/nginx_error.log:/var/log/nginx_error.log:ro
-      - fail2ban-log:/var/log/fail2ban:ro
+      - ./fail2ban/settings/filter.d:/data/filter.d:ro
+      - ./fail2ban/settings/jail.d:/data/jail.d:ro
+      - fail2ban-data:/data
 
   hass:
     container_name: hass
     depends_on:
       - hass-db
       - openzwave
+      - traefik
       - vernemq
     image: "homeassistant/home-assistant:${HOME_ASSISTANT_CORE_VERSION}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.hass.middlewares=security"
+      - "traefik.http.routers.hass.entrypoints=websecure"
+      - "traefik.http.routers.hass.rule=Host(`${TRAEFIK_HOST_HASS}`)"
+      - "traefik.http.routers.hass.tls=true"
+      - "traefik.http.services.hass.loadbalancer.server.port=8123"
     network_mode: host
     restart: always
     volumes:
+      - ./home-assistant/settings/conf:/config/conf
+      - ./home-assistant/settings/configuration.yaml:/config/configuration.yaml
+      - ./home-assistant/settings/custom_components:/config/custom_components
+      - ./home-assistant/settings/nest.conf:/config/nest.conf
+      - ./home-assistant/settings/python_scripts:/config/python_scripts
+      - ./home-assistant/settings/scenes.yaml:/config/scenes.yaml
+      - ./home-assistant/settings/secrets.yaml:/config/secrets.yaml
       - hass-config:/config
 
   hass-db:
@@ -95,28 +106,19 @@ services:
       - vernemq
     environment:
       COMMAND_OPTIONS_STRING: >
-        --name=hub --interval=60 --cpu=60 --interval=10 --vm --du="/" -vvvvv
+        --name=hub
+        --interval=60
+        --cpu=60
+        --interval=10
+        --vm
+        --du="/"
+        -vvvvv
       MQTT_BROKER: vernemq
       MQTT_PASSWORD: "${VERNEMQ_PASSWORD_METRICS2MQTT}"
       MQTT_USERNAME: metrics2mqtt
     restart: unless-stopped
     volumes:
       - /proc:/proc
-
-  nginx:
-    cap_add:
-      - NET_ADMIN
-    container_name: nginx
-    image: "50e49b6b-b382-4336-bf43-a74c32e762a0.bachyaproductions.com:18884\
-            /bachya/nginx-geoip:${NGINX_VERSION}"
-    network_mode: host
-    restart: always
-    volumes:
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-      - /etc/ssl:/etc/ssl:ro
-      - /var/log/nginx_access.log:/var/log/nginx_access.log
-      - /var/log/nginx_error.log:/var/log/nginx_error.log
-      - nginx-config:/etc/nginx
 
   openzwave:
     container_name: openzwave
@@ -134,7 +136,6 @@ services:
       USB_PATH: /dev/zwave
     ports:
       - "5901:5901/tcp"
-      - "7800:7800/tcp"
     restart: always
     security_opt:
       - seccomp:unconfined
@@ -143,16 +144,72 @@ services:
 
   portainer:
     container_name: portainer
+    depends_on:
+      - traefik
     image: "portainer/portainer-ce:${PORTAINER_VERSION}-alpine"
-    ports:
-      - "127.0.0.1:9000:9000/tcp"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.middlewares=security"
+      - "traefik.http.routers.portainer.entrypoints=websecure"
+      - "traefik.http.routers.portainer.rule=Host(`${TRAEFIK_HOST_PORTAINER}`)"
+      - "traefik.http.routers.portainer.tls=true"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer-config:/data
 
+  traefik:
+    command:
+      - "--accesslog.filepath=/var/log/access.log"
+      - "--accesslog.filters.statusCodes=400-499"
+      - "--api"
+      - "--certificatesResolvers.linode.acme.dnschallenge.resolvers=1.1.1.1:53,1.0.0.1:53"
+      - "--certificatesresolvers.linode.acme.dnschallenge.provider=linodev4"
+      - "--certificatesresolvers.linode.acme.dnschallenge=true"
+      - "--certificatesresolvers.linode.acme.email=bachya1208@gmail.com"
+      - "--certificatesresolvers.linode.acme.storage=/letsencrypt/acme.json"
+      - "--entrypoints.websecure.address=:443"
+      - "--providers.docker"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.file.directory=/etc/traefik/"
+    container_name: traefik
+    environment:
+      LINODE_PROPAGATION_TIMEOUT: 900
+      LINODE_TOKEN: "${TRAEFIK_LINODE_API_KEY}"
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+    image: "traefik:${TRAEFIK_VERSION}"
+    labels:
+      # Middlewares:
+      - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_USERS}"
+      - "traefik.http.middlewares.security.ratelimit.average=10"
+      - "traefik.http.middlewares.security.ratelimit.burst=10"
+
+      # Global Wildcard Certs:
+      - "traefik.http.routers.wildcard-certs.tls.certresolver=linode"
+      - "traefik.http.routers.wildcard-certs.tls.domains[0].main=${TRAEFIK_DOMAIN}"
+      - "traefik.http.routers.wildcard-certs.tls.domains[0].sans=*.${TRAEFIK_DOMAIN}"
+
+      # Dashboard:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.middlewares=auth,security"
+      - "traefik.http.routers.traefik.rule=Host(`${TRAEFIK_HOST_TRAEFIK}`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.tls.certresolver=linode"
+    ports:
+      - "443:443/tcp"
+    volumes:
+      - ./traefik/settings:/etc/traefik:ro
+      - /var/log/traefik:/var/log
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - letsencrypt-data:/letsencrypt
+
   vernemq:
     container_name: vernemq
+    depends_on:
+      - traefik
     environment:
       DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
       DOCKER_VERNEMQ_USER_ECOWITT: "${VERNEMQ_PASSWORD_ECOWITT}"
@@ -185,7 +242,6 @@ services:
     image: "vernemq/vernemq:${VERNEMQ_VERSION}-alpine"
     ports:
       - "1883:1883/tcp"
-      - "127.0.0.1:8888:8888/tcp"
     restart: always
     user: root
     volumes:
@@ -204,30 +260,35 @@ services:
     image: "koenkk/zigbee2mqtt:${Z2M_VERSION}"
     restart: always
     volumes:
+      - ./zigbee2mqtt/settings/configuration.yaml:/app/data/configuration.yaml
       - zigbee2mqtt-config:/app/data
 
   zigbee2mqttassistant:
     container_name: zigbee2mqttassistant
     depends_on:
+      - traefik
       - vernemq
     environment:
       Z2MA_SETTINGS__MQTTSERVER: vernemq
       Z2MA_SETTINGS__MQTTUSERNAME: "${Z2M_ASSISTANT_MQTT_USERNAME}"
       Z2MA_SETTINGS__MQTTPASSWORD: "${Z2M_ASSISTANT_MQTT_PASSWORD}"
     image: "carldebilly/zigbee2mqttassistant:${Z2M_ASSISTANT_VERSION}"
-    ports:
-      - "127.0.0.1:8880:80/tcp"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.z2m-assistant.headers.frameDeny=false"
+      - "traefik.http.routers.esphome.middlewares=security"
+      - "traefik.http.routers.z2m-assistant.entrypoints=websecure"
+      - "traefik.http.routers.z2m-assistant.rule=Host(`${TRAEFIK_HOST_Z2M_ASSISTANT}`)"
+      - "traefik.http.routers.z2m-assistant.tls=true"
+      - "traefik.http.services.z2m-assistant.loadbalancer.server.port=80"
     restart: always
-    volumes:
-      - zigbee2mqtt-config:/app/data
 
 volumes:
 
-  fail2ban-config:
-  fail2ban-log:
+  fail2ban-data:
   hass-config:
   hass-db-data:
-  nginx-config:
+  letsencrypt-data:
   openzwave-config:
   portainer-config:
   vernemq-data:

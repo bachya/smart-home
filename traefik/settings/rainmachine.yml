@@ -1,0 +1,15 @@
+---
+http:
+  routers:
+    rainmachine:
+      entryPoints:
+        - websecure
+      rule: "Host(`rainmachine.myserver.com`)"
+      service: rainmachine
+      tls: true
+
+  services:
+    rainmachine:
+      loadBalancer:
+        servers:
+          - url: "https://rainmachine.phil.iot:8080"
