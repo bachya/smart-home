@@ -17,7 +17,7 @@ services:
       - "8080:8080/tcp"
     restart: unless-stopped
 
-  esphome-dashboard:
+  esphome:
     container_name: esphome-dashboard
     depends_on:
       - traefik
@@ -70,13 +70,13 @@ services:
     network_mode: host
     restart: always
     volumes:
-      - ./home-assistant/settings/conf:/config/conf
-      - ./home-assistant/settings/configuration.yaml:/config/configuration.yaml
-      - ./home-assistant/settings/custom_components:/config/custom_components
-      - ./home-assistant/settings/nest.conf:/config/nest.conf
-      - ./home-assistant/settings/python_scripts:/config/python_scripts
-      - ./home-assistant/settings/scenes.yaml:/config/scenes.yaml
-      - ./home-assistant/settings/secrets.yaml:/config/secrets.yaml
+      - ./hass/settings/conf:/config/conf
+      - ./hass/settings/configuration.yaml:/config/configuration.yaml
+      - ./hass/settings/custom_components:/config/custom_components
+      - ./hass/settings/nest.conf:/config/nest.conf
+      - ./hass/settings/python_scripts:/config/python_scripts
+      - ./hass/settings/scenes.yaml:/config/scenes.yaml
+      - ./hass/settings/secrets.yaml:/config/secrets.yaml
       - hass-config:/config
 
   hass-db:
