@@ -21,7 +21,7 @@ docker-compose up -d --remove-orphans
 
 # Do a final cleanup of unused networks and volumes:
 docker container prune -f
-docker image prune -a
+docker image prune -a -f
 docker network prune -f
 docker volume prune -f
 
