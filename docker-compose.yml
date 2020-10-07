@@ -277,7 +277,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.z2m-assistant.headers.frameDeny=false"
-      - "traefik.http.routers.esphome.middlewares=security"
+      - "traefik.http.routers.z2m-assistant.middlewares=security"
       - "traefik.http.routers.z2m-assistant.entrypoints=websecure"
       - "traefik.http.routers.z2m-assistant.rule=Host(`${TRAEFIK_HOST_Z2M_ASSISTANT}`)"
       - "traefik.http.routers.z2m-assistant.tls=true"
