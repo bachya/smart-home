@@ -27,6 +27,18 @@ automation:
       entity_id: >
         automation.fire_local_event_for_weather_station_detected_sunset
 
+  - alias: "Dump MQTT for OpenZWave on HASS startup"
+    trigger:
+      platform: homeassistant
+      event: start
+    action:
+      - delay:
+          minutes: 1
+      - service: mqtt.dump
+        data:
+          topic: "OpenZWave/#"
+          duration: 5
+
   - alias: "Forward HASS persistent notifications to Slack"
     trigger:
       platform: event
