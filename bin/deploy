@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euxo pipefail
+set -euo pipefail
 
 REPO_PATH="$( dirname "$( cd "$(dirname "$0")" ; pwd -P )" )"
 
@@ -15,6 +15,16 @@ SLACK_COLOR_RED="danger"
 SLACK_COLOR_YELLOW="warning"
 SLACK_HOOK_URL="https://hooks.slack.com/services/ID/ID2/ID3"
 
+
+function get_container_id() {
+    local name="$1"
+    docker ps -q -f name="^$name$"
+}
+
+function get_last_started_at() {
+    local container_id="$1"
+    docker inspect --format="{{.State.StartedAt}}" "$container_id" | xargs date +%s -d
+}
 
 function num_of_running_builds() {
     local builds_json
@@ -89,7 +99,9 @@ function update() {
         return 0
     fi
 
+    # Collect some information about what's changed between the last deployment and now:
     new_commits="$(remote_git --no-pager log --format="• \`%h\` %s" HEAD...FETCH_HEAD)"
+    changed_dirs=$(remote_git diff --name-only HEAD FETCH_HEAD | xargs dirname | cut -d "/" -f1 | uniq)
 
     # If the merge doesn't go well, abort:
     git_merge_result="$(remote_git merge FETCH_HEAD > /dev/null 2>&1)"
@@ -104,7 +116,51 @@ function update() {
         "😎 Deployment started:\n$new_commits" \
         "$SLACK_COLOR_BLUE"
 
-    "$REPO_PATH/bin/build"
+    # Change into the repo's dir so that docker-compose .env works correctly:
+    pushd "$REPO_PATH"
+
+    # Clean our HASS refresh tokens:
+    "$REPO_PATH/bin/clean-hass-refresh-tokens"
+
+    # Re-build the containers if necessary:
+    docker-compose build --pull
+
+    # Track the time right before we bring containers up so we can track which ones weren't
+    # created:
+    start="$(date +%s)"
+
+    # Bring up the stack, focusing on giving critical services time to start up first:
+    docker-compose up -d vernemq
+    sleep 5
+    docker-compose up -d openzwave
+    sleep 5
+    docker-compose up -d --remove-orphans
+
+    # Loop through mounted directories in this repo that have changed; if their associated
+    # container wasn't rebuilt, restart the container that exists:
+    echo "$changed_dirs" | while read -r dir; do
+        container_id=$(get_container_id "$dir")
+        if [ -z "$container_id" ]; then
+            continue
+        fi
+
+        container_started_at=$(get_last_started_at "$container_id")
+        if [ "$container_started_at" -ge "$start" ]; then
+            continue
+        fi
+
+        echo "Restarting container with changed volume: $dir"
+        docker-compose restart "$dir"
+    done
+
+    # Do a final cleanup of unused networks and volumes:
+    docker container prune -f
+    docker image prune -f
+    docker network prune -f
+    docker volume prune -f
+
+    # Go back to where we started:
+    popd
 
     send_slack_message \
         "🤩 Deployment completed!" \
