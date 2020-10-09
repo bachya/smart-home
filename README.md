@@ -8,17 +8,17 @@ enthusiasts might find value.
 
 I use an Intel NUC i5 with the following apps running as Docker containers:
 
+* [ecowitt2mqtt](https://github.com/bachya/ecowitt2mqtt): sends local weather station data to Home Assistant
+* [ESPHome](https://esphome.io/): custom firmware generator for ESP8266/ESP32 microcontrollers
+* [Fail2Ban](https://www.fail2ban.org/wiki/index.php/Main_Page): an adaptive log monitor that can firewall bad IP addresses
 * [Home Assistant](http://home-assistant.io): the primary home automation software
-* [Amazon Dash](https://github.com/Nekmo/amazon-dash): a service allowing Amazon Dash buttons to interact with the system
-* [AppDaemon](https://appdaemon.readthedocs.io/en/latest/): Home Assistant-friendly automation in pure Python
-* [Glances](https://nicolargo.github.io/glances/): system monitoring and stats
-* [Grafana](https://grafana.com/): data visualization and analytics
-* [ha-dockermon](https://github.com/philhawthorne/ha-dockermon): RESTful services to interact with Docker containers
-* iBeacon: a container that allows my hub to act as an iBeacon for presence detection
-* [Mosquitto](https://mosquitto.org/): an MQTT broker for fast, friendly service communication
-* [NGINX](https://www.nginx.com/): a fast, secure web server behind which the other services live
+* [metrics2mqtt](https://github.com/jamiebegin/metrics2mqtt): sends host data (memory, CPU, disk usage, etc.) to an MQTT broker
+* [OpenZWave](https://github.com/OpenZWave/qt-openzwave): sends data from Z-Wave devices to an MQTT broker
+* [Portainer](https://www.portainer.io/): a GUI to manage my Docker containers when I'm sick of the CLI 😂
+* [Traefik](https://traefik.io/traefik/): a fast, secure web server behind which the other services live
+* [VerneMQ](https://vernemq.com/): an MQTT broker for fast, friendly service communication
+* [zigbee2mqtt](https://vernemq.com/): sends data from Zigbee devices to an MQTT broker
 
 # The Details
 
-I keep all the nitty gritty details in the
-[wiki](https://github.com/bachya/smart-home/wiki).
+I do a _poor_ job keeping my wiki up to date, so if you want to know something, submit an issue!
