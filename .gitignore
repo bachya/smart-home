@@ -16,11 +16,6 @@ google_calendars.yaml
 grafana
 harmony_basement_tv.conf
 harmony_living_room_tv.conf
-home-assistant/settings/.storage
-home-assistant/settings/conf/hass/.HA_VERSION
-home-assistant/settings/conf/hass/.uuid
-home-assistant/settings/conf/hass/deps
-home-assistant/settings/www
 id_ed25519*
 id_rsa*
 ip_bans.yaml
