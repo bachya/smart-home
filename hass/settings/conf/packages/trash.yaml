@@ -13,7 +13,7 @@ automation:
             - now() | as_timestamp()
           )/60/60
         %}
-        {{ delta > 0 and delta < 24 }}
+        {{ delta > 0 and delta < 6 }}
     action:
       - service: notify.mobile_app_aarons_iphone
         data:
