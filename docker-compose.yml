@@ -184,8 +184,8 @@ services:
     labels:
       # Middlewares:
       - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_USERS}"
-      - "traefik.http.middlewares.security.ratelimit.average=10"
-      - "traefik.http.middlewares.security.ratelimit.burst=10"
+      - "traefik.http.middlewares.security.ratelimit.average=100"
+      - "traefik.http.middlewares.security.ratelimit.burst=50"
 
       # Global Wildcard Certs:
       - "traefik.http.routers.wildcard-certs.tls.certresolver=linode"
