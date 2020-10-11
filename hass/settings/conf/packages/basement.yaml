@@ -68,7 +68,7 @@ sensor:
 
 shell_command:
   turn_off_media_center: >
-    ssh -i /config/id_ed25519 -o StrictHostKeyChecking=no
+    ssh -i /config/ssh_keys/id_ed25519 -o StrictHostKeyChecking=no
     hass@media-center.phil.lan sudo /sbin/poweroff
 
 switch:

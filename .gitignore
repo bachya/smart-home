@@ -26,6 +26,7 @@ options.xml
 passwd
 secrets.yaml
 sonoff
+ssh_keys
 tags*
 zwave_device_config.yaml
 zwcfg_*
