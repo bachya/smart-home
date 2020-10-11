@@ -18,7 +18,7 @@ services:
     restart: unless-stopped
 
   esphome:
-    container_name: esphome-dashboard
+    container_name: esphome
     depends_on:
       - traefik
     image: "esphome/esphome:${ESPHOME_VERSION}"
