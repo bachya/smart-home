@@ -169,7 +169,7 @@ services:
       - "--certificatesResolvers.linode.acme.dnschallenge.resolvers=1.1.1.1:53,1.0.0.1:53"
       - "--certificatesresolvers.linode.acme.dnschallenge.provider=linodev4"
       - "--certificatesresolvers.linode.acme.dnschallenge=true"
-      - "--certificatesresolvers.linode.acme.email=bachya1208@gmail.com"
+      - "--certificatesresolvers.linode.acme.email={ACME_EMAIL_ADDRESS}"
       - "--certificatesresolvers.linode.acme.storage=/letsencrypt/acme.json"
       - "--entrypoints.websecure.address=:443"
       - "--providers.docker"
