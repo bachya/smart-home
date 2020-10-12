@@ -161,6 +161,46 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer-config:/data
 
+  restic-backup:
+    container_name: restic-backup
+    environment:
+      B2_ACCOUNT_ID: "${RESTIC_B2_ACCOUNT_ID}"
+      B2_ACCOUNT_KEY: "${RESTIC_B2_ACCOUNT_KEY}"
+      BACKUP_CRON: "0 * * * *"
+      RESTIC_BACKUP_ARGS: >-
+        --exclude="/data/home/*/.cache"
+        --verbose
+      RESTIC_BACKUP_SOURCES: >
+        /mnt/etc /mnt/home /mnt/root /mnt/usr/local /mnt/var/lib/docker/volumes
+      RESTIC_FORGET_ARGS: >-
+        --keep-last 10
+        --keep-daily 7
+        --keep-weekly 2
+        --keep-monthly 1
+      RESTIC_PASSWORD: "${RESTIC_PASSWORD}"
+      RESTIC_REPOSITORY: "${RESTIC_REPOSITORY}"
+      RUN_ON_STARTUP: "true"
+      TZ: America/Denver
+    image: mazzolino/restic:latest
+    volumes:
+      - /etc:/mnt/etc:ro
+      - /home:/mnt/home:ro
+      - /root:/mnt/root:ro
+      - /usr/local:/mnt/usr/local:ro
+      - /var/lib/docker/volumes:/mnt/var/lib/docker/volumes:ro
+
+  restic-prune:
+    container_name: restic-prune
+    environment:
+      B2_ACCOUNT_ID: "${RESTIC_B2_ACCOUNT_ID}"
+      B2_ACCOUNT_KEY: "${RESTIC_B2_ACCOUNT_KEY}"
+      PRUNE_CRON: "0 0 4 * * *"
+      RESTIC_PASSWORD: "${RESTIC_PASSWORD}"
+      RESTIC_REPOSITORY: "${RESTIC_REPOSITORY}"
+      RUN_ON_STARTUP: "true"
+      TZ: America/Denver
+    image: mazzolino/restic:latest
+
   traefik:
     command:
       - "--accesslog.filepath=/var/log/access.log"
