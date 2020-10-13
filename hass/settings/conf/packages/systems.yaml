@@ -178,7 +178,7 @@ automation:
             {% set name = "Media Center (Backup)" %}
           {%
             elif trigger.entity_id
-            == "sensor.linode_disk_usage_media_media_volume"
+            == "sensor.media_center_disk_usage_volume"
           %}
             {% set name = "Media Center (Media)" %}
           {% elif trigger.entity_id == "sensor.ravenclaw_cpu" %}
