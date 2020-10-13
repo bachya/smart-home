@@ -177,6 +177,7 @@ services:
         --keep-daily 7
         --keep-weekly 2
         --keep-monthly 1
+      RESTIC_PASSWORD: "${RESTIC_PASSWORD}"
       RESTIC_REPOSITORY: "${RESTIC_REPOSITORY}"
       RUN_ON_STARTUP: "true"
       TZ: America/Denver
@@ -194,6 +195,7 @@ services:
       B2_ACCOUNT_ID: "${RESTIC_B2_ACCOUNT_ID}"
       B2_ACCOUNT_KEY: "${RESTIC_B2_ACCOUNT_KEY}"
       PRUNE_CRON: "0 0 4 * * *"
+      RESTIC_PASSWORD: "${RESTIC_PASSWORD}"
       RESTIC_REPOSITORY: "${RESTIC_REPOSITORY}"
       RUN_ON_STARTUP: "true"
       TZ: America/Denver
