@@ -1,1 +1,1 @@
-*/10 * * * * root curl -s https://hc-ping.com/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+*/10 * * * * root curl -s https://myserver.com/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
