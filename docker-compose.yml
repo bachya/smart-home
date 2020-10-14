@@ -168,10 +168,9 @@ services:
       B2_ACCOUNT_KEY: "${RESTIC_B2_ACCOUNT_KEY}"
       BACKUP_CRON: "0 * * * *"
       RESTIC_BACKUP_ARGS: >-
-        --exclude="/data/home/*/.cache"
+        --exclude=".cache"
         --verbose
-      RESTIC_BACKUP_SOURCES: >
-        /mnt/etc /mnt/home /mnt/root /mnt/usr/local /mnt/var/lib/docker/volumes
+      RESTIC_BACKUP_SOURCES: /data
       RESTIC_FORGET_ARGS: >-
         --keep-last 10
         --keep-daily 7
@@ -183,11 +182,11 @@ services:
       TZ: America/Denver
     image: mazzolino/restic:latest
     volumes:
-      - /etc:/mnt/etc:ro
-      - /home:/mnt/home:ro
-      - /root:/mnt/root:ro
-      - /usr/local:/mnt/usr/local:ro
-      - /var/lib/docker/volumes:/mnt/var/lib/docker/volumes:ro
+      - /etc:/data/etc:ro
+      - /home:/data/home:ro
+      - /root:/data/root:ro
+      - /usr/local:/data/usr/local:ro
+      - /var/lib/docker/volumes:/data/var/lib/docker/volumes:ro
 
   restic-prune:
     container_name: restic-prune
