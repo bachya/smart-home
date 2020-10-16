@@ -114,6 +114,15 @@ depends_on:
   - Pre-Flight
 
 steps:
+  - name: "Config Check: Beta"
+    image: homeassistant/home-assistant:beta
+    pull: always
+    failure: ignore
+    commands:
+      - cd /usr/src/homeassistant
+      - "python -m homeassistant -c /drone/src/hass/settings \
+         --script check_config"
+
   - name: "Config Check: RC"
     image: homeassistant/home-assistant:rc
     pull: always
