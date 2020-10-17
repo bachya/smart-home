@@ -182,6 +182,8 @@
       state: "off"
     cover.garage_door:
       state: closed
+    lock.8673_e_55th_avenue_patio_door:
+      state: locked
     lock.front_door_lock_locked:
       state: locked
     lock.garage_fire_door_lock_locked:
@@ -220,6 +222,8 @@
       state: armed_home
     cover.garage_door:
       state: closed
+    lock.8673_e_55th_avenue_patio_door:
+      state: locked
     lock.front_door_lock_locked:
       state: locked
     lock.garage_fire_door_lock_locked:
