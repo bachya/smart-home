@@ -307,18 +307,16 @@ binary_sensor:
 
       secure_status:
         friendly_name: Security Status
-        entity_id:
-          - lock.front_door_lock_locked
-          - lock.garage_fire_door_lock_locked
-          - alarm_control_panel.8673_e_55th_avenue
-          - cover.garage_door
         value_template: >
-          {{ is_state('lock.front_door_lock_locked', 'unlocked')
-             or is_state('lock.garage_fire_door_lock_locked', 'unlocked')
-             or is_state(
-               'alarm_control_panel.8673_e_55th_avenue', 'disarmed'
-             )
-             or is_state('cover.garage_door', 'open') }}
+          {{
+            is_state("lock.8673_e_55th_avenue_patio_door", "unlocked")
+            or is_state("lock.front_door_lock_locked", "unlocked")
+            or is_state("lock.garage_fire_door_lock_locked", "unlocked")
+            or is_state(
+              "alarm_control_panel.8673_e_55th_avenue", "disarmed"
+            )
+            or is_state("cover.garage_door", "open")
+          }}
         device_class: lock
 
 group:
