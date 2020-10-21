@@ -317,6 +317,16 @@ automation:
       data:
         message: "🎥 The media center has been on for 12 hours."
 
+  - alias: "Notify when public IP changes"
+    trigger:
+      platform: state
+      entity_id: sensor.bachho_me
+    action:
+      service: notify.slack
+      data:
+        message: >
+          🖥  Our public IP has changed: {{ trigger.to_state.state }}
+
   - alias: "Notify when sensor goes offline"
     trigger:
       - platform: state
