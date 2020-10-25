@@ -17,23 +17,6 @@ services:
       - "8080:8080/tcp"
     restart: unless-stopped
 
-  esphome:
-    container_name: esphome
-    depends_on:
-      - traefik
-    image: "esphome/esphome:${ESPHOME_VERSION}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.esphome.entrypoints=websecure"
-      - "traefik.http.routers.esphome.middlewares=auth,security"
-      - "traefik.http.routers.esphome.rule=Host(`${TRAEFIK_HOST_ESPHOME}`)"
-      - "traefik.http.routers.esphome.tls=true"
-      - "traefik.http.services.esphome.loadbalancer.server.port=6052"
-    network_mode: host
-    restart: always
-    volumes:
-      - ./esphome:/config
-
   fail2ban:
     cap_add:
       - NET_ADMIN
