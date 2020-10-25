@@ -166,7 +166,7 @@ services:
     environment:
       B2_ACCOUNT_ID: "${RESTIC_B2_ACCOUNT_ID}"
       B2_ACCOUNT_KEY: "${RESTIC_B2_ACCOUNT_KEY}"
-      BACKUP_CRON: "0 * * * *"
+      BACKUP_CRON: "15 * * * *"
       POST_COMMANDS_SUCCESS: "curl -s ${HEALTHCHECKS_BACKUP_URL}"
       RESTIC_BACKUP_ARGS: >-
         --exclude=".cache"
