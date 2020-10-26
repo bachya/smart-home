@@ -17,6 +17,18 @@ services:
       - "8080:8080/tcp"
     restart: unless-stopped
 
+  esphome:
+    container_name: esphome
+    depends_on:
+      - traefik
+    image: "esphome/esphome:${ESPHOME_VERSION}"
+    network_mode: host
+    ports:
+      - "6052:6052/tcp"
+    restart: always
+    volumes:
+      - ./esphome:/config
+
   fail2ban:
     cap_add:
       - NET_ADMIN
