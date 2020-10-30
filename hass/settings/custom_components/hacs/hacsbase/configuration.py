@@ -1,7 +1,8 @@
 """HACS Configuration."""
 import attr
-from integrationhelper import Logger
-from custom_components.hacs.hacsbase.exceptions import HacsException
+
+from custom_components.hacs.helpers.classes.exceptions import HacsException
+from custom_components.hacs.helpers.functions.logger import getLogger
 
 
 @attr.s(auto_attribs=True)
@@ -38,13 +39,13 @@ class Configuration:
     experimental: bool = False
     release_limit: int = 5
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """Return a dict representation of the configuration."""
         return self.__dict__
 
-    def print(self):
+    def print(self) -> None:
         """Print the current configuration to the log."""
-        logger = Logger("hacs.configuration")
+        logger = getLogger("configuration")
         config = self.to_json()
         for key in config:
             if key in ["config", "config_entry", "options", "token"]:
@@ -52,7 +53,7 @@ class Configuration:
             logger.debug(f"{key}: {config[key]}")
 
     @staticmethod
-    def from_dict(configuration: dict, options: dict = None):
+    def from_dict(configuration: dict, options: dict = None) -> None:
         """Set attributes from dicts."""
         if isinstance(options, bool) or isinstance(configuration.get("options"), bool):
             raise HacsException("Configuration is not valid.")

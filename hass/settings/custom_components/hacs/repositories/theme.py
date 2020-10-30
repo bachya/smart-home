@@ -1,8 +1,9 @@
 """Class for themes in HACS."""
-from integrationhelper import Logger
-from .repository import HacsRepository
-from ..hacsbase.exceptions import HacsException
-from ..helpers.information import find_file_name
+from custom_components.hacs.helpers.classes.exceptions import HacsException
+from custom_components.hacs.helpers.classes.repository import HacsRepository
+from custom_components.hacs.enums import HacsCategory
+from custom_components.hacs.helpers.functions.information import find_file_name
+from custom_components.hacs.helpers.functions.logger import getLogger
 
 
 class HacsTheme(HacsRepository):
@@ -12,11 +13,12 @@ class HacsTheme(HacsRepository):
         """Initialize."""
         super().__init__()
         self.data.full_name = full_name
-        self.data.category = "theme"
+        self.data.full_name_lower = full_name.lower()
+        self.data.category = HacsCategory.THEME
         self.content.path.remote = "themes"
         self.content.path.local = self.localpath
         self.content.single = False
-        self.logger = Logger(f"hacs.repository.{self.data.category}.{full_name}")
+        self.logger = getLogger(f"repository.{self.data.category}.{full_name}")
 
     @property
     def localpath(self):
@@ -27,8 +29,7 @@ class HacsTheme(HacsRepository):
         """Run post installation steps."""
         try:
             await self.hacs.hass.services.async_call("frontend", "reload_themes", {})
-            self.logger.info("Themes reloaded")
-        except Exception:  # pylint: disable=broad-except
+        except (Exception, BaseException):  # pylint: disable=broad-except
             pass
 
     async def validate_repository(self):
@@ -53,7 +54,7 @@ class HacsTheme(HacsRepository):
         # Handle potential errors
         if self.validate.errors:
             for error in self.validate.errors:
-                if not self.hacs.system.status.startup:
+                if not self.hacs.status.startup:
                     self.logger.error(error)
         return self.validate.success
 
