@@ -18,15 +18,6 @@ automation:
       data:
         name: Orange light
 
-  - alias: "Daily Reset"
-    trigger:
-      platform: time
-      at: "00:00:00"
-    action:
-      service: automation.turn_on
-      entity_id: >
-        automation.fire_local_event_for_weather_station_detected_sunset
-
   - alias: "Dump MQTT for OpenZWave on HASS startup"
     trigger:
       platform: homeassistant
