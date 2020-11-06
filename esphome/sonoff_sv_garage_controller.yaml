@@ -92,3 +92,5 @@ wifi:
     static_ip: 172.16.11.41
     gateway: 172.16.11.1
     subnet: 255.255.255.0
+
+<<: !include templates/secrets.yaml
