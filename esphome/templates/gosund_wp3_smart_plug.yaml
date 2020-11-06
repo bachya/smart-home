@@ -60,6 +60,6 @@ wifi:
   fast_connect: true
   output_power: 20dB
   manual_ip:
-    static_ip: 172.16.11.141
+    static_ip: ${static_ip}
     gateway: 172.16.11.1
     subnet: 255.255.255.0
