@@ -13,7 +13,7 @@ binary_sensor:
   - platform: gpio
     pin:
       number: GPIO0
-    name: ${device_friendly_name} Button
+    name: "${device_friendly_name} Button"
     on_press:
       - switch.turn_on: relay
       - delay: 200ms
@@ -24,15 +24,15 @@ binary_sensor:
       number: GPIO14
       inverted: true
       mode: INPUT_PULLUP
-    name: ${device_friendly_name} Open
+    name: "${device_friendly_name} Open"
     id: garage_door_open
 
   - platform: status
-    name: ${device_friendly_name} Status
+    name: "${device_friendly_name} Status"
 
 cover:
   - platform: template
-    name: ${device_friendly_name}
+    name: "${device_friendly_name}"
     id: garage_door
     lambda: |-
       if (id(garage_door_open).state) {
@@ -50,7 +50,7 @@ cover:
       - switch.turn_off: relay
 
 esphome:
-  name: ${device_name}
+  name: "${device_name}"
   platform: ESP8266
   board: esp01_1m
 
@@ -65,12 +65,12 @@ status_led:
 
 switch:
   - platform: gpio
-    name: ${device_friendly_name} Relay
+    name: "${device_friendly_name} Relay"
     pin: GPIO12
     id: relay
 
   - platform: restart
-    name: ${device_friendly_name} Restart
+    name: "${device_friendly_name} Restart"
 
 text_sensor:
   - platform: version
@@ -89,6 +89,6 @@ wifi:
   fast_connect: true
   output_power: 20dB
   manual_ip:
-    static_ip: ${static_ip}
+    static_ip: "${static_ip}"
     gateway: 172.16.11.1
     subnet: 255.255.255.0

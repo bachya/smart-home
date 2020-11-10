@@ -11,10 +11,10 @@ binary_sensor:
       - switch.toggle: relay
 
   - platform: status
-    name: ${device_friendly_name} Status
+    name: "${device_friendly_name} Status"
 
 esphome:
-  name: ${device_name}
+  name: "${device_name}"
   platform: ESP8266
   board: esp8285
 
@@ -30,7 +30,7 @@ sensor:
     cf_pin: GPIO04
     cf1_pin: GPIO05
     current:
-      name: ${device_friendly_name} Current
+      name: "${device_friendly_name} Current"
       accuracy_decimals: 3
       filters:
         - calibrate_linear:
@@ -40,7 +40,7 @@ sensor:
             - 0.10284 -> 0.077
         - lambda: if (x < 0.01) return 0; else return (x - 0.013);
     power:
-      name: ${device_friendly_name} Power
+      name: "${device_friendly_name} Power"
       accuracy_decimals: 0
       filters:
         - calibrate_linear:
@@ -49,7 +49,7 @@ sensor:
             - 8.27489 -> 5.3
         - lambda: if (x < 2) return 0; else return (x - 0.5);
     voltage:
-      name: ${device_friendly_name} Voltage
+      name: "${device_friendly_name} Voltage"
       accuracy_decimals: 1
       filters:
         - calibrate_linear:
@@ -71,7 +71,7 @@ switch:
     inverted: true
 
   - platform: gpio
-    name: ${device_friendly_name}
+    name: "${device_friendly_name}"
     pin: GPIO14
     id: relay
     on_turn_on:
@@ -96,6 +96,6 @@ wifi:
   fast_connect: true
   output_power: 20dB
   manual_ip:
-    static_ip: ${static_ip}
+    static_ip: "${static_ip}"
     gateway: 172.16.11.1
     subnet: 255.255.255.0
