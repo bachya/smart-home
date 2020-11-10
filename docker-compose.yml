@@ -15,7 +15,7 @@ services:
     image: "bachya/ecowitt2mqtt:${ECOWITT2MQTT_VERSION}"
     ports:
       - "8080:8080/tcp"
-    restart: unless-stopped
+    restart: always
 
   esphome:
     container_name: esphome
@@ -113,7 +113,7 @@ services:
       MQTT_BROKER: vernemq
       MQTT_PASSWORD: "${VERNEMQ_PASSWORD_METRICS2MQTT}"
       MQTT_USERNAME: metrics2mqtt
-    restart: unless-stopped
+    restart: always
     volumes:
       - /proc:/proc
 
@@ -176,6 +176,7 @@ services:
       RUN_ON_STARTUP: "true"
       TZ: America/Denver
     image: mazzolino/restic:latest
+    restart: always
     volumes:
       - /etc:/data/etc:ro
       - /home:/data/home:ro
@@ -194,6 +195,7 @@ services:
       RUN_ON_STARTUP: "true"
       TZ: America/Denver
     image: mazzolino/restic:latest
+    restart: always
 
   traefik:
     command:
@@ -236,6 +238,7 @@ services:
       - "traefik.http.routers.traefik.tls.certresolver=linode"
     ports:
       - "443:443/tcp"
+    restart: always
     volumes:
       - ./traefik/settings:/etc/traefik:ro
       - /var/log/traefik:/var/log
