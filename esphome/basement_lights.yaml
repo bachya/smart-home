@@ -4,4 +4,4 @@ substitutions:
   device_friendly_name: Basement Lights
   static_ip: 172.16.11.22
 
-<<: !include templates/topgreener_tgwf115pqm_smart_plug.yaml
+<<: !include .topgreener_tgwf115pqm_smart_plug.yaml

@@ -4,4 +4,4 @@ substitutions:
   device_friendly_name: Sofa Lamp
   static_ip: 172.16.11.42
 
-<<: !include templates/topgreener_tgwf115pqm_smart_plug.yaml
+<<: !include .topgreener_tgwf115pqm_smart_plug.yaml

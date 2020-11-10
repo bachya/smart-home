@@ -4,4 +4,4 @@ substitutions:
   device_friendly_name: 3D Printer
   static_ip: 172.16.11.141
 
-<<: !include templates/gosund_wp3_smart_plug.yaml
+<<: !include .gosund_wp3_smart_plug.yaml

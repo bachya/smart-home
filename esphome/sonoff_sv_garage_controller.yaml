@@ -4,4 +4,4 @@ substitutions:
   device_friendly_name: Sonoff SV Garage Controller
   static_ip: 172.16.11.41
 
-<<: !include templates/sonoff_sv.yaml
+<<: !include .sonoff_sv.yaml
