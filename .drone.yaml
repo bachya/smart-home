@@ -69,15 +69,25 @@ steps:
     pull: always
     failure: ignore
     commands:
-      - "for file in $(find /drone/src/esphome -type f -name \"*.yaml\" -not \
-         -name \"secrets.yaml\"); do esphome \"$file\" config; done"
+      - "for file in $(
+          find /drone/src/esphome
+          -type f
+          -name \"*.yaml\"
+          -not \ -name \"secrets.yaml\"
+          -not -name \".*.yaml\"
+        ); do esphome \"$file\" config; done"
 
   - name: "Config Check: Latest"
     image: esphome/esphome:latest
     pull: always
     commands:
-      - "for file in $(find /drone/src/esphome -type f -name \"*.yaml\" -not \
-         -name \"secrets.yaml\"); do esphome \"$file\" config; done"
+      - "for file in $(
+          find /drone/src/esphome
+          -type f
+          -name \"*.yaml\"
+          -not \ -name \"secrets.yaml\"
+          -not -name \".*.yaml\"
+        ); do esphome \"$file\" config; done"
 
 ---
 kind: pipeline
