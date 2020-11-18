@@ -1,7 +1,4 @@
 ---
-airvisual:
-  api_key: !secret airvisual_api_key
-
 automation:
   - alias: "Notify on bad outdoor AQI"
     trigger:

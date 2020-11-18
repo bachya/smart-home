@@ -86,9 +86,6 @@ remote:
     host: harmony-hub-1.myserver.com
     activity: 22580039
 
-roku:
-  - host: 172.16.11.38
-
 script:
   start_random_stream_on_living_room_roku:
     sequence:
