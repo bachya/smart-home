@@ -1,44 +1,4 @@
 ---
-binary_sensor:
-  - platform: template
-    sensors:
-      basement_person_detected:
-        entity_id: image_processing.google_coral_basement_camera_person
-        value_template: >
-          {{ states(
-            "image_processing.google_coral_basement_camera_person"
-          ) | int > 0 }}
-        device_class: occupancy
-        friendly_name: Basement Camera
-      garage_person_detected:
-        entity_id: image_processing.google_coral_garage_camera_person
-        value_template: >
-          {{
-            states("image_processing.google_coral_garage_camera_person")|int > 0
-          }}
-        device_class: occupancy
-        friendly_name: Garage Camera
-      guest_bedroom_person_detected:
-        entity_id: image_processing.google_coral_guest_bedroom_camera_person
-        value_template: >
-          {{
-            states(
-              "image_processing.google_coral_guest_bedroom_camera_person"
-            )|int > 0
-          }}
-        device_class: occupancy
-        friendly_name: Guest Bedroom Camera
-      kitchen_person_detected:
-        entity_id: image_processing.google_coral_kitchen_camera_person
-        value_template: >
-          {{
-            states(
-              "image_processing.google_coral_kitchen_camera_person"
-            )|int > 0
-          }}
-        device_class: occupancy
-        friendly_name: Kitchen Camera
-
 eufy_security:
   username: !secret eufy_security_email
   password: !secret eufy_security_password
@@ -60,18 +20,3 @@ camera:
     name: Guest Bedroom Camera
     input: "-rtsp_transport tcp -i rtsp://yi-camera-guest-bedroom.phil.\
       iot/ch0_0.h264"
-
-  - platform: nest
-
-image_processing:
-  - platform: google_coral
-    ip_address: gryffindor.phil.lan
-    port: 5000
-    confidence: 60
-    target_object: person
-    source:
-      - entity_id: camera.basement_camera
-      - entity_id: camera.front_door_camera
-      - entity_id: camera.garage_camera
-      - entity_id: camera.guest_bedroom_camera
-      - entity_id: camera.kitchen_camera
