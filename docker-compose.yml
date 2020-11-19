@@ -3,6 +3,27 @@ version: "3"
 
 services:
 
+  diun:
+    container_name: diun
+    environment:
+      DIUN_NOTIF_SLACK_WEBHOOKURL: "${DIUN_SLACK_WEBHOOK_URL}"
+      DIUN_PROVIDERS_DOCKER: "true"
+      DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT: "true"
+      DIUN_PROVIDERS_DOCKER_WATCHSTOPPED: "true"
+      DIUN_WATCH_SCHEDULE: "0 */6 * * *"
+      DIUN_WATCH_WORKERS: "20"
+      LOG_JSON: "false"
+      LOG_LEVEL: "info"
+      TZ: "America/Denver"
+    image: crazymax/diun:latest
+    labels:
+      - "diun.enable=true"
+      - "diun.watch_repo=true"
+    restart: always
+    volumes:
+      - diun-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+
   ecowitt2mqtt:
     container_name: ecowitt2mqtt
     depends_on:
@@ -323,6 +344,7 @@ services:
 
 volumes:
 
+  diun-data:
   fail2ban-data:
   hass-config:
   hass-db-data:
