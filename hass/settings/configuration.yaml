@@ -22,7 +22,6 @@ google: !include conf/google.yaml
 hacs: !include conf/hacs.yaml
 ifttt: !include conf/ifttt.yaml
 mqtt: !include conf/mqtt.yaml
-nest: !include conf/nest.yaml
 notify: !include conf/notifiers.yaml
 proximity: !include conf/proximity.yaml
 zone: !include conf/zones.yaml
