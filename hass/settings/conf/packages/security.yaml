@@ -328,12 +328,6 @@ group:
       - binary_sensor.kitchen_sensor_smoke_carbon_monoxide_detector
       - binary_sensor.upstairs_hallway_sensor_smoke_carbon_monoxide_detector
 
-nest:
-  client_id: !secret google_client_id
-  client_secret: !secret google_client_secret
-  project_id: !secret google_nest_project_id
-  subscriber_id: !secret google_nest_subscriber_id
-
 sensor:
   - platform: history_stats
     name: "Replay Basement Lights"

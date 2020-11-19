@@ -1,0 +1,5 @@
+---
+client_id: !secret google_nest_client_id
+client_secret: !secret google_nest_client_secret
+project_id: !secret google_nest_project_id
+subscriber_id: !secret google_nest_subscriber_id

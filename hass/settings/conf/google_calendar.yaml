@@ -1,0 +1,3 @@
+---
+client_id: !secret google_calendar_client_id
+client_secret: !secret google_calendar_client_secret
