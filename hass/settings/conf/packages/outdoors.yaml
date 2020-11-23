@@ -49,7 +49,7 @@ automation:
           after: "15:00:00"
         - condition: numeric_state
           entity_id: sensor.filtered_outdoor_brightness
-          below: 70
+          below: 60
           # As it gets darker, this automation has the possibility of firing
           # multiple times; this condition forces it to only fire once per day:
         - condition: template
