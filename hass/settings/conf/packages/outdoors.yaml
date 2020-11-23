@@ -38,9 +38,8 @@ automation:
 
   - alias: "Fire local event for weather station-detected sunset"
     trigger:
-      - platform: numeric_state
+      - platform: state
         entity_id: sensor.filtered_outdoor_brightness
-        below: 70
       - platform: sun
         event: sunset
     condition:
@@ -48,6 +47,9 @@ automation:
       conditions:
         - condition: time
           after: "15:00:00"
+        - condition: numeric_state
+          entity_id: sensor.filtered_outdoor_brightness
+          below: 70
           # As it gets darker, this automation has the possibility of firing
           # multiple times; this condition forces it to only fire once per day:
         - condition: template
