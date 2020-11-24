@@ -68,7 +68,6 @@ services:
       - ./hass/settings/conf:/config/conf
       - ./hass/settings/configuration.yaml:/config/configuration.yaml
       - ./hass/settings/custom_components:/config/custom_components
-      - ./hass/settings/python_scripts:/config/python_scripts
       - ./hass/settings/scenes.yaml:/config/scenes.yaml
       - ./hass/settings/secrets.yaml:/config/secrets.yaml
       - ./hass/settings/ssh_keys:/config/ssh_keys
