@@ -34,7 +34,7 @@ automation:
       data:
         entity_id: group.living_room_lights
 
-  - alias: "Turn reading lamp on at sunset"
+  - alias: "Turn certain living room lights on at sunset"
     trigger:
       platform: event
       event_type: LOCAL_SUNSET
@@ -47,9 +47,9 @@ automation:
       entity_id: input_boolean.blackout_mode
       state: "off"
     action:
-      service: switch.turn_on
+      service: homeassistant.turn_on
       data:
-        entity_id: switch.reading_lamp
+        entity_id: group.sunset_living_room_lights
 
   - alias: "Turn powder room fan back on if someone turns it off"
     trigger:
@@ -79,6 +79,11 @@ group:
       - switch.christmas_tree
       - switch.reading_lamp
       - switch.sofa_lamp
+
+  sunset_living_room_lights:
+    entities:
+      - switch.christmas_tree
+      - switch.reading_lamp
 
 remote:
   - platform: harmony
