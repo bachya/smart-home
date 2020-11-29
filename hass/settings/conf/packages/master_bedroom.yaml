@@ -19,7 +19,7 @@ automation:
       platform: event
       event_type: ZWAVE_DOUBLE_TAP
       event_data:
-        value: "255"
+        value: 255
     action:
       choose:
         - conditions:
