@@ -80,12 +80,14 @@ group:
       - switch.christmas_tree
       - switch.reading_lamp
       - switch.sofa_lamp
+    all: true
 
   sunset_living_room_lights:
     entities:
       - switch.bar_cart_leds
       - switch.christmas_tree
       - switch.reading_lamp
+    all: true
 
 remote:
   - platform: harmony

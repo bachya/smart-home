@@ -112,3 +112,4 @@ group:
       - switch.front_patio_light_switch
       - switch.kitchen_patio_light_switch
       - switch.master_patio_light_switch
+    all: true
