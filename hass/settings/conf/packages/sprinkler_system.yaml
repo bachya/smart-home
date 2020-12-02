@@ -124,11 +124,6 @@ input_number:
     unit_of_measurement: minutes
     icon: mdi:timer
 
-rainmachine:
-  controllers:
-    - ip_address: rainmachine.phil.iot
-      password: !secret rainmachine_password
-
 timer:
   flower_box_timer:
     name: Sleep Timer Remaining
