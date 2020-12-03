@@ -42,8 +42,8 @@ class EufySecurityCam(Camera):
         self._camera = camera
         self._ffmpeg = hass.data[DATA_FFMPEG]
         self._ffmpeg_arguments = DEFAULT_FFMPEG_ARGUMENTS
-        self._ffmpeg_image_frame = ImageFrame(self._ffmpeg.binary, loop=hass.loop)
-        self._ffmpeg_stream = CameraMjpeg(self._ffmpeg.binary, loop=hass.loop)
+        self._ffmpeg_image_frame = ImageFrame(self._ffmpeg.binary)
+        self._ffmpeg_stream = CameraMjpeg(self._ffmpeg.binary)
         self._last_image = None
         self._last_image_url = None
         self._stream_url = None
