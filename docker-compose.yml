@@ -8,10 +8,10 @@ services:
     depends_on:
       - vernemq
     environment:
+      HASS_DISCOVERY: "true"
       MQTT_BROKER: vernemq
       MQTT_PASSWORD: "${VERNEMQ_PASSWORD_ECOWITT}"
       MQTT_USERNAME: ecowitt
-      HASS_DISCOVERY: "true"
     image: "bachya/ecowitt2mqtt:${ECOWITT2MQTT_VERSION}"
     ports:
       - "8080:8080/tcp"
