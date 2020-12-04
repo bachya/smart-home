@@ -1,0 +1,6 @@
+---
+sensor:
+  - platform: version
+    beta: true
+    source: docker
+    image: intel-nuc
