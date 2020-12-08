@@ -47,6 +47,14 @@ services:
       - /var/log:/var/log:ro
       - fail2ban-data:/data
 
+  glances:
+    container_name: glances
+    environment:
+      GLANCES_OPT: "-w"
+    image: "nicolargo/glances:dev"
+    network_mode: "host"
+    restart: always
+
   hass:
     container_name: hass
     depends_on:
@@ -90,30 +98,6 @@ services:
     restart: always
     volumes:
       - hass-db-data:/var/lib/postgresql/data
-
-  metrics2mqtt:
-    build:
-      context: metrics2mqtt/docker
-      args:
-        version: 0.1.18
-    container_name: metrics2mqtt
-    depends_on:
-      - vernemq
-    environment:
-      COMMAND_OPTIONS_STRING: >
-        --name=hub
-        --interval=60
-        --cpu=60
-        --interval=10
-        --vm
-        --du="/"
-        -vvvvv
-      MQTT_BROKER: vernemq
-      MQTT_PASSWORD: "${VERNEMQ_PASSWORD_METRICS2MQTT}"
-      MQTT_USERNAME: metrics2mqtt
-    restart: always
-    volumes:
-      - /proc:/proc
 
   openzwave:
     container_name: openzwave
