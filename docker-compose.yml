@@ -64,12 +64,12 @@ services:
       - vernemq
     image: "homeassistant/home-assistant:${HOME_ASSISTANT_CORE_VERSION}"
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.hass.middlewares=security"
-      - "traefik.http.routers.hass.entrypoints=websecure"
-      - "traefik.http.routers.hass.rule=Host(`${TRAEFIK_HOST_HASS}`)"
-      - "traefik.http.routers.hass.tls=true"
-      - "traefik.http.services.hass.loadbalancer.server.port=8123"
+      traefik.enable: true
+      traefik.http.routers.hass.middlewares: security
+      traefik.http.routers.hass.entrypoints: websecure
+      traefik.http.routers.hass.rule: "Host(`${TRAEFIK_HOST_HASS}`)"
+      traefik.http.routers.hass.tls: true
+      traefik.http.services.hass.loadbalancer.server.port: 8123
     network_mode: host
     restart: always
     volumes:
@@ -126,12 +126,12 @@ services:
       - traefik
     image: "portainer/portainer-ce:${PORTAINER_VERSION}-alpine"
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.portainer.middlewares=security"
-      - "traefik.http.routers.portainer.entrypoints=websecure"
-      - "traefik.http.routers.portainer.rule=Host(`${TRAEFIK_HOST_PORTAINER}`)"
-      - "traefik.http.routers.portainer.tls=true"
-      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+      traefik.enable: true
+      traefik.http.routers.portainer.middlewares: security
+      traefik.http.routers.portainer.entrypoints: websecure
+      traefik.http.routers.portainer.rule: "Host(`${TRAEFIK_HOST_PORTAINER}`)"
+      traefik.http.routers.portainer.tls: true
+      traefik.http.services.portainer.loadbalancer.server.port: 9000
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -202,22 +202,24 @@ services:
     image: "traefik:${TRAEFIK_VERSION}"
     labels:
       # Middlewares:
-      - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_USERS}"
-      - "traefik.http.middlewares.security.ratelimit.average=100"
-      - "traefik.http.middlewares.security.ratelimit.burst=50"
+      traefik.http.middlewares.auth.basicauth.users: "${TRAEFIK_USERS}"
+      traefik.http.middlewares.security.ratelimit.average: 100
+      traefik.http.middlewares.security.ratelimit.burst: 50
 
       # Global Wildcard Certs:
-      - "traefik.http.routers.wildcard-certs.tls.certresolver=linode"
-      - "traefik.http.routers.wildcard-certs.tls.domains[0].main=${TRAEFIK_DOMAIN}"
-      - "traefik.http.routers.wildcard-certs.tls.domains[0].sans=*.${TRAEFIK_DOMAIN}"
+      traefik.http.routers.wildcard-certs.tls.certresolver: linode
+      traefik.http.routers.wildcard-certs.tls.domains[0].main: >
+        ${TRAEFIK_DOMAIN}
+      traefik.http.routers.wildcard-certs.tls.domains[0].sans: >
+        *.${TRAEFIK_DOMAIN}
 
       # Dashboard:
-      - "traefik.enable=true"
-      - "traefik.http.routers.traefik.entrypoints=websecure"
-      - "traefik.http.routers.traefik.middlewares=auth,security"
-      - "traefik.http.routers.traefik.rule=Host(`${TRAEFIK_HOST_TRAEFIK}`)"
-      - "traefik.http.routers.traefik.service=api@internal"
-      - "traefik.http.routers.traefik.tls.certresolver=linode"
+      traefik.enable: true
+      traefik.http.routers.traefik.entrypoints: websecure
+      traefik.http.routers.traefik.middlewares: auth,security
+      traefik.http.routers.traefik.rule: "Host(`${TRAEFIK_HOST_TRAEFIK}`)"
+      traefik.http.routers.traefik.service: api@internal
+      traefik.http.routers.traefik.tls.certresolver: linode
     ports:
       - "443:443/tcp"
     restart: always
@@ -294,13 +296,14 @@ services:
       Z2MA_SETTINGS__MQTTPASSWORD: "${Z2M_ASSISTANT_MQTT_PASSWORD}"
     image: "carldebilly/zigbee2mqttassistant:${Z2M_ASSISTANT_VERSION}"
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.middlewares.z2m-assistant.headers.frameDeny=false"
-      - "traefik.http.routers.z2m-assistant.middlewares=security"
-      - "traefik.http.routers.z2m-assistant.entrypoints=websecure"
-      - "traefik.http.routers.z2m-assistant.rule=Host(`${TRAEFIK_HOST_Z2M_ASSISTANT}`)"
-      - "traefik.http.routers.z2m-assistant.tls=true"
-      - "traefik.http.services.z2m-assistant.loadbalancer.server.port=80"
+      traefik.enable: true
+      traefik.http.middlewares.z2m-assistant.headers.frameDeny: false
+      traefik.http.routers.z2m-assistant.middlewares: security
+      traefik.http.routers.z2m-assistant.entrypoints: websecure
+      traefik.http.routers.z2m-assistant.rule: >
+        Host(`${TRAEFIK_HOST_Z2M_ASSISTANT}`)
+      traefik.http.routers.z2m-assistant.tls: true
+      traefik.http.services.z2m-assistant.loadbalancer.server.port: 80
     restart: always
 
 volumes:
