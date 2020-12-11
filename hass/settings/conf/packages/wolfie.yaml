@@ -31,13 +31,13 @@ automation:
         entity_id: vacuum.xiaomi_vacuum_cleaner
         to: cleaning
       - platform: state
-        entity_id: alarm_control_panel.8673_e_55th_avenue
+        entity_id: alarm_control_panel.123_main_street
         to: armed_away
     action:
       choose:
         - conditions:
             - condition: state
-              entity_id: alarm_control_panel.8673_e_55th_avenue
+              entity_id: alarm_control_panel.123_main_street
               state: armed_away
             - condition: state
               entity_id: vacuum.xiaomi_vacuum_cleaner
@@ -48,10 +48,10 @@ automation:
                 entity_id: vacuum.xiaomi_vacuum_cleaner
             - service: alarm_control_panel.alarm_arm_home
               data:
-                entity_id: alarm_control_panel.8673_e_55th_avenue
+                entity_id: alarm_control_panel.123_main_street
             - wait_template: >
                 {{ is_state(
-                  "alarm_control_panel.8673_e_55th_avenue", "armed_home"
+                  "alarm_control_panel.123_main_street", "armed_home"
                 ) }}
               timeout: "00:01:00"
               continue_on_timeout: false
@@ -68,11 +68,11 @@ automation:
       condition: template
       value_template: >
         {{ not is_state('sensor.proximity_zone', 'Home') and
-        not is_state("alarm_control_panel.8673_e_55th_avenue", "armed_away") }}
+        not is_state("alarm_control_panel.123_main_street", "armed_away") }}
     action:
       service: alarm_control_panel.alarm_arm_away
       data:
-        entity_id: alarm_control_panel.8673_e_55th_avenue
+        entity_id: alarm_control_panel.123_main_street
 
   - alias: "iOS Action: Empty Wolfie's Bin"
     trigger:

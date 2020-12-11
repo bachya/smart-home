@@ -4,7 +4,7 @@ alert:
     name: "🚨 The alarm has been triggered."
     done_message: "✅ The alarm has been canceled."
     title: House Alert
-    entity_id: alarm_control_panel.8673_e_55th_avenue
+    entity_id: alarm_control_panel.123_main_street
     state: triggered
     repeat:
       - 1
@@ -309,11 +309,11 @@ binary_sensor:
         friendly_name: Security Status
         value_template: >
           {{
-            is_state("lock.8673_e_55th_avenue_patio_door", "unlocked")
+            is_state("lock.123_main_street_patio_door", "unlocked")
             or is_state("lock.front_door_lock_locked", "unlocked")
             or is_state("lock.garage_fire_door_lock_locked", "unlocked")
             or is_state(
-              "alarm_control_panel.8673_e_55th_avenue", "disarmed"
+              "alarm_control_panel.123_main_street", "disarmed"
             )
             or is_state("cover.garage_door", "open")
           }}

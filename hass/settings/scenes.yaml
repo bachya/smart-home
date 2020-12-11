@@ -168,7 +168,7 @@
 - id: depart_home
   name: Depart Home
   entities:
-    alarm_control_panel.8673_e_55th_avenue:
+    alarm_control_panel.123_main_street:
       state: armed_away
     alert.dishwasher_clean:
       state: "off"
@@ -182,7 +182,7 @@
       state: "off"
     cover.garage_door:
       state: closed
-    lock.8673_e_55th_avenue_patio_door:
+    lock.123_main_street_patio_door:
       state: locked
     lock.front_door_lock_locked:
       state: locked
@@ -208,7 +208,7 @@
 - id: drive_home
   name: Drive Home
   entities:
-    alarm_control_panel.8673_e_55th_avenue:
+    alarm_control_panel.123_main_street:
       state: disarmed
     cover.garage_door:
       state: open
@@ -218,11 +218,11 @@
 - id: good_night
   name: Good Night
   entities:
-    alarm_control_panel.8673_e_55th_avenue:
+    alarm_control_panel.123_main_street:
       state: armed_home
     cover.garage_door:
       state: closed
-    lock.8673_e_55th_avenue_patio_door:
+    lock.123_main_street_patio_door:
       state: locked
     lock.front_door_lock_locked:
       state: locked
@@ -328,7 +328,7 @@
 - id: walk_home
   name: Walk Home
   entities:
-    alarm_control_panel.8673_e_55th_avenue:
+    alarm_control_panel.123_main_street:
       state: disarmed
     lock.front_door_lock_locked:
       state: unlocked
