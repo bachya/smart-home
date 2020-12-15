@@ -16,15 +16,3 @@
   name: slack
   api_key: !secret slack_api_key
   default_channel: "#mothership-general"
-
-- platform: smtp
-  name: omnifocus
-  server: smtp.gmail.com
-  port: 587
-  encryption: starttls
-  timeout: 15
-  username: !secret omnifocus_maildrop_username
-  password: !secret omnifocus_maildrop_password
-  sender: !secret omnifocus_maildrop_username
-  sender_name: Home Assistant
-  recipient: !secret omnifocus_maildrop_recipient
