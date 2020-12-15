@@ -100,11 +100,11 @@ automation:
     condition:
       condition: state
       entity_id: binary_sensore.secure_status
-      state: "on"
+      state: "off"
     action:
       - service: notify.slack
         data:
-          message: "🔒 Running automatic nighttime lockup"
+          message: "🔒 Locking up the house"
       - service: scene.turn_on
         data:
           entity_id: scene.good_night
@@ -115,9 +115,12 @@ automation:
       entity_id: sensor.proximity_zone
       from: Home
     action:
-      service: scene.turn_on
-      data:
-        entity_id: scene.depart_home
+      - service: notify.slack
+        data:
+          message: "🔒 Locking up the house"
+      - service: scene.turn_on
+        data:
+          entity_id: scene.depart_home
 
   - alias: "Forward SimpliSafe events to Slack"
     trigger:
