@@ -11,13 +11,10 @@ automation:
             entity_id: sensor.u_s_air_pollution_level
             state: Unhealthy for sensitive groups
           sequence:
-            - service: notify.phones
+            - service: notify.everyone
               data:
                 message: 😷 The outdoor air quality is pretty bad.
                 title: Bad AQI
-            - service: notify.slack
-              data:
-                message: 😷 The outdoor air quality is pretty bad.
         - conditions:
             condition: not
             conditions:
@@ -25,13 +22,10 @@ automation:
               entity_id: sensor.u_s_air_pollution_level
               state: Unhealthy for sensitive groups
           sequence:
-            - service: notify.phones
+            - service: notify.everyone
               data:
                 message: 😅 The outdoor air quality is good again.
                 title: Bad AQI
-            - service: notify.slack
-              data:
-                message: 😅 The outdoor air quality is good again.
 
   - alias: Update OpenUV every 30 minutes during the daytime
     initial_state: true

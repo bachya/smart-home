@@ -22,7 +22,7 @@ alert:
     repeat:
       - 10
     notifiers:
-      - phones
+      - everyone
 
 automation:
   - alias: "Alter armed alarm when Wolfie cleans"

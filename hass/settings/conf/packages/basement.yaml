@@ -9,8 +9,7 @@ alert:
     repeat:
       - 1
     notifiers:
-      - phones
-      - slack
+      - everyone
     data:
       push:
         category: WATER

@@ -9,8 +9,7 @@ alert:
     repeat:
       - 1
     notifiers:
-      - phones
-      - slack
+      - everyone
     data:
       sound:
         name: default
@@ -27,8 +26,7 @@ alert:
       - 10
     skip_first: true
     notifiers:
-      - phones
-      - slack
+      - everyone
     data:
       blocks:
         - type: section
@@ -65,8 +63,7 @@ alert:
       - 5
     skip_first: true
     notifiers:
-      - phones
-      - slack
+      - everyone
     data:
       push:
         category: SECURITY
@@ -84,8 +81,7 @@ alert:
     repeat:
       - 1
     notifiers:
-      - phones
-      - slack
+      - everyone
     data:
       sound:
         name: default

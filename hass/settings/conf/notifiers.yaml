@@ -1,5 +1,12 @@
 ---
 - platform: group
+  name: everyone
+  services:
+    - service: mobile_app_aarons_iphone
+    - service: mobile_app_brittany_bachs_iphone
+    - service: slack
+
+- platform: group
   name: phones
   services:
     - service: mobile_app_aarons_iphone
