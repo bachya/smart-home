@@ -94,9 +94,7 @@
       state: "on"
     automation.turn_dyson_s_night_mode_on:
       state: "on"
-    automation.turn_lights_off_when_person_detected_at_nighttime_leaves:
-      state: "on"
-    automation.turn_lights_on_when_person_detected_at_nighttime:
+    automation.turn_lights_on_when_doorbell_detects_person_at_nighttime:
       state: "on"
     automation.turn_living_room_lights_on_when_we_arrive:
       state: "on"
