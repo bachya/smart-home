@@ -30,6 +30,8 @@
       state: "on"
     automation.backyard_light_switch_via_kitchen_patio_light_on:
       state: "on"
+    automation.bad_outdoor_aqi_notifications:
+      state: "on"
     automation.blackout_mode_schedule:
       state: "on"
     automation.cycle_master_toilet_fan_during_the_day:
@@ -50,11 +52,7 @@
       state: "on"
     automation.manage_simplisafe_sounds_during_blackout:
       state: "on"
-    automation.notify_on_bad_outdoor_aqi:
-      state: "on"
     automation.notify_on_hacs_updates:
-      state: "on"
-    automation.notify_on_return_from_bad_outdoor_aqi:
       state: "on"
     automation.notify_when_media_center_left_on:
       state: "on"
@@ -130,11 +128,9 @@
       state: "off"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
       state: "off"
+    automation.bad_outdoor_aqi_notifications:
+      state: "off"
     automation.dyson_temperature_management:
-      state: "off"
-    automation.notify_on_bad_outdoor_aqi:
-      state: "off"
-    automation.notify_on_return_from_bad_outdoor_aqi:
       state: "off"
     automation.notify_when_media_center_left_on:
       state: "off"
@@ -274,6 +270,8 @@
       state: "off"
     alert.wolfie_stuck:
       state: "off"
+    automation.bad_outdoor_aqi_notifications:
+      state: "off"
     automation.blackout_mode_schedule:
       state: "off"
     automation.cycle_master_toilet_fan_during_the_day:
@@ -283,10 +281,6 @@
     automation.dyson_temperature_management:
       state: "off"
     automation.notify_of_next_trash_pickup_the_night_before:
-      state: "off"
-    automation.notify_on_bad_outdoor_aqi:
-      state: "off"
-    automation.notify_on_return_from_bad_outdoor_aqi:
       state: "off"
     automation.notify_when_3d_print_completes:
       state: "off"
