@@ -46,6 +46,8 @@
       state: "on"
     automation.set_sleep_timer_on_master_toilet_fan_when_switch_double_tapped:
       state: "on"
+    automation.manage_dishwasher_state:
+      state: "on"
     automation.manage_simplisafe_sounds_during_blackout:
       state: "on"
     automation.notify_on_bad_outdoor_aqi:
@@ -77,12 +79,6 @@
     automation.power_media_center_on_backup:
       state: "on"
     automation.reset_automations_when_no_mode_is_active:
-      state: "on"
-    automation.set_dishwasher_state_to_clean:
-      state: "on"
-    automation.set_dishwasher_state_to_drying:
-      state: "on"
-    automation.set_dishwasher_state_to_running:
       state: "on"
     automation.turn_certain_living_room_lights_on_at_sunset:
       state: "on"

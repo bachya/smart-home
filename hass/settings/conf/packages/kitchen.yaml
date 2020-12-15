@@ -36,44 +36,52 @@ alert:
         volume: 0.3
 
 automation:
-  - alias: 'Set dishwasher state to "Running"'
+  - alias: "Manage dishwasher state"
+    mode: restart
     trigger:
-      platform: numeric_state
-      entity_id: sensor.dishwasher_electric_w
-      above: 9
-    action:
-      service: input_select.select_option
-      data:
+      - platform: numeric_state
+        entity_id: sensor.dishwasher_electric_w
+        above: 9
+      - platform: numeric_state
+        entity_id: sensor.dishwasher_electric_w
+        below: 4
+      - platform: state
         entity_id: input_select.dishwasher_status
-        option: Running
-
-  - alias: 'Set dishwasher state to "Drying"'
-    trigger:
-      platform: numeric_state
-      entity_id: sensor.dishwasher_electric_w
-      below: 4
-    condition:
-      condition: state
-      entity_id: input_select.dishwasher_status
-      state: Running
+        to: Drying
+        for:
+          minutes: 20
     action:
-      service: input_select.select_option
-      data:
-        entity_id: input_select.dishwasher_status
-        option: Drying
-
-  - alias: 'Set dishwasher state to "Clean"'
-    trigger:
-      platform: state
-      entity_id: input_select.dishwasher_status
-      to: Drying
-      for:
-        minutes: 20
-    action:
-      service: input_select.select_option
-      data:
-        entity_id: input_select.dishwasher_status
-        option: Clean
+      choose:
+        - conditions:
+            condition: numeric_state
+            entity_id: sensor.dishwasher_electric_w
+            above: 9
+          sequence:
+            service: input_select.select_option
+            data:
+              entity_id: input_select.dishwasher_status
+              option: Running
+        - conditions:
+            condition: template
+            value_template: >
+              {{
+                states("sensor.dishwasher_electric_w") | int < 4
+                and states("input_select.dishwasher_status") == "Running"
+              }}
+          sequence:
+            service: input_select.select_option
+            data:
+              entity_id: input_select.dishwasher_status
+              option: Drying
+        - conditions:
+            condition: state
+            entity_id: input_select.dishwasher_status
+            state: "Drying"
+          sequence:
+            service: input_select.select_option
+            data:
+              entity_id: input_select.dishwasher_status
+              option: Clean
 
 input_select:
   dishwasher_status:
