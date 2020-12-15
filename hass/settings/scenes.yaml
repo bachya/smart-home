@@ -34,10 +34,6 @@
       state: "on"
     automation.cycle_master_toilet_fan_during_the_day:
       state: "on"
-    automation.disable_simplisafe_sounds_in_blackout_mode:
-      state: "on"
-    automation.enable_simplisafe_sounds_when_leaving_blackout_mode:
-      state: "on"
     automation.forward_hass_persistent_notifications_to_slack:
       state: "on"
     automation.forward_simplisafe_events_to_slack:
@@ -49,6 +45,8 @@
     automation.set_sleep_timer_on_master_bathroom_fan_when_switch_double_tapped:
       state: "on"
     automation.set_sleep_timer_on_master_toilet_fan_when_switch_double_tapped:
+      state: "on"
+    automation.manage_simplisafe_sounds_during_blackout:
       state: "on"
     automation.notify_on_bad_outdoor_aqi:
       state: "on"

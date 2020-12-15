@@ -119,30 +119,6 @@ automation:
       data:
         entity_id: scene.depart_home
 
-  - alias: "Disable SimpliSafe sounds in Blackout Mode"
-    trigger:
-      platform: state
-      entity_id: input_boolean.blackout_mode
-      to: "on"
-    action:
-      service: simplisafe.set_system_properties
-      data:
-        system_id: !secret simplisafe_system_id
-        chime_volume: 0
-        voice_prompt_volume: 0
-
-  - alias: "Enable SimpliSafe sounds when leaving Blackout Mode"
-    trigger:
-      platform: state
-      entity_id: input_boolean.blackout_mode
-      to: "off"
-    action:
-      service: simplisafe.set_system_properties
-      data:
-        system_id: !secret simplisafe_system_id
-        chime_volume: 2
-        voice_prompt_volume: 2
-
   - alias: "Forward SimpliSafe events to Slack"
     trigger:
       - platform: event
@@ -184,6 +160,33 @@ automation:
       service: alert.turn_off
       data:
         entity_id: alert.garage_left_open
+
+  - alias: "Manage SimpliSafe sounds during blackout"
+    trigger:
+      platform: state
+      entity_id: input_boolean.blackout_mode
+    action:
+      choose:
+        - conditions:
+            condition: state
+            entity_id: input_boolean.blackout_mode
+            state: "on"
+          sequence:
+            service: simplisafe.set_system_properties
+            data:
+              system_id: !secret simplisafe_system_id
+              chime_volume: 0
+              voice_prompt_volume: 0
+        - conditions:
+            condition: state
+            entity_id: input_boolean.blackout_mode
+            state: "off"
+          sequence:
+            service: simplisafe.set_system_properties
+            data:
+              system_id: !secret simplisafe_system_id
+              chime_volume: 2
+              voice_prompt_volume: 2
 
   - alias: "Security Response: Secure the House (iOS)"
     trigger:
