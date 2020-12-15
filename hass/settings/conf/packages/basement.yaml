@@ -19,18 +19,6 @@ alert:
         critical: 1
         volume: 0.3
 
-automation:
-  - alias: "iOS Action: Close Water Main"
-    trigger:
-      - platform: event
-        event_type: ios.notification_action_fired
-        event_data:
-          actionName: WATER_CLOSE_MAIN
-    action:
-      service: switch.turn_off
-      data:
-        entity_id: switch.guardian_b4e62d98118d_valve
-
 binary_sensor:
   - platform: template
     sensors:

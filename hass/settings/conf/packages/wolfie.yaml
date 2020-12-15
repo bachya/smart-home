@@ -74,18 +74,6 @@ automation:
       data:
         entity_id: alarm_control_panel.123_main_street
 
-  - alias: "iOS Action: Empty Wolfie's Bin"
-    trigger:
-      - platform: event
-        event_type: ios.notification_action_fired
-        event_data:
-          actionName: WOLFIE_EMPTY
-    action:
-      service: input_select.select_option
-      data:
-        entity_id: input_select.wolfie_bin_status
-        option: Empty
-
   - alias: "Notify when time for Wolfie to run"
     trigger:
       platform: state

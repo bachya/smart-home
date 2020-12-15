@@ -36,18 +36,6 @@ alert:
         volume: 0.3
 
 automation:
-  - alias: "iOS Action: Empty Dishwasher"
-    trigger:
-      - platform: event
-        event_type: ios.notification_action_fired
-        event_data:
-          actionName: DISHWASHER_EMPTY
-    action:
-      service: input_select.select_option
-      data:
-        entity_id: input_select.dishwasher_status
-        option: Dirty
-
   - alias: 'Set dishwasher state to "Running"'
     trigger:
       platform: numeric_state
