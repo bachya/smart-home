@@ -139,28 +139,6 @@ automation:
         message: >
             📥 SimpliSafe Notification: {{ trigger.event.data.message }}
 
-  - alias: "Garage Response: Close (iOS)"
-    trigger:
-      platform: event
-      event_type: ios.notification_action_fired
-      event_data:
-        actionName: GARAGE_CLOSE_DOOR
-    action:
-      service: cover.close_cover
-      data:
-        entity_id: cover.garage_door
-
-  - alias: "Garage Response: Ignore (iOS)"
-    trigger:
-      platform: event
-      event_type: ios.notification_action_fired
-      event_data:
-        actionName: GARAGE_IGNORE
-    action:
-      service: alert.turn_off
-      data:
-        entity_id: alert.garage_left_open
-
   - alias: "Manage SimpliSafe sounds during blackout"
     trigger:
       platform: state
@@ -187,17 +165,6 @@ automation:
               system_id: !secret simplisafe_system_id
               chime_volume: 2
               voice_prompt_volume: 2
-
-  - alias: "Security Response: Secure the House (iOS)"
-    trigger:
-      platform: event
-      event_type: ios.notification_action_fired
-      event_data:
-        actionName: SECURITY_SECURE
-    action:
-      service: scene.turn_on
-      data:
-        entity_id: scene.depart_home
 
   - alias: "Notify when security status changes"
     trigger:
