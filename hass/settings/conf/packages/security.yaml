@@ -197,7 +197,7 @@ automation:
         data:
           entity_id: group.living_room_lights
       - delay:
-        minutes: 5
+          minutes: 5
       - service: switch.turn_off
         data:
           entity_id: switch.front_patio_light_switch
