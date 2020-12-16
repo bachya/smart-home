@@ -44,6 +44,8 @@ automation:
       - platform: numeric_state
         entity_id: sensor.dishwasher_electric_w
         below: 4
+        for:
+          minutes: 5
       - platform: state
         entity_id: input_select.dishwasher_status
         to: Drying
