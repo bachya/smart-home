@@ -53,9 +53,9 @@ automation:
                     "climate.thermostat_mode", "temperature"
                   ) | int
                 %}
-                {% if states("climate.thermostat_mode") == "cool" %}
+                {% if is_state("climate.thermostat_mode", "cool") %}
                   {{ c - 2 }}
-                {% elif states("climate.thermostat_mode") == "heat" %}
+                {% elif is_state("climate.thermostat_mode", "heat") %}
                   {{ c + 2 }}
                 {% endif %}
         - conditions:

@@ -25,9 +25,9 @@ binary_sensor:
         friendly_name: Basement Leak Detected
         value_template: >
           {{
-            states("binary_sensor.basement_sensor_leak_detector") == "on"
+            is_state("binary_sensor.basement_sensor_leak_detector", "on")
             or
-            states("binary_sensor.guardian_b4e62d98118d_leak_detected") == "on"
+            is_state("binary_sensor.guardian_b4e62d98118d_leak_detected", "on")
           }}
 
 remote:

@@ -65,7 +65,7 @@ automation:
             value_template: >
               {{
                 states("sensor.dishwasher_electric_w") | int < 4
-                and states("input_select.dishwasher_status") == "Running"
+                and is_state("input_select.dishwasher_status", "Running")
               }}
           sequence:
             service: input_select.select_option

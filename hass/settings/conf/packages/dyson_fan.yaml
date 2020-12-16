@@ -9,7 +9,7 @@ automation:
       data:
         entity_id: fan.bedroom
         night_mode: >
-          {% if states("input_boolean.blackout_mode") == "off" %}
+          {% if is_state("input_boolean.blackout_mode", "off") %}
             false
           {% else %}
             true
