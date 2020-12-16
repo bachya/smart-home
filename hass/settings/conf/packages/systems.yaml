@@ -61,37 +61,14 @@ automation:
   - alias: "Notify on high CPU"
     trigger:
       - platform: numeric_state
-        entity_id: sensor.gryffindor_cpu_used
-        above: 60
-        for:
-          minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.hub_cpu_used
-        above: 60
-        for:
-          minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.hufflepuff_cpu_used
-        above: 60
-        for:
-          minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.linode_cpu_used
-        above: 60
-        for:
-          minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.media_center_cpu_used
-        above: 60
-        for:
-          minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.ravenclaw_cpu_used
-        above: 60
-        for:
-          minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.slytherin_cpu_used
+        entity_id: 
+          - sensor.gryffindor_cpu_used
+          - sensor.hub_cpu_used
+          - sensor.hufflepuff_cpu_used
+          - sensor.linode_cpu_used
+          - sensor.media_center_cpu_used
+          - sensor.ravenclaw_cpu_used
+          - sensor.slytherin_cpu_used
         above: 60
         for:
           minutes: 5
@@ -120,31 +97,16 @@ automation:
   - alias: "Notify on high disk usage"
     trigger:
       - platform: numeric_state
-        entity_id: sensor.gryffindor_etc_hosts_used_percent
-        above: 85
-      - platform: numeric_state
-        entity_id: sensor.hub_etc_hosts_used_percent
-        above: 85
-      - platform: numeric_state
-        entity_id: sensor.hufflepuff_etc_hosts_used_percent
-        above: 85
-      - platform: numeric_state
-        entity_id: sensor.linode_etc_hosts_used_percent
-        above: 85
-      - platform: numeric_state
-        entity_id: sensor.ravenclaw_etc_hosts_used_percent
-        above: 85
-      - platform: numeric_state
-        entity_id: sensor.slytherin_etc_hosts_used_percent
-        above: 85
-      - platform: numeric_state
-        entity_id: sensor.media_etc_hosts_used_percent
-        above: 85
-      - platform: numeric_state
-        entity_id: sensor.media_data_backup_used_percent
-        above: 85
-      - platform: numeric_state
-        entity_id: sensor.media_data_media_used_percent
+        entity_id:
+          - sensor.gryffindor_etc_hosts_used_percent
+          - sensor.hub_etc_hosts_used_percent
+          - sensor.hufflepuff_etc_hosts_used_percent
+          - sensor.linode_etc_hosts_used_percent
+          - sensor.media_etc_hosts_used_percent
+          - sensor.media_data_backup_used_percent
+          - sensor.media_data_media_used_percent
+          - sensor.ravenclaw_etc_hosts_used_percent
+          - sensor.slytherin_etc_hosts_used_percent
         above: 85
     action:
       service: notify.slack
@@ -187,37 +149,14 @@ automation:
   - alias: "Notify on high memory"
     trigger:
       - platform: numeric_state
-        entity_id: sensor.gryffindor_ram_used_percent
-        above: 75
-        for:
-          minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.hub_ram_used_percent
-        above: 75
-        for:
-          minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.hufflepuff_ram_used_percent
-        above: 75
-        for:
-          minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.linode_ram_used_percent
-        above: 75
-        for:
-          minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.media_ram_used_percent
-        above: 75
-        for:
-          minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.ravenclaw_ram_used_percent
-        above: 75
-        for:
-          minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.slytherin_ram_used_percent
+        entity_id:
+          - sensor.gryffindor_ram_used_percent
+          - sensor.hub_ram_used_percent
+          - sensor.hufflepuff_ram_used_percent
+          - sensor.linode_ram_used_percent
+          - sensor.media_ram_used_percent
+          - sensor.ravenclaw_ram_used_percent
+          - sensor.slytherin_ram_used_percent
         above: 75
         for:
           minutes: 5
@@ -246,57 +185,23 @@ automation:
   - alias: "Notify when battery is low"
     trigger:
       - platform: numeric_state
-        entity_id: sensor.aeotec_nanomote_quad_aaron_bedside_battery
-        below: 20
-        for:
-          minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.fiddle_leaf_fig_battery
-        below: 20
-        for:
-          minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.firefighter_battery_level
-        below: 20
-        for:
-          minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.front_door_lock_battery_level
-        below: 20
-        for:
-          minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.garage_fire_door_lock_battery_level
-        below: 20
-        for:
-          minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.kitchen_sink_sensor_battery
+        entity_id:
+          - sensor.aeotec_nanomote_quad_aaron_bedside_battery
+          - sensor.fiddle_leaf_fig_battery
+          - sensor.firefighter_battery_level
+          - sensor.front_door_lock_battery_level
+          - sensor.garage_fire_door_lock_battery_level
+          - sensor.kitchen_sink_sensor_battery
         below: 20
         for:
           minutes: 5
       - platform: state
-        entity_id: binary_sensor.basement_sensor_low_battery
-        to: "on"
-        for:
-          minutes: 5
-      - platform: state
-        entity_id: binary_sensor.guest_bedroom_sensor_low_battery
-        to: "on"
-        for:
-          minutes: 5
-      - platform: state
-        entity_id: binary_sensor.kitchen_sensor_low_battery
-        to: "on"
-        for:
-          minutes: 5
-      - platform: state
-        entity_id: binary_sensor.kitchen_sink_sensor_low_battery
-        to: "on"
-        for:
-          minutes: 5
-      - platform: state
-        entity_id: binary_sensor.upstairs_hallway_sensor_low_battery
+        entity_id:
+          - binary_sensor.basement_sensor_low_battery
+          - binary_sensor.guest_bedroom_sensor_low_battery
+          - binary_sensor.kitchen_sensor_low_battery
+          - binary_sensor.kitchen_sink_sensor_low_battery
+          - binary_sensor.upstairs_hallway_sensor_low_battery
         to: "on"
         for:
           minutes: 5
@@ -330,37 +235,14 @@ automation:
   - alias: "Notify when sensor goes offline"
     trigger:
       - platform: state
-        entity_id: binary_sensor.basement_sensor_missing
-        to: "off"
-        for:
-          minutes: 5
-      - platform: state
-        entity_id: binary_sensor.guest_bedroom_sensor_missing
-        to: "off"
-        for:
-          minutes: 5
-      - platform: state
-        entity_id: binary_sensor.kitchen_sensor_missing
-        to: "off"
-        for:
-          minutes: 5
-      - platform: state
-        entity_id: binary_sensor.master_bathroom_climate_sensor_status
-        to: "off"
-        for:
-          minutes: 5
-      - platform: state
-        entity_id: binary_sensor.master_bedroom_salt_lamp_status
-        to: "off"
-        for:
-          minutes: 5
-      - platform: state
-        entity_id: binary_sensor.office_salt_lamp_status
-        to: "off"
-        for:
-          minutes: 5
-      - platform: state
-        entity_id: binary_sensor.upstairs_hallway_sensor_missing
+        entity_id:
+          - binary_sensor.basement_sensor_missing
+          - binary_sensor.guest_bedroom_sensor_missing
+          - binary_sensor.kitchen_sensor_missing
+          - binary_sensor.master_bathroom_climate_sensor_status
+          - binary_sensor.master_bedroom_salt_lamp_status
+          - binary_sensor.office_salt_lamp_status
+          - binary_sensor.upstairs_hallway_sensor_missing
         to: "off"
         for:
           minutes: 5
