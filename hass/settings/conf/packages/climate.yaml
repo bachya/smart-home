@@ -129,90 +129,107 @@ automation:
             data:
               temperature: 68
 
-  - alias: "Set Climate Away Mode when leaving in extreme temperatures"
+  - alias: "Proximity Climate Away Mode"
     trigger:
       platform: state
       entity_id: sensor.proximity_zone
-      to: Away
-    condition:
-      condition: template
-      value_template: >
-        {{
-          states("sensor.side_yard_feels_like") <= states(
-            "input_number.outdoor_extreme_low_threshold"
-          )
-          or
-          states("sensor.side_yard_feels_like") >= states(
-            "input_number.outdoor_extreme_high_threshold"
-          )
-        }}
     action:
-      service: input_boolean.turn_on
-      data:
-        entity_id: input_boolean.away_mode
-
-  - alias: "Set Climate Away Mode when leaving in normal temperatures"
-    trigger:
-      platform: state
-      entity_id: sensor.proximity_zone
-      from: Home
-    condition:
-      condition: template
-      value_template: >
-        {{
-          states("input_number.outdoor_extreme_low_threshold") <=
-          states("sensor.side_yard_feels_like") <=
-          states("input_number.outdoor_extreme_high_threshold")
-        }}
-    action:
-      service: input_boolean.turn_on
-      data:
-        entity_id: input_boolean.away_mode
-
-  - alias: "Unset Climate Away Mode when arriving in extreme temperatures"
-    trigger:
-      platform: state
-      entity_id: sensor.proximity_zone
-      from: Away
-    condition:
-      condition: template
-      value_template: >
-        {{
-          states("sensor.side_yard_feels_like") <= states(
-            "input_number.outdoor_extreme_low_threshold"
-          )
-          or
-          states("sensor.side_yard_feels_like") >= states(
-            "input_number.outdoor_extreme_high_threshold"
-          )
-        }}
-    action:
-      service: input_boolean.turn_off
-      data:
-        entity_id: input_boolean.away_mode
-
-  - alias: "Unset Climate Away Mode when arriving in normal temperatures"
-    trigger:
-      - platform: state
-        entity_id: sensor.proximity_zone
-        from: Edge
-        to: Nearby
-      - platform: state
-        entity_id: sensor.proximity_zone
-        from: Nearby
-        to: Home
-    condition:
-      condition: template
-      value_template: >
-        {{
-          states("input_number.outdoor_extreme_low_threshold") <=
-          states("sensor.side_yard_feels_like") <=
-          states("input_number.outdoor_extreme_high_threshold")
-        }}
-    action:
-      service: input_boolean.turn_off
-      data:
-        entity_id: input_boolean.away_mode
+      choose:
+        # Arriving (Normal Temperature)
+        - conditions:
+            condition: and
+            conditions:
+              - condition: or
+                conditions:
+                  - condition: state
+                    entity_id: sensor.proximity_zone
+                    state: Nearby
+                  - condition: state
+                    entity_id: sensor.proximity_zone
+                    state: Home
+              - condition: template
+                value_template: >
+                  {{
+                    states("input_number.outdoor_extreme_low_threshold") <=
+                    states("sensor.side_yard_feels_like") <=
+                    states("input_number.outdoor_extreme_high_threshold")
+                  }}
+          sequence:
+            service: input_boolean.turn_off
+            data:
+              entity_id: input_boolean.away_mode
+        # Leaving (Normal Temperature)
+        - conditions:
+            condition: and
+            conditions:
+              - condition: not
+                conditions:
+                  - condition: state
+                    entity_id: sensor.proximity_zone
+                    state: Home
+              - condition: template
+                value_template: >
+                  {{
+                    states("input_number.outdoor_extreme_low_threshold") <=
+                    states("sensor.side_yard_feels_like") <=
+                    states("input_number.outdoor_extreme_high_threshold")
+                  }}
+          sequence:
+            service: input_boolean.turn_on
+            data:
+              entity_id: input_boolean.away_mode
+        # Arriving (Extreme Temperature)
+        - conditions:
+            condition: and
+            conditions:
+              - condition: not
+                conditions:
+                  - condition: state
+                    entity_id: sensor.proximity_zone
+                    state: Away
+              - condition: template
+                value_template: >
+                  {{
+                    states(
+                      "sensor.side_yard_feels_like"
+                    ) <= states(
+                      "input_number.outdoor_extreme_low_threshold"
+                    )
+                    or states(
+                      "sensor.side_yard_feels_like"
+                    ) >= states(
+                      "input_number.outdoor_extreme_high_threshold"
+                    )
+                  }}
+          sequence:
+            service: input_boolean.turn_off
+            data:
+              entity_id: input_boolean.away_mode
+        # Leaving (Extreme Temperature)
+        - conditions:
+            condition: and
+            conditions:
+              - condition: state
+                entity_id: sensor.proximity_zone
+                state: Away
+              - condition: template
+                value_template: >
+                  {{
+                    states(
+                      "sensor.side_yard_feels_like"
+                    ) <= states(
+                      "input_number.outdoor_extreme_low_threshold"
+                    )
+                    or states(
+                      "sensor.side_yard_feels_like"
+                    ) >= states(
+                      "input_number.outdoor_extreme_high_threshold"
+                    )
+                  }}
+          sequence:
+            service: input_boolean.turn_on
+            data:
+              entity_id: input_boolean.away_mode
 
 input_number:
   outdoor_extreme_high_threshold:
