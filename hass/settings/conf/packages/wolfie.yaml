@@ -65,10 +65,14 @@ automation:
       entity_id: input_select.wolfie_bin_status
       to: Full
     condition:
-      condition: template
-      value_template: >
-        {{ not is_state('sensor.proximity_zone', 'Home') and
-        not is_state("alarm_control_panel.123_main_street", "armed_away") }}
+      condition: not
+      conditions:
+        - condition: state
+          entity_id: sensor.proximity_zone
+          state: Home
+        - condition: state
+          entity_id: alarm_control_panel.123_main_street
+          state: armed_away
     action:
       service: alarm_control_panel.alarm_arm_away
       data:

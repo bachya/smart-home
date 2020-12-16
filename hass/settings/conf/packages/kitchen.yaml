@@ -61,12 +61,14 @@ automation:
               entity_id: input_select.dishwasher_status
               option: Running
         - conditions:
-            condition: template
-            value_template: >
-              {{
-                states("sensor.dishwasher_electric_w") | int < 4
-                and is_state("input_select.dishwasher_status", "Running")
-              }}
+            condition: and
+            conditions:
+              - condition: numeric_state
+                entity_id: sensor.dishwasher_electric_w
+                below: 4
+              - condition: state
+                entity_id: input_select.dishwasher_status
+                state: Running
           sequence:
             service: input_select.select_option
             data:
