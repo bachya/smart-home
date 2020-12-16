@@ -92,16 +92,11 @@ automation:
   - alias: "Notify when Wolfie needs a new consumable"
     trigger:
       - platform: numeric_state
-        entity_id: sensor.vacuum_filter_remaining
-        below: 5
-      - platform: numeric_state
-        entity_id: sensor.vacuum_main_brush_remaining
-        below: 5
-      - platform: numeric_state
-        entity_id: sensor.vacuum_sensor_dirtiness_remaining
-        below: 5
-      - platform: numeric_state
-        entity_id: sensor.vacuum_side_brush_remaining
+        entity_id:
+          - sensor.vacuum_filter_remaining
+          - sensor.vacuum_main_brush_remaining
+          - sensor.vacuum_sensor_dirtiness_remaining
+          - sensor.vacuum_side_brush_remaining
         below: 5
     action:
       service: notify.slack
