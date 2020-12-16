@@ -16,7 +16,7 @@ repos:
       - id: shellcheck
         args:
           - --format=json
-        files: bin/*
+        files: bin/.+
   - repo: https://github.com/adrienverge/yamllint
     rev: v1.20.0
     hooks:
