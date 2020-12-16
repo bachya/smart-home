@@ -84,7 +84,7 @@ automation:
       entity_id: calendar.wolfie_schedule
       to: "on"
     action:
-      service: notify.mobile_app_brittany_bachs_iphone
+      service: notify.everyone
       data:
         message: 🤖 It's time to run Wolfie!
         title: Vacuum Time
