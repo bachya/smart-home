@@ -61,7 +61,7 @@ automation:
   - alias: "Notify on high CPU"
     trigger:
       - platform: numeric_state
-        entity_id: 
+        entity_id:
           - sensor.gryffindor_cpu_used
           - sensor.hub_cpu_used
           - sensor.hufflepuff_cpu_used
