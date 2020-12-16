@@ -62,13 +62,7 @@
       state: "on"
     automation.notify_when_time_for_wolfie_to_run:
       state: "on"
-    automation.notify_when_wolfie_needs_a_new_filter:
-      state: "on"
-    automation.notify_when_wolfie_needs_a_new_main_brush:
-      state: "on"
-    automation.notify_when_wolfie_needs_a_sensor_cleaning:
-      state: "on"
-    automation.notify_when_wolfie_needs_a_new_side_brush:
+    automation.notify_when_wolfie_needs_a_new_consumable:
       state: "on"
     automation.notify_when_security_status_changes:
       state: "off"
@@ -140,13 +134,7 @@
       state: "off"
     automation.notify_when_time_for_wolfie_to_run:
       state: "off"
-    automation.notify_when_wolfie_needs_a_new_filter:
-      state: "off"
-    automation.notify_when_wolfie_needs_a_new_main_brush:
-      state: "off"
-    automation.notify_when_wolfie_needs_a_sensor_cleaning:
-      state: "off"
-    automation.notify_when_wolfie_needs_a_new_side_brush:
+    automation.notify_when_wolfie_needs_a_new_consumable:
       state: "off"
     automation.turn_master_bedroom_salt_lamp_on_at_sunset:
       state: "off"
@@ -290,13 +278,7 @@
       state: "on"
     automation.notify_when_time_for_wolfie_to_run:
       state: "off"
-    automation.notify_when_wolfie_needs_a_new_filter:
-      state: "off"
-    automation.notify_when_wolfie_needs_a_new_main_brush:
-      state: "off"
-    automation.notify_when_wolfie_needs_a_sensor_cleaning:
-      state: "off"
-    automation.notify_when_wolfie_needs_a_new_side_brush:
+    automation.notify_when_wolfie_needs_a_new_consumable:
       state: "off"
     automation.turn_certain_living_room_lights_on_at_sunset:
       state: "off"

@@ -89,45 +89,37 @@ automation:
         message: 🤖 It's time to run Wolfie!
         title: Vacuum Time
 
-  - alias: "Notify when Wolfie needs a new filter"
+  - alias: "Notify when Wolfie needs a new consumable"
     trigger:
-      platform: numeric_state
-      entity_id: sensor.vacuum_filter_remaining
-      below: 5
+      - platform: numeric_state
+        entity_id: sensor.vacuum_filter_remaining
+        below: 5
+      - platform: numeric_state
+        entity_id: sensor.vacuum_main_brush_remaining
+        below: 5
+      - platform: numeric_state
+        entity_id: sensor.vacuum_sensor_dirtiness_remaining
+        below: 5
+      - platform: numeric_state
+        entity_id: sensor.vacuum_side_brush_remaining
+        below: 5
     action:
       service: notify.slack
       data:
-        message: 🤖 Wolfie's filter is dirty; he needs a new one!
+        message: >
+          {% if trigger.entity_id == "sensor.vacuum_filter_remaining" %}
+            {% set name = "a new filter" %}
+          {% elif trigger.entity_id == "sensor.vacuum_main_brush_remaining" %}
+            {% set name = "a new main brush" %}
+          {%
+            elif trigger.entity_id == "sensor.vacuum_sensor_dirtiness_remaining"
+          %}
+            {% set name = "to have his sensors cleaned" %}
+          {% elif trigger.entity_id == "sensor.vacuum_side_brush_remaining" %}
+            {% set name = "a new side brush" %}
+          {% endif %}
 
-  - alias: "Notify when Wolfie needs a new main brush"
-    trigger:
-      platform: numeric_state
-      entity_id: sensor.vacuum_main_brush_remaining
-      below: 5
-    action:
-      service: notify.slack
-      data:
-        message: 🤖 Wolfie's main brush is old; he needs a new one.
-
-  - alias: "Notify when Wolfie needs a sensor cleaning"
-    trigger:
-      platform: numeric_state
-      entity_id: sensor.vacuum_sensor_dirtiness_remaining
-      below: 5
-    action:
-      service: notify.slack
-      data:
-        message: 🤖 Wolfie's sensors are dirty; clean them up!
-
-  - alias: "Notify when Wolfie needs a new side brush"
-    trigger:
-      platform: numeric_state
-      entity_id: sensor.vacuum_side_brush_remaining
-      below: 5
-    action:
-      service: notify.slack
-      data:
-        message: 🤖 Wolfie's side brush is old; he needs a new one!
+          🤖 Wolfie needs {{ name }}!
 
 input_select:
   wolfie_bin_status:
