@@ -1,87 +1,20 @@
 ---
 automation:
-  - alias: "Office Salt Lamp Timer"
-    trigger:
-      - platform: state
-        entity_id: input_number.office_salt_lamp_timer
-      - platform: state
-        entity_id: timer.office_salt_lamp_timer
-        to: idle
-      - platform: state
-        entity_id: switch.office_salt_lamp
-        to: "off"
-    action:
-      choose:
-        # 1. The timer expires
-        - conditions:
-            - condition: template
-              value_template: >
-                {{ trigger.to_state.state == "idle" }}
-          sequence:
-            - service: switch.turn_off
-              entity_id: switch.office_salt_lamp
-            - service: input_number.set_value
-              data:
-                entity_id: input_number.office_salt_lamp_timer
-                value: 0
-        # 2. The switch is manually turned off
-        - conditions:
-            - condition: template
-              value_template: >
-                {{ trigger.to_state.state == "off" }}
-          sequence:
-            - service: timer.cancel
-              data:
-                entity_id: timer.office_salt_lamp_timer
-            - service: input_number.set_value
-              data:
-                entity_id: input_number.office_salt_lamp_timer
-                value: 0
-        # 3. The slider is dragged to 0
-        - conditions:
-            - condition: numeric_state
-              entity_id: input_number.office_salt_lamp_timer
-              below: 1
-          sequence:
-            - service: timer.cancel
-              data:
-                entity_id: timer.office_salt_lamp_timer
-            - service: switch.turn_off
-              entity_id: switch.office_salt_lamp
-        # 4. The slider is dragged above 0
-        - conditions:
-            - condition: numeric_state
-              entity_id: input_number.office_salt_lamp_timer
-              above: 0
-          sequence:
-            - service: timer.start
-              data:
-                entity_id: timer.office_salt_lamp_timer
-                duration: >
-                  {{
-                    states("input_number.office_salt_lamp_timer") | int * 60
-                  }}
-            - service: switch.turn_on
-              entity_id: switch.office_salt_lamp
-
-  - alias: "Turn office salt lamp off at 10pm"
-    trigger:
-      platform: time
-      at: "22:00:00"
-    action:
-      service: switch.turn_off
-      data:
-        entity_id: switch.office_salt_lamp
-
-  - alias: "Turn office salt lamp off when timer expires"
-    trigger:
-      platform: state
-      entity_id: timer.office_salt_lamp_timer
-      to: idle
-    action:
-      service: switch.turn_off
-      data:
-        entity_id: switch.office_salt_lamp
+  - alias: "Master Bathroom Fan Timer"
+    use_blueprint:
+      path: bachya/sleep-timer.yaml
+      input:
+        input_number: input_number.office_salt_lamp_timer
+        timer: timer.office_salt_lamp_timer
+        timer_cancel_action:
+          - service: switch.turn_off
+            entity_id: switch.office_salt_lamp_switch
+        timer_expire_action:
+          - service: switch.turn_off
+            entity_id: switch.office_salt_lamp_switch
+        timer_start_action:
+          - service: switch.turn_on
+            entity_id: switch.office_salt_lamp_switch
 
   - alias: "Turn office salt lamp on at sunset"
     trigger:
