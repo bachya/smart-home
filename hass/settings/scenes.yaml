@@ -54,9 +54,7 @@
       state: "on"
     automation.notify_when_media_center_left_on:
       state: "on"
-    automation.notify_when_3d_print_completes:
-      state: "on"
-    automation.notify_when_3d_print_starts:
+    automation.3d_printer_state_notifications:
       state: "on"
     automation.notify_when_time_for_wolfie_to_run:
       state: "on"
@@ -86,7 +84,7 @@
       state: "on"
     automation.turn_off_garage_lights_after_garage_door_closes:
       state: "on"
-    automation.turn_off_when_3d_print_completes:
+    automation.turn_3d_printer_off_when_print_completes:
       state: "on"
     automation.turn_office_salt_lamp_off_at_10pm:
       state: "on"
@@ -124,9 +122,7 @@
       state: "off"
     automation.notify_when_media_center_left_on:
       state: "off"
-    automation.notify_when_3d_print_completes:
-      state: "off"
-    automation.notify_when_3d_print_starts:
+    automation.3d_printer_state_notifications:
       state: "off"
     automation.notify_when_time_for_wolfie_to_run:
       state: "off"
@@ -264,9 +260,7 @@
       state: "off"
     automation.notify_of_next_trash_pickup_the_night_before:
       state: "off"
-    automation.notify_when_3d_print_completes:
-      state: "off"
-    automation.notify_when_3d_print_starts:
+    automation.3d_printer_state_notifications:
       state: "off"
     automation.notify_when_security_status_changes:
       state: "on"
