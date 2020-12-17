@@ -1,26 +1,33 @@
 ---
 automation:
-  - alias: Notify when 3D print completes
+  - alias: "3D Printer State Notifications"
     trigger:
       platform: state
       entity_id: sensor.octoprint_current_state
-      from: Printing
-      to: Operational
     action:
-      service: notify.slack
-      data:
-        message: "🦿 3D print completed"
-
-  - alias: Notify when 3D print starts
-    trigger:
-      platform: state
-      entity_id: sensor.octoprint_current_state
-      from: Operational
-      to: Printing
-    action:
-      service: notify.slack
-      data:
-        message: "🦿 3D print started"
+      choose:
+        - conditions:
+            condition: template
+            value_template: >
+              {{
+                trigger.from_state.state == "Printing"
+                and trigger.to_state.state == "Operational"
+              }}
+          sequence:
+            service: notify.slack
+            data:
+              message: "🦿 3D print completed"
+        - conditions:
+            condition: template
+            value_template: >
+              {{
+                trigger.from_state.state == "Operational"
+                and trigger.to_state.state == "Printing"
+              }}
+          sequence:
+            service: notify.slack
+            data:
+              message: "🦿 3D print started"
 
   - alias: "Turn off when 3D print completes"
     trigger:
