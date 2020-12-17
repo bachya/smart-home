@@ -14,8 +14,8 @@ automation:
             - condition: state
               entity_id: binary_sensor.workday_tomorrow
               state: "on"
-            - condition: time
-              after: "21:30:00"
+            - condition: template
+              value_template: "{{ trigger.now.hour == 21 }}"
           sequence:
             - service: switch.turn_off
               entity_id: switch.backyard_lights_switch
@@ -23,8 +23,8 @@ automation:
             - condition: state
               entity_id: binary_sensor.workday_tomorrow
               state: "off"
-            - condition: time
-              after: "23:00:00"
+            - condition: template
+              value_template: "{{ trigger.now.hour == 23 }}"
           sequence:
             - service: switch.turn_off
               entity_id: switch.backyard_lights_switch
