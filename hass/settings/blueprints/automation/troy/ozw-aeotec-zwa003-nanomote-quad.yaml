@@ -1,0 +1,80 @@
+blueprint:
+  name: Aeotec ZWA003 NanoMote Quad
+  description: Create automations for the Aeotec ZWA003 NanoMote Quad using the OZW
+    integration.
+  domain: automation
+  input:
+    aeotec_nanomote:
+      name: Aeotec NanoMote Quad
+      description: List of available NanoMote Quad remotes to configure. This list
+        is only a reference. At this time, it is not possible to obtain the node's
+        id using the device selector.
+      selector:
+        device:
+          integration: ozw
+          manufacturer: Aeotec Limited
+          model: ZWA003 NanoMote Quad
+    ozw_node_id:
+      name: Node ID
+      description: Enter the node id for an available NanoMote Quad you wish to configure.
+        For now, this field is required. At this time, it is not possible to obtain
+        the node's id when using the device selector.
+    button_1:
+      name: Press Button One
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: {}
+    button_2:
+      name: Press Button Two
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: {}
+    button_3:
+      name: Press Button Three
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: {}
+    button_4:
+      name: Press Button Four
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: {}
+  source_url: https://community.home-assistant.io/t/ozw-aeotec-zwa003-nanomote-quad/256024
+mode: single
+max_exceeded: silent
+variables:
+  device_id: !input 'aeotec_nanomote'
+  ozw_node_id: !input 'ozw_node_id'
+trigger:
+- platform: event
+  event_type: ozw.scene_activated
+action:
+- variables:
+    node_id: '{{ trigger.event.data.node_id }}'
+    scene_id: '{{ trigger.event.data.scene_id }}'
+    scene_value_id: '{{ trigger.event.data.scene_value_id }}'
+- choose:
+  - conditions:
+    - '{{ node_id == ( ozw_node_id | int ) }}'
+    - '{{ scene_id == 1 }}'
+    - '{{ scene_value_id == 1 }}'
+    sequence: !input 'button_1'
+  - conditions:
+    - '{{ node_id == ( ozw_node_id | int ) }}'
+    - '{{ scene_id == 2 }}'
+    - '{{ scene_value_id == 1 }}'
+    sequence: !input 'button_2'
+  - conditions:
+    - '{{ node_id == ( ozw_node_id | int ) }}'
+    - '{{ scene_id == 3 }}'
+    - '{{ scene_value_id == 1 }}'
+    sequence: !input 'button_3'
+  - conditions:
+    - '{{ node_id == ( ozw_node_id | int ) }}'
+    - '{{ scene_id == 4 }}'
+    - '{{ scene_value_id == 4 }}'
+    sequence: !input 'button_4'

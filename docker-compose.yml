@@ -73,6 +73,7 @@ services:
     network_mode: host
     restart: always
     volumes:
+      - ./hass/settings/blueprints:/config/blueprints
       - ./hass/settings/conf:/config/conf
       - ./hass/settings/configuration.yaml:/config/configuration.yaml
       - ./hass/settings/custom_components:/config/custom_components
