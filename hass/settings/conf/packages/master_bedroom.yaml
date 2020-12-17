@@ -16,7 +16,7 @@ automation:
 
   - alias: "Master Bathroom Fan Double-Tap"
     use_blueprint:
-      path: bachya/sleep-timer.yaml
+      path: bachya/zwave-double-tap.yaml
       input:
         basic_command_sensor: sensor.master_bathroom_fan_basic
         down_action:
@@ -62,7 +62,7 @@ automation:
 
   - alias: "Master Toilet Fan Double-Tap"
     use_blueprint:
-      path: bachya/sleep-timer.yaml
+      path: bachya/zwave-double-tap.yaml
       input:
         basic_command_sensor: sensor.master_toilet_fan_basic
         down_action:
