@@ -101,9 +101,7 @@ automation:
       - service: notify.slack
         data:
           message: "🔒 Locking up the house"
-      - service: scene.turn_on
-        data:
-          entity_id: scene.good_night
+      - scene: scene.good_night
 
   - alias: "Automatically lock up when we depart"
     trigger:
@@ -114,9 +112,7 @@ automation:
       - service: notify.slack
         data:
           message: "🔒 Locking up the house"
-      - service: scene.turn_on
-        data:
-          entity_id: scene.depart_home
+      - scene: scene.depart_home
 
   - alias: "Forward SimpliSafe events to Slack"
     trigger:

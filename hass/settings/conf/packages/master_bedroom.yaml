@@ -108,9 +108,7 @@ automation:
       event_data:
         tag_id: 43cfde8e-b887-4b6d-8832-4287cc712542
     action:
-      service: scene.turn_on
-      data:
-        entity_id: scene.good_night
+      scene: scene.good_night
 
   - alias: "Turn master bedroom salt lamp on at sunset"
     trigger:

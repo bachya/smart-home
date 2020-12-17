@@ -82,9 +82,7 @@ automation:
         entity_id: input_boolean.blackout_mode
         to: "on"
     action:
-      service: scene.turn_on
-      data:
-        entity_id: scene.blackout_mode
+      scene: scene.blackout_mode
 
   - alias: "Adjust automations in Guest Mode"
     trigger:
@@ -92,9 +90,7 @@ automation:
       entity_id: input_boolean.guest_mode
       to: "on"
     action:
-      service: scene.turn_on
-      data:
-        entity_id: scene.guest_mode
+      scene: scene.guest_mode
 
   - alias: "Adjust automations in Vacation Mode"
     trigger:
@@ -102,9 +98,7 @@ automation:
       entity_id: input_boolean.vacation_mode
       to: "on"
     action:
-      service: scene.turn_on
-      data:
-        entity_id: scene.vacation_mode
+      scene: scene.vacation_mode
 
   - alias: "Reset automations when no mode is active"
     trigger:
@@ -135,9 +129,7 @@ automation:
         entity_id: sensor.proximity_zone
         to: Home
     action:
-      service: scene.turn_on
-      data:
-        entity_id: scene.base
+      scene: scene.base
 
 input_boolean:
   blackout_mode:
