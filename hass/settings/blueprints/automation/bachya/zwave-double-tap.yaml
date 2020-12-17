@@ -45,10 +45,12 @@ condition:
 action:
   choose:
     - conditions:
-        - condition: template
-          value_template: "{{ trigger.event.data.value == 0 }}"
+        - condition: state
+          entity_id: !input basic_command_sensor
+          state: 0
       sequence: !input down_action
     - conditions:
-        - condition: template
-          value_template: "{{ trigger.event.data.value == 255 }}"
+        - condition: state
+          entity_id: !input basic_command_sensor
+          state: 255
       sequence: !input up_action
