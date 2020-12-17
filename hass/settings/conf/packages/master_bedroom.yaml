@@ -16,24 +16,18 @@ automation:
 
   - alias: "Fan Switch Double Tap"
     trigger:
-      platform: event
-      event_type: ZWAVE_DOUBLE_TAP
-      event_data:
-        value: 255
+      - platform: event
+        event_type: ZWAVE_DOUBLE_TAP
+        event_data:
+          entity_id: sensor.master_bathroom_fan_basic
+          value: 255
+      - platform: event
+        event_type: ZWAVE_DOUBLE_TAP
+        event_data:
+          entity_id: sensor.master_toilet_fan_basic
+          value: 255
     action:
       choose:
-        - conditions:
-            - condition: template
-              value_template: >
-                {{
-                  trigger.event.data.entity_id
-                  == "sensor.master_toilet_fan_basic"
-                }}
-          sequence:
-            - service: input_number.set_value
-              data:
-                entity_id: input_number.master_toilet_fan_timer
-                value: 10
         - conditions:
             - condition: template
               value_template: >
@@ -46,6 +40,18 @@ automation:
               data:
                 entity_id: input_number.master_bathroom_fan_timer
                 value: 30
+        - conditions:
+            - condition: template
+              value_template: >
+                {{
+                  trigger.event.data.entity_id
+                  == "sensor.master_toilet_fan_basic"
+                }}
+          sequence:
+            - service: input_number.set_value
+              data:
+                entity_id: input_number.master_toilet_fan_timer
+                value: 10
 
   - alias: "Master Bathroom Fan Timer"
     use_blueprint:
