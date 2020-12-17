@@ -77,7 +77,7 @@ automation:
         - conditions:
             condition: state
             entity_id: input_select.dishwasher_status
-            state: "Drying"
+            state: Drying
           sequence:
             service: input_select.select_option
             data:
