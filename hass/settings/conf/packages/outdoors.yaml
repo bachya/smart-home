@@ -36,6 +36,8 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.filtered_outdoor_brightness
+        # If for some reason the weather station is down and the actual trigger
+        # fails, we also watch for "regular" sunset:
       - platform: sun
         event: sunset
     condition:
