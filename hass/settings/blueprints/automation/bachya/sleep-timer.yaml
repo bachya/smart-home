@@ -40,14 +40,14 @@ blueprint:
 mode: restart
 
 variables:
-  slider: !input 'input_number'
-  slider_value: '{{ states(slider) | int * 60 }}'
+  slider: !input input_number
+  slider_value: "{{ states(slider) | int * 60 }}"
 
 trigger:
   - platform: state
-    entity_id: !input 'input_number'
+    entity_id: !input input_number
   - platform: state
-    entity_id: !input 'timer'
+    entity_id: !input timer
     to: idle
 action:
   choose:
@@ -57,28 +57,28 @@ action:
       sequence:
         - service: input_number.set_value
           data:
-            entity_id: !input 'input_number'
+            entity_id: !input input_number
             value: 0
         - choose: []
-          default: !input 'timer_expire_action'
+          default: !input timer_expire_action
     - conditions:
         - condition: numeric_state
-          entity_id: !input 'input_number'
+          entity_id: !input input_number
           below: 1
       sequence:
         - service: timer.cancel
           data:
-            entity_id: !input 'timer'
+            entity_id: !input timer
         - choose: []
-          default: !input 'timer_cancel_action'
+          default: !input timer_cancel_action
     - conditions:
         - condition: numeric_state
-          entity_id: !input 'input_number'
+          entity_id: !input input_number
           above: 0
       sequence:
         - service: timer.start
           data:
-            entity_id: !input 'timer'
-            duration: '{{ slider_value }}'
+            entity_id: !input timer
+            duration: "{{ slider_value }}"
         - choose: []
-          default: !input 'timer_start_action'
+          default: !input timer_start_action
