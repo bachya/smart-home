@@ -265,32 +265,6 @@ automation:
             Orange Dark
           {% endif %}
 
-  - alias: "Z-Wave Double-Tap Manager"
-    trigger:
-      - platform: state
-        entity_id: sensor.kitchen_patio_light_basic
-      - platform: state
-        entity_id: sensor.master_bathroom_fan_basic
-      - platform: state
-        entity_id: sensor.master_toilet_fan_basic
-    condition:
-      condition: not
-      conditions:
-        - condition: template
-          value_template: >
-            {{ trigger.from_state.state in ("unavailable", "unknown") }}
-        - condition: template
-          value_template: >
-            {{ trigger.to_state.state in ("unavailable", "unknown") }}
-        - condition: template
-          value_template: >
-            {{ not trigger.to_state.state }}
-    action:
-      event: ZWAVE_DOUBLE_TAP
-      event_data:
-        entity_id: "{{ trigger.entity_id }}"
-        value: "{{ trigger.to_state.state }}"
-
 sensor:
   - platform: command_line
     name: Latest Drone Build

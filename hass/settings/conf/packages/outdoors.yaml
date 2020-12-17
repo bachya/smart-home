@@ -65,25 +65,16 @@ automation:
       - event: LOCAL_SUNSET
 
   - alias: "Handle backyard lights via double-tapping the kitchen patio light"
-    trigger:
-      platform: event
-      event_type: ZWAVE_DOUBLE_TAP
-      event_data:
-        entity_id: sensor.kitchen_patio_light_basic
-    action:
-      choose:
-        - conditions:
-            condition: template
-            value_template: "{{ trigger.event.data.value == 0 }}"
-          sequence:
-            - service: switch.turn_off
-              entity_id: switch.backyard_lights_switch
-        - conditions:
-            condition: template
-            value_template: "{{ trigger.event.data.value == 255 }}"
-          sequence:
-            - service: switch.turn_on
-              entity_id: switch.backyard_lights_switch
+    use_blueprint:
+      path: bachya/sleep-timer.yaml
+      input:
+        basic_command_sensor: sensor.kitchen_patio_light_basic
+        down_action:
+          - service: switch.turn_off
+            entity_id: switch.backyard_lights_switch
+        up_action:
+          - service: switch.turn_on
+            entity_id: switch.backyard_lights_switch
 
   - alias: "Patio lights schedule"
     trigger:

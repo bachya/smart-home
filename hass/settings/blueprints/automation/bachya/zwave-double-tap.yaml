@@ -1,0 +1,54 @@
+---
+blueprint:
+  name: Z-Wave Double Tap
+  description: Perform actions when double-tapping a GE Z-Wave switch up or down
+  domain: automation
+  input:
+    basic_command_sensor:
+      name: Basic Command Sensor Entity ID
+      description: The sensor entity ID that represents the Basic command class
+        for a Z-Wave switch
+      selector:
+        entity:
+          integration: ozw
+          domain: sensor
+    down_action:
+      name: Action on Double-Tap Down
+      description: The action(s) to run when the switch is double-tapped down
+      default: []
+      selector:
+        action: {}
+    up_action:
+      name: Action on Double-Tap Up
+      description: The action(s) to run when the switch is double-tapped up
+      default: []
+      selector:
+        action: {}
+
+mode: restart
+
+trigger:
+  platform: state
+  entity_id: !input basic_command_sensor
+condition:
+  condition: not
+  conditions:
+    - condition: template
+      value_template: >
+        {{ trigger.from_state.state in ("unavailable", "unknown") }}
+    - condition: template
+      value_template: >
+        {{ trigger.to_state.state in ("unavailable", "unknown") }}
+    - condition: template
+      value_template: >
+        {{ not trigger.to_state.state }}
+action:
+  choose:
+    - conditions:
+        - condition: template
+          value_template: "{{ trigger.event.data.value == 0 }}"
+      sequence: !input down_action
+    - conditions:
+        - condition: template
+          value_template: "{{ trigger.event.data.value == 255 }}"
+      sequence: !input up_action

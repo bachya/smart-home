@@ -14,44 +14,19 @@ automation:
         entity_id: input_number.master_toilet_fan_timer
         value: 15
 
-  - alias: "Fan Switch Double Tap"
-    trigger:
-      - platform: event
-        event_type: ZWAVE_DOUBLE_TAP
-        event_data:
-          entity_id: sensor.master_bathroom_fan_basic
-          value: 255
-      - platform: event
-        event_type: ZWAVE_DOUBLE_TAP
-        event_data:
-          entity_id: sensor.master_toilet_fan_basic
-          value: 255
-    action:
-      choose:
-        - conditions:
-            - condition: template
-              value_template: >
-                {{
-                  trigger.event.data.entity_id
-                  == "sensor.master_bathroom_fan_basic"
-                }}
-          sequence:
-            - service: input_number.set_value
-              data:
-                entity_id: input_number.master_bathroom_fan_timer
-                value: 30
-        - conditions:
-            - condition: template
-              value_template: >
-                {{
-                  trigger.event.data.entity_id
-                  == "sensor.master_toilet_fan_basic"
-                }}
-          sequence:
-            - service: input_number.set_value
-              data:
-                entity_id: input_number.master_toilet_fan_timer
-                value: 10
+  - alias: "Master Bathroom Fan Double-Tap"
+    use_blueprint:
+      path: bachya/sleep-timer.yaml
+      input:
+        basic_command_sensor: sensor.master_bathroom_fan_basic
+        down_action:
+          - service: switch.turn_off
+            entity_id: switch.master_bathroom_fan_switch
+        up_action:
+          - service: input_number.set_value
+            data:
+              entity_id: input_number.master_bathroom_fan_timer
+              value: 30
 
   - alias: "Master Bathroom Fan Timer"
     use_blueprint:
@@ -84,6 +59,20 @@ automation:
         timer_start_action:
           - service: switch.turn_on
             entity_id: switch.master_bedroom_salt_lamp
+
+  - alias: "Master Toilet Fan Double-Tap"
+    use_blueprint:
+      path: bachya/sleep-timer.yaml
+      input:
+        basic_command_sensor: sensor.master_toilet_fan_basic
+        down_action:
+          - service: switch.turn_off
+            entity_id: switch.master_toilet_fan_switch
+        up_action:
+          - service: input_number.set_value
+            data:
+              entity_id: input_number.master_toilet_fan_timer
+              value: 10
 
   - alias: "Master Toilet Fan Timer"
     use_blueprint:
