@@ -1,32 +1,5 @@
 ---
 automation:
-  - alias: "Bad outdoor AQI notifications"
-    trigger:
-      platform: state
-      entity_id: sensor.u_s_air_pollution_level
-    action:
-      choose:
-        - conditions:
-            condition: state
-            entity_id: sensor.u_s_air_pollution_level
-            state: Unhealthy for sensitive groups
-          sequence:
-            - service: notify.everyone
-              data:
-                message: 😷 The outdoor air quality is pretty bad.
-                title: Bad AQI
-        - conditions:
-            condition: not
-            conditions:
-              condition: state
-              entity_id: sensor.u_s_air_pollution_level
-              state: Unhealthy for sensitive groups
-          sequence:
-            - service: notify.everyone
-              data:
-                message: 😅 The outdoor air quality is good again.
-                title: Bad AQI
-
   - alias: Update OpenUV every 30 minutes during the daytime
     initial_state: true
     trigger:

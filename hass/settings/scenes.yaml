@@ -30,8 +30,6 @@
       state: "on"
     automation.backyard_light_switch_via_kitchen_patio_light_on:
       state: "on"
-    automation.bad_outdoor_aqi_notifications:
-      state: "on"
     automation.blackout_mode_schedule:
       state: "on"
     automation.cycle_master_toilet_fan_during_the_day:
@@ -121,8 +119,6 @@
     automation.alter_armed_alarm_when_wolfie_cleans:
       state: "off"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
-      state: "off"
-    automation.bad_outdoor_aqi_notifications:
       state: "off"
     automation.dyson_temperature_management:
       state: "off"
@@ -257,8 +253,6 @@
     alert.wolfie_cycle_complete:
       state: "off"
     alert.wolfie_stuck:
-      state: "off"
-    automation.bad_outdoor_aqi_notifications:
       state: "off"
     automation.blackout_mode_schedule:
       state: "off"
