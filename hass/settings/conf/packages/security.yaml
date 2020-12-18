@@ -114,25 +114,23 @@ automation:
           message: "🔒 Locking up the house"
       - scene: scene.depart_home
 
-  - alias: "Forward SimpliSafe events to Slack"
+  - alias: "Forward SimpliSafe events and notifications to Slack"
     trigger:
       - platform: event
         event_type: SIMPLISAFE_EVENT
-    action:
-      service: notify.slack
-      data:
-        message: >
-            📥 SimpliSafe Event: {{ trigger.event.data.last_event_info }}
-
-  - alias: "Forward SimpliSafe notifications to Slack"
-    trigger:
       - platform: event
         event_type: SIMPLISAFE_NOTIFICATION
     action:
       service: notify.slack
       data:
         message: >
-            📥 SimpliSafe Notification: {{ trigger.event.data.message }}
+          {% if trigger.event.event_type == "SIMPLISAFE_EVENT" %}
+            {% set message = trigger.event.data.last_event_info %}
+          {% elif trigger.event.event_type == "SIMPLISAFE_NOTIFICATION" %}
+            {% set message = trigger.event.data.message %}
+          {% endif %}
+
+          📥 SimpliSafe Message: {{ message }}
 
   - alias: "Manage SimpliSafe sounds during blackout"
     trigger:
