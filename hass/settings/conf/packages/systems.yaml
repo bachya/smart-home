@@ -1,23 +1,5 @@
 ---
 automation:
-  - alias: "Change to dark theme at night"
-    trigger:
-      platform: event
-      event_type: LOCAL_SUNSET
-    action:
-      service: frontend.set_theme
-      data:
-        name: Orange Dark
-
-  - alias: "Change to light theme in the morning"
-    trigger:
-      platform: sun
-      event: sunrise
-    action:
-      service: frontend.set_theme
-      data:
-        name: Orange light
-
   - alias: "Dump MQTT for OpenZWave on HASS startup"
     trigger:
       platform: homeassistant
@@ -43,6 +25,36 @@ automation:
         message: >
             📥 Home Assistant Notification:
             {{ trigger.event.data.service_data.message }}
+
+  - alias: "Manage HASS Themes"
+    trigger:
+      - platform: event
+        event_type: LOCAL_SUNSET
+      - platform: homeassistant
+        event: start
+      - platform: sun
+        event: sunrise
+    action:
+      choose:
+        - conditions:
+            - condition: or
+              conditions:
+                - condition: template
+                  value_template: >
+                    {{ trigger.event.event_type == "LOCAL_SUNSET" }}
+                - condition: sun
+                  after: sunset
+          sequence:
+            - service: frontend.set_theme
+              data:
+                name: Orange Dark
+        - conditions:
+            - condition: sun
+              after: sunrise
+          sequence:
+            - service: frontend.set_theme
+              data:
+                name: Orange light
 
   - alias: "Notify on HACS updates"
     trigger:
@@ -250,20 +262,6 @@ automation:
       service: notify.slack
       data:
         message: "🤔 @aaron {{ trigger.entity_id }} is offline."
-
-  - alias: "Pick the correct theme on HASS start"
-    trigger:
-      platform: homeassistant
-      event: start
-    action:
-      service: frontend.set_theme
-      data:
-        name: >
-          {% if is_state("sun.sun", "above_horizon") %}
-            Orange light
-          {% else %}
-            Orange Dark
-          {% endif %}
 
 sensor:
   - platform: command_line
