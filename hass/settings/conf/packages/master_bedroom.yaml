@@ -24,8 +24,8 @@ automation:
             entity_id: switch.master_bathroom_fan_switch
         up_action:
           - service: input_number.set_value
+            entity_id: input_number.master_bathroom_fan_timer
             data:
-              entity_id: input_number.master_bathroom_fan_timer
               value: 30
 
   - alias: "Master Bathroom Fan Timer"
@@ -70,8 +70,8 @@ automation:
             entity_id: switch.master_toilet_fan_switch
         up_action:
           - service: input_number.set_value
+            entity_id: input_number.master_toilet_fan_timer
             data:
-              entity_id: input_number.master_toilet_fan_timer
               value: 10
 
   - alias: "Master Toilet Fan Timer"
