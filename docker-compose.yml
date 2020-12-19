@@ -232,8 +232,6 @@ services:
 
   vernemq:
     container_name: vernemq
-    depends_on:
-      - traefik
     environment:
       DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
       DOCKER_VERNEMQ_USER_ECOWITT: "${VERNEMQ_PASSWORD_ECOWITT}"
