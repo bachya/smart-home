@@ -212,25 +212,25 @@ automation:
       entity_id: input_boolean.vacation_mode
       state: "on"
     action:
-      service: >
-        {% if trigger.to_state.state == "0" %}
-          switch.turn_off
-        {% else %}
-          switch.turn_on
-        {% endif %}
-      data: >
-        {% if trigger.entity_id == "sensor.replay_basement_lights" %}
-          switch.basement_lights
-        {%
-          elif trigger.entity_id == "sensor.replay_living_room_lights"
-        %}
-          group.living_room_lights
-        {%
-          elif trigger.entity_id
+      - service: >
+          {% if trigger.to_state.state == "0" %}
+            switch.turn_off
+          {% else %}
+            switch.turn_on
+          {% endif %}
+        data: >
+          {% if trigger.entity_id == "sensor.replay_basement_lights" %}
+            switch.basement_lights
+          {%
+            elif trigger.entity_id == "sensor.replay_living_room_lights"
+          %}
+            group.living_room_lights
+          {%
+            elif trigger.entity_id
           == "sensor.replay_master_bedroom_salt_lamp"
-        %}
-          switch.master_bedroom_salt_lamp
-        {% endif %}
+          %}
+            switch.master_bedroom_salt_lamp
+          {% endif %}
 
 binary_sensor:
   - platform: template
