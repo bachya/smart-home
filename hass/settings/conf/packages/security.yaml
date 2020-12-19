@@ -285,7 +285,7 @@ sensor:
 
   - platform: history_stats
     name: "Replay Living Room Lights"
-    entity_id: group.living_room_lights
+    entity_id: switch.reading_lamp
     state: "on"
     type: count
     start: >
