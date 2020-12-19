@@ -218,14 +218,15 @@ automation:
         {% else %}
           switch.turn_on
         {% endif %}
-      data: 
+      data:
         entity_id: >
           {% if trigger.entity_id == "sensor.replay_basement_lights" %}
             switch.basement_lights
           {% elif trigger.entity_id == "sensor.replay_living_room_lights" %}
             group.living_room_lights
-          {% elif trigger.entity_id
-          == "sensor.replay_master_bedroom_salt_lamp"
+          {%
+            elif trigger.entity_id
+            == "sensor.replay_master_bedroom_salt_lamp"
           %}
             switch.master_bedroom_salt_lamp
           {% endif %}
