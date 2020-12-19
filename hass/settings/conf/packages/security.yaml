@@ -212,21 +212,19 @@ automation:
       entity_id: input_boolean.vacation_mode
       state: "on"
     action:
-      - service: >
-          {% if trigger.to_state.state == "0" %}
-            switch.turn_off
-          {% else %}
-            switch.turn_on
-          {% endif %}
-        data: >
+      service: >
+        {% if trigger.to_state.state == "0" %}
+          switch.turn_off
+        {% else %}
+          switch.turn_on
+        {% endif %}
+      data: 
+        entity_id: >
           {% if trigger.entity_id == "sensor.replay_basement_lights" %}
             switch.basement_lights
-          {%
-            elif trigger.entity_id == "sensor.replay_living_room_lights"
-          %}
+          {% elif trigger.entity_id == "sensor.replay_living_room_lights" %}
             group.living_room_lights
-          {%
-            elif trigger.entity_id
+          {% elif trigger.entity_id
           == "sensor.replay_master_bedroom_salt_lamp"
           %}
             switch.master_bedroom_salt_lamp
