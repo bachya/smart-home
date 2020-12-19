@@ -83,5 +83,5 @@ action:
       - conditions:
           - '{{ node_id == ( ozw_node_id | int ) }}'
           - '{{ scene_id == 4 }}'
-          - '{{ scene_value_id == 4 }}'
+          - '{{ scene_value_id == 1 }}'
         sequence: !input 'button_4'
