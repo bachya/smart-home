@@ -275,8 +275,26 @@ sensor:
     duration: 00:00:30
 
   - platform: history_stats
+    name: "Replay Basement TV"
+    entity_id: remote.basement_tv
+    state: "on"
+    type: count
+    start: >
+      {{ as_timestamp(now()) - (7*86400) }}
+    duration: 00:00:30
+
+  - platform: history_stats
     name: "Replay Living Room Lights"
     entity_id: group.living_room_lights
+    state: "on"
+    type: count
+    start: >
+      {{ as_timestamp(now()) - (7*86400) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Living Room TV"
+    entity_id: remote.living_room_tv
     state: "on"
     type: count
     start: >
