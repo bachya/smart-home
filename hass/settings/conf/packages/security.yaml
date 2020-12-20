@@ -206,6 +206,8 @@ automation:
       - platform: state
         entity_id: sensor.replay_living_room_lights
       - platform: state
+        entity_id: sensor.replay_master_bedroom_patio_light
+      - platform: state
         entity_id: sensor.replay_master_bedroom_salt_lamp
     condition:
       condition: state
