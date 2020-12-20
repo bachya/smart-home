@@ -226,6 +226,11 @@ automation:
             group.living_room_lights
           {%
             elif trigger.entity_id
+            == "sensor.replay_master_bedroom_patio_light"
+          %}
+            switch.master_patio_light_switch
+          {%
+            elif trigger.entity_id
             == "sensor.replay_master_bedroom_salt_lamp"
           %}
             switch.master_bedroom_salt_lamp
@@ -295,6 +300,15 @@ sensor:
   - platform: history_stats
     name: "Replay Living Room TV"
     entity_id: remote.living_room_tv
+    state: "on"
+    type: count
+    start: >
+      {{ as_timestamp(now()) - (7*86400) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Master Bedroom Patio Light"
+    entity_id: switch.master_patio_light_switch
     state: "on"
     type: count
     start: >
