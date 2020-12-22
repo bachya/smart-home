@@ -95,38 +95,6 @@ remote:
     host: harmony-hub-1.myserver.com
     activity: 22580039
 
-script:
-  start_random_stream_on_living_room_roku:
-    sequence:
-      - service: remote.turn_on
-        data:
-          entity_id: remote.living_room_tv
-      - delay: "00:00:15"
-      - service: media_player.select_source
-        data:
-          entity_id: media_player.living_room_roku
-          source: Locast.org
-      - delay: "00:00:10"
-      - service: remote.send_command
-        data:
-          entity_id: remote.living_room_roku
-          command: select
-      - service: media_player.volume_set
-        data:
-          entity_id: media_player.sonos_playbar
-          volume_level: 0.25
-
-  stop_random_stream_on_living_room_roku:
-    sequence:
-      - service: media_player.select_source
-        data:
-          entity_id: media_player.living_room_roku
-          source: Home
-      - delay: "00:00:05"
-      - service: remote.turn_off
-        data:
-          entity_id: remote.living_room_tv
-
 sensor:
   - platform: filter
     name: "Filtered Fiddle Leaf Fig Brightness (%)"

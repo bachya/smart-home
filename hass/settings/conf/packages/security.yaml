@@ -169,6 +169,96 @@ automation:
         message: >
           🔐 The house's security has changed: {{ trigger.to_state.state }}
 
+  - alias: "Simulate someone being home"
+    trigger:
+      - platform: state
+        entity_id: sensor.replay_basement_lights
+      - platform: state
+        entity_id: sensor.replay_basement_tv
+      - platform: state
+        entity_id: sensor.replay_living_room_lights
+      - platform: state
+        entity_id: sensor.replay_living_room_tv
+      - platform: state
+        entity_id: sensor.replay_master_bedroom_patio_light
+      - platform: state
+        entity_id: sensor.replay_master_bedroom_salt_lamp
+    action:
+      choose:
+        - conditions:
+            - condition: template
+              value_template: >
+                {{
+                  trigger.entity_id in
+                  ["sensor.replay_basement_tv", "sensor.replay_living_room_tv"]
+                }}
+          sequence: >
+            {% if trigger.entity_id == "sensor.replay_basement_tv" %}
+              {% if trigger.to_state.state == "1" %}
+                - service: remote.turn_on
+                  data:
+                    entity_id: remote.basement_tv
+                    activity_id: 37549198
+              {% else %}
+                - service: remote.turn_off
+                  data:
+                    entity_id: remote.basement_tv
+              {% endif %}
+            {% elif trigger.entity_id == "sensor.replay_living_room_tv" %}
+              {% if trigger.to_state.state == "1" %}
+                - service: remote.turn_on
+                  data:
+                    entity_id: remote.living_room_tv
+                - delay: "00:00:15"
+                - service: media_player.select_source
+                  data:
+                    entity_id: media_player.living_room_roku
+                    source: Locast.org
+                - delay: "00:00:10"
+                - service: remote.send_command
+                  data:
+                    entity_id: remote.living_room_roku
+                    command: select
+                - service: media_player.volume_set
+                  data:
+                    entity_id: media_player.sonos_playbar
+                    volume_level: 0.25
+              {% else %}
+                - service: media_player.select_source
+                  data:
+                    entity_id: media_player.living_room_roku
+                    source: Home
+                - delay: "00:00:05"
+                - service: remote.turn_off
+                  data:
+                    entity_id: remote.living_room_tv
+              {% endif %}
+            {% endif %}
+      default:
+        service: >
+          {% if trigger.to_state.state == "0" %}
+            switch.turn_off
+          {% else %}
+            switch.turn_on
+          {% endif %}
+        data:
+          entity_id: >
+            {% if trigger.entity_id == "sensor.replay_basement_lights" %}
+              switch.basement_lights
+            {% elif trigger.entity_id == "sensor.replay_living_room_lights" %}
+              group.living_room_lights
+            {%
+              elif trigger.entity_id
+              == "sensor.replay_master_bedroom_patio_light"
+            %}
+              switch.master_patio_light_switch
+            {%
+              elif trigger.entity_id
+              == "sensor.replay_master_bedroom_salt_lamp"
+            %}
+              switch.master_bedroom_salt_lamp
+            {% endif %}
+
   - alias: "Turn lights on when doorbell detects person at nighttime"
     trigger:
       - platform: device
@@ -198,45 +288,6 @@ automation:
       - service: switch.turn_on
         data:
           entity_id: group.living_room_lights
-
-  - alias: "Vacation Mode Lighting"
-    trigger:
-      - platform: state
-        entity_id: sensor.replay_basement_lights
-      - platform: state
-        entity_id: sensor.replay_living_room_lights
-      - platform: state
-        entity_id: sensor.replay_master_bedroom_patio_light
-      - platform: state
-        entity_id: sensor.replay_master_bedroom_salt_lamp
-    condition:
-      condition: state
-      entity_id: input_boolean.vacation_mode
-      state: "on"
-    action:
-      service: >
-        {% if trigger.to_state.state == "0" %}
-          switch.turn_off
-        {% else %}
-          switch.turn_on
-        {% endif %}
-      data:
-        entity_id: >
-          {% if trigger.entity_id == "sensor.replay_basement_lights" %}
-            switch.basement_lights
-          {% elif trigger.entity_id == "sensor.replay_living_room_lights" %}
-            group.living_room_lights
-          {%
-            elif trigger.entity_id
-            == "sensor.replay_master_bedroom_patio_light"
-          %}
-            switch.master_patio_light_switch
-          {%
-            elif trigger.entity_id
-            == "sensor.replay_master_bedroom_salt_lamp"
-          %}
-            switch.master_bedroom_salt_lamp
-          {% endif %}
 
 binary_sensor:
   - platform: template
