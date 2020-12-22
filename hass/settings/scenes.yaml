@@ -82,8 +82,6 @@
       state: "on"
     automation.turn_3d_printer_off_when_print_completes:
       state: "on"
-    automation.turn_office_salt_lamp_off_at_10pm:
-      state: "on"
     automation.turn_on_garage_lights_when_garage_door_opens_while_it_s_dark:
       state: "on"
     automation.turn_powder_room_fan_back_on_if_someone_turns_it_off:
