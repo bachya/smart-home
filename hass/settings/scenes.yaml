@@ -68,8 +68,6 @@
       state: "on"
     automation.simulate_someone_being_home:
       state: "off"
-    automation.turn_certain_living_room_lights_on_at_sunset:
-      state: "on"
     automation.turn_dyson_higher_when_it_s_hot_in_the_bedroom:
       state: "on"
     automation.turn_dyson_s_night_mode_off:
@@ -80,15 +78,11 @@
       state: "on"
     automation.turn_living_room_lights_on_when_we_arrive:
       state: "on"
-    automation.turn_master_bedroom_salt_lamp_on_at_sunset:
-      state: "on"
     automation.turn_off_garage_lights_after_garage_door_closes:
       state: "on"
     automation.turn_3d_printer_off_when_print_completes:
       state: "on"
     automation.turn_office_salt_lamp_off_at_10pm:
-      state: "on"
-    automation.turn_office_salt_lamp_on_at_sunset:
       state: "on"
     automation.turn_on_garage_lights_when_garage_door_opens_while_it_s_dark:
       state: "on"
@@ -125,8 +119,6 @@
     automation.notify_when_time_for_wolfie_to_run:
       state: "off"
     automation.notify_when_wolfie_needs_a_new_consumable:
-      state: "off"
-    automation.turn_master_bedroom_salt_lamp_on_at_sunset:
       state: "off"
     input_boolean.notify_of_new_versions_automation:
       state: "off"
@@ -267,10 +259,6 @@
     automation.notify_when_time_for_wolfie_to_run:
       state: "off"
     automation.notify_when_wolfie_needs_a_new_consumable:
-      state: "off"
-    automation.turn_certain_living_room_lights_on_at_sunset:
-      state: "off"
-    automation.turn_master_bedroom_salt_lamp_on_at_sunset:
       state: "off"
     input_boolean.notify_of_new_versions_automation:
       state: "off"
