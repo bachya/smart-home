@@ -297,54 +297,6 @@ sensor:
     scan_interval:
       minutes: 5
 
-  - platform: rest
-    name: Healthchecks.io Status
-    resource: !secret healthchecksio_status_url
-    scan_interval:
-      minutes: 1
-    json_attributes:
-      - status
-      - total
-      - grace
-      - down
-
-  - platform: template
-    sensors:
-      healthchecks_down_checks:
-        friendly_name: Healthchecks.io Down Checks
-        value_template: >
-          {{ state_attr("sensor.healthchecks_io_status", "down") }}
-        unit_of_measurement: checks
-      healthchecks_grace_checks:
-        friendly_name: Healthchecks.io Grace Checks
-        value_template: >
-          {{ state_attr("sensor.healthchecks_io_status", "grace") }}
-        unit_of_measurement: checks
-      healthchecks_overall_status:
-        friendly_name: Healthchecks.io Overall Status
-        value_template: >
-          {{ state_attr("sensor.healthchecks_io_status", "status") }}
-        icon_template: >
-          {% if is_state("sensor.healthchecks_overall_status", "up") %}
-            mdi:check-circle
-          {% else %}
-            mdi:alert-circle
-          {% endif %}
-      healthchecks_total_checks:
-        friendly_name: Healthchecks.io Total Checks
-        value_template: >
-          {{ state_attr("sensor.healthchecks_io_status", "total") }}
-        unit_of_measurement: checks
-      healthchecks_up_checks:
-        friendly_name: Healthchecks.io Up Checks
-        value_template: >
-          {{
-            states("sensor.healthchecks_total_checks")|int -
-            states("sensor.healthchecks_grace_checks")|int -
-            states("sensor.healthchecks_down_checks")|int
-          }}
-        unit_of_measurement: checks
-
   - platform: template
     sensors:
       aeotec_nanomote_quad_aaron_bedside_battery:
