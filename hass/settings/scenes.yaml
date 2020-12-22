@@ -66,6 +66,8 @@
       state: "on"
     automation.reset_automations_when_no_mode_is_active:
       state: "on"
+    automation.simulate_someone_being_home:
+      state: "off"
     automation.turn_certain_living_room_lights_on_at_sunset:
       state: "on"
     automation.turn_dyson_higher_when_it_s_hot_in_the_bedroom:
@@ -144,6 +146,8 @@
       state: "off"
     automation.cycle_master_toilet_fan_during_the_day:
       state: "off"
+    automation.simulate_someone_being_home:
+      state: "on"
     cover.garage_door:
       state: closed
     lock.123_main_street_patio_door:
