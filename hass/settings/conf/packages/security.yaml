@@ -274,6 +274,19 @@ automation:
               switch.master_bedroom_salt_lamp
             {% endif %}
 
+  - alias: "Turn off simulated TVs when we get home"
+    trigger:
+      platform: state
+      entity_id: automation.simulate_someone_being_home
+      to: "off"
+    action:
+      - service: remote.turn_off
+        data:
+          entity_id: remote.basement_tv
+      - service: remote.turn_off
+        data:
+          entity_id: remote.living_room_tv
+
 binary_sensor:
   - platform: template
     sensors:
