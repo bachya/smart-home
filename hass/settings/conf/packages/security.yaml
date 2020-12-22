@@ -259,36 +259,6 @@ automation:
               switch.master_bedroom_salt_lamp
             {% endif %}
 
-  - alias: "Turn lights on when doorbell detects person at nighttime"
-    trigger:
-      - platform: device
-        device_id: !secret nest_hello_device_id
-        domain: nest
-        type: camera_person
-      - platform: device
-        device_id: !secret nest_hello_device_id
-        domain: nest
-        type: doorbell_chime
-    condition:
-      condition: time
-      after: "23:00:00"
-      before: "04:00:00"
-    action:
-      - service: switch.turn_on
-        data:
-          entity_id: switch.front_patio_light_switch
-      - service: switch.turn_on
-        data:
-          entity_id: group.living_room_lights
-      - delay:
-          minutes: 5
-      - service: switch.turn_off
-        data:
-          entity_id: switch.front_patio_light_switch
-      - service: switch.turn_on
-        data:
-          entity_id: group.living_room_lights
-
 binary_sensor:
   - platform: template
     sensors:
