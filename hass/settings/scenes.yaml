@@ -274,14 +274,3 @@
       state: disarmed
     lock.front_door_lock_locked:
       state: unlocked
-
-- id: watch_plex
-  name: Watch Plex
-  entities:
-    switch.media_center:
-      state: "on"
-    remote.living_room_tv:
-      state: "on"
-    media_player.living_room_roku:
-      state: "on"
-      source: 13535
