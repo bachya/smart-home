@@ -7,9 +7,9 @@ blueprint:
   input:
     aeotec_nanomote:
       name: Aeotec NanoMote Quad
-      description: "List of available NanoMote Quad remotes to configure.
-      This list is only a reference. At this time, it is not possible
-      to obtain the node's id using the device selector."
+      description: List of available NanoMote Quad remotes to configure.
+        This list is only a reference. At this time, it is not possible
+        to obtain the node's id using the device selector.
       selector:
         device:
           integration: ozw
@@ -17,9 +17,9 @@ blueprint:
           model: ZWA003 NanoMote Quad
     ozw_node_id:
       name: Node ID
-      description: "Enter the node id for an available NanoMote Quad you wish
-      to configure. For now, this field is required. At this time, it is not
-      possible to obtain the node's id when using the device selector."
+      description: Enter the node id for an available NanoMote Quad you wish
+        to configure. For now, this field is required. At this time, it is not
+        possible to obtain the node's id when using the device selector.
     button_1:
       name: Press Button One
       description: Action to run on button press.
