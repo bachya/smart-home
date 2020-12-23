@@ -16,6 +16,15 @@ automation:
           - service: switch.turn_on
             entity_id: switch.office_salt_lamp_switch
 
+  - alias: "Turn office salt lamp off at 10pm"
+    trigger:
+      platform: time
+      at: "20:00:00"
+    action:
+      service: switch.turn_off
+      data:
+        entity_id: switch.office_salt_lamp
+
   - alias: "Turn office salt lamp on at sunset"
     trigger:
       platform: event
