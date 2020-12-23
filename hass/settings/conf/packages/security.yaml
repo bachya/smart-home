@@ -193,10 +193,19 @@ automation:
               value_template: >
                 {{ trigger.to_state.state == "1" }}
           sequence:
-            service: remote.turn_on
-            data:
-              entity_id: remote.basement_tv
-              activity_id: 37549198
+            - service: remote.turn_on
+              data:
+                entity_id: remote.basement_tv
+            - delay: "00:00:15"
+            - service: media_player.select_source
+              data:
+                entity_id: media_player.basement_roku
+                source: Locast.org
+            - delay: "00:00:10"
+            - service: remote.send_command
+              data:
+                entity_id: remote.basement_roku
+                command: select
         - conditions:
             - condition: template
               value_template: >
