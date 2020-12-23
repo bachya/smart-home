@@ -11,6 +11,12 @@ automation:
     action:
       choose:
         - conditions:
+            - condition: template
+              value_template: '{{ trigger.platform == "event" }}'
+          sequence:
+            - service: switch.turn_on
+              entity_id: switch.backyard_lights_switch
+        - conditions:
             - condition: state
               entity_id: binary_sensor.workday_tomorrow
               state: "on"
@@ -28,9 +34,6 @@ automation:
           sequence:
             - service: switch.turn_off
               entity_id: switch.backyard_lights_switch
-      default:
-        - service: switch.turn_on
-          entity_id: switch.backyard_lights_switch
 
   - alias: "Fire local event for weather station-detected sunset"
     trigger:
