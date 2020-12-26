@@ -172,11 +172,17 @@ automation:
   - alias: "Simulate someone being home"
     trigger:
       - platform: state
+        entity_id: sensor.replay_bar_cart_leds
+      - platform: state
         entity_id: sensor.replay_basement_lights
       - platform: state
         entity_id: sensor.replay_basement_tv
       - platform: state
-        entity_id: sensor.replay_living_room_lights
+        entity_id: sensor.replay_christmas_tree
+      - platform: state
+        entity_id: sensor.replay_reading_lamp
+      - platform: state
+        entity_id: sensor.replay_sofa_lamp
       - platform: state
         entity_id: sensor.replay_living_room_tv
       - platform: state
@@ -267,10 +273,12 @@ automation:
           {% endif %}
         data:
           entity_id: >
-            {% if trigger.entity_id == "sensor.replay_basement_lights" %}
+            {% if trigger.entity_id == "sensor.replay_bar_cart_leds" %}
+              switch.bar_cart_leds
+            {% elif trigger.entity_id == "sensor.replay_basement_lights" %}
               switch.basement_lights
-            {% elif trigger.entity_id == "sensor.replay_living_room_lights" %}
-              group.living_room_lights
+            {% elif trigger.entity_id == "sensor.replay_christmas_tree" %}
+              switch.christmas_tree
             {%
               elif trigger.entity_id
               == "sensor.replay_master_bedroom_patio_light"
@@ -281,6 +289,10 @@ automation:
               == "sensor.replay_master_bedroom_salt_lamp"
             %}
               switch.master_bedroom_salt_lamp
+            {% elif trigger.entity_id == "sensor.replay_reading_lamp" %}
+              switch.reading_lamp
+            {% elif trigger.entity_id == "sensor.replay_sofa_lamp" %}
+              switch.sofa_lamp
             {% endif %}
 
   - alias: "Turn off simulated TVs when we get home"
@@ -331,6 +343,15 @@ group:
 
 sensor:
   - platform: history_stats
+    name: "Replay Bar Cart LEDs"
+    entity_id: switch.bar_cart_leds
+    state: "on"
+    type: count
+    start: >
+      {{ as_timestamp(now()) - (7*86400) }}
+    duration: 00:00:30
+
+  - platform: history_stats
     name: "Replay Basement Lights"
     entity_id: switch.basement_lights
     state: "on"
@@ -349,8 +370,8 @@ sensor:
     duration: 00:00:30
 
   - platform: history_stats
-    name: "Replay Living Room Lights"
-    entity_id: switch.reading_lamp
+    name: "Replay Christmas Tree"
+    entity_id: switch.christmas_tree
     state: "on"
     type: count
     start: >
@@ -378,6 +399,24 @@ sensor:
   - platform: history_stats
     name: "Replay Master Bedroom Salt Lamp"
     entity_id: switch.master_bedroom_salt_lamp
+    state: "on"
+    type: count
+    start: >
+      {{ as_timestamp(now()) - (7*86400) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Reading Lamp"
+    entity_id: switch.reading_lamp
+    state: "on"
+    type: count
+    start: >
+      {{ as_timestamp(now()) - (7*86400) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Sofa Lamp"
+    entity_id: switch.sofa_lamp
     state: "on"
     type: count
     start: >
