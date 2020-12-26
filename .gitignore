@@ -1,6 +1,7 @@
 *.pyc
 .DS_Store
 Pipfile.lock
+backup/
 nest.conf
 secrets.yaml
 ssh_keys
