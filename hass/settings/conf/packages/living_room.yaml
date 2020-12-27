@@ -98,7 +98,7 @@ remote:
 sensor:
   - platform: filter
     name: "Filtered Fiddle Leaf Fig Brightness (%)"
-    entity_id: sensor.fiddle_leaf_fig_light_intensity_log
+    entity_id: sensor.fiddle_leaf_fig_brightness
     filters:
       - filter: range
         upper_bound: 100
@@ -111,45 +111,13 @@ sensor:
     icon: "mdi:water-percent"
     force_update: true
 
-  - platform: mqtt
-    name: Fiddle Leaf Fig Light Intensity
-    state_topic: "miflora/FiddleLeafFig"
-    value_template: "{{ value_json.light }}"
-    device_class: illuminance
-    unit_of_measurement: "lx"
-    force_update: true
-
-  - platform: mqtt
-    name: Fiddle Leaf Fig Temperature
-    state_topic: "miflora/FiddleLeafFig"
-    value_template: "{{ value_json.temperature }}"
-    device_class: temperature
-    unit_of_measurement: "°C"
-    force_update: true
-
-  - platform: mqtt
-    name: Fiddle Leaf Fig Conductivity
-    state_topic: "miflora/FiddleLeafFig"
-    value_template: "{{ value_json.conductivity }}"
-    unit_of_measurement: "µS/cm"
-    icon: "mdi:test-tube"
-    force_update: true
-
-  - platform: mqtt
-    name: Fiddle Leaf Fig Battery
-    state_topic: "miflora/FiddleLeafFig"
-    value_template: "{{ value_json.battery }}"
-    device_class: battery
-    unit_of_measurement: "%"
-    force_update: true
-
   - platform: template
     sensors:
-      fiddle_leaf_fig_light_intensity_log:
+      fiddle_leaf_fig_brightness:
         friendly_name: "Living Room: Brightness (Perception)"
         value_template: >
           {{ (
-            states("sensor.fiddle_leaf_fig_light_intensity") | int | log(10)/5
+            states("sensor.fiddle_leaf_fig_brightness") | int | log(10)/5
           ) | round(2) * 100 }}
         unit_of_measurement: "%"
         device_class: illuminance
