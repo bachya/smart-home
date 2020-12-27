@@ -1,0 +1,8 @@
+---
+substitutions:
+  device_friendly_name: ESP32 Plant Monitor 1
+  device_name: esp32_plant_monitor1
+  plant_1_friendly_name: Fiddle Leaf Fig
+  plant_1_mac_address: "C4:7C:8D:63:F2:93"
+
+<<: !include .esp32_plant_monitor.yaml
