@@ -248,5 +248,5 @@ sensor:
 
 vacuum:
   - platform: xiaomi_miio
-    host: wolfie.myserver.com
+    host: 172.16.11.14
     token: !secret xiaomi_vacuum_token
