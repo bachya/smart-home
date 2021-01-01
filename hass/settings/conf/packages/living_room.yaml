@@ -89,12 +89,6 @@ group:
       - switch.reading_lamp
     all: true
 
-remote:
-  - platform: harmony
-    name: Living Room TV
-    host: harmony-hub-1.myserver.com
-    activity: 22580039
-
 sensor:
   - platform: filter
     name: "Filtered Fiddle Leaf Fig Brightness (%)"

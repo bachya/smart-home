@@ -30,12 +30,6 @@ binary_sensor:
             is_state("binary_sensor.guardian_b4e62d98118d_leak_detected", "on")
           }}
 
-remote:
-  - platform: harmony
-    name: Basement TV
-    host: harmony-hub-2.phil.iot
-    activity: 37549209
-
 sensor:
   - platform: min_max
     name: Average Basement Temperature
