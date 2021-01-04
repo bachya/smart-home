@@ -186,6 +186,13 @@ services:
     devices:
       - /dev/sda
     image: "analogj/scrutiny:v${SCRUTINY_VERSION}-omnibus"
+    labels:
+      traefik.enable: true
+      traefik.http.routers.hass.middlewares: security
+      traefik.http.routers.hass.entrypoints: websecure
+      traefik.http.routers.hass.rule: "Host(`${TRAEFIK_HOST_SCRUTINY}`)"
+      traefik.http.routers.hass.tls: true
+      traefik.http.services.hass.loadbalancer.server.port: 8080
     ports:
       - "8081:8080"
     volumes:
