@@ -179,6 +179,21 @@ services:
     image: mazzolino/restic:latest
     restart: always
 
+  scrutiny:
+    cap_add:
+      - SYS_RAWIO
+    container_name: scrutiny
+    devices:
+      - /dev/sda
+    image: "analogj/scrutiny:v${SCRUTINY_VERSION}-omnibus"
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./scrutiny/settings/collector.yaml:/scrutiny/config/collector.yaml:ro
+      - ./scrutiny/settings/scrutiny.yaml:/scrutiny/config/scrutiny.yaml:ro
+      - /run/udev:/run/udev:ro
+      - scrutiny-config:/scrutiny/config
+
   traefik:
     command:
       - "--accesslog.filepath=/var/log/access.log"
@@ -312,5 +327,6 @@ volumes:
   letsencrypt-data:
   openzwave-config:
   portainer-config:
+  scrutiny-config:
   vernemq-data:
   zigbee2mqtt-config:
