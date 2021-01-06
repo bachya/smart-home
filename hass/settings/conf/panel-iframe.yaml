@@ -15,7 +15,3 @@ traefik:
   title: Traefik
   url: !secret panel_url_traefik
   icon: mdi:arrow-decision
-zigbee2mqtt:
-  title: Zigbee2MQTT
-  url: !secret panel_url_zibee2mqtt
-  icon: mdi:zigbee

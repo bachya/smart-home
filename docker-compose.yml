@@ -258,8 +258,6 @@ services:
       DOCKER_VERNEMQ_USER_RTLAMR: "${VERNEMQ_PASSWORD_RTLAMR}"
       DOCKER_VERNEMQ_USER_SONOFF: "${VERNEMQ_PASSWORD_SONOFF}"
       DOCKER_VERNEMQ_USER_WYZE: "${VERNEMQ_PASSWORD_WYZE}"
-      DOCKER_VERNEMQ_USER_ZIGBEE2MQTTASSISTANT: >
-        ${VERNEMQ_PASSWORD_Z2M_ASSISTANT}
       DOCKER_VERNEMQ_PLUGINS.vmq_bridge: "on"
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.cafile: >
         /etc/ssl/certs/DST_Root_CA_X3.pem
@@ -284,41 +282,6 @@ services:
       - /usr/share/ca-certificates:/usr/share/ca-certificates:ro
       - vernemq-data:/vernemq/data
 
-  zigbee2mqtt:
-    container_name: zigbee2mqtt
-    depends_on:
-      - vernemq
-    devices:
-      - "/dev/zigbee:/dev/zigbee"
-    environment:
-      TZ: America/Denver
-    image: "koenkk/zigbee2mqtt:${Z2M_VERSION}"
-    restart: always
-    volumes:
-      - ./zigbee2mqtt/settings/configuration.yaml:/app/data/configuration.yaml
-      - zigbee2mqtt-config:/app/data
-
-  zigbee2mqttassistant:
-    container_name: zigbee2mqttassistant
-    depends_on:
-      - traefik
-      - vernemq
-    environment:
-      Z2MA_SETTINGS__MQTTSERVER: vernemq
-      Z2MA_SETTINGS__MQTTUSERNAME: "${Z2M_ASSISTANT_MQTT_USERNAME}"
-      Z2MA_SETTINGS__MQTTPASSWORD: "${Z2M_ASSISTANT_MQTT_PASSWORD}"
-    image: "carldebilly/zigbee2mqttassistant:${Z2M_ASSISTANT_VERSION}"
-    labels:
-      traefik.enable: true
-      traefik.http.middlewares.z2m-assistant.headers.frameDeny: false
-      traefik.http.routers.z2m-assistant.middlewares: security
-      traefik.http.routers.z2m-assistant.entrypoints: websecure
-      traefik.http.routers.z2m-assistant.rule: >
-        Host(`${TRAEFIK_HOST_Z2M_ASSISTANT}`)
-      traefik.http.routers.z2m-assistant.tls: true
-      traefik.http.services.z2m-assistant.loadbalancer.server.port: 80
-    restart: always
-
 volumes:
 
   fail2ban-data:
@@ -329,4 +292,3 @@ volumes:
   portainer-config:
   scrutiny-config:
   vernemq-data:
-  zigbee2mqtt-config:
