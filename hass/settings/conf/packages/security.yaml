@@ -1,5 +1,20 @@
 ---
 alert:
+  alarm_disarmed_when_in_bed:
+    name: 🚨 The alarm is disarmed; should it be?
+    done_message: ✅ The alarm has been armed.
+    title: Alarm Disarmed In Bed
+    entity_id: binary_sensor.alarm_disarmed_when_in_bed
+    state: "on"
+    repeat:
+      - 5
+    skip_first: true
+    notifiers:
+      - phones
+    data:
+      push:
+        category: "alarm"
+
   alarm_triggered:
     name: 🚨 The alarm has been triggered.
     done_message: ✅ The alarm has been canceled.
@@ -292,6 +307,13 @@ automation:
 binary_sensor:
   - platform: template
     sensors:
+      alarm_disarmed_when_in_bed:
+        friendly_name: Alarm Disarmed When In Bed
+        value_template: >
+          {{
+            is_state("binary_sensor.in_bed", "on")
+            and is_state("alarm_control_panel.8673_e_55th_avenue", "disarmed")
+          }}
       house_open_and_insecure:
         value_template: >
           {{
