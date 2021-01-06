@@ -100,7 +100,7 @@ automation:
     action:
       - service: notify.slack
         data:
-          message: "🔒 Locking up the house"
+          message: "🔒🌔 Locking up the house"
       - scene: scene.good_night
 
   - alias: "Automatically lock up when we depart"
@@ -111,7 +111,7 @@ automation:
     action:
       - service: notify.slack
         data:
-          message: "🔒 Locking up the house"
+          message: "🔒🚗 Locking up the house"
       - scene: scene.depart_home
 
   - alias: "Forward SimpliSafe events and notifications to Slack"
