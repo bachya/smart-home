@@ -108,6 +108,33 @@ automation:
       data:
         entity_id: switch.master_bedroom_salt_lamp
 
+binary_sensor:
+  - platform: bayesian
+    name: In Bed
+    prior: 0.375
+    probability_threshold: 0.90
+    observations:
+      - platform: state
+        entity_id: input_boolean.blackout_mode
+        to_state: "on"
+        prob_given_true: 1.0
+        prob_given_false: 0.167
+      - platform: state
+        entity_id: sensor.aarons_iphone_battery_state
+        to_state: Charging
+        prob_given_true: 0.78
+        prob_given_false: 0.033
+      - platform: state
+        entity_id: sensor.brittany_bachs_iphone_battery_state
+        to_state: Charging
+        prob_given_true: 0.83
+        prob_given_false: 0.167
+      - platform: state
+        entity_id: switch.master_bedroom_salt_lamp
+        to_state: "on"
+        prob_given_true: 0.28
+        prob_given_false: 0.30
+
 group:
   bathroom_fans:
     entities:
