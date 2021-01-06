@@ -28,25 +28,6 @@ alert:
     notifiers:
       - everyone
     data:
-      blocks:
-        - type: section
-          text:
-            type: plain_text
-            text: 🚗 The garage has been left open.
-        - type: actions
-          elements:
-            - type: button
-              text:
-                type: plain_text
-                text: Close Garage
-              action_id: GARAGE_CLOSE_DOOR
-            - type: button
-              text:
-                type: plain_text
-                text: Ignore
-              action_id: GARAGE_IGNORE
-      push:
-        category: GARAGE
       sound:
         name: default
         critical: 1
@@ -65,8 +46,6 @@ alert:
     notifiers:
       - everyone
     data:
-      push:
-        category: SECURITY
       sound:
         name: default
         critical: 1
