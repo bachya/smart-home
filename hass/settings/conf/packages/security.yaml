@@ -1,8 +1,8 @@
 ---
 alert:
   alarm_triggered:
-    name: "🚨 The alarm has been triggered."
-    done_message: "✅ The alarm has been canceled."
+    name: 🚨 The alarm has been triggered.
+    done_message: ✅ The alarm has been canceled.
     title: House Alert
     entity_id: alarm_control_panel.123_main_street
     state: triggered
