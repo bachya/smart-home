@@ -68,6 +68,26 @@ alert:
         volume: 0.3
 
 automation:
+  - alias: "Manage Alarm Via iOS Notifications"
+    trigger:
+      - platform: event
+        event_type: ios.notification_action_fired
+        event_data:
+          categoryName: alarm
+    action:
+      choose:
+        - conditions:
+            condition: template
+            value_template: >
+              {{ trigger.event.data.actionName == "ARM_HOME" }}
+          sequence:
+            # service: alarm_control_panel.alarm_arm_home
+            # entity_id: alarm_control_panel.8673_e_55th_avenue
+            service: persistent_notification.create
+            data:
+              title: TEST
+              message: Test
+
   - alias: "Automatically lock up at night"
     trigger:
       platform: time
