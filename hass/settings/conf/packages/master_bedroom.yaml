@@ -131,9 +131,14 @@ binary_sensor:
         prob_given_false: 0.167
       - platform: state
         entity_id: switch.master_bedroom_salt_lamp
-        to_state: "on"
-        prob_given_true: 0.28
-        prob_given_false: 0.30
+        to_state: "off"
+        prob_given_true: 0.83
+        prob_given_false: 0.333
+      - platform: state
+        entity_id: switch.master_patio_light_switch
+        to_state: "off"
+        prob_given_true: 0.89
+        prob_given_false: 0.367
 
 group:
   bathroom_fans:
