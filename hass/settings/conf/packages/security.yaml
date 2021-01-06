@@ -81,26 +81,8 @@ automation:
             value_template: >
               {{ trigger.event.data.actionName == "ARM_HOME" }}
           sequence:
-            # service: alarm_control_panel.alarm_arm_home
-            # entity_id: alarm_control_panel.8673_e_55th_avenue
-            service: persistent_notification.create
-            data:
-              title: TEST
-              message: Test
-
-  - alias: "Automatically lock up at night"
-    trigger:
-      platform: time
-      at: "00:00:00"
-    condition:
-      condition: state
-      entity_id: binary_sensore.secure_status
-      state: "off"
-    action:
-      - service: notify.slack
-        data:
-          message: "🔒🌔 Locking up the house"
-      - scene: scene.good_night
+            service: alarm_control_panel.alarm_arm_home
+            entity_id: alarm_control_panel.8673_e_55th_avenue
 
   - alias: "Automatically lock up when we depart"
     trigger:
