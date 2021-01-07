@@ -11,6 +11,8 @@ alert:
     notifiers:
       - everyone
     data:
+      push:
+        category: SECURITY
       sound:
         name: default
         critical: 1
@@ -46,6 +48,8 @@ alert:
     notifiers:
       - everyone
     data:
+      push:
+        category: SECURITY
       sound:
         name: default
         critical: 1
@@ -64,6 +68,10 @@ alert:
     data:
       push:
         category: SECURITY
+      sound:
+        name: default
+        critical: 1
+        volume: 0.3
 
   smoke_detected:
     name: "🚨 Smoke/CO has been detected."
