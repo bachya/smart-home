@@ -112,7 +112,7 @@ binary_sensor:
   - platform: bayesian
     name: In Bed
     prior: 0.375
-    probability_threshold: 0.90
+    probability_threshold: 0.83
     observations:
       - platform: state
         entity_id: input_boolean.blackout_mode
