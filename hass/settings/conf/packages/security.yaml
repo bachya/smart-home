@@ -1,20 +1,5 @@
 ---
 alert:
-  alarm_disarmed_when_in_bed:
-    name: 🚨 The alarm is disarmed; should it be?
-    done_message: ✅ The alarm has been armed.
-    title: Alarm Disarmed In Bed
-    entity_id: binary_sensor.alarm_disarmed_when_in_bed
-    state: "on"
-    repeat:
-      - 5
-    skip_first: true
-    notifiers:
-      - phones
-    data:
-      push:
-        category: "alarm"
-
   alarm_triggered:
     name: 🚨 The alarm has been triggered.
     done_message: ✅ The alarm has been canceled.
@@ -66,6 +51,20 @@ alert:
         critical: 1
         volume: 0.3
 
+  house_insecure_when_in_bed:
+    name: 🚨 In bed and the bouse isn't secure!
+    done_message: ✅ The house is now secure.
+    title: House Insecure In Bed
+    entity_id: binary_sensor.house_insecure_when_in_bed
+    state: "on"
+    repeat:
+      - 5
+    notifiers:
+      - phones
+    data:
+      push:
+        category: Security
+
   smoke_detected:
     name: "🚨 Smoke/CO has been detected."
     done_message: "✅ The smoke/CO has cleared."
@@ -83,22 +82,6 @@ alert:
         volume: 0.3
 
 automation:
-  - alias: "Manage Alarm Via iOS Notifications"
-    trigger:
-      - platform: event
-        event_type: ios.notification_action_fired
-        event_data:
-          categoryName: alarm
-    action:
-      choose:
-        - conditions:
-            condition: template
-            value_template: >
-              {{ trigger.event.data.actionName == "ARM_HOME" }}
-          sequence:
-            service: alarm_control_panel.alarm_arm_home
-            entity_id: alarm_control_panel.8673_e_55th_avenue
-
   - alias: "Automatically lock up when we depart"
     trigger:
       platform: state
@@ -127,6 +110,27 @@ automation:
           {% endif %}
 
           📥 SimpliSafe Message: {{ message }}
+
+  - alias: "Manage Security via iOS Notifications"
+    trigger:
+      - platform: event
+        event_type: ios.notification_action_fired
+        event_data:
+          categoryName: Security
+    action:
+      choose:
+        - conditions:
+            condition: template
+            value_template: >
+              {{ trigger.event.data.actionName == "DEPART_HOME" }}
+          sequence:
+            scene: scene.depart_home
+        - conditions:
+            condition: template
+            value_template: >
+              {{ trigger.event.data.actionName == "GOOD_NIGHT" }}
+          sequence:
+            scene: scene.good_night
 
   - alias: "Manage SimpliSafe sounds during blackout"
     trigger:
@@ -307,12 +311,12 @@ automation:
 binary_sensor:
   - platform: template
     sensors:
-      alarm_disarmed_when_in_bed:
-        friendly_name: Alarm Disarmed When In Bed
+      house_insecure_when_in_bed:
+        friendly_name: House Insecure When In Bed
         value_template: >
           {{
             is_state("binary_sensor.in_bed", "on")
-            and is_state("alarm_control_panel.8673_e_55th_avenue", "disarmed")
+            and is_state("binary_sensor.secure_status", "on")
           }}
       house_open_and_insecure:
         value_template: >
