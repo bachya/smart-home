@@ -63,7 +63,7 @@ alert:
       - phones
     data:
       push:
-        category: Security
+        category: SECURITY
 
   smoke_detected:
     name: "🚨 Smoke/CO has been detected."
@@ -116,7 +116,7 @@ automation:
       - platform: event
         event_type: ios.notification_action_fired
         event_data:
-          categoryName: Security
+          categoryName: SECURITY
     action:
       choose:
         - conditions:
