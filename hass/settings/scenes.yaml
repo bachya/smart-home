@@ -22,7 +22,7 @@
       state: "on"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
       state: "on"
-    automation.automatically_lock_up_when_we_depart:
+    automation.automatic_lockup:
       state: "on"
     automation.backyard_light_switch_via_kitchen_patio_light_off:
       state: "on"
@@ -214,7 +214,7 @@
       state: "off"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
       state: "off"
-    automation.automatically_lock_up_when_we_depart:
+    automation.automatic_lockup:
       state: "off"
     automation.cycle_master_toilet_fan_during_the_day:
       state: "off"

@@ -90,16 +90,39 @@ alert:
         volume: 0.3
 
 automation:
-  - alias: "Automatically lock up when we depart"
+  - alias: "Automatic Lockup"
     trigger:
-      platform: state
-      entity_id: sensor.proximity_zone
-      from: Home
+      # Everyone leaves home:
+      - platform: state
+        entity_id: sensor.proximity_zone
+        from: Home
+      # The house is insecure for 30 minutes while we're in bed:
+      - platform: state
+        entity_id: alert.house_insecure_when_in_bed
+        to: "on"
+        for:
+          minutes: 30
+    condition:
+      condition: state
+      entity_id: binary_sensor.secure_status
+      state: "on"
     action:
-      - service: notify.slack
+      - service: notify.everyone
         data:
-          message: "🔒🚗 Locking up the house"
-      - scene: scene.depart_home
+          message: "🔒 Locking up the house"
+      - choose:
+          - conditions:
+            condition: template
+            value_template: >
+              {{ trigger.entity_id == "sensor.proximity_zone" }}
+            sequence:
+              scene: scene.depart_home
+          - conditions:
+            condition: template
+            value_template: >
+              {{ trigger.entity_id == "alert.house_insecure_when_in_bed" }}
+            sequence:
+              scene: scene.good_night
 
   - alias: "Forward SimpliSafe events and notifications to Slack"
     trigger:
