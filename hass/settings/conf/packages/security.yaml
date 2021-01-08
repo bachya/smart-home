@@ -393,7 +393,6 @@ binary_sensor:
             )
             and is_state("cover.garage_door", "closed")
           }}
-        device_class: lock
 
 group:
   smoke_detectors:
