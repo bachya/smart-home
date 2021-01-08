@@ -391,9 +391,6 @@ binary_sensor:
                 and not is_state("sensor.proximity_zone", "Home")
               )
             )
-            # and is_state(
-            #   "alarm_control_panel.123_main_street", "disarmed"
-            # )
             and is_state("cover.garage_door", "closed")
           }}
         device_class: lock
