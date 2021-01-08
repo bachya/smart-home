@@ -19,7 +19,7 @@ automation:
   - alias: "Turn office salt lamp off at 10pm"
     trigger:
       platform: time
-      at: "20:00:00"
+      at: "22:00:00"
     action:
       service: switch.turn_off
       data:
