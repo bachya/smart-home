@@ -162,6 +162,17 @@ automation:
               {{ trigger.event.data.actionName == "GOOD_NIGHT" }}
           sequence:
             scene: scene.good_night
+        - conditions:
+            condition: template
+            value_template: >
+              {{ trigger.event.data.actionName == "IGNORE" }}
+          sequence:
+            - service: automation.turn_off
+              entity_id: automation.automatic_lockup
+            - service: alert.turn_off
+              entity_id: alert.house_empty_and_insecure
+            - service: alert.turn_off
+              entity_id: alert.house_insecure_when_in_bed
 
   - alias: "Manage SimpliSafe sounds during blackout"
     trigger:
