@@ -112,15 +112,15 @@ automation:
           message: "🔒 Locking up the house"
       - choose:
           - conditions:
-            condition: template
-            value_template: >
-              {{ trigger.entity_id == "sensor.proximity_zone" }}
+              condition: template
+              value_template: >
+                {{ trigger.entity_id == "sensor.proximity_zone" }}
             sequence:
               scene: scene.depart_home
           - conditions:
-            condition: template
-            value_template: >
-              {{ trigger.entity_id == "alert.house_insecure_when_in_bed" }}
+              condition: template
+              value_template: >
+                {{ trigger.entity_id == "alert.house_insecure_when_in_bed" }}
             sequence:
               scene: scene.good_night
 
