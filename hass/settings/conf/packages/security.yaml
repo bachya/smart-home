@@ -36,7 +36,14 @@ alert:
         volume: 0.3
 
   house_empty_and_insecure:
-    name: "🚨 The house isn't secure and no one is home!"
+    name: |
+      🚨 No one is home and the following devices aren't secure:
+
+      {% for device in expand("security_devices") -%}
+        {% if device.state in ["disarmed", "open", "unlocked"] %}
+          {{ device.friendly_name }}
+        {% endif %}
+      {% endfor %}
     done_message: "✅ The house is now secure."
     title: Security Alert
     entity_id: binary_sensor.house_open_and_insecure
@@ -56,7 +63,14 @@ alert:
         volume: 0.3
 
   house_insecure_when_in_bed:
-    name: 🚨 In bed and the house isn't secure!
+    name: |
+      🚨 In bed and the following devices aren't secure:
+
+      {% for device in expand("security_devices") -%}
+        {% if device.state in ["disarmed", "open", "unlocked"] %}
+          {{ device.friendly_name }}
+        {% endif %}
+      {% endfor %}
     done_message: ✅ The house is now secure.
     title: Security Alert
     entity_id: binary_sensor.house_insecure_when_in_bed
