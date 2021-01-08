@@ -395,6 +395,13 @@ binary_sensor:
           }}
 
 group:
+  security_devices:
+    entities:
+      - alarm_control_panel.8673_e_55th_avenue
+      - cover.garage_door
+      - lock.8673_e_55th_avenue_patio_door
+      - lock.front_door_lock_locked
+      - lock.garage_fire_door_lock_locked
   smoke_detectors:
     entities:
       - binary_sensor.basement_sensor_smoke_carbon_monoxide_detector
