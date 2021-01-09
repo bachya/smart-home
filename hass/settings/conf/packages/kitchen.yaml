@@ -2,7 +2,6 @@
 alert:
   dishwasher_clean:
     name: 🍽 The dishwasher is clean and can be emptied.
-    done_message: ✅ The dishwasher has been emptied.
     title: Dishwasher
     entity_id: input_select.dishwasher_status
     state: Clean
@@ -18,7 +17,6 @@ alert:
 
   kitchen_sink_leak:
     name: 💦 Leak detected under the kitchen sink!
-    done_message: ✅ The leak has been fixed.
     title: Kitchen Sink Leak
     entity_id: binary_sensor.kitchen_sink_sensor_leak_detector
     state: "on"

@@ -2,7 +2,6 @@
 alert:
   wolfie_cycle_complete:
     name: 🤖 Wolfie has finished cleaning and can be emptied.
-    done_message: ✅ Wolfie's bin has been emptied.
     title: Wolfie
     entity_id: input_select.wolfie_bin_status
     state: Full
