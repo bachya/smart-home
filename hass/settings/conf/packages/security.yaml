@@ -23,7 +23,9 @@ alert:
     entity_id: cover.garage_door
     state: open
     repeat:
+      - 5
       - 10
+      - 30
     skip_first: true
     notifiers:
       - everyone
@@ -73,6 +75,7 @@ alert:
     state: "on"
     repeat:
       - 5
+    skip_first: true
     notifiers:
       - phones
     data:
