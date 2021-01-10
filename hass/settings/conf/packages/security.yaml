@@ -61,31 +61,6 @@ alert:
         critical: 1
         volume: 0.3
 
-  house_insecure_when_in_bed:
-    name: |
-      🚨 In bed and the following devices aren't secure:
-
-      {% for device in expand("security_devices") -%}
-        {% if device.state in ["disarmed", "open", "unlocked"] %}
-          {{ device.friendly_name }}
-        {% endif %}
-      {% endfor %}
-    title: Security Alert
-    entity_id: binary_sensor.house_insecure_when_in_bed
-    state: "on"
-    repeat:
-      - 5
-    skip_first: true
-    notifiers:
-      - phones
-    data:
-      push:
-        category: SECURITY
-      sound:
-        name: default
-        critical: 1
-        volume: 0.3
-
   smoke_detected:
     name: "🚨 Smoke/CO has been detected."
     title: House Alert
@@ -110,14 +85,10 @@ automation:
         from: Home
       # The house is insecure for 30 minutes while we're in bed:
       - platform: state
-        entity_id: alert.house_insecure_when_in_bed
+        entity_id: binary_sensor.house_insecure_when_in_bed
         to: "on"
         for:
           minutes: 30
-    condition:
-      condition: state
-      entity_id: binary_sensor.secure_status
-      state: "off"
     action:
       - service: notify.everyone
         data:
@@ -132,7 +103,7 @@ automation:
           - conditions:
               condition: template
               value_template: >
-                {{ trigger.entity_id == "alert.house_insecure_when_in_bed" }}
+                {{ trigger.entity_id == "binary_sensor.house_insecure_when_in_bed" }}
             sequence:
               scene: scene.good_night
 
@@ -183,8 +154,6 @@ automation:
               entity_id: automation.automatic_lockup
             - service: alert.turn_off
               entity_id: alert.house_empty_and_insecure
-            - service: alert.turn_off
-              entity_id: alert.house_insecure_when_in_bed
 
   - alias: "Manage SimpliSafe sounds during blackout"
     trigger:
