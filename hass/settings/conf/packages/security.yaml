@@ -103,7 +103,7 @@ automation:
           - conditions:
               condition: template
               value_template: >
-                {{ trigger.entity_id 
+                {{ trigger.entity_id
                    == "binary_sensor.house_insecure_when_in_bed" }}
             sequence:
               scene: scene.good_night
