@@ -216,12 +216,12 @@ automation:
     action:
       choose:
         - conditions:
-            - condition: template
-              value_template: >
-                {{ trigger.entity_id == "sensor.replay_basement_tv" }}
-            - condition: template
-              value_template: >
-                {{ trigger.to_state.state == "1" }}
+            condition: template
+            value_template: >
+              {{
+                trigger.entity_id == "sensor.replay_basement_tv"
+                and trigger.to_state.state == "1"
+              }}
           sequence:
             - service: remote.turn_on
               data:
@@ -239,23 +239,23 @@ automation:
                 entity_id: media_player.basement_roku
                 command: select
         - conditions:
-            - condition: template
-              value_template: >
-                {{ trigger.entity_id == "sensor.replay_basement_tv" }}
-            - condition: template
-              value_template: >
-                {{ trigger.to_state.state == "0" }}
+            condition: template
+            value_template: >
+              {{
+                trigger.entity_id == "sensor.replay_basement_tv"
+                and trigger.to_state.state == "0"
+              }}
           sequence:
             service: remote.turn_off
             data:
               entity_id: remote.basement_tv
         - conditions:
-            - condition: template
-              value_template: >
-                {{ trigger.entity_id == "sensor.replay_living_room_tv" }}
-            - condition: template
-              value_template: >
-                {{ trigger.to_state.state == "1" }}
+            condition: template
+            value_template: >
+              {{
+                trigger.entity_id == "sensor.replay_living_room_tv"
+                and trigger.to_state.state == "1"
+              }}
           sequence:
             - service: remote.turn_on
               data:
@@ -277,12 +277,12 @@ automation:
                 entity_id: media_player.sonos_playbar
                 volume_level: 0.25
         - conditions:
-            - condition: template
-              value_template: >
-                {{ trigger.entity_id == "sensor.replay_living_room_tv" }}
-            - condition: template
-              value_template: >
-                {{ trigger.to_state.state == "0" }}
+            condition: template
+            value_template: >
+              {{
+                trigger.entity_id == "sensor.replay_living_room_tv"
+                and trigger.to_state.state == "0"
+              }}
           sequence:
             - service: media_player.select_source
               data:
