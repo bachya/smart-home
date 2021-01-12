@@ -226,15 +226,17 @@ automation:
             - service: remote.turn_on
               data:
                 entity_id: remote.basement_tv
-            - delay: "00:00:15"
-            - service: media_player.select_source
-              data:
-                entity_id: media_player.basement_roku
-                source: Locast.org
-            - delay: "00:00:10"
+            - wait_template: >
+                {{
+                  is_state_attr(
+                    "media_player.basement_roku",
+                    "app_name",
+                    "Locast.org"
+                  )
+                }}
             - service: remote.send_command
               data:
-                entity_id: remote.basement_roku
+                entity_id: media_player.basement_roku
                 command: select
         - conditions:
             - condition: template
@@ -257,16 +259,18 @@ automation:
           sequence:
             - service: remote.turn_on
               data:
-                entity_id: remote.living_room_tv
-            - delay: "00:00:15"
-            - service: media_player.select_source
-              data:
-                entity_id: media_player.living_room_roku
-                source: Locast.org
-            - delay: "00:00:10"
+                entity_id: remote.basement_tv
+            - wait_template: >
+                {{
+                  is_state_attr(
+                    "media_player.basement_roku",
+                    "app_name",
+                    "Locast.org"
+                  )
+                }}
             - service: remote.send_command
               data:
-                entity_id: remote.living_room_roku
+                entity_id: media_player.basement_roku
                 command: select
             - service: media_player.volume_set
               data:
