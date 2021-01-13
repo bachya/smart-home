@@ -111,29 +111,44 @@ automation:
 binary_sensor:
   - platform: bayesian
     name: In Bed
-    prior: 0.375
-    probability_threshold: 0.83
+    prior: 0.417
+    probability_threshold: 0.93
     observations:
       - platform: state
         entity_id: input_boolean.blackout_mode
         to_state: "on"
-        prob_given_true: 1.0
-        prob_given_false: 0.167
+        prob_given_true: 0.95
+        prob_given_false: 0.107
       - platform: state
-        entity_id: sensor.aarons_iphone_battery_state
-        to_state: Charging
-        prob_given_true: 0.89
-        prob_given_false: 0.25
+        entity_id: remote.living_room_tv
+        to_state: "off"
+        prob_given_true: 1.00
+        prob_given_false: 0.821
       - platform: state
         entity_id: switch.master_bedroom_salt_lamp
         to_state: "off"
-        prob_given_true: 0.94
-        prob_given_false: 0.667
+        prob_given_true: 0.85
+        prob_given_false: 0.75
       - platform: state
         entity_id: switch.master_patio_light_switch
         to_state: "off"
-        prob_given_true: 0.94
-        prob_given_false: 0.667
+        prob_given_true: 0.90
+        prob_given_false: 0.75
+      - platform: state
+        entity_id: switch.master_bathroom_fan_switch
+        to_state: "off"
+        prob_given_true: 1.00
+        prob_given_false: 0.911
+      - platform: state
+        entity_id: switch.master_toilet_fan_switch
+        to_state: "off"
+        prob_given_true: 0.98
+        prob_given_false: 0.804
+      - platform: state
+        entity_id: sensor.aarons_iphone_battery_state
+        to_state: Charging
+        prob_given_true: 0.90
+        prob_given_false: 0.036
 
 group:
   bathroom_fans:
