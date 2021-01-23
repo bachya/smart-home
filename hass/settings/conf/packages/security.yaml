@@ -37,13 +37,7 @@ alert:
 
   house_empty_and_insecure:
     name: |
-      🚨 No one is home and the following devices aren't secure:
-
-      {% for device in expand("security_devices") -%}
-        {% if device.state in ["disarmed", "open", "unlocked"] %}
-          {{ device.friendly_name }}
-        {% endif %}
-      {% endfor %}
+      🚨 No one is home and the following devices aren't secure.
     title: Security Alert
     entity_id: binary_sensor.house_open_and_insecure
     state: "on"
