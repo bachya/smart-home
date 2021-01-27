@@ -9,16 +9,19 @@ automation:
         timer_cancel_action:
           - service: rainmachine.stop_zone
             data:
+              device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
               zone_id: 2
         timer_expire_action:
           - service: rainmachine.stop_zone
             data:
+              device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
               zone_id: 2
         timer_start_action:
           - variables:
               input: !input input_number
           - service: rainmachine.start_zone
             data:
+              device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
               zone_id: 2
               zone_run_time: "{{ states(input) | int * 60 }}"
 
@@ -31,16 +34,19 @@ automation:
         timer_cancel_action:
           - service: rainmachine.stop_zone
             data:
+              device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
               zone_id: 1
         timer_expire_action:
           - service: rainmachine.stop_zone
             data:
+              device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
               zone_id: 1
         timer_start_action:
           - variables:
               input: !input input_number
           - service: rainmachine.start_zone
             data:
+              device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
               zone_id: 1
               zone_run_time: "{{ states(input) | int * 60 }}"
 
