@@ -37,12 +37,11 @@ alert:
 
   house_empty_and_insecure:
     name: |
-      🚨 No one is home and the following devices aren't secure.
+      🚨 No one is home and the house isn't secure.
     title: Security Alert
     entity_id: binary_sensor.house_open_and_insecure
     state: "on"
     repeat:
-      - 1
       - 5
     skip_first: true
     notifiers:
