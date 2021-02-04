@@ -18,7 +18,7 @@ automation:
     use_blueprint:
       path: bachya/zwave-double-tap.yaml
       input:
-        basic_command_sensor: sensor.master_bathroom_fan_basic
+        ge_switch: b96369a17ce6bff25aeba4d28439c9b7
         down_action:
           - service: switch.turn_off
             entity_id: switch.master_bathroom_fan_switch
@@ -64,7 +64,7 @@ automation:
     use_blueprint:
       path: bachya/zwave-double-tap.yaml
       input:
-        basic_command_sensor: sensor.master_toilet_fan_basic
+        ge_switch: d876b56cc182d2e91e63d0d961a6239b
         down_action:
           - service: switch.turn_off
             entity_id: switch.master_toilet_fan_switch

@@ -4,14 +4,14 @@ blueprint:
   description: Perform actions when double-tapping a GE Z-Wave switch up or down
   domain: automation
   input:
-    basic_command_sensor:
-      name: Basic Command Sensor Entity ID
-      description: The sensor entity ID that represents the Basic command class
-        for a Z-Wave switch
+    ge_switch:
+      name: GE Z-Wave Switch
+      description: The GE Z-Wave Switch to interact with.
       selector:
-        entity:
-          integration: ozw
-          domain: sensor
+        device:
+          integration: zwave_js
+          manufacturer: "GE/Jasco"
+          model: "14291 / ZW4005"
     down_action:
       name: Action on Double-Tap Down
       description: The action(s) to run when the switch is double-tapped down
@@ -28,29 +28,17 @@ blueprint:
 mode: restart
 
 trigger:
-  platform: state
-  entity_id: !input basic_command_sensor
-condition:
-  condition: not
-  conditions:
-    - condition: template
-      value_template: >
-        {{ trigger.from_state.state in ("unavailable", "unknown") }}
-    - condition: template
-      value_template: >
-        {{ trigger.to_state.state in ("unavailable", "unknown") }}
-    - condition: template
-      value_template: >
-        {{ not trigger.to_state.state }}
+  platform: event
+  event_type: zwave_js_event
+  event_data:
+    command_class_name: Basic
+    device_id: !input ge_switch
+
 action:
-  choose:
-    - conditions:
-        condition: state
-        entity_id: !input basic_command_sensor
-        state: "0"
-      sequence: !input down_action
-    - conditions:
-        condition: state
-        entity_id: !input basic_command_sensor
-        state: "255"
-      sequence: !input up_action
+  - variables:
+      value: "{{ trigger.event.data.value | int }}"
+  - choose:
+      - conditions: "{{ value == 0 }}"
+        sequence: !input down_action
+      - conditions: "{{ value == 255 }}"
+        sequence: !input up_action

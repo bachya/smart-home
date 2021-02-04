@@ -198,12 +198,12 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id:
-          - sensor.aeotec_nanomote_quad_aaron_bedside_battery
           - sensor.fiddle_leaf_fig_battery
           - sensor.firefighter_battery_level
           - sensor.front_door_lock_battery_level
           - sensor.garage_fire_door_lock_battery_level
           - sensor.kitchen_sink_sensor_battery
+          - sensor.nanomote_quad_battery_level
         below: 20
         for:
           minutes: 5
@@ -296,18 +296,6 @@ sensor:
     resource: !secret healthchecksio_ping_url
     scan_interval:
       minutes: 5
-
-  - platform: template
-    sensors:
-      aeotec_nanomote_quad_aaron_bedside_battery:
-        entity_id: zwave.aeotec_nanomote_quad_aaron_bedside
-        friendly_name: Aeotec Nanomote (AMB Bedside) Battery
-        value_template: >
-          {{
-            states.zwave.aeotec_nanomote_quad_aaron_bedside.attributes.battery_level
-          }}
-        unit_of_measurement: "%"
-        device_class: battery
 
   - platform: version
     name: HASS Available

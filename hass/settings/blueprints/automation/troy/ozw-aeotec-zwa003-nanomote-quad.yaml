@@ -7,19 +7,12 @@ blueprint:
   input:
     aeotec_nanomote:
       name: Aeotec NanoMote Quad
-      description: List of available NanoMote Quad remotes to configure.
-        This list is only a reference. At this time, it is not possible
-        to obtain the node's id using the device selector.
+      description: The NanoMote Quad to interact with.
       selector:
         device:
-          integration: ozw
-          manufacturer: Aeotec Limited
-          model: ZWA003 NanoMote Quad
-    ozw_node_id:
-      name: Node ID
-      description: Enter the node id for an available NanoMote Quad you wish
-        to configure. For now, this field is required. At this time, it is not
-        possible to obtain the node's id when using the device selector.
+          integration: zwave_js
+          manufacturer: Aeotec Ltd.
+          model: Aeotec NanoMote Quad
     button_1:
       name: Press Button One
       description: Action to run on button press.
@@ -49,27 +42,22 @@ mode: single
 
 max_exceeded: silent
 
-variables:
-  device_id: !input aeotec_nanomote
-  ozw_node_id: !input ozw_node_id
-
 trigger:
   platform: event
-  event_type: ozw.scene_activated
+  event_type: zwave_js_event
   event_data:
-    scene_value_id: 1
-
-condition: "{{ trigger.event.data.node_id == (ozw_node_id | int) }}"
+    command_class_name: Central Scene
+    device_id: !input aeotec_nanomote
 
 action:
   - variables:
-      scene_id: "{{ trigger.event.data.scene_id }}"
+      scene_id: "{{ trigger.event.data.property_key_name }}"
   - choose:
-      - conditions: "{{ scene_id == 1 }}"
+      - conditions: "{{ scene_id == '001' }}"
         sequence: !input button_1
-      - conditions: "{{ scene_id == 2 }}"
+      - conditions: "{{ scene_id == '002' }}"
         sequence: !input button_2
-      - conditions: "{{ scene_id == 3 }}"
+      - conditions: "{{ scene_id == '003' }}"
         sequence: !input button_3
-      - conditions: "{{ scene_id == 4 }}"
+      - conditions: "{{ scene_id == '004' }}"
         sequence: !input button_4

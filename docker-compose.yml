@@ -58,9 +58,9 @@ services:
     container_name: hass
     depends_on:
       - hass-db
-      - openzwave
       - traefik
       - vernemq
+      - zwave-js
     image: "homeassistant/home-assistant:${HOME_ASSISTANT_CORE_VERSION}"
     labels:
       traefik.enable: true
@@ -98,27 +98,6 @@ services:
     restart: always
     volumes:
       - hass-db-data:/var/lib/postgresql/data
-
-  openzwave:
-    container_name: openzwave
-    depends_on:
-      - vernemq
-    image: "openzwave/ozwdaemon:allinone-build-${OPENZWAVE_VERSION}"
-    devices:
-      - "/dev/zwave:/dev/zwave"
-    environment:
-      MQTT_PASSWORD: "${VERNEMQ_PASSWORD_OPEN_ZWAVE}"
-      MQTT_SERVER: vernemq
-      MQTT_USERNAME: open_zwave
-      OZW_NETWORK_KEY: "${OPENZWAVE_NETWORK_KEY}"
-      USB_PATH: /dev/zwave
-    ports:
-      - "5901:5901/tcp"
-    restart: always
-    security_opt:
-      - seccomp:unconfined
-    volumes:
-      - openzwave-config:/opt/ozw/config
 
   portainer:
     container_name: portainer
@@ -250,7 +229,6 @@ services:
       DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
       DOCKER_VERNEMQ_USER_ECOWITT: "${VERNEMQ_PASSWORD_ECOWITT}"
       DOCKER_VERNEMQ_USER_HASS: "${VERNEMQ_PASSWORD_HASS}"
-      DOCKER_VERNEMQ_USER_OPEN_ZWAVE: "${VERNEMQ_PASSWORD_OPEN_ZWAVE}"
       DOCKER_VERNEMQ_USER_WYZE: "${VERNEMQ_PASSWORD_WYZE}"
       DOCKER_VERNEMQ_PLUGINS.vmq_bridge: "on"
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.cafile: >
@@ -276,13 +254,32 @@ services:
       - /usr/share/ca-certificates:/usr/share/ca-certificates:ro
       - vernemq-data:/vernemq/data
 
+  zwave-js:
+    container_name: zwave-js
+    devices:
+      - "/dev/zwave:/dev/zwave"
+    environment:
+      NETWORK_KEY: "${ZWAVE_NETWORK_KEY}"
+    image: "zwavejs/zwavejs2mqtt:${ZJS2M_VERSION}"
+    labels:
+      traefik.enable: true
+      traefik.http.routers.zwave_js.middlewares: auth,security
+      traefik.http.routers.zwave_js.rule: "Host(`${TRAEFIK_HOST_ZWAVEJS}`)"
+      traefik.http.routers.zwave_js.tls: true
+      traefik.http.services.zwave_js.loadbalancer.server.port: 8091
+    ports:
+      - "3000:3000/tcp"
+    restart: always
+    volumes:
+      - zwave-js-config:/usr/src/app/store
+
 volumes:
 
   fail2ban-data:
   hass-config:
   hass-db-data:
   letsencrypt-data:
-  openzwave-config:
   portainer-config:
   scrutiny-config:
   vernemq-data:
+  zwave-js-config:

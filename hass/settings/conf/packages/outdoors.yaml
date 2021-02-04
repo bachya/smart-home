@@ -67,18 +67,6 @@ automation:
     action:
       - event: LOCAL_SUNSET
 
-  - alias: "Handle backyard lights via double-tapping the kitchen patio light"
-    use_blueprint:
-      path: bachya/zwave-double-tap.yaml
-      input:
-        basic_command_sensor: sensor.kitchen_patio_light_basic
-        down_action:
-          - service: switch.turn_off
-            entity_id: switch.backyard_lights_switch
-        up_action:
-          - service: switch.turn_on
-            entity_id: switch.backyard_lights_switch
-
   - alias: "Patio lights schedule"
     trigger:
       - platform: time
