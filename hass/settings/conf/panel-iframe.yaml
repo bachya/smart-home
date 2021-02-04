@@ -15,7 +15,3 @@ traefik:
   title: Traefik
   url: !secret panel_url_traefik
   icon: mdi:arrow-decision
-zwave_js:
-  title: Z-Wave JS
-  url: !secret panel_url_zwave_js
-  icon: mdi:z-wave
