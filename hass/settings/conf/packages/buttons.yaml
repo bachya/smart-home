@@ -4,7 +4,7 @@ automation:
     use_blueprint:
       path: troy/ozw-aeotec-zwa003-nanomote-quad.yaml
       input:
-        aeotec_nanomote: fd6c518c0df6e4127cd80202147aa95d
+        aeotec_nanomote: 73cf8d154659fa812f2a319e0464858f
         button_1:
           - service: switch.toggle
             entity_id: switch.master_bedroom_salt_lamp
