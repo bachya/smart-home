@@ -99,23 +99,6 @@ services:
     volumes:
       - hass-db-data:/var/lib/postgresql/data
 
-  portainer:
-    container_name: portainer
-    depends_on:
-      - traefik
-    image: "portainer/portainer-ce:${PORTAINER_VERSION}-alpine"
-    labels:
-      traefik.enable: true
-      traefik.http.routers.portainer.middlewares: security
-      traefik.http.routers.portainer.entrypoints: websecure
-      traefik.http.routers.portainer.rule: "Host(`${TRAEFIK_HOST_PORTAINER}`)"
-      traefik.http.routers.portainer.tls: true
-      traefik.http.services.portainer.loadbalancer.server.port: 9000
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer-config:/data
-
   restic-backup:
     container_name: restic-backup
     environment:
@@ -274,7 +257,6 @@ volumes:
   hass-config:
   hass-db-data:
   letsencrypt-data:
-  portainer-config:
   scrutiny-config:
   vernemq-data:
   zwave-js-config:
