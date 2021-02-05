@@ -270,11 +270,6 @@ input_select:
       - heat
 
 sensor:
-  - platform: darksky
-    api_key: !secret dark_sky_api_key
-    monitored_conditions:
-      - cloud_cover
-
   - platform: filter
     name: Filtered Average Indoor Humidity
     entity_id: sensor.average_indoor_humidity
@@ -328,9 +323,6 @@ sensor:
           {{ states("schedy_room.thermostat_schedule_whole_house") }}
         device_class: temperature
         unit_of_measurement: °F
-      dark_sky_temperature:
-        value_template: "{{ state_attr('weather.weather', 'temperature') }}"
-        icon_template: mdi:thermometer
       friendly_season:
         friendly_name: Season
         value_template: "{{ states('sensor.season') | title }}"
