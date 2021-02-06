@@ -2,6 +2,5 @@
 substitutions:
   device_name: master_bedroom_salt_lamp
   device_friendly_name: Master Bedroom Salt Lamp
-  static_ip: 172.16.11.15
 
 <<: !include .sonoff_basic.yaml
