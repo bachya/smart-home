@@ -41,12 +41,12 @@ sensor:
 shell_command:
   turn_off_media_center: >
     ssh -i /config/ssh_keys/id_ed25519 -o StrictHostKeyChecking=no
-    hass@media-center.phil.lan sudo /sbin/poweroff
+    hass@media-center.phil.servers sudo /sbin/poweroff
 
 switch:
   - platform: wake_on_lan
     mac: 4C:CC:6A:69:90:D4
     name: Media Center
-    host: media-center.phil.lan
+    host: media-center.phil.servers
     turn_off:
       service: shell_command.turn_off_media_center
