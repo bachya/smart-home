@@ -1,2 +1,2 @@
 bantime = 86400
-ignoreip = 172.16.10.0/24
+ignoreip = 172.16.0.0/12

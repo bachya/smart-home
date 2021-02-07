@@ -247,5 +247,5 @@ sensor:
 
 vacuum:
   - platform: xiaomi_miio
-    host: 172.16.11.14
+    host: rockrobo.phil.iot
     token: !secret xiaomi_vacuum_token

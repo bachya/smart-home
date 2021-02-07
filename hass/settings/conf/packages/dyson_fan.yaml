@@ -39,4 +39,4 @@ dyson:
   language: US
   devices:
     - device_id: !secret dyson_pure_serial_number
-      device_ip: 172.16.11.232
+      device_ip: C4B-US-NKA0838A.phil.iot
