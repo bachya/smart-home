@@ -148,7 +148,7 @@ binary_sensor:
         entity_id: sensor.aarons_iphone_battery_state
         to_state: Charging
         prob_given_true: 0.90
-        prob_given_false: 0.036
+        prob_given_false: 0.214
 
 group:
   bathroom_fans:
