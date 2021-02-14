@@ -245,7 +245,7 @@ services:
       NETWORK_KEY: "${ZWAVE_NETWORK_KEY}"
     image: "zwavejs/zwavejs2mqtt:${ZJS2M_VERSION}"
     ports:
-      - "3000:3000/tcp"
+      - "127.0.0.1:3000:3000/tcp"
       - "8091:8091/tcp"
     restart: always
     volumes:
