@@ -88,7 +88,8 @@ automation:
             service: climate.set_temperature
             entity_id: climate.thermostat_mode
             data:
-              temperature: 75
+              temperature: >
+                {{ states("input_number.daytime_temperature_ac") | int }}
         # A/C Nighttime
         - conditions:
             - condition: state
@@ -104,7 +105,8 @@ automation:
             service: climate.set_temperature
             entity_id: climate.thermostat_mode
             data:
-              temperature: 72
+              temperature: >
+                {{ states("input_number.nighttime_temperature_ac") | int }}
         # Heat Daytime
         - conditions:
             - condition: state
@@ -120,7 +122,8 @@ automation:
             service: climate.set_temperature
             entity_id: climate.thermostat_mode
             data:
-              temperature: 70
+              temperature: >
+                {{ states("input_number.daytime_temperature_heat") | int }}
         # Heat Nighttime
         - conditions:
             - condition: state
@@ -136,7 +139,8 @@ automation:
             service: climate.set_temperature
             entity_id: climate.thermostat_mode
             data:
-              temperature: 68
+              temperature: >
+                {{ states("input_number.nighttime_temperature_heat") | int }}
 
   - alias: "Proximity Climate Away Mode"
     trigger:
@@ -233,6 +237,34 @@ automation:
               entity_id: input_boolean.away_mode
 
 input_number:
+  daytime_temperature_ac:
+    name: "Daytime Temperature (A/C)"
+    min: 65
+    max: 75
+    step: 1
+    unit_of_measurement: °F
+    icon: mdi:thermostat
+  nighttime_temperature_ac:
+    name: "Nighttime Temperature (A/C)"
+    min: 65
+    max: 75
+    step: 1
+    unit_of_measurement: °F
+    icon: mdi:thermostat
+  daytime_temperature_heat:
+    name: "Daytime Temperature (Heat)"
+    min: 65
+    max: 75
+    step: 1
+    unit_of_measurement: °F
+    icon: mdi:thermostat
+  nighttime_temperature_heat:
+    name: "Nighttime Temperature (Heat)"
+    min: 65
+    max: 75
+    step: 1
+    unit_of_measurement: °F
+    icon: mdi:thermostat
   outdoor_extreme_high_threshold:
     name: "Outdoor: Extreme High"
     min: 20
