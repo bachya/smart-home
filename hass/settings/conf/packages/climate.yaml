@@ -32,6 +32,14 @@ automation:
       - platform: state
         entity_id: input_boolean.away_mode
       - platform: state
+        entity_id: input_number.daytime_temperature_ac
+      - platform: state
+        entity_id: input_number.daytime_temperature_heat
+      - platform: state
+        entity_id: input_number.nighttime_temperature_ac
+      - platform: state
+        entity_id: input_number.nighttime_temperature_heat
+      - platform: state
         entity_id: input_number.thermostat_eco_high_threshold
       - platform: state
         entity_id: input_number.thermostat_eco_low_threshold
