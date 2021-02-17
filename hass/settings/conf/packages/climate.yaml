@@ -28,6 +28,8 @@ automation:
         from: "off"
         to: heat
       - platform: state
+        entity_id: binary_sensor.in_bed
+      - platform: state
         entity_id: input_boolean.away_mode
       - platform: state
         entity_id: input_number.daytime_temperature_ac
