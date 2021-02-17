@@ -28,8 +28,6 @@ automation:
         from: "off"
         to: heat
       - platform: state
-        entity_id: input_boolean.blackout_mode
-      - platform: state
         entity_id: input_boolean.away_mode
       - platform: state
         entity_id: input_number.daytime_temperature_ac
@@ -87,7 +85,7 @@ automation:
               entity_id: climate.thermostat_mode
               state: cool
             - condition: state
-              entity_id: input_boolean.blackout_mode
+              entity_id: binary_sensor.in_bed
               state: "off"
             - condition: state
               entity_id: input_boolean.away_mode
@@ -104,7 +102,7 @@ automation:
               entity_id: climate.thermostat_mode
               state: cool
             - condition: state
-              entity_id: input_boolean.blackout_mode
+              entity_id: binary_sensor.in_bed
               state: "on"
             - condition: state
               entity_id: input_boolean.away_mode
@@ -121,7 +119,7 @@ automation:
               entity_id: climate.thermostat_mode
               state: heat
             - condition: state
-              entity_id: input_boolean.blackout_mode
+              entity_id: binary_sensor.in_bed
               state: "off"
             - condition: state
               entity_id: input_boolean.away_mode
@@ -138,7 +136,7 @@ automation:
               entity_id: climate.thermostat_mode
               state: heat
             - condition: state
-              entity_id: input_boolean.blackout_mode
+              entity_id: binary_sensor.in_bed
               state: "on"
             - condition: state
               entity_id: input_boolean.away_mode
