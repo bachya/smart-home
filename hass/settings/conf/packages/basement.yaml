@@ -43,6 +43,14 @@ shell_command:
     ssh -i /config/ssh_keys/id_ed25519 -o StrictHostKeyChecking=no
     hass@media-center.phil.servers sudo /sbin/poweroff
 
+sonos:
+  media_player:
+    hosts:
+      - 172.16.20.113
+      - 172.16.20.155
+      - 172.16.20.18
+      - 172.16.20.253
+
 switch:
   - platform: wake_on_lan
     mac: 4C:CC:6A:69:90:D4
