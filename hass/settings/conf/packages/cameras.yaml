@@ -14,9 +14,8 @@ camera:
 
   - platform: ffmpeg
     name: Kitchen Camera
-    input: -rtsp_transport tcp -i rtsp://yi-camera-kitchen.phil.iot/ch0_0.h264
+    input: -rtsp_transport tcp -i rtsp://172.16.20.170/ch0_0.h264
 
   - platform: ffmpeg
     name: Guest Bedroom Camera
-    input: "-rtsp_transport tcp -i rtsp://yi-camera-guest-bedroom.phil.\
-      iot/ch0_0.h264"
+    input: -rtsp_transport tcp -i rtsp://172.16.20.20/ch0_0.h264
