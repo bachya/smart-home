@@ -24,7 +24,7 @@ alert:
       - everyone
 
 automation:
-  - alias: "Alter armed alarm when Wolfie cleans"
+  - alias: "Alter Wolfie based on alarm status"
     trigger:
       - platform: state
         entity_id: vacuum.xiaomi_vacuum_cleaner
@@ -32,6 +32,9 @@ automation:
       - platform: state
         entity_id: alarm_control_panel.123_main_street
         to: armed_away
+      - platform: state
+        entity_id: input_select.wolfie_bin_status
+        to: Full
     action:
       choose:
         - conditions:
@@ -57,25 +60,53 @@ automation:
             - service: vacuum.start
               data:
                 entity_id: vacuum.xiaomi_vacuum_cleaner
+        - condition:
+            condition: not
+            conditions:
+              - condition: state
+                entity_id: sensor.proximity_zone
+                state: Home
+              - condition: state
+                entity_id: alarm_control_panel.8673_e_55th_avenue
+                state: armed_away
+          sequence:
+            service: alarm_control_panel.alarm_arm_away
+            data:
+              entity_id: alarm_control_panel.8673_e_55th_avenue
 
-  - alias: "Arm alarm when Wolfie finishes cleaning an empty house"
+  - alias: "Manage Wolfie's Bin"
     trigger:
-      platform: state
-      entity_id: input_select.wolfie_bin_status
-      to: Full
-    condition:
-      condition: not
-      conditions:
-        - condition: state
-          entity_id: sensor.proximity_zone
-          state: Home
-        - condition: state
-          entity_id: alarm_control_panel.123_main_street
-          state: armed_away
+      - platform: state
+        entity_id: vacuum.xiaomi_vacuum_cleaner
+      - platform: state
+        entity_id: alarm_control_panel.8673_e_55th_avenue
     action:
-      service: alarm_control_panel.alarm_arm_away
-      data:
-        entity_id: alarm_control_panel.123_main_street
+      choose:
+        # When Wolfie starts running, mark it (since the WiFi is flaky):
+        - conditions:
+            condition: state
+            entity_id: vacuum.xiaomi_vacuum_cleaner
+            state: cleaning
+          sequence:
+            service: input_boolean.turn_on
+            data:
+              entity_id: input_boolean.wolfie_running
+        # When Wolfie returns to the dock, alter the bin appropriately:
+        - conditions:
+            - condition: state
+              entity_id: vacuum.xiaomi_vacuum_cleaner
+              state: docked
+            - condition: state
+              entity_id: input_boolean.wolfie_running
+              state: "on"
+          sequence:
+            - service: input_select.select_option
+              data:
+                entity_id: input_select.wolfie_bin_status
+                option: Full
+            - service: input_boolean.turn_off
+              data:
+                entity_id: input_boolean.wolfie_running
 
   - alias: "Notify when time for Wolfie to run"
     trigger:
@@ -114,6 +145,11 @@ automation:
           {% endif %}
 
           🤖 Wolfie needs {{ name }}!
+
+input_boolean:
+  wolfie_running:
+    icon: mdi:robot-vacuum
+    name: Wolfie Running
 
 input_select:
   wolfie_bin_status:

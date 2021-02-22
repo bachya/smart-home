@@ -18,7 +18,7 @@
       state: "on"
     automation.adjust_automations_in_vacation_mode:
       state: "on"
-    automation.alter_armed_alarm_when_wolfie_cleans:
+    automation.alter_wolfie_based_on_alarm_status:
       state: "on"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
       state: "on"
@@ -102,7 +102,7 @@
       state: "off"
     alert.wolfie_stuck:
       state: "off"
-    automation.alter_armed_alarm_when_wolfie_cleans:
+    automation.alter_wolfie_based_on_alarm_status:
       state: "off"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
       state: "off"
@@ -210,7 +210,7 @@
   entities:
     alert.house_empty_and_insecure:
       state: "off"
-    automation.alter_armed_alarm_when_wolfie_cleans:
+    automation.alter_wolfie_based_on_alarm_status:
       state: "off"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
       state: "off"
