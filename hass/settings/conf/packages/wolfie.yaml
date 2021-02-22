@@ -60,7 +60,7 @@ automation:
             - service: vacuum.start
               data:
                 entity_id: vacuum.xiaomi_vacuum_cleaner
-        - condition:
+        - conditions:
             condition: not
             conditions:
               - condition: state
