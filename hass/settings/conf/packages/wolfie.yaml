@@ -128,6 +128,20 @@ automation:
           - sensor.vacuum_sensor_dirtiness_remaining
           - sensor.vacuum_side_brush_remaining
         below: 5
+    condition:
+      # This automation can get very chatty, so we only allow a notification
+      # once per day:
+      condition: template
+      value_template: >
+        {{
+          as_timestamp(
+            state_attr(
+              "automation.notify_when_wolfie_needs_a_new_consumable",
+              "last_triggered"
+            )
+          ) | timestamp_custom('%-d')
+          != as_timestamp(now()) | timestamp_custom('%-d')
+        }}
     action:
       service: notify.slack
       data:
