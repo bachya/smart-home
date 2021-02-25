@@ -294,8 +294,3 @@ sensor:
             state_attr("calendar.wolfie_schedule", "start_time")
           ) | timestamp_custom("%m/%d, %I:%M %p") }}
         icon_template: mdi:calendar-check
-
-vacuum:
-  - platform: xiaomi_miio
-    host: rockrobo.phil.iot
-    token: !secret xiaomi_vacuum_token
