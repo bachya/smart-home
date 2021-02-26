@@ -12,24 +12,26 @@ automation:
           - condition: not
             conditions:
               - condition: state
-                entity_id: climate.thermostat_mode
+                entity_id: climate.alarm_com_smart_thermostat
                 state: "off"
           - service: climate.set_temperature
-            entity_id: climate.thermostat_mode
+            entity_id: climate.alarm_com_smart_thermostat
             data:
               temperature: >
                 {%
                   set c = state_attr(
-                    "climate.thermostat_mode", "temperature"
+                    "climate.alarm_com_smart_thermostat", "temperature"
                   ) | int
                 %}
-                {% if is_state("climate.thermostat_mode", "cool") %}
+                {% if is_state("climate.alarm_com_smart_thermostat", "cool") %}
                   {{ c - 2 }}
-                {% elif is_state("climate.thermostat_mode", "heat") %}
+                {%
+                  elif is_state("climate.alarm_com_smart_thermostat", "heat")
+                %}
                   {{ c + 2 }}
                 {% endif %}
         button_3:
           - scene: scene.good_night
         button_4:
           - service: switch.toggle
-            entity_id: switch.master_patio_light_switch
+            entity_id: switch.master_patio_light

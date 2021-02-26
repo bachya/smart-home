@@ -53,14 +53,14 @@ automation:
   - alias: "Turn powder room fan back on if someone turns it off"
     trigger:
       platform: state
-      entity_id: switch.powder_room_fan_switch
+      entity_id: switch.powder_room_fan
       to: "off"
       for:
         minutes: 1
     action:
       service: switch.turn_on
       data:
-        entity_id: switch.powder_room_fan_switch
+        entity_id: switch.powder_room_fan
 
 binary_sensor:
   - platform: template

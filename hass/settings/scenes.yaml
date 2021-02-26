@@ -140,9 +140,9 @@
       state: closed
     lock.123_main_street_patio_door:
       state: locked
-    lock.front_door_lock_locked:
+    lock.front_door_lock:
       state: locked
-    lock.garage_fire_door_lock_locked:
+    lock.garage_fire_door_lock:
       state: locked
     group.living_room_lights:
       state: "off"
@@ -156,9 +156,9 @@
       state: "off"
     switch.basement_lights:
       state: "off"
-    switch.garage_lights_switch:
+    switch.garage_lights:
       state: "off"
-    switch.fireplace_switch:
+    switch.fireplace:
       state: "off"
 
 - id: drive_home
@@ -168,7 +168,7 @@
       state: disarmed
     cover.garage_door:
       state: open
-    lock.garage_fire_door_lock_locked:
+    lock.garage_fire_door_lock:
       state: unlocked
 
 - id: good_night
@@ -180,9 +180,9 @@
       state: closed
     lock.123_main_street_patio_door:
       state: locked
-    lock.front_door_lock_locked:
+    lock.front_door_lock:
       state: locked
-    lock.garage_fire_door_lock_locked:
+    lock.garage_fire_door_lock:
       state: locked
     group.living_room_lights:
       state: "off"
@@ -200,9 +200,9 @@
       state: "off"
     switch.basement_lights:
       state: "off"
-    switch.garage_lights_switch:
+    switch.garage_lights:
       state: "off"
-    switch.fireplace_switch:
+    switch.fireplace:
       state: "off"
 
 - id: guest_mode
@@ -266,5 +266,5 @@
   entities:
     alarm_control_panel.123_main_street:
       state: disarmed
-    lock.front_door_lock_locked:
+    lock.front_door_lock:
       state: unlocked

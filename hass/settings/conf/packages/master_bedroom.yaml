@@ -21,7 +21,7 @@ automation:
         ge_switch: b96369a17ce6bff25aeba4d28439c9b7
         down_action:
           - service: switch.turn_off
-            entity_id: switch.master_bathroom_fan_switch
+            entity_id: switch.master_bathroom_fan
         up_action:
           - service: input_number.set_value
             entity_id: input_number.master_bathroom_fan_timer
@@ -36,13 +36,13 @@ automation:
         timer: timer.master_bathroom_fan_timer
         timer_cancel_action:
           - service: switch.turn_off
-            entity_id: switch.master_bathroom_fan_switch
+            entity_id: switch.master_bathroom_fan
         timer_expire_action:
           - service: switch.turn_off
-            entity_id: switch.master_bathroom_fan_switch
+            entity_id: switch.master_bathroom_fan
         timer_start_action:
           - service: switch.turn_on
-            entity_id: switch.master_bathroom_fan_switch
+            entity_id: switch.master_bathroom_fan
 
   - alias: "Master Bedroom Salt Lamp Timer"
     use_blueprint:
@@ -67,7 +67,7 @@ automation:
         ge_switch: d876b56cc182d2e91e63d0d961a6239b
         down_action:
           - service: switch.turn_off
-            entity_id: switch.master_toilet_fan_switch
+            entity_id: switch.master_toilet_fan
         up_action:
           - service: input_number.set_value
             entity_id: input_number.master_toilet_fan_timer
@@ -82,13 +82,13 @@ automation:
         timer: timer.master_toilet_fan_timer
         timer_cancel_action:
           - service: switch.turn_off
-            entity_id: switch.master_toilet_fan_switch
+            entity_id: switch.master_toilet_fan
         timer_expire_action:
           - service: switch.turn_off
-            entity_id: switch.master_toilet_fan_switch
+            entity_id: switch.master_toilet_fan
         timer_start_action:
           - service: switch.turn_on
-            entity_id: switch.master_toilet_fan_switch
+            entity_id: switch.master_toilet_fan
 
   - alias: "Trigger Good Night when Aaron's NFC tag is scanned"
     trigger:
@@ -130,17 +130,17 @@ binary_sensor:
         prob_given_true: 0.85
         prob_given_false: 0.75
       - platform: state
-        entity_id: switch.master_patio_light_switch
+        entity_id: switch.master_patio_light
         to_state: "off"
         prob_given_true: 0.90
         prob_given_false: 0.75
       - platform: state
-        entity_id: switch.master_bathroom_fan_switch
+        entity_id: switch.master_bathroom_fan
         to_state: "off"
         prob_given_true: 1.00
         prob_given_false: 0.911
       - platform: state
-        entity_id: switch.master_toilet_fan_switch
+        entity_id: switch.master_toilet_fan
         to_state: "off"
         prob_given_true: 0.98
         prob_given_false: 0.804
@@ -178,8 +178,8 @@ binary_sensor:
 group:
   bathroom_fans:
     entities:
-      - switch.master_bathroom_fan_switch
-      - switch.master_toilet_fan_switch
+      - switch.master_bathroom_fan
+      - switch.master_toilet_fan
 
 input_number:
   master_bathroom_fan_timer:

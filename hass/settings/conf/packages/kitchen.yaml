@@ -37,10 +37,10 @@ automation:
     mode: restart
     trigger:
       - platform: numeric_state
-        entity_id: sensor.dishwasher_electric_w
+        entity_id: sensor.dishwasher_electric_consumed_w
         above: 9
       - platform: numeric_state
-        entity_id: sensor.dishwasher_electric_w
+        entity_id: sensor.dishwasher_electric_consumed_w
         below: 4
         for:
           minutes: 5
@@ -53,7 +53,7 @@ automation:
       choose:
         - conditions:
             condition: numeric_state
-            entity_id: sensor.dishwasher_electric_w
+            entity_id: sensor.dishwasher_electric_consumed_w
             above: 9
           sequence:
             service: input_select.select_option
@@ -62,7 +62,7 @@ automation:
               option: Running
         - conditions:
             - condition: numeric_state
-              entity_id: sensor.dishwasher_electric_w
+              entity_id: sensor.dishwasher_electric_consumed_w
               below: 4
             - condition: state
               entity_id: input_select.dishwasher_status

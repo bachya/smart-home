@@ -198,8 +198,8 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id:
+          - sensor.ecolink_z_wave_plus_firefighter_battery_level
           - sensor.fiddle_leaf_fig_battery
-          - sensor.firefighter_battery_level
           - sensor.front_door_lock_battery_level
           - sensor.garage_fire_door_lock_battery_level
           - sensor.kitchen_sink_sensor_battery

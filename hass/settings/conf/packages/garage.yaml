@@ -10,7 +10,7 @@ automation:
     action:
       service: switch.turn_off
       data:
-        entity_id: switch.garage_lights_switch
+        entity_id: switch.garage_lights
 
   - alias: "Turn on garage lights when garage door opens while it's dark"
     trigger:
@@ -24,7 +24,7 @@ automation:
     action:
       service: switch.turn_on
       data:
-        entity_id: switch.garage_lights_switch
+        entity_id: switch.garage_lights
 
   - alias: "Turn on garage lights at sunset if the garage is open"
     trigger:
@@ -37,4 +37,4 @@ automation:
     action:
       service: switch.turn_on
       data:
-        entity_id: switch.garage_lights_switch
+        entity_id: switch.garage_lights

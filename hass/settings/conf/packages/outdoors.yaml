@@ -15,7 +15,7 @@ automation:
               value_template: '{{ trigger.platform == "event" }}'
           sequence:
             - service: switch.turn_on
-              entity_id: switch.backyard_lights_switch
+              entity_id: switch.backyard_lights
         - conditions:
             - condition: state
               entity_id: binary_sensor.workday_tomorrow
@@ -24,7 +24,7 @@ automation:
               value_template: "{{ trigger.now.hour == 21 }}"
           sequence:
             - service: switch.turn_off
-              entity_id: switch.backyard_lights_switch
+              entity_id: switch.backyard_lights
         - conditions:
             - condition: state
               entity_id: binary_sensor.workday_tomorrow
@@ -33,7 +33,7 @@ automation:
               value_template: "{{ trigger.now.hour == 23 }}"
           sequence:
             - service: switch.turn_off
-              entity_id: switch.backyard_lights_switch
+              entity_id: switch.backyard_lights
 
   - alias: "Fire local event for weather station-detected sunset"
     trigger:
@@ -89,7 +89,7 @@ automation:
 group:
   patio_lights:
     entities:
-      - switch.front_patio_light_switch
-      - switch.kitchen_patio_light_switch
-      - switch.master_patio_light_switch
+      - switch.front_patio_light
+      - switch.kitchen_patio_light
+      - switch.master_patio_light
     all: true

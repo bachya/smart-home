@@ -304,7 +304,7 @@ automation:
               elif trigger.entity_id
               == "sensor.replay_master_bedroom_patio_light"
             %}
-              switch.master_patio_light_switch
+              switch.master_patio_light
             {%
               elif trigger.entity_id
               == "sensor.replay_master_bedroom_salt_lamp"
@@ -350,9 +350,9 @@ binary_sensor:
         friendly_name: Security Status
         value_template: >
           {{
-            is_state("lock.123_main_street_patio_door", "locked")
-            and is_state("lock.front_door_lock_locked", "locked")
-            and is_state("lock.garage_fire_door_lock_locked", "locked")
+            is_state("lock.8673_e_55th_avenue_patio_door", "locked")
+            and is_state("lock.front_door_lock", "locked")
+            and is_state("lock.garage_fire_door_lock", "locked")
             and (
               (
                 is_state(
@@ -379,12 +379,12 @@ group:
       - alarm_control_panel.8673_e_55th_avenue
       - cover.garage_door
       - lock.8673_e_55th_avenue_patio_door
-      - lock.front_door_lock_locked
-      - lock.garage_fire_door_lock_locked
+      - lock.front_door_lock
+      - lock.garage_fire_door_lock
   smoke_detectors:
     entities:
       - binary_sensor.basement_sensor_smoke_carbon_monoxide_detector
-      - binary_sensor.firefighter_smoke_alarm_smoke_detected
+      - binary_sensor.ecolink_z_wave_plus_firefighter_smoke_alarm_smoke_detected
       - binary_sensor.guest_bedroom_sensor_smoke_carbon_monoxide_detector
       - binary_sensor.kitchen_sensor_smoke_carbon_monoxide_detector
       - binary_sensor.upstairs_hallway_sensor_smoke_carbon_monoxide_detector
@@ -437,7 +437,7 @@ sensor:
 
   - platform: history_stats
     name: "Replay Master Bedroom Patio Light"
-    entity_id: switch.master_patio_light_switch
+    entity_id: switch.master_patio_light
     state: "on"
     type: count
     start: >
