@@ -8,7 +8,7 @@ alert:
     repeat:
       - 120
     notifiers:
-      - mobile_app_aarons_iphone
+      - everyone
     data:
       push:
         category: WOLFIE
@@ -16,7 +16,7 @@ alert:
   wolfie_stuck:
     name: "🤖 Wolfie is stuck on something and needs help."
     title: Wolfie
-    entity_id: vacuum.xiaomi_vacuum_cleaner
+    entity_id: vacuum.rockrobo
     state: error
     repeat:
       - 10
@@ -27,7 +27,7 @@ automation:
   - alias: "Alter Wolfie based on alarm status"
     trigger:
       - platform: state
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.rockrobo
         to: cleaning
       - platform: state
         entity_id: alarm_control_panel.123_main_street
@@ -42,12 +42,12 @@ automation:
               entity_id: alarm_control_panel.123_main_street
               state: armed_away
             - condition: state
-              entity_id: vacuum.xiaomi_vacuum_cleaner
+              entity_id: vacuum.rockrobo
               state: cleaning
           sequence:
             - service: vacuum.pause
               data:
-                entity_id: vacuum.xiaomi_vacuum_cleaner
+                entity_id: vacuum.rockrobo
             - service: alarm_control_panel.alarm_arm_home
               data:
                 entity_id: alarm_control_panel.123_main_street
@@ -59,7 +59,7 @@ automation:
               continue_on_timeout: false
             - service: vacuum.start
               data:
-                entity_id: vacuum.xiaomi_vacuum_cleaner
+                entity_id: vacuum.rockrobo
         - conditions:
             condition: not
             conditions:
@@ -77,7 +77,7 @@ automation:
   - alias: "Manage Wolfie's Bin"
     trigger:
       - platform: state
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.rockrobo
       - platform: state
         entity_id: alarm_control_panel.8673_e_55th_avenue
     action:
@@ -85,7 +85,7 @@ automation:
         # When Wolfie starts running, mark it (since the WiFi is flaky):
         - conditions:
             condition: state
-            entity_id: vacuum.xiaomi_vacuum_cleaner
+            entity_id: vacuum.rockrobo
             state: cleaning
           sequence:
             service: input_boolean.turn_on
@@ -94,7 +94,7 @@ automation:
         # When Wolfie returns to the dock, alter the bin appropriately:
         - conditions:
             - condition: state
-              entity_id: vacuum.xiaomi_vacuum_cleaner
+              entity_id: vacuum.rockrobo
               state: docked
             - condition: state
               entity_id: input_boolean.wolfie_running
@@ -185,50 +185,50 @@ sensor:
     sensors:
       vacuum_filter_remaining:
         friendly_name: Filter
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.rockrobo
         value_template: >
-          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.filter_left }}
+          {{ state_attr("vacuum.rockrobo", "filter") }}
         unit_of_measurement: hours
         icon_template: mdi:timer-sand
 
       vacuum_main_brush_remaining:
         friendly_name: Main Brush
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.rockrobo
         value_template: >
-          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.main_brush_left }}
+          {{ state_attr("vacuum.rockrobo", "mainBrush") }}
         unit_of_measurement: hours
         icon_template: mdi:timer-sand
 
       vacuum_sensor_dirtiness_remaining:
         friendly_name: Sensor Dirtiness
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.rockrobo
         value_template: >
-          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.sensor_dirty_left }}
+          {{ state_attr("vacuum.rockrobo", "sensor") }}
         unit_of_measurement: hours
         icon_template: mdi:timer-sand
 
       vacuum_side_brush_remaining:
         friendly_name: Side Brush
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.rockrobo
         value_template: >
-          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.side_brush_left }}
+          {{ state_attr("vacuum.rockrobo", "sideBrush") }}
         unit_of_measurement: hours
         icon_template: mdi:timer-sand
 
       vacuum_status:
         friendly_name: Status
         value_template: >
-          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.status }}
+          {{ states("vacuum.rockrobo") | title }}
         icon_template: >
-          {% if is_state("vacuum.xiaomi_vacuum_cleaner", "docked")  %}
+          {% if is_state("vacuum.rockrobo", "docked")  %}
             mdi:battery-charging
-          {% elif is_state("vacuum.xiaomi_vacuum_cleaner", "cleaning")  %}
+          {% elif is_state("vacuum.rockrobo", "cleaning")  %}
             mdi:move-resize
-          {% elif is_state("vacuum.xiaomi_vacuum_cleaner", "returning")  %}
+          {% elif is_state("vacuum.rockrobo", "returning")  %}
             mdi:keyboard-return
-          {% elif is_state("vacuum.xiaomi_vacuum_cleaner", "idle")  %}
+          {% elif is_state("vacuum.rockrobo", "idle")  %}
             mdi:dots-horizontal
-          {% elif is_state("vacuum.xiaomi_vacuum_cleaner", "paused")  %}
+          {% elif is_state("vacuum.rockrobo", "paused")  %}
             mdi:pause-circle
           {% else %}
             mdi:help-circle
@@ -236,61 +236,47 @@ sensor:
 
       vacuum_fan_speed:
         friendly_name: Fan Speed
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.rockrobo
         value_template: >
-          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.fan_speed }}
+          {{ state_attr("vacuum.rockrobo", "fan_speed") | title }}
         icon_template: mdi:speedometer
 
       vacuum_battery:
         friendly_name: Vacuum Battery
         value_template: >
-          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.battery_level }}
+          {{ state_attr("vacuum.rockrobo", "battery_level") }}
         unit_of_measurement: "%"
         device_class: battery
 
       vacuum_cleaning_time:
         friendly_name: Time of Last Cycle
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.rockrobo
         value_template: >
-          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.cleaning_time }}
+          {{ state_attr("vacuum.rockrobo", "currentCleanTime") }}
         icon_template: mdi:timer
         unit_of_measurement: minutes
 
       vacuum_cleaned_area:
         friendly_name: Area of Last Cycle
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.rockrobo
         unit_of_measurement: m ²
         value_template: >
-          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.cleaned_area }}
+          {{ state_attr("vacuum.rockrobo", "currentCleanArea") }}
         icon_template: mdi:ruler
-
-      vacuum_do_not_disturb:
-        friendly_name: Do Not Disturb
-        entity_id: vacuum.xiaomi_vacuum_cleaner
-        value_template: >
-          {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.do_not_disturb }}
-        icon_template: >
-          {% set val = state_attr(
-            "vacuum.xiaomi_vacuum_cleaner", "do_not_disturb"
-            ) %}
-          {% if val == 'on' %}
-            mdi:do-not-disturb
-          {% else %}
-            mdi:do-not-disturb-off
-          {% endif %}
 
       vacuum_last_run:
         friendly_name: Last Run Date/Time
         value_template: >
-          {{ as_timestamp(
-            states.vacuum.xiaomi_vacuum_cleaner.attributes.clean_stop
-            ) | timestamp_custom("%m/%d, %I:%M %p") }}
+          {{
+            state_attr("vacuum.rockrobo", "last_run_stats")["endTime"]
+            | multiply(0.001)
+            | timestamp_custom("%m/%d, %I:%M %p")
+          }}
         icon_template: mdi:calendar-check
 
       vacuum_next_run:
         friendly_name: Next Run Date/Time
         value_template: >
-          {{ as_timestamp(
-            state_attr("calendar.wolfie_schedule", "start_time")
-          ) | timestamp_custom("%m/%d, %I:%M %p") }}
+          {{ as_timestamp(state_attr("calendar.wolfie_schedule", "start_time"))
+          | timestamp_custom("%m/%d, %I:%M %p", False) }}
         icon_template: mdi:calendar-check
