@@ -5,9 +5,9 @@ automation:
       platform: time_pattern
       hours: "/1"
     condition:
-      condition: time
-      after: "10:00:00"
-      before: "17:00:00"
+      condition: state
+      entity_id: input_boolean.blackout_mode
+      state: "off"
     action:
       service: input_number.set_value
       data:
