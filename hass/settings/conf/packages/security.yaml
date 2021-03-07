@@ -252,7 +252,7 @@ automation:
           sequence:
             - service: remote.turn_on
               data:
-                entity_id: remote.basement_tv
+                entity_id: remote.living_room_tv
             - wait_template: >
                 {{
                   is_state_attr(
@@ -277,14 +277,9 @@ automation:
                 and trigger.to_state.state == "0"
               }}
           sequence:
-            - service: media_player.select_source
-              data:
-                entity_id: media_player.living_room_roku
-                source: Home
-            - delay: "00:00:05"
-            - service: remote.turn_off
-              data:
-                entity_id: remote.living_room_tv
+            service: remote.turn_off
+            data:
+              entity_id: remote.living_room_tv
       default:
         service: >
           {% if trigger.to_state.state == "0" %}
