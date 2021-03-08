@@ -82,6 +82,10 @@ automation:
         to: "on"
         for:
           minutes: 30
+    condition:
+      condition: state
+      entity_id: binary_sensor.secure_status
+      state: "off"
     action:
       - service: notify.everyone
         data:
