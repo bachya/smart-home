@@ -5,4 +5,48 @@ substitutions:
   plant_1_friendly_name: Fiddle Leaf Fig
   plant_1_mac_address: "C4:7C:8D:65:5E:9D"
 
-<<: !include .esp32_plant_monitor.yaml
+api:
+  password: !secret api_password
+
+binary_sensor:
+  - platform: status
+    name: "${device_friendly_name} Status"
+
+esp32_ble_tracker:
+
+esphome:
+  name: "${device_name}"
+  platform: ESP32
+  board: nodemcu-32s
+
+logger:
+
+ota:
+
+sensor:
+  - platform: xiaomi_hhccjcy01
+    mac_address: "${plant_1_mac_address}"
+    temperature:
+      name: "${plant_1_friendly_name} Temperature"
+    moisture:
+      name: "${plant_1_friendly_name} Moisture"
+    illuminance:
+      name: "${plant_1_friendly_name} Brightness"
+    conductivity:
+      name: "${plant_1_friendly_name} Conductivity"
+
+text_sensor:
+  - platform: template
+    name: "${device_friendly_name}: ESPHome Version (Short)"
+    lambda: |-
+      auto state = id(esphome_version).state;
+      return state.substr(0, state.find(' '));
+
+  - platform: version
+    name: "${device_friendly_name}: ESPHome Version"
+    id: esphome_version
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
