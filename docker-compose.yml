@@ -180,7 +180,6 @@ services:
     volumes:
       - /etc/ssl:/etc/ssl:ro
       - /usr/share/ca-certificates:/usr/share/ca-certificates:ro
-      - vernemq-data:/vernemq/data
 
   zwave-js:
     container_name: zwave-js
@@ -202,5 +201,4 @@ volumes:
   hass-config:
   hass-db-data:
   letsencrypt-data:
-  vernemq-data:
   zwave-js-config:
