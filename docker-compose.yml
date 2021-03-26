@@ -46,14 +46,6 @@ services:
       - /var/log:/var/log:ro
       - fail2ban-data:/data
 
-  glances:
-    container_name: glances
-    environment:
-      GLANCES_OPT: "-w"
-    image: "nicolargo/glances:dev"
-    network_mode: "host"
-    restart: always
-
   hass:
     container_name: hass
     depends_on:
