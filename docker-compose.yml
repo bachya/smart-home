@@ -185,7 +185,7 @@ services:
   zwave-js:
     container_name: zwave-js
     devices:
-      - "/dev/ttyACM0:/dev/zwave"
+      - "/dev/ttyACM0:/dev/ttyACM0"
     environment:
       NETWORK_KEY: "${ZWAVE_NETWORK_KEY}"
     image: "zwavejs/zwavejs2mqtt:${ZJS2M_VERSION}"
