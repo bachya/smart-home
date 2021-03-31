@@ -21,7 +21,7 @@ binary_sensor:
 
             id(garage_door_cover).publish_state();
     pin:
-      number: GPIO13
+      number: GPIO15
       inverted: true
       mode: INPUT_PULLUP
 
@@ -40,7 +40,7 @@ binary_sensor:
 
             id(garage_door_cover).publish_state();
     pin:
-      number: GPIO12
+      number: GPIO13
       inverted: true
       mode: INPUT_PULLUP
 
@@ -72,21 +72,21 @@ ota:
 
 sensor:
   - platform: ultrasonic
-    echo_pin: GPIO3
+    echo_pin: GPIO14
     name: Aaron's Parking Spot Distance
-    trigger_pin: GPIO1
+    trigger_pin: GPIO16
     update_interval: 3s
 
   - platform: ultrasonic
-    echo_pin: GPIO4
+    echo_pin: GPIO1
     name: Britt's Parking Spot Distance
-    trigger_pin: GPIO5
+    trigger_pin: GPIO3
     update_interval: 3s
 
 switch:
   - platform: gpio
     name: "${device_friendly_name} Relay"
-    pin: GPIO14
+    pin: GPIO12
     id: relay
 
   - platform: restart
