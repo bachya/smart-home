@@ -44,7 +44,7 @@ max_exceeded: silent
 
 trigger:
   platform: event
-  event_type: zwave_js_event
+  event_type: zwave_js_value_notification
   event_data:
     command_class_name: Central Scene
     device_id: !input aeotec_nanomote
