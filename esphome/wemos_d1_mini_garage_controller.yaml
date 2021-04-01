@@ -21,7 +21,7 @@ binary_sensor:
 
             id(garage_door_cover).publish_state();
     pin:
-      number: GPIO15
+      number: GPIO2
       inverted: true
       mode: INPUT_PULLUP
 
