@@ -246,6 +246,32 @@ automation:
             data:
               entity_id: input_boolean.away_mode
 
+  - alias: "Thermostat Sleep Timer"
+    use_blueprint:
+      path: bachya/sleep-timer.yaml
+      input:
+        input_number: input_number.thermostat_sleep_timer
+        timer: timer.thermostat_sleep_timer
+        timer_cancel_action:
+          - service: climate.set_hvac_mode
+            data:
+              entity_id: climate.alarm_com_smart_thermostat
+              hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
+        timer_expire_action:
+          - service: climate.set_hvac_mode
+            data:
+              entity_id: climate.alarm_com_smart_thermostat
+              hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
+        timer_start_action:
+          - service: input_select.select_option
+            data:
+              entity_id: input_select.last_hvac_mode
+              option: "{{ states('climate.alarm_com_smart_thermostat') }}"
+          - service: climate.set_hvac_mode
+            data:
+              entity_id: climate.alarm_com_smart_thermostat
+              hvac_mode: "off"
+
 input_number:
   daytime_temperature_ac:
     name: "Daytime Temperature (A/C)"
@@ -303,6 +329,14 @@ input_number:
     step: 1
     unit_of_measurement: °F
     icon: mdi:thermostat
+  thermostat_sleep_timer:
+    name: Sleep Timer
+    initial: 0
+    min: 0
+    max: 90
+    step: 1
+    unit_of_measurement: minutes
+    icon: mdi:timer
 
 input_select:
   last_hvac_mode:
@@ -451,3 +485,7 @@ sensor:
       - sensor.side_yard_inside_temp
 
 sun:
+
+timer:
+  thermostat_sleep_timer:
+    name: Sleep Timer Remaining
