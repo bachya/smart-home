@@ -66,12 +66,6 @@
       state: "on"
     automation.simulate_someone_being_home:
       state: "off"
-    automation.turn_dyson_higher_when_it_s_hot_in_the_bedroom:
-      state: "on"
-    automation.turn_dyson_s_night_mode_off:
-      state: "on"
-    automation.turn_dyson_s_night_mode_on:
-      state: "on"
     automation.turn_lights_on_when_doorbell_detects_person_at_nighttime:
       state: "on"
     automation.turn_living_room_lights_on_when_we_arrive:
@@ -105,8 +99,6 @@
     automation.alter_wolfie_based_on_alarm_status:
       state: "off"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
-      state: "off"
-    automation.dyson_temperature_management:
       state: "off"
     automation.notify_when_media_center_left_on:
       state: "off"
@@ -239,10 +231,6 @@
     automation.blackout_mode_schedule:
       state: "off"
     automation.cycle_master_toilet_fan_during_the_day:
-      state: "off"
-    automation.dyson_night_mode:
-      state: "off"
-    automation.dyson_temperature_management:
       state: "off"
     automation.notify_of_next_trash_pickup_the_night_before:
       state: "off"
