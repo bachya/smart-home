@@ -3,7 +3,7 @@ automation:
   - alias: Notify of next trash pickup the night before
     trigger:
       platform: time
-      at: "20:00:00"
+      at: "18:00:00"
     condition:
       condition: template
       value_template: >
