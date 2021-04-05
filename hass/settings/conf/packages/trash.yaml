@@ -72,7 +72,7 @@ sensor:
       recollect_waste_friendly_date:
         friendly_name: Next Pickup
         value_template: >
-          {% set ts = as_timestamp(states("sensor.recollect_waste")) }}
+          {% set ts = as_timestamp(states("sensor.recollect_waste")) %}
           {% set day = ts|timestamp_custom("%d")|int %}
           {% if 4 <= day <= 20 or 24 <= day <= 30 %}
             {% set suffix = "th" %}
