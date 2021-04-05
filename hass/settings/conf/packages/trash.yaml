@@ -3,7 +3,7 @@ automation:
   - alias: Notify of next trash pickup the night before
     trigger:
       platform: time
-      at: "18:00:00"
+      at: "19:00:00"
     condition:
       condition: template
       value_template: >
@@ -72,15 +72,11 @@ sensor:
       recollect_waste_friendly_date:
         friendly_name: Next Pickup
         value_template: >
-          {% set date = strptime(
-            states("sensor.recollect_waste"), "%Y-%m-%d"
-          ) %}
-          {% set day = date.strftime("%d")|int %}
+          {% set ts = as_timestamp(states("sensor.recollect_waste")) }}
+          {% set day = ts|timestamp_custom("%d")|int %}
           {% if 4 <= day <= 20 or 24 <= day <= 30 %}
             {% set suffix = "th" %}
           {% else %}
             {% set suffix = ["st", "nd", "rd"][day % 10 - 1] %}
           {% endif %}
-          {{ date.strftime("%A, %B %d").lstrip("0").replace(
-            " 0", " "
-          ) + suffix }}
+          {{ (ts | timestamp_custom("%A, %B %d")).replace(" 0", " ") + suffix }}
