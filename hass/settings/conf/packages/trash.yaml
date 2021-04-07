@@ -22,6 +22,7 @@ automation:
               expand("group.trash_sensors")
               | selectattr("state", "equalto", "on")
               | join(", ", attribute="attributes.friendly_name")
+              | lower
             }}
           title: Tomorrow's Trash Pickup
 
