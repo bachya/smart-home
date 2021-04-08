@@ -389,6 +389,7 @@ sensor:
       - sensor.bedroom_humidity
       - sensor.master_bathroom_humidity
       - sensor.office_node_pro_humidity
+      - sensor.pure_humidify_cool_humidity
       - sensor.side_yard_humidity_in
 
   - platform: moon
@@ -458,6 +459,7 @@ sensor:
       - sensor.kitchen_sink_sensor_temperature
       - sensor.master_bathroom_temperature
       - sensor.office_node_pro_temperature
+      - sensor.pure_humidify_cool_temperature
       - sensor.side_yard_inside_temp
       - sensor.upstairs_hallway_sensor_temperature
 
