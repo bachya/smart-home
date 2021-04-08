@@ -1,6 +1,7 @@
 ---
 automation:
   - alias: "Climate Schedule"
+    id: "climate_schedule"
     mode: queued
     trigger:
       - platform: homeassistant
@@ -153,6 +154,7 @@ automation:
                 {{ states("input_number.nighttime_temperature_heat") | int }}
 
   - alias: "Proximity Climate Away Mode"
+    id: "proximity_climate_away_mode"
     trigger:
       platform: state
       entity_id: sensor.proximity_zone

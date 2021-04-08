@@ -1,6 +1,7 @@
 ---
 automation:
   - alias: "Turn off garage lights after garage door closes"
+    id: "turn_off_garage_lights_after_garage_door_closes"
     trigger:
       platform: state
       entity_id: cover.garage_door
@@ -13,6 +14,7 @@ automation:
         entity_id: switch.garage_lights
 
   - alias: "Turn on garage lights when garage door opens while it's dark"
+    id: "turn_on_garage_lights_when_garage_door_opens_while_its_dark"
     trigger:
       platform: state
       entity_id: cover.garage_door
@@ -27,6 +29,7 @@ automation:
         entity_id: switch.garage_lights
 
   - alias: "Turn on garage lights at sunset if the garage is open"
+    id: "turn_on_garage_lights_at_sunset_if_the_garage_is_open"
     trigger:
       platform: event
       event_type: LOCAL_SUNSET

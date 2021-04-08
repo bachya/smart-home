@@ -1,6 +1,7 @@
 ---
 automation:
   - alias: "Flower Box Timer"
+    id: "flower_box_timer"
     use_blueprint:
       path: bachya/sleep-timer.yaml
       input:
@@ -26,6 +27,7 @@ automation:
               zone_run_time: "{{ states(input) | int * 60 }}"
 
   - alias: "Landscaping Timer"
+    id: "landscaping_timer"
     use_blueprint:
       path: bachya/sleep-timer.yaml
       input:

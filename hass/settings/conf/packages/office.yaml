@@ -1,6 +1,7 @@
 ---
 automation:
   - alias: "Master Bathroom Fan Timer"
+    id: "master_bathroom_fan_timer"
     use_blueprint:
       path: bachya/sleep-timer.yaml
       input:
@@ -17,6 +18,7 @@ automation:
             entity_id: switch.office_salt_lamp_switch
 
   - alias: "Turn office salt lamp off at 10pm"
+    id: "turn_office_salt_lamp_off_at_10pm"
     trigger:
       platform: time
       at: "22:00:00"
@@ -26,6 +28,7 @@ automation:
         entity_id: switch.office_salt_lamp
 
   - alias: "Turn office salt lamp on at sunset"
+    id: "turn_office_salt_lamp_on_at_sunset"
     trigger:
       platform: event
       event_type: LOCAL_SUNSET

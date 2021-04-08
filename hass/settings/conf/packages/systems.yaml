@@ -1,18 +1,7 @@
 ---
 automation:
-  - alias: "Dump MQTT for OpenZWave on HASS startup"
-    trigger:
-      platform: homeassistant
-      event: start
-    action:
-      - delay:
-          minutes: 1
-      - service: mqtt.dump
-        data:
-          topic: "OpenZWave/#"
-          duration: 5
-
   - alias: "Forward HASS persistent notifications to Slack"
+    id: "forward_hass_persistent_notifications_to_slack"
     trigger:
       platform: event
       event_type: call_service
@@ -27,6 +16,7 @@ automation:
             {{ trigger.event.data.service_data.message }}
 
   - alias: "Manage HASS Themes"
+    id: "manage_hass_themes"
     trigger:
       - platform: event
         event_type: LOCAL_SUNSET
@@ -57,6 +47,7 @@ automation:
                 name: Orange light
 
   - alias: "Notify on HACS updates"
+    id: "notify_on_hacs_updates"
     trigger:
       platform: state
       entity_id: sensor.hacs
@@ -71,6 +62,7 @@ automation:
           💿 There are new HACS updates: {{ trigger.to_state.state }}
 
   - alias: "Notify on high CPU"
+    id: "notify_on_high_cpu"
     trigger:
       - platform: numeric_state
         entity_id:
@@ -107,6 +99,7 @@ automation:
           🚨 {{ name }} has used more than 60% CPU for more than 5 minutes.
 
   - alias: "Notify on high disk usage"
+    id: "notify_on_high_disk_usage"
     trigger:
       - platform: numeric_state
         entity_id:
@@ -159,6 +152,7 @@ automation:
           🚨 {{ name }} is at more than 85% of its disk space.
 
   - alias: "Notify on high memory"
+    id: "notify_on_high_memory"
     trigger:
       - platform: numeric_state
         entity_id:
@@ -195,6 +189,7 @@ automation:
           🚨 {{ name }} has used more than 75% memory for more than 5 minutes.
 
   - alias: "Notify when battery is low"
+    id: "notify_when_battery_is_low"
     trigger:
       - platform: numeric_state
         entity_id:
@@ -223,6 +218,7 @@ automation:
         message: "🔋 @aaron {{ trigger.entity_id }} is low."
 
   - alias: "Notify when media center left on"
+    id: "notify_when_media_center_left_on"
     trigger:
       platform: state
       entity_id: switch.media_center
@@ -235,6 +231,7 @@ automation:
         message: "🎥 The media center has been on for 12 hours."
 
   - alias: "Notify when public IP changes"
+    id: "notify_when_public_ip_changes"
     trigger:
       platform: state
       entity_id: sensor.bachho_me
@@ -245,6 +242,7 @@ automation:
           🖥  Our public IP has changed: {{ trigger.to_state.state }}
 
   - alias: "Notify when sensor goes offline"
+    id: "notify_when_sensor_goes_offline"
     trigger:
       - platform: state
         entity_id:

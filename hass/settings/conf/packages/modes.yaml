@@ -1,6 +1,7 @@
 ---
 automation:
   - alias: "Blackout Mode Schedule"
+    id: "blackout_mode_schedule"
     trigger:
       - platform: time
         at: "21:00:00"
@@ -56,6 +57,7 @@ automation:
               entity_id: input_boolean.blackout_mode
 
   - alias: "Activate Blackout Mode when the Good Night scene activates"
+    id: "activate_blackout_mode_when_the_good_night_scene_activates"
     trigger:
       - platform: event
         event_type: call_service

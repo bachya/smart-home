@@ -1,6 +1,7 @@
 ---
 automation:
   - alias: "Cycle master toilet fan during the day"
+    id: "cycle_master_toilet_fan_during_the_day"
     trigger:
       platform: time_pattern
       hours: "/1"
@@ -15,6 +16,7 @@ automation:
         value: 15
 
   - alias: "Master Bathroom Fan Double-Tap"
+    id: "master_bathroom_fan_doubletap"
     use_blueprint:
       path: bachya/zwave-double-tap.yaml
       input:
@@ -29,6 +31,7 @@ automation:
               value: 30
 
   - alias: "Master Bathroom Fan Timer"
+    id: "master_bathroom_fan_timer"
     use_blueprint:
       path: bachya/sleep-timer.yaml
       input:
@@ -45,6 +48,7 @@ automation:
             entity_id: switch.master_bathroom_fan
 
   - alias: "Master Bedroom Salt Lamp Timer"
+    id: "master_bedroom_salt_lamp_timer"
     use_blueprint:
       path: bachya/sleep-timer.yaml
       input:
@@ -61,6 +65,7 @@ automation:
             entity_id: switch.master_bedroom_salt_lamp
 
   - alias: "Master Toilet Fan Double-Tap"
+    id: "master_toilet_fan_doubletap"
     use_blueprint:
       path: bachya/zwave-double-tap.yaml
       input:
@@ -75,6 +80,7 @@ automation:
               value: 10
 
   - alias: "Master Toilet Fan Timer"
+    id: "master_toilet_fan_timer"
     use_blueprint:
       path: bachya/sleep-timer.yaml
       input:
@@ -91,6 +97,7 @@ automation:
             entity_id: switch.master_toilet_fan
 
   - alias: "Trigger Good Night when Aaron's NFC tag is scanned"
+    id: "trigger_good_night_when_aaron's_nfc_tag_is_scanned"
     trigger:
       platform: event
       event_type: tag_scanned
@@ -100,6 +107,7 @@ automation:
       scene: scene.good_night
 
   - alias: "Turn master bedroom salt lamp on at sunset"
+    id: "turn_master_bedroom_salt_lamp_on_at_sunset"
     trigger:
       platform: event
       event_type: LOCAL_SUNSET

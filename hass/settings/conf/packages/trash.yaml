@@ -1,6 +1,7 @@
 ---
 automation:
-  - alias: Notify of next trash pickup the night before
+  - alias: "Notify of next trash pickup the night before"
+    id: "notify_of_next_trash_pickup_the_night_before"
     trigger:
       platform: time
       at: "19:00:00"

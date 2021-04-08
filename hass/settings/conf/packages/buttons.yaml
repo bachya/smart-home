@@ -1,6 +1,7 @@
 ---
 automation:
   - alias: "Aaron's Bedside NanoMote Quad"
+    id: "aarons_bedside_nanomote_quad"
     use_blueprint:
       path: troy/ozw-aeotec-zwa003-nanomote-quad.yaml
       input:

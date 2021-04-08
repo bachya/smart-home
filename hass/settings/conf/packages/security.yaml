@@ -71,6 +71,7 @@ alert:
 
 automation:
   - alias: "Automatic Lockup"
+    id: "automatic_lockup"
     trigger:
       # Everyone leaves home:
       - platform: state
@@ -106,6 +107,7 @@ automation:
               scene: scene.good_night
 
   - alias: "Forward SimpliSafe events and notifications to Slack"
+    id: "forward_simplisafe_events_and_notifications_to_slack"
     trigger:
       - platform: event
         event_type: SIMPLISAFE_EVENT
@@ -124,6 +126,7 @@ automation:
           📥 SimpliSafe Message: {{ message }}
 
   - alias: "Manage Security via iOS Notifications"
+    id: "manage_security_via_ios_notifications"
     trigger:
       - platform: event
         event_type: ios.notification_action_fired
@@ -154,6 +157,7 @@ automation:
               entity_id: alert.house_empty_and_insecure
 
   - alias: "Manage SimpliSafe sounds during blackout"
+    id: "manage_simplisafe_sounds_during_blackout"
     trigger:
       platform: state
       entity_id: input_boolean.blackout_mode
@@ -181,6 +185,7 @@ automation:
               voice_prompt_volume: 2
 
   - alias: "Notify when security status changes"
+    id: "notify_when_security_status_changes"
     trigger:
       platform: state
       entity_id: binary_sensor.secure_status
@@ -191,6 +196,7 @@ automation:
           🔐 The house's security has changed: {{ trigger.to_state.state }}
 
   - alias: "Simulate someone being home"
+    id: "simulate_someone_being_home"
     trigger:
       - platform: state
         entity_id: sensor.replay_bar_cart_leds
@@ -316,6 +322,7 @@ automation:
             {% endif %}
 
   - alias: "Turn off simulated TVs when we get home"
+    id: "turn_off_simulated_tvs_when_we_get_home"
     trigger:
       platform: state
       entity_id: automation.simulate_someone_being_home

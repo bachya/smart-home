@@ -1,6 +1,7 @@
 ---
 automation:
   - alias: "Backyard lights schedule"
+    id: "backyard_lights_schedule"
     trigger:
       - platform: time
         at: "21:30:00"
@@ -36,6 +37,7 @@ automation:
               entity_id: switch.backyard_lights
 
   - alias: "Fire local event for weather station-detected sunset"
+    id: "fire_local_event_for_weather_stationdetected_sunset"
     trigger:
       - platform: state
         entity_id: sensor.filtered_outdoor_brightness
@@ -68,6 +70,7 @@ automation:
       - event: LOCAL_SUNSET
 
   - alias: "Patio lights schedule"
+    id: "patio_lights_schedule"
     trigger:
       - platform: time
         at: "23:00:00"

@@ -25,6 +25,7 @@ alert:
 
 automation:
   - alias: "Alter Wolfie based on alarm status"
+    id: "alter_wolfie_based_on_alarm_status"
     trigger:
       - platform: state
         entity_id: vacuum.rockrobo

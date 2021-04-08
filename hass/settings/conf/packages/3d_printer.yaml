@@ -1,6 +1,7 @@
 ---
 automation:
   - alias: "3D Printer State Notifications"
+    id: "3d_printer_state_notifications"
     trigger:
       platform: state
       entity_id: sensor.octoprint_current_state
@@ -30,6 +31,7 @@ automation:
               message: "🦿 3D print started"
 
   - alias: "Turn 3D printer off when print completes"
+    id: "turn_3d_printer_off_when_print_completes"
     trigger:
       platform: state
       entity_id: sensor.octoprint_current_state
