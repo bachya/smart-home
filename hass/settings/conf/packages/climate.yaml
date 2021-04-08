@@ -71,6 +71,8 @@ automation:
                   {{ states("input_number.thermostat_eco_high_threshold")|int }}
                 target_temp_low: >
                   {{ states("input_number.thermostat_eco_low_threshold")|int }}
+            - service: fan.turn_off
+              entity_id: fan.pure_humidify_cool
         # Away Mode Off
         - conditions:
             - condition: state
@@ -80,10 +82,12 @@ automation:
               entity_id: input_boolean.away_mode
               state: "off"
           sequence:
-            service: climate.set_hvac_mode
-            data:
-              entity_id: climate.alarm_com_smart_thermostat
-              hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
+            - service: climate.set_hvac_mode
+              data:
+                entity_id: climate.alarm_com_smart_thermostat
+                hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
+            - service: fan.turn_on
+              entity_id: fan.pure_humidify_cool
         # A/C Daytime
         - conditions:
             - condition: state
@@ -96,11 +100,15 @@ automation:
               entity_id: input_boolean.away_mode
               state: "off"
           sequence:
-            service: climate.set_temperature
-            entity_id: climate.alarm_com_smart_thermostat
-            data:
-              temperature: >
-                {{ states("input_number.daytime_temperature_ac") | int }}
+            - service: climate.set_temperature
+              entity_id: climate.alarm_com_smart_thermostat
+              data:
+                temperature: >
+                  {{ states("input_number.daytime_temperature_ac") | int }}
+            - service: switch.turn_off
+              entity_id: switch.pure_humidify_cool_night_mode
+            - service: switch.turn_on
+              entity_id: switch.pure_humidify_cool_auto_mode
         # A/C Nighttime
         - conditions:
             - condition: state
@@ -113,11 +121,17 @@ automation:
               entity_id: input_boolean.away_mode
               state: "off"
           sequence:
-            service: climate.set_temperature
-            entity_id: climate.alarm_com_smart_thermostat
-            data:
-              temperature: >
-                {{ states("input_number.nighttime_temperature_ac") | int }}
+            - service: climate.set_temperature
+              entity_id: climate.alarm_com_smart_thermostat
+              data:
+                temperature: >
+                  {{ states("input_number.nighttime_temperature_ac") | int }}
+            - service: switch.turn_on
+              entity_id: switch.pure_humidify_cool_night_mode
+            - service: switch.turn_off
+              entity_id: switch.pure_humidify_cool_auto_mode
+            - service: humidifer.turn_on
+              entity_id: humidifier.pure_humidify_cool
         # Heat Daytime
         - conditions:
             - condition: state
@@ -130,11 +144,15 @@ automation:
               entity_id: input_boolean.away_mode
               state: "off"
           sequence:
-            service: climate.set_temperature
-            entity_id: climate.alarm_com_smart_thermostat
-            data:
-              temperature: >
-                {{ states("input_number.daytime_temperature_heat") | int }}
+            - service: climate.set_temperature
+              entity_id: climate.alarm_com_smart_thermostat
+              data:
+                temperature: >
+                  {{ states("input_number.daytime_temperature_heat") | int }}
+            - service: switch.turn_off
+              entity_id: switch.pure_humidify_cool_night_mode
+            - service: switch.turn_on
+              entity_id: switch.pure_humidify_cool_auto_mode
         # Heat Nighttime
         - conditions:
             - condition: state
@@ -147,11 +165,17 @@ automation:
               entity_id: input_boolean.away_mode
               state: "off"
           sequence:
-            service: climate.set_temperature
-            entity_id: climate.alarm_com_smart_thermostat
-            data:
-              temperature: >
-                {{ states("input_number.nighttime_temperature_heat") | int }}
+            - service: climate.set_temperature
+              entity_id: climate.alarm_com_smart_thermostat
+              data:
+                temperature: >
+                  {{ states("input_number.nighttime_temperature_heat") | int }}
+            - service: switch.turn_on
+              entity_id: switch.pure_humidify_cool_night_mode
+            - service: switch.turn_off
+              entity_id: switch.pure_humidify_cool_auto_mode
+            - service: humidifer.turn_on
+              entity_id: humidifier.pure_humidify_cool
 
   - alias: "Proximity Climate Away Mode"
     id: "proximity_climate_away_mode"
