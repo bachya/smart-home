@@ -72,6 +72,7 @@ automation:
         entity_id: input_boolean.blackout_mode
 
   - alias: "Adjust automations in Blackout Mode"
+    id: "adjust_automations_in_blackout_mode"
     trigger:
       - platform: event
         event_type: call_service
@@ -87,6 +88,7 @@ automation:
       scene: scene.blackout_mode
 
   - alias: "Adjust automations in Guest Mode"
+    id: "adjust_automations_in_guest_mode"
     trigger:
       platform: state
       entity_id: input_boolean.guest_mode
@@ -95,6 +97,7 @@ automation:
       scene: scene.guest_mode
 
   - alias: "Adjust automations in Vacation Mode"
+    id: "adjust_automations_in_vacation_mode"
     trigger:
       platform: state
       entity_id: input_boolean.vacation_mode
@@ -103,6 +106,7 @@ automation:
       scene: scene.vacation_mode
 
   - alias: "Reset automations when no mode is active"
+    id: "reset_automations_when_no_mode_is_active"
     trigger:
       - platform: event
         event_type: call_service

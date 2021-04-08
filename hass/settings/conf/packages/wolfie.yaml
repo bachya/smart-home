@@ -76,6 +76,7 @@ automation:
               entity_id: alarm_control_panel.8673_e_55th_avenue
 
   - alias: "Manage Wolfie's Bin"
+    id: "manage_wolfies_bin"
     trigger:
       - platform: state
         entity_id: vacuum.rockrobo
@@ -110,6 +111,7 @@ automation:
                 entity_id: input_boolean.wolfie_running
 
   - alias: "Notify when time for Wolfie to run"
+    id: "notify_when_time_for_wolfie_to_run"
     trigger:
       platform: state
       entity_id: calendar.wolfie_schedule
@@ -121,6 +123,7 @@ automation:
         title: Vacuum Time
 
   - alias: "Notify when Wolfie needs a new consumable"
+    id: "notify_when_wolfie_needs_a_new_consumable"
     trigger:
       - platform: numeric_state
         entity_id:

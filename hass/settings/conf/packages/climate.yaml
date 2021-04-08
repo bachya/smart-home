@@ -249,6 +249,7 @@ automation:
               entity_id: input_boolean.away_mode
 
   - alias: "Thermostat Sleep Timer"
+    id: "thermostat_sleep_timer"
     use_blueprint:
       path: bachya/sleep-timer.yaml
       input:
