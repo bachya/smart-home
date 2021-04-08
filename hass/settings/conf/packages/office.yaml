@@ -1,7 +1,7 @@
 ---
 automation:
-  - alias: "Master Bathroom Fan Timer"
-    id: "master_bathroom_fan_timer"
+  - alias: "Office Salt Lamp Timer"
+    id: "office_salt_lamp_timer"
     use_blueprint:
       path: bachya/sleep-timer.yaml
       input:
