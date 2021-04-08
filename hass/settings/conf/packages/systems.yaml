@@ -67,10 +67,8 @@ automation:
       - platform: numeric_state
         entity_id:
           - sensor.gryffindor_cpu_used
-          - sensor.hub_cpu_used
           - sensor.hufflepuff_cpu_used
           - sensor.linode_cpu_used
-          - sensor.media_center_cpu_used
           - sensor.ravenclaw_cpu_used
           - sensor.slytherin_cpu_used
         above: 60
@@ -82,14 +80,10 @@ automation:
         message: >
           {% if trigger.entity_id == "sensor.gryffindor_cpu_used" %}
             {% set name = "Gryffindor" %}
-          {% elif trigger.entity_id == "sensor.hub_cpu_used" %}
-            {% set name = "Hub" %}
           {% elif trigger.entity_id == "sensor.hufflepuff_cpu_used" %}
             {% set name = "Hufflepuff" %}
           {% elif trigger.entity_id == "sensor.linode_cpu_used" %}
             {% set name = "Linode" %}
-          {% elif trigger.entity_id == "sensor.media_center_cpu_used" %}
-            {% set name = "Media Center" %}
           {% elif trigger.entity_id == "sensor.ravenclaw_cpu_used" %}
             {% set name = "Ravenclaw" %}
           {% elif trigger.entity_id == "sensor.slytherin_cpu_used" %}
@@ -104,12 +98,8 @@ automation:
       - platform: numeric_state
         entity_id:
           - sensor.gryffindor_etc_hosts_used_percent
-          - sensor.hub_etc_hosts_used_percent
           - sensor.hufflepuff_etc_hosts_used_percent
           - sensor.linode_etc_hosts_used_percent
-          - sensor.media_etc_hosts_used_percent
-          - sensor.media_data_backup_used_percent
-          - sensor.media_data_media_used_percent
           - sensor.ravenclaw_etc_hosts_used_percent
           - sensor.slytherin_etc_hosts_used_percent
         above: 85
@@ -120,27 +110,11 @@ automation:
           {% if trigger.entity_id
              == "sensor.gryffindor_etc_hosts_used_percent" %}
             {% set name = "Gryffindor" %}
-          {% elif trigger.entity_id == "sensor.hub_etc_hosts_used_percent" %}
-            {% set name = "Hub" %}
           {% elif trigger.entity_id
              == "sensor.hufflepuff_etc_hosts_used_percent" %}
             {% set name = "Hufflepuff" %}
           {% elif trigger.entity_id == "sensor.linode_etc_hosts_used_percent" %}
             {% set name = "Linode" %}
-          {%
-            elif trigger.entity_id == "sensor.media_etc_hosts_used_percent"
-          %}
-            {% set name = "Media Center (Main)" %}
-          {%
-            elif trigger.entity_id
-            == "sensor.media_center_data_backup_used_percent"
-          %}
-            {% set name = "Media Center (Backup)" %}
-          {%
-            elif trigger.entity_id
-            == "sensor.media_center_data_media_used_percent"
-          %}
-            {% set name = "Media Center (Media)" %}
           {% elif trigger.entity_id
              == "sensor.ravenclaw_etc_hosts_used_percent" %}
             {% set name = "Ravenclaw" %}
@@ -157,10 +131,8 @@ automation:
       - platform: numeric_state
         entity_id:
           - sensor.gryffindor_ram_used_percent
-          - sensor.hub_ram_used_percent
           - sensor.hufflepuff_ram_used_percent
           - sensor.linode_ram_used_percent
-          - sensor.media_ram_used_percent
           - sensor.ravenclaw_ram_used_percent
           - sensor.slytherin_ram_used_percent
         above: 75
@@ -172,14 +144,10 @@ automation:
         message: >
           {% if trigger.entity_id == "sensor.gryffindor_ram_used_percent" %}
             {% set name = "Gryffindor" %}
-          {% elif trigger.entity_id == "sensor.hub_ram_used_percent" %}
-            {% set name = "Hub" %}
           {% elif trigger.entity_id == "sensor.hufflepuff_ram_used_percent" %}
             {% set name = "Hufflepuff" %}
           {% elif trigger.entity_id == "sensor.linode_ram_used_percent" %}
             {% set name = "Linode" %}
-          {% elif trigger.entity_id == "sensor.media_ram_used_percent" %}
-            {% set name = "Media Center" %}
           {% elif trigger.entity_id == "sensor.ravenclaw_ram_used_percent" %}
             {% set name = "Ravenclaw" %}
           {% elif trigger.entity_id == "sensor.slytherin_ram_used_percent" %}
@@ -216,19 +184,6 @@ automation:
       service: notify.slack
       data:
         message: "🔋 @aaron {{ trigger.entity_id }} is low."
-
-  - alias: "Notify when media center left on"
-    id: "notify_when_media_center_left_on"
-    trigger:
-      platform: state
-      entity_id: switch.media_center
-      to: "on"
-      for:
-        hours: 12
-    action:
-      service: notify.slack
-      data:
-        message: "🎥 The media center has been on for 12 hours."
 
   - alias: "Notify when public IP changes"
     id: "notify_when_public_ip_changes"

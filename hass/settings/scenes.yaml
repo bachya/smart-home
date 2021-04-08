@@ -48,8 +48,6 @@
       state: "on"
     automation.notify_on_hacs_updates:
       state: "on"
-    automation.notify_when_media_center_left_on:
-      state: "on"
     automation.3d_printer_state_notifications:
       state: "on"
     automation.notify_when_time_for_wolfie_to_run:
@@ -58,10 +56,6 @@
       state: "on"
     automation.notify_when_security_status_changes:
       state: "off"
-    automation.power_media_center_off_backup:
-      state: "on"
-    automation.power_media_center_on_backup:
-      state: "on"
     automation.reset_automations_when_no_mode_is_active:
       state: "on"
     automation.simulate_someone_being_home:
@@ -99,8 +93,6 @@
     automation.alter_wolfie_based_on_alarm_status:
       state: "off"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
-      state: "off"
-    automation.notify_when_media_center_left_on:
       state: "off"
     automation.3d_printer_state_notifications:
       state: "off"
