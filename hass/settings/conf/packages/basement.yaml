@@ -17,6 +17,17 @@ alert:
         critical: 1
         volume: 0.3
 
+automation:
+  - alias: "Reboot Guardian every night at 2am"
+    id: "reboot_guardian_every_night_at_2am"
+    trigger:
+      platform: time
+      at: "02:00:00"
+    action:
+      service: guardian.reboot
+      data:
+        entity_id: switch.guardian_b4e62d98118d_valve
+
 binary_sensor:
   - platform: template
     sensors:
