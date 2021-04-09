@@ -68,9 +68,9 @@ automation:
               data:
                 entity_id: climate.alarm_com_smart_thermostat
                 target_temp_high: >
-                  {{ states("input_number.thermostat_eco_high_threshold")|int }}
+                  {{ states("input_number.thermostat_eco_high_threshold") | float }}
                 target_temp_low: >
-                  {{ states("input_number.thermostat_eco_low_threshold")|int }}
+                  {{ states("input_number.thermostat_eco_low_threshold") | float }}
             - service: fan.turn_off
               entity_id: fan.pure_humidify_cool
         # Away Mode Off
@@ -102,9 +102,9 @@ automation:
               data:
                 temperature: >
                   {% if states("climate.alarm_com_smart_thermostat") == "cool" %}
-                    {{ states("input_number.daytime_temperature_ac") | int }}
+                    {{ states("input_number.daytime_temperature_ac") | float }}
                   {% else %}
-                    {{ states("input_number.daytime_temperature_heat") | int }}
+                    {{ states("input_number.daytime_temperature_heat") | float }}
                   {% endif %}
             - service: switch.turn_off
               entity_id: switch.pure_humidify_cool_night_mode
@@ -126,9 +126,9 @@ automation:
               data:
                 temperature: >
                   {% if states("climate.alarm_com_smart_thermostat") == "cool" %}
-                    {{ states("input_number.nighttime_temperature_ac") | int }}
+                    {{ states("input_number.nighttime_temperature_ac") | float }}
                   {% else %}
-                    {{ states("input_number.nighttime_temperature_heat") | int }}
+                    {{ states("input_number.nighttime_temperature_heat") | float }}
                   {% endif %}
             - service: switch.turn_on
               entity_id: switch.pure_humidify_cool_night_mode
