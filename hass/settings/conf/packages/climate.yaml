@@ -102,9 +102,9 @@ automation:
               data:
                 temperature: >
                   {% if states("climate.alarm_com_smart_thermostat") == "cool" %}
-                    states("input_number.daytime_temperature_ac") | int
+                    {{ states("input_number.daytime_temperature_ac") | int }}
                   {% else %}
-                    states("input_number.daytime_temperature_heat") | int
+                    {{ states("input_number.daytime_temperature_heat") | int }}
                   {% endif %}
             - service: switch.turn_off
               entity_id: switch.pure_humidify_cool_night_mode
@@ -126,9 +126,9 @@ automation:
               data:
                 temperature: >
                   {% if states("climate.alarm_com_smart_thermostat") == "cool" %}
-                    states("input_number.nighttime_temperature_ac") | int
+                    {{ states("input_number.nighttime_temperature_ac") | int }}
                   {% else %}
-                    states("input_number.nighttime_temperature_heat") | int
+                    {{ states("input_number.nighttime_temperature_heat") | int }}
                   {% endif %}
             - service: switch.turn_on
               entity_id: switch.pure_humidify_cool_night_mode
