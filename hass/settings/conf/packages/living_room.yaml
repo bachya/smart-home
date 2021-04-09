@@ -9,7 +9,7 @@ alert:
       - 60
     skip_first: true
     notifiers:
-      - mobile_app_brittany_bachs_iphone
+      - phones
 
 automation:
   - alias: "Turn living room lights on when we arrive"
