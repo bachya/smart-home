@@ -116,10 +116,11 @@ automation:
                   {% endif %}
             - service: switch.turn_off
               entity_id: switch.pure_humidify_cool_night_mode
-            - service: switch.turn_on
-              entity_id: switch.pure_humidify_cool_auto_mode
-            - service: humidifier.turn_off
-              entity_id: humidifier.pure_humidify_cool
+            - service: fan.set_percentage
+              target:
+                entity_id: fan.pure_humidify_cool
+              data:
+                percentage: 70
         # Nighttime
         - conditions:
             - condition: state
@@ -146,10 +147,13 @@ automation:
                   {% endif %}
             - service: switch.turn_on
               entity_id: switch.pure_humidify_cool_night_mode
-            - service: switch.turn_off
-              entity_id: switch.pure_humidify_cool_auto_mode
             - service: humidifier.turn_on
               entity_id: humidifier.pure_humidify_cool
+            - service: fan.set_percentage
+              target:
+                entity_id: fan.pure_humidify_cool
+              data:
+                percentage: 50
 
   - alias: "Proximity Climate Away Mode"
     id: "proximity_climate_away_mode"
