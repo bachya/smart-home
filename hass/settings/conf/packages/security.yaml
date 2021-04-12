@@ -20,7 +20,7 @@ alert:
   garage_left_open:
     name: 🚗 The garage has been left open.
     title: Security Alert
-    entity_id: cover.garage_door
+    entity_id: cover.wemos_d1_mini_garage_controller
     state: open
     repeat:
       - 5
@@ -376,14 +376,14 @@ binary_sensor:
                 and not is_state("sensor.proximity_zone", "Home")
               )
             )
-            and is_state("cover.garage_door", "closed")
+            and is_state("cover.wemos_d1_mini_garage_controller", "closed")
           }}
 
 group:
   security_devices:
     entities:
       - alarm_control_panel.8673_e_55th_avenue
-      - cover.garage_door
+      - cover.wemos_d1_mini_garage_controller
       - lock.8673_e_55th_avenue_patio_door
       - lock.front_door_lock
       - lock.garage_fire_door_lock

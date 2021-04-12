@@ -47,6 +47,26 @@ binary_sensor:
   - platform: status
     name: "${device_friendly_name} Status"
 
+  - platform: template
+    device_class: occupancy
+    lambda: |-
+      if (id(aaron_parking_spot_distance).state > 2.50) {
+        return false;
+      } else {
+        return true;
+      }
+    name: Aaron's Parking Spot Occupied
+
+  - platform: template
+    device_class: occupancy
+    lambda: |-
+      if (id(britt_parking_spot_distance).state > 2.50) {
+        return false;
+      } else {
+        return true;
+      }
+    name: Britt's Parking Spot Occupied
+
 cover:
   - platform: template
     close_action:
@@ -72,21 +92,25 @@ ota:
 
 sensor:
   - platform: ultrasonic
-    echo_pin: GPIO14
+    echo_pin: GPIO16
+    id: aaron_parking_spot_distance
     name: Aaron's Parking Spot Distance
-    trigger_pin: GPIO16
-    update_interval: 3s
+    timeout: 4m
+    trigger_pin: GPIO14
+    update_interval: 10s
 
   - platform: ultrasonic
-    echo_pin: GPIO1
+    echo_pin: GPIO15
+    id: britt_parking_spot_distance
     name: Britt's Parking Spot Distance
-    trigger_pin: GPIO3
-    update_interval: 3s
+    timeout: 4m
+    trigger_pin: GPIO4
+    update_interval: 10s
 
 switch:
   - platform: gpio
     name: "${device_friendly_name} Relay"
-    pin: GPIO12
+    pin: GPIO5
     id: relay
 
   - platform: restart

@@ -4,7 +4,7 @@ automation:
     id: "turn_off_garage_lights_after_garage_door_closes"
     trigger:
       platform: state
-      entity_id: cover.garage_door
+      entity_id: cover.wemos_d1_mini_garage_controller
       to: closed
       for:
         minutes: 10
@@ -17,7 +17,7 @@ automation:
     id: "turn_on_garage_lights_when_garage_door_opens_while_its_dark"
     trigger:
       platform: state
-      entity_id: cover.garage_door
+      entity_id: cover.wemos_d1_mini_garage_controller
       from: closed
     condition:
       condition: numeric_state
@@ -35,7 +35,7 @@ automation:
       event_type: LOCAL_SUNSET
     condition:
       condition: state
-      entity_id: cover.garage_door
+      entity_id: cover.wemos_d1_mini_garage_controller
       state: open
     action:
       service: switch.turn_on

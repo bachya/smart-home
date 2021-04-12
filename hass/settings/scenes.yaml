@@ -120,7 +120,7 @@
       state: "off"
     automation.simulate_someone_being_home:
       state: "on"
-    cover.garage_door:
+    cover.wemos_d1_mini_garage_controller:
       state: closed
     lock.123_main_street_patio_door:
       state: locked
@@ -150,7 +150,7 @@
   entities:
     alarm_control_panel.123_main_street:
       state: disarmed
-    cover.garage_door:
+    cover.wemos_d1_mini_garage_controller:
       state: open
     lock.garage_fire_door_lock:
       state: unlocked
@@ -160,7 +160,7 @@
   entities:
     alarm_control_panel.123_main_street:
       state: armed_home
-    cover.garage_door:
+    cover.wemos_d1_mini_garage_controller:
       state: closed
     lock.123_main_street_patio_door:
       state: locked
