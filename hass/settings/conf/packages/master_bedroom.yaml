@@ -148,11 +148,6 @@ binary_sensor:
         prob_given_true: 1.00
         prob_given_false: 0.911
       - platform: state
-        entity_id: switch.master_toilet_fan
-        to_state: "off"
-        prob_given_true: 0.98
-        prob_given_false: 0.804
-      - platform: state
         entity_id: sensor.aarons_iphone_battery_state
         to_state: Charging
         prob_given_true: 0.90
