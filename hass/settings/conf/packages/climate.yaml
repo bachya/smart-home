@@ -10,22 +10,22 @@ automation:
         # this prevents manually adjustments to the thermostat from triggerig
         # this automation:
       - platform: state
-        entity_id: climate.alarm_com_smart_thermostat
+        entity_id: climate.thermostat
         from: heat_cool
       - platform: state
-        entity_id: climate.alarm_com_smart_thermostat
+        entity_id: climate.thermostat
         from: cool
         to: heat
       - platform: state
-        entity_id: climate.alarm_com_smart_thermostat
+        entity_id: climate.thermostat
         from: heat
         to: cool
       - platform: state
-        entity_id: climate.alarm_com_smart_thermostat
+        entity_id: climate.thermostat
         from: "off"
         to: cool
       - platform: state
-        entity_id: climate.alarm_com_smart_thermostat
+        entity_id: climate.thermostat
         from: "off"
         to: heat
       - platform: state
@@ -55,18 +55,18 @@ automation:
             - service: input_select.select_option
               data:
                 entity_id: input_select.last_hvac_mode
-                option: "{{ states('climate.alarm_com_smart_thermostat') }}"
+                option: "{{ states('climate.thermostat') }}"
             - service: climate.set_hvac_mode
               data:
-                entity_id: climate.alarm_com_smart_thermostat
+                entity_id: climate.thermostat
                 hvac_mode: heat_cool
             - wait_template: >
                 {{
-                  is_state("climate.alarm_com_smart_thermostat", "heat_cool")
+                  is_state("climate.thermostat", "heat_cool")
                 }}
             - service: climate.set_temperature
               data:
-                entity_id: climate.alarm_com_smart_thermostat
+                entity_id: climate.thermostat
                 target_temp_high: >
                   {{
                     states("input_number.thermostat_eco_high_threshold") | float
@@ -80,7 +80,7 @@ automation:
         # Away Mode Off
         - conditions:
             - condition: state
-              entity_id: climate.alarm_com_smart_thermostat
+              entity_id: climate.thermostat
               state: heat_cool
             - condition: state
               entity_id: input_boolean.away_mode
@@ -88,7 +88,7 @@ automation:
           sequence:
             - service: climate.set_hvac_mode
               data:
-                entity_id: climate.alarm_com_smart_thermostat
+                entity_id: climate.thermostat
                 hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
             - service: fan.turn_on
               entity_id: fan.pure_humidify_cool
@@ -102,11 +102,11 @@ automation:
               state: "off"
           sequence:
             - service: climate.set_temperature
-              entity_id: climate.alarm_com_smart_thermostat
+              entity_id: climate.thermostat
               data:
                 temperature: >
                   {%
-                    if states("climate.alarm_com_smart_thermostat") == "cool"
+                    if states("climate.thermostat") == "cool"
                   %}
                     {{ states("input_number.daytime_temperature_ac") | float }}
                   {% else %}
@@ -131,11 +131,11 @@ automation:
               state: "off"
           sequence:
             - service: climate.set_temperature
-              entity_id: climate.alarm_com_smart_thermostat
+              entity_id: climate.thermostat
               data:
                 temperature: >
                   {%
-                    if states("climate.alarm_com_smart_thermostat") == "cool"
+                    if states("climate.thermostat") == "cool"
                   %}
                     {{
                       states("input_number.nighttime_temperature_ac") | float
@@ -260,21 +260,21 @@ automation:
         timer_cancel_action:
           - service: climate.set_hvac_mode
             data:
-              entity_id: climate.alarm_com_smart_thermostat
+              entity_id: climate.thermostat
               hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
         timer_expire_action:
           - service: climate.set_hvac_mode
             data:
-              entity_id: climate.alarm_com_smart_thermostat
+              entity_id: climate.thermostat
               hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
         timer_start_action:
           - service: input_select.select_option
             data:
               entity_id: input_select.last_hvac_mode
-              option: "{{ states('climate.alarm_com_smart_thermostat') }}"
+              option: "{{ states('climate.thermostat') }}"
           - service: climate.set_hvac_mode
             data:
-              entity_id: climate.alarm_com_smart_thermostat
+              entity_id: climate.thermostat
               hvac_mode: "off"
 
 input_number:
@@ -387,12 +387,12 @@ sensor:
     type: mean
     round_digits: 1
     entity_ids:
-      - sensor.alarm_com_smart_thermostat_humidity
       - sensor.bedroom_humidity
       - sensor.master_bathroom_humidity
       - sensor.office_node_pro_humidity
       - sensor.pure_humidify_cool_humidity
       - sensor.side_yard_humidity_in
+      - sensor.thermostat_humidity
 
   - platform: moon
 
@@ -452,9 +452,8 @@ sensor:
     type: mean
     round_digits: 1
     entity_ids:
-      - sensor.alarm_com_smart_thermostat_air_temperature
       - sensor.bedroom_temperature
-      - sensor.ecolink_z_wave_plus_firefighter_air_temperature
+      - sensor.basement_fire_fighter_air_temperature
       - sensor.fiddle_leaf_fig_temperature
       - sensor.guest_bedroom_sensor_temperature
       - sensor.kitchen_sensor_temperature
@@ -463,6 +462,7 @@ sensor:
       - sensor.office_node_pro_temperature
       - sensor.pure_humidify_cool_temperature
       - sensor.side_yard_inside_temp
+      - sensor.thermostat_air_temperature
       - sensor.upstairs_hallway_sensor_temperature
 
   - platform: min_max
@@ -471,7 +471,7 @@ sensor:
     round_digits: 1
     entity_ids:
       - sensor.basement_sensor_temperature
-      - sensor.ecolink_z_wave_plus_firefighter_air_temperature
+      - sensor.basement_fire_fighter_air_temperature
       - sensor.guardian_b4e62d98118d_temperature
 
   - platform: min_max
@@ -479,9 +479,9 @@ sensor:
     type: mean
     round_digits: 1
     entity_ids:
-      - sensor.alarm_com_smart_thermostat_air_temperature
       - sensor.kitchen_sensor_temperature
       - sensor.kitchen_sink_sensor_temperature
+      - sensor.thermostat_air_temperature
 
   - platform: min_max
     name: Office Temperature

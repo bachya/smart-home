@@ -13,21 +13,21 @@ automation:
           - condition: not
             conditions:
               - condition: state
-                entity_id: climate.alarm_com_smart_thermostat
+                entity_id: climate.thermostat
                 state: "off"
           - service: climate.set_temperature
-            entity_id: climate.alarm_com_smart_thermostat
+            entity_id: climate.thermostat
             data:
               temperature: >
                 {%
                   set c = state_attr(
-                    "climate.alarm_com_smart_thermostat", "temperature"
+                    "climate.thermostat", "temperature"
                   ) | int
                 %}
-                {% if is_state("climate.alarm_com_smart_thermostat", "cool") %}
+                {% if is_state("climate.thermostat", "cool") %}
                   {{ c - 2 }}
                 {%
-                  elif is_state("climate.alarm_com_smart_thermostat", "heat")
+                  elif is_state("climate.thermostat", "heat")
                 %}
                   {{ c + 2 }}
                 {% endif %}
