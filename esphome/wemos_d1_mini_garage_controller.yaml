@@ -93,6 +93,11 @@ ota:
 sensor:
   - platform: ultrasonic
     echo_pin: GPIO16
+    filters:
+      - median:
+          send_every: 4
+          send_first_at: 3
+          window_size: 7
     id: aaron_parking_spot_distance
     name: Aaron's Parking Spot Distance
     timeout: 4m
@@ -101,6 +106,11 @@ sensor:
 
   - platform: ultrasonic
     echo_pin: GPIO15
+    filters:
+      - median:
+          send_every: 4
+          send_first_at: 3
+          window_size: 7
     id: britt_parking_spot_distance
     name: Britt's Parking Spot Distance
     timeout: 4m
