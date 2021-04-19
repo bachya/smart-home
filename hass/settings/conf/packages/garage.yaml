@@ -1,5 +1,31 @@
 ---
 automation:
+  - alias: "Notify when cars are missing"
+    id: "notify_when_cars_are_missing"
+    trigger:
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: scene
+          service: turn_on
+          service_data:
+            entity_id: scene.good_night
+    condition:
+      condition: or
+      conditions:
+        - condition: state
+          entity_id: binary_sensor.aaron_s_parking_spot_occupied
+          state: "off"
+        - condition: state
+          entity_id: binary_sensor.britt_s_parking_spot_occupied
+          state: "off"
+    action:
+      service: notify.everyone
+      data:
+        message: >
+          A car isn't in the garage; should it be?
+        title: 🚗 Car Missing?
+
   - alias: "Turn off garage lights after garage door closes"
     id: "turn_off_garage_lights_after_garage_door_closes"
     trigger:
