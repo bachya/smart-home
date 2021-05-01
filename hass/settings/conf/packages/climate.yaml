@@ -287,14 +287,14 @@ input_number:
     min: 0
     max: 100
     step: 10
-    unit_of_measurement: %
+    unit_of_measurement: "%"
     icon: mdi:fan
   nighttime_dyson_fan_speed:
     name: "Nighttime Dyson Fan Speed"
     min: 0
     max: 100
     step: 10
-    unit_of_measurement: %
+    unit_of_measurement: "%"
     icon: mdi:fan
   daytime_temperature_ac:
     name: "Daytime Temperature (A/C)"
