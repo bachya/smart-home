@@ -60,101 +60,6 @@ automation:
         title: 💿 HACS Updates
         message: "There are {{ trigger.to_state.state }} updates"
 
-  - alias: "Notify on high CPU"
-    id: "notify_on_high_cpu"
-    trigger:
-      - platform: numeric_state
-        entity_id:
-          - sensor.gryffindor_cpu_used
-          - sensor.hufflepuff_cpu_used
-          - sensor.linode_cpu_used
-          - sensor.ravenclaw_cpu_used
-          - sensor.slytherin_cpu_used
-        above: 60
-        for:
-          minutes: 5
-    action:
-      service: notify.slack
-      data:
-        message: >
-          {% if trigger.entity_id == "sensor.gryffindor_cpu_used" %}
-            {% set name = "Gryffindor" %}
-          {% elif trigger.entity_id == "sensor.hufflepuff_cpu_used" %}
-            {% set name = "Hufflepuff" %}
-          {% elif trigger.entity_id == "sensor.linode_cpu_used" %}
-            {% set name = "Linode" %}
-          {% elif trigger.entity_id == "sensor.ravenclaw_cpu_used" %}
-            {% set name = "Ravenclaw" %}
-          {% elif trigger.entity_id == "sensor.slytherin_cpu_used" %}
-            {% set name = "Slytherin" %}
-          {% endif %}
-
-          🚨 {{ name }} has used more than 60% CPU for more than 5 minutes.
-
-  - alias: "Notify on high disk usage"
-    id: "notify_on_high_disk_usage"
-    trigger:
-      - platform: numeric_state
-        entity_id:
-          - sensor.gryffindor_etc_hosts_used_percent
-          - sensor.hufflepuff_etc_hosts_used_percent
-          - sensor.linode_etc_hosts_used_percent
-          - sensor.ravenclaw_etc_hosts_used_percent
-          - sensor.slytherin_etc_hosts_used_percent
-        above: 85
-    action:
-      service: notify.slack
-      data:
-        message: >
-          {% if trigger.entity_id
-             == "sensor.gryffindor_etc_hosts_used_percent" %}
-            {% set name = "Gryffindor" %}
-          {% elif trigger.entity_id
-             == "sensor.hufflepuff_etc_hosts_used_percent" %}
-            {% set name = "Hufflepuff" %}
-          {% elif trigger.entity_id == "sensor.linode_etc_hosts_used_percent" %}
-            {% set name = "Linode" %}
-          {% elif trigger.entity_id
-             == "sensor.ravenclaw_etc_hosts_used_percent" %}
-            {% set name = "Ravenclaw" %}
-          {% elif trigger.entity_id
-             == "sensor.slytherin_etc_hosts_used_percent" %}
-            {% set name = "Slytherin" %}
-          {% endif %}
-
-          🚨 {{ name }} is at more than 85% of its disk space.
-
-  - alias: "Notify on high memory"
-    id: "notify_on_high_memory"
-    trigger:
-      - platform: numeric_state
-        entity_id:
-          - sensor.gryffindor_ram_used_percent
-          - sensor.hufflepuff_ram_used_percent
-          - sensor.linode_ram_used_percent
-          - sensor.ravenclaw_ram_used_percent
-          - sensor.slytherin_ram_used_percent
-        above: 75
-        for:
-          minutes: 5
-    action:
-      service: notify.slack
-      data:
-        message: >
-          {% if trigger.entity_id == "sensor.gryffindor_ram_used_percent" %}
-            {% set name = "Gryffindor" %}
-          {% elif trigger.entity_id == "sensor.hufflepuff_ram_used_percent" %}
-            {% set name = "Hufflepuff" %}
-          {% elif trigger.entity_id == "sensor.linode_ram_used_percent" %}
-            {% set name = "Linode" %}
-          {% elif trigger.entity_id == "sensor.ravenclaw_ram_used_percent" %}
-            {% set name = "Ravenclaw" %}
-          {% elif trigger.entity_id == "sensor.slytherin_ram_used_percent" %}
-            {% set name = "Slytherin" %}
-          {% endif %}
-
-          🚨 {{ name }} has used more than 75% memory for more than 5 minutes.
-
   - alias: "Notify when battery is low"
     id: "notify_when_battery_is_low"
     trigger:
@@ -184,17 +89,6 @@ automation:
       data:
         title: 🔋 Low Battery
         message: "The battery for {{ trigger.entity_id }} should be replaced."
-
-  - alias: "Notify when public IP changes"
-    id: "notify_when_public_ip_changes"
-    trigger:
-      platform: state
-      entity_id: sensor.bachho_me
-    action:
-      service: notify.slack
-      data:
-        message: >
-          🖥  Our public IP has changed: {{ trigger.to_state.state }}
 
   - alias: "Notify when sensor goes offline"
     id: "notify_when_sensor_goes_offline"
