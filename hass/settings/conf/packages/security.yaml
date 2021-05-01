@@ -106,25 +106,6 @@ automation:
             sequence:
               scene: scene.good_night
 
-  - alias: "Forward SimpliSafe events and notifications to Slack"
-    id: "forward_simplisafe_events_and_notifications_to_slack"
-    trigger:
-      - platform: event
-        event_type: SIMPLISAFE_EVENT
-      - platform: event
-        event_type: SIMPLISAFE_NOTIFICATION
-    action:
-      service: notify.slack
-      data:
-        message: >
-          {% if trigger.event.event_type == "SIMPLISAFE_EVENT" %}
-            {% set message = trigger.event.data.last_event_info %}
-          {% elif trigger.event.event_type == "SIMPLISAFE_NOTIFICATION" %}
-            {% set message = trigger.event.data.message %}
-          {% endif %}
-
-          📥 SimpliSafe Message: {{ message }}
-
   - alias: "Manage Security via iOS Notifications"
     id: "manage_security_via_ios_notifications"
     trigger:
