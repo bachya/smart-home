@@ -122,7 +122,8 @@ automation:
               target:
                 entity_id: fan.pure_humidify_cool
               data:
-                percentage: 70
+                percentage: >
+                  states("input_number.daytime_dyson_fan_speed") | int
         # Nighttime
         - conditions:
             - condition: state
@@ -155,7 +156,8 @@ automation:
               target:
                 entity_id: fan.pure_humidify_cool
               data:
-                percentage: 40
+                percentage: >
+                  states("input_number.nighttime_dyson_fan_speed") | int
 
   - alias: "Proximity Climate Away Mode"
     id: "proximity_climate_away_mode"
@@ -280,6 +282,20 @@ automation:
               hvac_mode: "off"
 
 input_number:
+  daytime_dyson_fan_speed:
+    name: "Daytime Dyson Fan Speed"
+    min: 0
+    max: 100
+    step: 10
+    unit_of_measurement: %
+    icon: mdi:fan
+  nighttime_dyson_fan_speed:
+    name: "Nighttime Dyson Fan Speed"
+    min: 0
+    max: 100
+    step: 10
+    unit_of_measurement: %
+    icon: mdi:fan
   daytime_temperature_ac:
     name: "Daytime Temperature (A/C)"
     min: 65
