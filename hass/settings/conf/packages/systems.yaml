@@ -58,7 +58,7 @@ automation:
       service: notify.mobile_app_aarons_iphone
       data:
         title: 💿 HACS Updates
-        message: "There are {{ trigger.to_state.state }} updates"
+        message: "There are {{ trigger.to_state.state }} updates."
 
   - alias: "Notify when battery is low"
     id: "notify_when_battery_is_low"
