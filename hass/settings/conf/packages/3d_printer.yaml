@@ -15,7 +15,7 @@ automation:
                 and trigger.to_state.state == "Operational"
               }}
           sequence:
-            service: notify.slack
+            service: notify.mobile_app_aarons_iphone
             data:
               message: "🦿 3D print completed"
         - conditions:
@@ -26,7 +26,7 @@ automation:
                 and trigger.to_state.state == "Printing"
               }}
           sequence:
-            service: notify.slack
+            service: notify.mobile_app_aarons_iphone
             data:
               message: "🦿 3D print started"
 
@@ -40,7 +40,7 @@ automation:
       for:
         minutes: 10
     action:
-      - service: notify.slack
+      - service: notify.mobile_app_aarons_iphone
         data:
           message: "🦿 Turning 3D printer off"
       - service: "switch.turn_off"

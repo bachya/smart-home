@@ -9,11 +9,10 @@ automation:
         domain: persistent_notification
         service: create
     action:
-      service: notify.slack
+      service: notify.mobile_app_aarons_iphone
       data:
-        message: >
-            📥 Home Assistant Notification:
-            {{ trigger.event.data.service_data.message }}
+        title: 📥 Home Assistant Notification
+        message: "{{ trigger.event.data.service_data.message }}"
 
   - alias: "Manage HASS Themes"
     id: "manage_hass_themes"
@@ -56,10 +55,10 @@ automation:
       entity_id: sensor.hacs
       above: 0
     action:
-      service: notify.slack
+      service: notify.mobile_app_aarons_iphone
       data:
-        message: >
-          💿 There are new HACS updates: {{ trigger.to_state.state }}
+        title: 💿 HACS Updates
+        message: "There are {{ trigger.to_state.state }} updates"
 
   - alias: "Notify on high CPU"
     id: "notify_on_high_cpu"
@@ -181,9 +180,10 @@ automation:
         for:
           minutes: 5
     action:
-      service: notify.slack
+      service: notify.mobile_app_aarons_iphone
       data:
-        message: "🔋 @aaron {{ trigger.entity_id }} is low."
+        title: 🔋 Low Battery
+        message: "The battery for {{ trigger.entity_id }} should be replaced."
 
   - alias: "Notify when public IP changes"
     id: "notify_when_public_ip_changes"
@@ -212,9 +212,10 @@ automation:
         for:
           minutes: 5
     action:
-      service: notify.slack
+      service: notify.mobile_app_aarons_iphone
       data:
-        message: "🤔 @aaron {{ trigger.entity_id }} is offline."
+        title: 🤔 Device Offline
+        message: "{{ trigger.entity_id }} isn't responding."
 
 sensor:
   - platform: dnsip

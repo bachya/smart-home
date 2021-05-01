@@ -147,8 +147,9 @@ automation:
           != as_timestamp(now()) | timestamp_custom('%-d')
         }}
     action:
-      service: notify.slack
+      service: notify.mobile_app_aarons_iphone
       data:
+        title: "🤖 Wolfie Consumable Update"
         message: >
           {% if trigger.entity_id == "sensor.vacuum_filter_remaining" %}
             {% set name = "a new filter" %}
@@ -162,7 +163,7 @@ automation:
             {% set name = "a new side brush" %}
           {% endif %}
 
-          🤖 Wolfie needs {{ name }}!
+          Wolfie needs {{ name }}!
 
 input_boolean:
   wolfie_running:

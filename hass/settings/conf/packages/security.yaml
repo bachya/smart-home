@@ -190,10 +190,10 @@ automation:
       platform: state
       entity_id: binary_sensor.secure_status
     action:
-      service: notify.slack
+      service: notify.everyone
       data:
-        message: >
-          🔐 The house's security has changed: {{ trigger.to_state.state }}
+        title: "🔐 Security Update"
+        message: "New state: {{ trigger.to_state.state }}"
 
   - alias: "Simulate someone being home"
     id: "simulate_someone_being_home"
