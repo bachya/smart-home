@@ -127,7 +127,7 @@ automation:
                 entity_id: fan.pure_humidify_cool
               data:
                 percentage: >
-                  states("input_number.daytime_dyson_fan_speed") | int
+                  {{ states("input_number.daytime_dyson_fan_speed") | int }}
         # Nighttime
         - conditions:
             - condition: state
@@ -161,7 +161,7 @@ automation:
                 entity_id: fan.pure_humidify_cool
               data:
                 percentage: >
-                  states("input_number.nighttime_dyson_fan_speed") | int
+                  {{ states("input_number.nighttime_dyson_fan_speed") | int }}
 
   - alias: "Proximity Climate Away Mode"
     id: "proximity_climate_away_mode"
