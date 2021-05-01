@@ -30,6 +30,12 @@ automation:
         to: heat
       - platform: state
         entity_id: binary_sensor.in_bed
+        from: "on"
+        to: "off"
+      - platform: state
+        entity_id: binary_sensor.in_bed
+        from: "off"
+        to: "on"
       - platform: state
         entity_id: input_boolean.away_mode
       - platform: state
