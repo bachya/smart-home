@@ -39,30 +39,24 @@ automation:
       data:
         entity_id: switch.garage_lights
 
-  - alias: "Turn on garage lights when garage door opens while it's dark"
-    id: "turn_on_garage_lights_when_garage_door_opens_while_its_dark"
+  - alias: "Turn on garage lights when garage door is open and it's dark"
+    id: "turn_on_garage_lights_when_garage_door_is_open_and_its_dark"
     trigger:
-      platform: state
-      entity_id: cover.wemos_d1_mini_garage_controller
-      from: closed
+      - platform: state
+        entity_id: cover.wemos_d1_mini_garage_controller
+        from: closed
+      - platform: numeric_state
+        entity_id: sensor.filtered_outdoor_brightness
+        below: 70
     condition:
-      condition: numeric_state
-      entity_id: sensor.filtered_outdoor_brightness
-      below: 70
-    action:
-      service: switch.turn_on
-      data:
-        entity_id: switch.garage_lights
-
-  - alias: "Turn on garage lights at sunset if the garage is open"
-    id: "turn_on_garage_lights_at_sunset_if_the_garage_is_open"
-    trigger:
-      platform: event
-      event_type: LOCAL_SUNSET
-    condition:
-      condition: state
-      entity_id: cover.wemos_d1_mini_garage_controller
-      state: open
+      - condition: not
+        conditions:
+          condition: state
+          entity_id: cover.wemos_d1_mini_garage_controller
+          state: closed
+      - condition: numeric_state
+        entity_id: sensor.filtered_outdoor_brightness
+        below: 70
     action:
       service: switch.turn_on
       data:
