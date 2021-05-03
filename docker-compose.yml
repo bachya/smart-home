@@ -1,13 +1,6 @@
 ---
 version: "3"
 
-networks:
-  default:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16
-
 services:
 
   ecowitt2mqtt:
@@ -142,9 +135,6 @@ services:
       traefik.http.routers.traefik.rule: "Host(`${TRAEFIK_HOST_TRAEFIK}`)"
       traefik.http.routers.traefik.service: api@internal
       traefik.http.routers.traefik.tls.certresolver: linode
-    networks:
-      default:
-        ipv4_address: 172.18.0.2
     ports:
       - "443:443/tcp"
     restart: always
