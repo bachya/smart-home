@@ -53,8 +53,7 @@ services:
       - traefik
       - vernemq
       - zwave-js
-    image: >
-      "ghcr.io/home-assistant/home-assistant:${HOME_ASSISTANT_CORE_VERSION}"
+    image: "homeassistant/home-assistant:${HOME_ASSISTANT_CORE_VERSION}"
     labels:
       traefik.enable: true
       traefik.frontend.whiteList.useXForwardedFor: true
