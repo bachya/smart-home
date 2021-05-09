@@ -32,9 +32,9 @@
       state: "on"
     automation.cycle_master_toilet_fan_during_the_day:
       state: "on"
-    automation.forward_hass_persistent_notifications_to_slack:
+    automation.forward_hass_persistent_notifications:
       state: "on"
-    automation.forward_simplisafe_notifications_to_slack:
+    automation.forward_simplisafe_notifications:
       state: "on"
     automation.notify_of_next_trash_pickup_the_night_before:
       state: "on"

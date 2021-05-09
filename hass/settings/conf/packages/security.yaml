@@ -8,7 +8,7 @@ alert:
     repeat:
       - 1
     notifiers:
-      - phones
+      - everyone
     data:
       push:
         category: SECURITY
@@ -107,7 +107,7 @@ automation:
               scene: scene.good_night
 
   - alias: "Forward SimpliSafe notifications to Slack"
-    id: "forward_simplisafe_notifications_to_slack"
+    id: "forward_simplisafe_notifications"
     trigger:
       platform: event
       event_type: SIMPLISAFE_NOTIFICATION

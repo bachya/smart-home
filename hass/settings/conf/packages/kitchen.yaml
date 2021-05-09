@@ -23,7 +23,7 @@ alert:
     repeat:
       - 1
     notifiers:
-      - phones
+      - everyone
     data:
       push:
         category: WATER

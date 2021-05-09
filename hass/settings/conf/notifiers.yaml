@@ -3,16 +3,3 @@
   name: everyone
   services:
     - service: mobile_app_aarons_iphone
-    - service: mobile_app_iphone
-    - service: slack
-
-- platform: group
-  name: phones
-  services:
-    - service: mobile_app_aarons_iphone
-    - service: mobile_app_iphone
-
-- platform: slack
-  name: slack
-  api_key: !secret slack_api_key
-  default_channel: "#mothership-general"

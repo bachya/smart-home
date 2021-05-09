@@ -1,7 +1,7 @@
 ---
 automation:
-  - alias: "Forward HASS persistent notifications to Slack"
-    id: "forward_hass_persistent_notifications_to_slack"
+  - alias: "Forward HASS persistent notifications"
+    id: "forward_hass_persistent_notifications"
     trigger:
       platform: event
       event_type: call_service

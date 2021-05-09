@@ -8,7 +8,7 @@ alert:
     repeat:
       - 120
     notifiers:
-      - phones
+      - everyone
     data:
       push:
         category: WOLFIE
