@@ -34,6 +34,8 @@
       state: "on"
     automation.forward_hass_persistent_notifications:
       state: "on"
+    automation.forward_healthchecks_io_notifications:
+      state: "on"
     automation.forward_simplisafe_notifications:
       state: "on"
     automation.notify_of_next_trash_pickup_the_night_before:
