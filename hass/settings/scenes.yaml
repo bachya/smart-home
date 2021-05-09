@@ -34,7 +34,7 @@
       state: "on"
     automation.forward_hass_persistent_notifications_to_slack:
       state: "on"
-    automation.forward_simplisafe_events_and_notifications_to_slack:
+    automation.forward_simplisafe_notifications_to_slack:
       state: "on"
     automation.notify_of_next_trash_pickup_the_night_before:
       state: "on"

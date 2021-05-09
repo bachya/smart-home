@@ -106,6 +106,17 @@ automation:
             sequence:
               scene: scene.good_night
 
+  - alias: "Forward SimpliSafe notifications to Slack"
+    id: "forward_simplisafe_notifications_to_slack"
+    trigger:
+      platform: event
+      event_type: SIMPLISAFE_NOTIFICATION
+    action:
+      service: notify.mobile_app_aarons_iphone
+      data:
+        message: >
+          📥 SimpliSafe Message: {{ trigger.event.data.message  }}
+
   - alias: "Manage Security via iOS Notifications"
     id: "manage_security_via_ios_notifications"
     trigger:
