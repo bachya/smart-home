@@ -172,7 +172,7 @@
       state: locked
     group.living_room_lights:
       state: "off"
-    group.office_lights:
+    group.outdoor_lights:
       state: "off"
     group.master_bathroom:
       state: "off"

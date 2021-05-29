@@ -1,41 +1,5 @@
 ---
 automation:
-  - alias: "Backyard lights schedule"
-    id: "backyard_lights_schedule"
-    trigger:
-      - platform: time
-        at: "21:30:00"
-      - platform: time
-        at: "23:00:00"
-      - platform: event
-        event_type: LOCAL_SUNSET
-    action:
-      choose:
-        - conditions:
-            - condition: template
-              value_template: '{{ trigger.platform == "event" }}'
-          sequence:
-            - service: switch.turn_on
-              entity_id: switch.backyard_lights
-        - conditions:
-            - condition: state
-              entity_id: binary_sensor.workday_tomorrow
-              state: "on"
-            - condition: template
-              value_template: "{{ trigger.now.hour == 21 }}"
-          sequence:
-            - service: switch.turn_off
-              entity_id: switch.backyard_lights
-        - conditions:
-            - condition: state
-              entity_id: binary_sensor.workday_tomorrow
-              state: "off"
-            - condition: template
-              value_template: "{{ trigger.now.hour == 23 }}"
-          sequence:
-            - service: switch.turn_off
-              entity_id: switch.backyard_lights
-
   - alias: "Fire local event for weather station-detected sunset"
     id: "fire_local_event_for_weather_stationdetected_sunset"
     trigger:
@@ -69,29 +33,19 @@ automation:
     action:
       - event: LOCAL_SUNSET
 
-  - alias: "Patio lights schedule"
-    id: "patio_lights_schedule"
+  - alias: "Turn on outdoor lights at sunset"
+    id: "turn_on_outdoor_lights_at_sunset"
     trigger:
-      - platform: time
-        at: "23:00:00"
-      - platform: event
-        event_type: LOCAL_SUNSET
-    condition:
+      platform: event
+      event_type: LOCAL_SUNSET
     action:
-      choose:
-        - conditions:
-            - condition: time
-              after: "23:00:00"
-          sequence:
-            - service: homeassistant.turn_off
-              entity_id: group.patio_lights
-      default:
-        - service: homeassistant.turn_on
-          entity_id: group.patio_lights
+      service: homeassistant.turn_on
+      entity_id: group.outdoor_lights
 
 group:
-  patio_lights:
+  outdoor_lights:
     entities:
+      - switch.backyard_lights
       - switch.front_patio_light
       - switch.kitchen_patio_light
       - switch.master_patio_light

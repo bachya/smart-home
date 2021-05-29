@@ -205,7 +205,7 @@ automation:
       - platform: state
         entity_id: sensor.replay_living_room_tv
       - platform: state
-        entity_id: sensor.replay_master_bedroom_patio_light
+        entity_id: sensor.replay_outdoor_lights
       - platform: state
         entity_id: sensor.replay_master_bedroom_salt_lamp
     action:
@@ -299,14 +299,14 @@ automation:
               switch.christmas_tree
             {%
               elif trigger.entity_id
-              == "sensor.replay_master_bedroom_patio_light"
-            %}
-              switch.master_patio_light
-            {%
-              elif trigger.entity_id
               == "sensor.replay_master_bedroom_salt_lamp"
             %}
               switch.master_bedroom_salt_lamp
+            {%
+              elif trigger.entity_id
+              == "sensor.replay_outdoor_lights"
+            %}
+              group.outdoor_lights
             {% elif trigger.entity_id == "sensor.replay_reading_lamp" %}
               switch.reading_lamp
             {% elif trigger.entity_id == "sensor.replay_sofa_lamp" %}
@@ -434,8 +434,8 @@ sensor:
     duration: 00:00:30
 
   - platform: history_stats
-    name: "Replay Master Bedroom Patio Light"
-    entity_id: switch.master_patio_light
+    name: "Replay Master Bedroom Salt Lamp"
+    entity_id: switch.master_bedroom_salt_lamp
     state: "on"
     type: count
     start: >
@@ -443,8 +443,8 @@ sensor:
     duration: 00:00:30
 
   - platform: history_stats
-    name: "Replay Master Bedroom Salt Lamp"
-    entity_id: switch.master_bedroom_salt_lamp
+    name: "Replay Outdoor Lights"
+    entity_id: group.outdoor_lights
     state: "on"
     type: count
     start: >
