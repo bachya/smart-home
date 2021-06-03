@@ -120,7 +120,7 @@ binary_sensor:
   - platform: bayesian
     name: In Bed
     prior: 0.417
-    probability_threshold: 0.90
+    probability_threshold: 0.92
     observations:
       - platform: state
         entity_id: input_boolean.blackout_mode
@@ -138,11 +138,6 @@ binary_sensor:
         prob_given_true: 0.85
         prob_given_false: 0.75
       - platform: state
-        entity_id: switch.master_patio_light
-        to_state: "off"
-        prob_given_true: 0.90
-        prob_given_false: 0.75
-      - platform: state
         entity_id: switch.master_bathroom_fan
         to_state: "off"
         prob_given_true: 1.00
@@ -152,6 +147,11 @@ binary_sensor:
         to_state: "off"
         prob_given_true: 1.00
         prob_given_false: 0.857
+      - platform: state
+        entity_id: sun.sun
+        to_state: "below_horizon"
+        prob_given_true: 0.80
+        prob_given_false: 0.143
 
 group:
   bathroom_fans:
