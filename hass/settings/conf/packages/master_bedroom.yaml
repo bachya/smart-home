@@ -162,6 +162,7 @@ binary_sensor:
             is_state("sensor.brittany_bachs_iphone_battery_state", "Charging")
           }}
       in_bed:
+        friendly_name: In Bed
         value_template: >-
           {{
             is_state("sensor.proximity_zone", "Home") and
