@@ -118,14 +118,14 @@ automation:
 
 binary_sensor:
   - platform: bayesian
-    name: In Bed
+    name: In Bed Estimate
     prior: 0.417
-    probability_threshold: 0.92
+    probability_threshold: 0.975
     observations:
       - platform: state
         entity_id: input_boolean.blackout_mode
         to_state: "on"
-        prob_given_true: 0.95
+        prob_given_true: 0.950
         prob_given_false: 0.107
       - platform: state
         entity_id: remote.living_room_tv
@@ -135,8 +135,8 @@ binary_sensor:
       - platform: state
         entity_id: switch.master_bedroom_salt_lamp
         to_state: "off"
-        prob_given_true: 0.85
-        prob_given_false: 0.75
+        prob_given_true: 0.850
+        prob_given_false: 0.750
       - platform: state
         entity_id: switch.master_bathroom_fan
         to_state: "off"
@@ -146,12 +146,27 @@ binary_sensor:
         entity_id: remote.basement_tv
         to_state: "off"
         prob_given_true: 1.00
-        prob_given_false: 0.857
+        prob_given_false: 0.714
       - platform: state
-        entity_id: sun.sun
-        to_state: "below_horizon"
-        prob_given_true: 0.80
-        prob_given_false: 0.143
+        entity_id: binary_sensor.all_phones_charging
+        to_state: "on"
+        prob_given_true: 1.00
+        prob_given_false: 0.286
+
+  - platform: template
+    sensors:
+      all_phones_charging:
+        value_template: >-
+          {{
+            is_state("sensor.aarons_iphone_battery_state", "Charging") and
+            is_state("sensor.brittany_bachs_iphone_battery_state", "Charging")
+          }}
+      in_bed:
+        value_template: >-
+          {{
+            is_state("sensor.proximity_zone", "Home") and
+            is_state("binary_sensor.in_bed_estimate", "on")
+          }}
 
 group:
   bathroom_fans:
