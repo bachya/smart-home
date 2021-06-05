@@ -168,12 +168,6 @@ binary_sensor:
             is_state("binary_sensor.in_bed_estimate", "on")
           }}
 
-group:
-  bathroom_fans:
-    entities:
-      - switch.master_bathroom_fan
-      - switch.master_toilet_fan
-
 input_number:
   master_bathroom_fan_timer:
     name: Sleep Timer
