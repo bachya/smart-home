@@ -120,7 +120,7 @@ binary_sensor:
   - platform: bayesian
     name: In Bed Estimate
     prior: 0.417
-    probability_threshold: 0.975
+    probability_threshold: 0.93
     observations:
       - platform: state
         entity_id: input_boolean.blackout_mode
@@ -138,20 +138,10 @@ binary_sensor:
         prob_given_true: 0.850
         prob_given_false: 0.750
       - platform: state
-        entity_id: switch.master_bathroom_fan
-        to_state: "off"
-        prob_given_true: 1.00
-        prob_given_false: 0.911
-      - platform: state
         entity_id: remote.basement_tv
         to_state: "off"
         prob_given_true: 1.00
         prob_given_false: 0.714
-      - platform: state
-        entity_id: binary_sensor.all_phones_charging
-        to_state: "on"
-        prob_given_true: 1.00
-        prob_given_false: 0.286
 
   - platform: template
     sensors:
