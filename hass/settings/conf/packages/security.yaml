@@ -258,14 +258,14 @@ automation:
             - wait_template: >
                 {{
                   is_state_attr(
-                    "media_player.basement_roku",
+                    "media_player.living_room_roku",
                     "app_name",
                     "Locast.org"
                   )
                 }}
             - service: remote.send_command
               data:
-                entity_id: media_player.basement_roku
+                entity_id: media_player.living_room_roku
                 command: select
             - service: media_player.volume_set
               data:
