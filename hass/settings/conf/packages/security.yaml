@@ -313,8 +313,8 @@ automation:
               switch.sofa_lamp
             {% endif %}
 
-  - alias: "Turn off simulated TVs when we get home"
-    id: "turn_off_simulated_tvs_when_we_get_home"
+  - alias: "Turn off simulation of someone being home"
+    id: "turn_off_simulation_of_someone_being_home"
     trigger:
       platform: state
       entity_id: automation.simulate_someone_being_home
@@ -326,6 +326,9 @@ automation:
       - service: remote.turn_off
         data:
           entity_id: remote.living_room_tv
+      - service: switch.turn_off
+        data:
+          entity_id: switch.basement_lights
 
 binary_sensor:
   - platform: template
