@@ -82,7 +82,6 @@ group:
       - switch.christmas_tree
       - switch.reading_lamp
       - switch.sofa_lamp
-    all: true
 
   sunset_living_room_lights:
     entities:
