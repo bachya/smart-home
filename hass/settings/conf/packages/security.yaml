@@ -189,6 +189,7 @@ automation:
 
   - alias: "Simulate someone being home"
     id: "simulate_someone_being_home"
+    mode: parsllel
     trigger:
       - platform: state
         entity_id: sensor.replay_bar_cart_leds
