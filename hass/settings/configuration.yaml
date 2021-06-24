@@ -18,7 +18,6 @@ scene: !include scenes.yaml
 binary_sensor: !include conf/binary_sensors.yaml
 ffmpeg: !include conf/ffmpeg.yaml
 google: !include conf/google_calendar.yaml
-hacs: !include conf/hacs.yaml
 mqtt: !include conf/mqtt.yaml
 notify: !include conf/notifiers.yaml
 proximity: !include conf/proximity.yaml
