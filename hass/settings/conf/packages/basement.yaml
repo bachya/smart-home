@@ -47,7 +47,7 @@ sensor:
     round_digits: 1
     entity_ids:
       - sensor.basement_sensor_temperature
-      - sensor.basement_fire_fighter_air_temperature
+      - sensor.basement_firefighter_air_temperature
 
 sonos:
   media_player:

@@ -386,7 +386,7 @@ group:
   smoke_detectors:
     entities:
       - binary_sensor.basement_sensor_smoke_carbon_monoxide_detector
-      - binary_sensor.basement_fire_fighter_smoke_alarm_smoke_detected
+      - binary_sensor.basement_firefighter_smoke_alarm_smoke_detected
       - binary_sensor.guest_bedroom_sensor_smoke_carbon_monoxide_detector
       - binary_sensor.kitchen_sensor_smoke_carbon_monoxide_detector
       - binary_sensor.upstairs_hallway_sensor_smoke_carbon_monoxide_detector
