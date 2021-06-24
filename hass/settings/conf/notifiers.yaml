@@ -3,3 +3,4 @@
   name: everyone
   services:
     - service: mobile_app_aarons_iphone
+    - service: mobile_app_britts_iphone
