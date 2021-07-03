@@ -71,6 +71,7 @@ class SimpliSafeAlarm(SimpliSafeEntity, AlarmControlPanelEntity):
         else:
             self._attr_code_format = FORMAT_TEXT
         self._attr_supported_features = SUPPORT_ALARM_ARM_HOME | SUPPORT_ALARM_ARM_AWAY
+        self._last_event = None
 
         if system.alarm_going_off:
             self._attr_state = STATE_ALARM_TRIGGERED
