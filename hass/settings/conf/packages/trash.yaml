@@ -32,28 +32,24 @@ binary_sensor:
     sensors:
       recollect_next_pickup_includes_compost:
         friendly_name: Compost
-        entity_id: sensor.recollect_waste
         value_template: >
           {{ "organics" in state_attr(
             "sensor.recollect_waste", "pickup_types"
           ) }}
       recollect_next_pickup_includes_extra_trash:
         friendly_name: Extra Trash
-        entity_id: sensor.recollect_waste
         value_template: >
           {{ "ExtraTrash_Day" in state_attr(
             "sensor.recollect_waste", "pickup_types"
           ) }}
       recollect_next_pickup_includes_recycling:
         friendly_name: Recycling
-        entity_id: sensor.recollect_waste
         value_template: >
           {{ "recycle" in state_attr(
             "sensor.recollect_waste", "pickup_types"
           ) }}
       recollect_next_pickup_includes_trash:
         friendly_name: Trash
-        entity_id: sensor.recollect_waste
         value_template: >
           {{ "garbage" in state_attr(
             "sensor.recollect_waste", "pickup_types"

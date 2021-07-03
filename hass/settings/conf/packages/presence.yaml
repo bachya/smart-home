@@ -39,11 +39,6 @@ sensor:
     sensors:
       proximity_zone:
         friendly_name: Zone
-        entity_id:
-          - input_number.edge_radius
-          - input_number.home_radius
-          - input_number.nearby_radius
-          - proximity.home
         value_template: >
           {% set prox_mi = states("proximity.home")|int / 5280 %}
           {% set home = states("input_number.home_radius")|int %}

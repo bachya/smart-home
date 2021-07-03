@@ -173,5 +173,3 @@ sensor:
 
   - platform: version
     name: HASS Installed
-
-speedtestdotnet:

@@ -121,7 +121,6 @@ sensor:
     sensors:
       roku_source:
         friendly_name: Roku Source
-        entity_id: media_player.living_room_roku
         value_template: >
           {{ states.media_player.living_room_roku.attributes.app_name }}
         icon_template: >

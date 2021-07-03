@@ -190,7 +190,6 @@ sensor:
     sensors:
       vacuum_filter_remaining:
         friendly_name: Filter
-        entity_id: vacuum.rockrobo
         value_template: >
           {{ state_attr("vacuum.rockrobo", "filter") }}
         unit_of_measurement: hours
@@ -198,7 +197,6 @@ sensor:
 
       vacuum_main_brush_remaining:
         friendly_name: Main Brush
-        entity_id: vacuum.rockrobo
         value_template: >
           {{ state_attr("vacuum.rockrobo", "mainBrush") }}
         unit_of_measurement: hours
@@ -206,7 +204,6 @@ sensor:
 
       vacuum_sensor_dirtiness_remaining:
         friendly_name: Sensor Dirtiness
-        entity_id: vacuum.rockrobo
         value_template: >
           {{ state_attr("vacuum.rockrobo", "sensor") }}
         unit_of_measurement: hours
@@ -214,7 +211,6 @@ sensor:
 
       vacuum_side_brush_remaining:
         friendly_name: Side Brush
-        entity_id: vacuum.rockrobo
         value_template: >
           {{ state_attr("vacuum.rockrobo", "sideBrush") }}
         unit_of_measurement: hours
@@ -241,7 +237,6 @@ sensor:
 
       vacuum_fan_speed:
         friendly_name: Fan Speed
-        entity_id: vacuum.rockrobo
         value_template: >
           {{ state_attr("vacuum.rockrobo", "fan_speed") | title }}
         icon_template: mdi:speedometer
@@ -255,7 +250,6 @@ sensor:
 
       vacuum_cleaning_time:
         friendly_name: Time of Last Cycle
-        entity_id: vacuum.rockrobo
         value_template: >
           {{ state_attr("vacuum.rockrobo", "currentCleanTime") }}
         icon_template: mdi:timer
@@ -263,7 +257,6 @@ sensor:
 
       vacuum_cleaned_area:
         friendly_name: Area of Last Cycle
-        entity_id: vacuum.rockrobo
         unit_of_measurement: m ²
         value_template: >
           {{ state_attr("vacuum.rockrobo", "currentCleanArea") }}
