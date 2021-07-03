@@ -75,7 +75,7 @@ steps:
           -name \"*.yaml\"
           -not \ -name \"secrets.yaml\"
           -not -name \".*.yaml\"
-        ); do esphome \"$file\" config; done"
+        ); do esphome config \"$file\"; done"
 
   - name: "Config Check: Latest"
     image: esphome/esphome:latest
@@ -87,7 +87,7 @@ steps:
           -name \"*.yaml\"
           -not \ -name \"secrets.yaml\"
           -not -name \".*.yaml\"
-        ); do esphome \"$file\" config; done"
+        ); do esphome config \"$file\"; done"
 
 ---
 kind: pipeline
