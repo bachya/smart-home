@@ -75,6 +75,12 @@ cover:
       - switch.turn_off: relay
     device_class: garage
     id: garage_door_cover
+    lambda: |-
+      if (id(garage_door_closed).state) {
+        return COVER_CLOSED;
+      } else {
+        return COVER_OPENED;
+      }
     name: "${device_friendly_name}"
     open_action:
       - switch.turn_on: relay
