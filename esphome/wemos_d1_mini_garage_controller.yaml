@@ -79,7 +79,7 @@ cover:
       if (id(garage_door_closed).state) {
         return COVER_CLOSED;
       } else {
-        return COVER_OPENED;
+        return COVER_OPEN;
       }
     name: "${device_friendly_name}"
     open_action:
