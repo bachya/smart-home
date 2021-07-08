@@ -38,22 +38,14 @@ automation:
   - alias: "Manage HASS Themes"
     id: "manage_hass_themes"
     trigger:
-      - platform: event
-        event_type: LOCAL_SUNSET
       - platform: homeassistant
         event: start
       - platform: sun
-        event: sunrise
     action:
       choose:
         - conditions:
-            - condition: or
-              conditions:
-                - condition: template
-                  value_template: >
-                    {{ trigger.event.event_type == "LOCAL_SUNSET" }}
-                - condition: sun
-                  after: sunset
+            - condition: sun
+              after: sunset
           sequence:
             - service: frontend.set_theme
               data:

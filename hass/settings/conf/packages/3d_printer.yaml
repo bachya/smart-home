@@ -3,28 +3,28 @@ automation:
   - alias: "3D Printer State Notifications"
     id: "3d_printer_state_notifications"
     trigger:
-      platform: state
-      entity_id: sensor.octoprint_current_state
+      - platform: state
+        entity_id: sensor.octoprint_current_state
+        id: printing_started
+        from: Operational
+        to: Printing
+      - platform: state
+        entity_id: sensor.octoprint_current_state
+        id: printing_stoppped
+        from: Printing
+        to: Operational
     action:
       choose:
         - conditions:
-            condition: template
-            value_template: >
-              {{
-                trigger.from_state.state == "Printing"
-                and trigger.to_state.state == "Operational"
-              }}
+            condition: trigger
+            id: printing_stoppped
           sequence:
             service: notify.mobile_app_aarons_iphone
             data:
               message: "🦿 3D print completed"
         - conditions:
-            condition: template
-            value_template: >
-              {{
-                trigger.from_state.state == "Operational"
-                and trigger.to_state.state == "Printing"
-              }}
+            condition: trigger
+            id: printing_started
           sequence:
             service: notify.mobile_app_aarons_iphone
             data:

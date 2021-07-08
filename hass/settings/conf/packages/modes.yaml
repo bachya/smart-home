@@ -4,19 +4,23 @@ automation:
     id: "blackout_mode_schedule"
     trigger:
       - platform: time
-        at: "21:00:00"
-      - platform: time
-        at: "22:00:00"
-      - platform: time
         at: "07:00:00"
+        id: workday_stop
       - platform: time
         at: "09:00:00"
+        id: weekend_holiday_stop
+      - platform: time
+        at: "21:00:00"
+        id: workday_start
+      - platform: time
+        at: "22:00:00"
+        id: weekend_holiday_start
     action:
       choose:
         # Blackout Mode on Workdays
         - conditions:
-            - condition: template
-              value_template: "{{ trigger.now.hour == 21 }}"
+            - condition: trigger
+              id: workday_start
             - condition: state
               entity_id: binary_sensor.workday_tomorrow
               state: "on"
@@ -25,8 +29,8 @@ automation:
             data:
               entity_id: input_boolean.blackout_mode
         - conditions:
-            - condition: template
-              value_template: "{{ trigger.now.hour == 7 }}"
+            - condition: trigger
+              id: workday_stop
             - condition: state
               entity_id: binary_sensor.workday_today
               state: "on"
@@ -36,8 +40,8 @@ automation:
               entity_id: input_boolean.blackout_mode
         # Blackout Mode on Weekends/Holidays
         - conditions:
-            - condition: template
-              value_template: "{{ trigger.now.hour == 22 }}"
+            - condition: trigger
+              id: weekend_holiday_start
             - condition: state
               entity_id: binary_sensor.workday_tomorrow
               state: "off"
@@ -46,8 +50,8 @@ automation:
             data:
               entity_id: input_boolean.blackout_mode
         - conditions:
-            - condition: template
-              value_template: "{{ trigger.now.hour == 9 }}"
+            - condition: trigger
+              id: weekend_holiday_stop
             - condition: state
               entity_id: binary_sensor.workday_today
               state: "off"

@@ -77,12 +77,14 @@ automation:
       - platform: state
         entity_id: sensor.proximity_zone
         from: Home
+        id: departing
       # The house is insecure for 30 minutes while we're in bed:
       - platform: state
         entity_id: binary_sensor.house_insecure_when_in_bed
-        to: "on"
         for:
           minutes: 30
+        id: in_bed
+        to: "on"
     condition:
       condition: state
       entity_id: binary_sensor.secure_status
@@ -93,16 +95,13 @@ automation:
           message: "🔒 Locking up the house"
       - choose:
           - conditions:
-              condition: template
-              value_template: >
-                {{ trigger.entity_id == "sensor.proximity_zone" }}
+              condition: trigger
+              id: departing
             sequence:
               scene: scene.depart_home
           - conditions:
-              condition: template
-              value_template: >
-                {{ trigger.entity_id
-                   == "binary_sensor.house_insecure_when_in_bed" }}
+              condition: trigger
+              id: in_bed
             sequence:
               scene: scene.good_night
 
