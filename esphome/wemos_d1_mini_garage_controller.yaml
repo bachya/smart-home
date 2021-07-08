@@ -14,7 +14,6 @@ binary_sensor:
         - lambda: |-
             if (id(garage_door_open).state) {
               id(garage_door_cover).current_operation = COVER_OPERATION_IDLE;
-              id(garage_door_cover).position = 1;
             } else {
               id(garage_door_cover).current_operation = COVER_OPERATION_CLOSING;
             }
@@ -33,7 +32,6 @@ binary_sensor:
         - lambda: |-
             if (id(garage_door_closed).state) {
               id(garage_door_cover).current_operation = COVER_OPERATION_IDLE;
-              id(garage_door_cover).position = 0;
             } else {
               id(garage_door_cover).current_operation = COVER_OPERATION_OPENING;
             }
