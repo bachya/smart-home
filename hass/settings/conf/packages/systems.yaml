@@ -38,9 +38,13 @@ automation:
   - alias: "Manage HASS Themes"
     id: "manage_hass_themes"
     trigger:
+      - platform: event
+        event_type: LOCAL_SUNSET
+        id: sunset
       - platform: homeassistant
         event: start
       - platform: sun
+        event: sunrise
     action:
       choose:
         - conditions:
