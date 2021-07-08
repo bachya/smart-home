@@ -8,13 +8,9 @@ automation:
     condition:
       condition: template
       value_template: >
-        {%
-          set delta = (
-            states("sensor.recollect_waste") | as_timestamp()
-            - now() | as_timestamp()
-          )/60/60
-        %}
-        {{ delta > 0 and delta < 6 }}
+        {{
+          (states("sensor.recollect_waste") | as_datetime - now()).days == 0
+        }}
     action:
       - service: notify.mobile_app_aarons_iphone
         data:
