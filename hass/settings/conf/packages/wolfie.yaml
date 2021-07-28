@@ -2,7 +2,7 @@
 alert:
   wolfie_cycle_complete:
     name: 🤖 Wolfie has finished cleaning and can be emptied.
-    title: Wolfie
+    title: Vacuuming Complete
     entity_id: input_select.wolfie_bin_status
     state: Full
     repeat:
@@ -15,7 +15,7 @@ alert:
 
   wolfie_stuck:
     name: "🤖 Wolfie is stuck on something and needs help."
-    title: Wolfie
+    title: Vacuuming Stopped
     entity_id: vacuum.rockrobo
     state: error
     repeat:
