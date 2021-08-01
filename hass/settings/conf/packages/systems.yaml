@@ -35,33 +35,6 @@ automation:
             {{ trigger.json.name }} is UP.
           {% endif %}
 
-  - alias: "Manage HASS Themes"
-    id: "manage_hass_themes"
-    trigger:
-      - platform: event
-        event_type: LOCAL_SUNSET
-        id: sunset
-      - platform: homeassistant
-        event: start
-      - platform: sun
-        event: sunrise
-    action:
-      choose:
-        - conditions:
-            - condition: sun
-              after: sunset
-          sequence:
-            - service: frontend.set_theme
-              data:
-                name: Orange Dark
-        - conditions:
-            - condition: sun
-              after: sunrise
-          sequence:
-            - service: frontend.set_theme
-              data:
-                name: Orange light
-
   - alias: "Notify on HACS updates"
     id: "notify_on_hacs_updates"
     trigger:
