@@ -71,6 +71,7 @@ automation:
           - binary_sensor.kitchen_sensor_low_battery
           - binary_sensor.kitchen_sink_sensor_low_battery
           - binary_sensor.upstairs_hallway_sensor_low_battery
+          - binary_sensor.wh65batt
         to: "on"
         for:
           minutes: 5
