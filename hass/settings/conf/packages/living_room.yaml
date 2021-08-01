@@ -72,7 +72,7 @@ binary_sensor:
         value_template: >-
           {{
             not is_state("sensor.fiddle_leaf_fig_moisture", "unknown") and
-            states("sensor.fiddle_leaf_fig_moisture") | int < 15
+            states("sensor.fiddle_leaf_fig_moisture") | int < 10
           }}
 
 group:
