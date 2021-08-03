@@ -22,5 +22,4 @@ sensor:
     type: mean
     round_digits: 1
     entity_ids:
-      - air_quality.office_node_pro_air_quality
-      - air_quality.pure_humidify_cool_air_quality
+      - sensor.office_node_pro_air_quality_index
