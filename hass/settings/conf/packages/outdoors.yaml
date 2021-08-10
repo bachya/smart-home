@@ -4,7 +4,7 @@ automation:
     id: "fire_local_event_for_weather_stationdetected_sunset"
     trigger:
       - platform: state
-        entity_id: sensor.filtered_outdoor_brightness
+        entity_id: sensor.solarradiation_perceived
         # If for some reason the weather station is down and the actual trigger
         # fails, we also watch for "regular" sunset:
       - platform: sun
@@ -15,7 +15,7 @@ automation:
         - condition: time
           after: "15:00:00"
         - condition: numeric_state
-          entity_id: sensor.filtered_outdoor_brightness
+          entity_id: sensor.solarradiation_perceived
           below: 65
           # As it gets darker, this automation has the possibility of firing
           # multiple times; this condition forces it to only fire once per day:

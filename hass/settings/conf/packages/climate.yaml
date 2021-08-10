@@ -190,7 +190,7 @@ automation:
               value_template: >
                 {{
                   states("input_number.outdoor_extreme_low_threshold") <=
-                  states("sensor.side_yard_feels_like") <=
+                  states("sensor.feelslike") <=
                   states("input_number.outdoor_extreme_high_threshold")
                 }}
           sequence:
@@ -208,7 +208,7 @@ automation:
               value_template: >
                 {{
                   states("input_number.outdoor_extreme_low_threshold") <=
-                  states("sensor.side_yard_feels_like") <=
+                  states("sensor.feelslike") <=
                   states("input_number.outdoor_extreme_high_threshold")
                 }}
           sequence:
@@ -226,12 +226,12 @@ automation:
               value_template: >
                 {{
                   states(
-                    "sensor.side_yard_feels_like"
+                    "sensor.feelslike"
                   ) <= states(
                     "input_number.outdoor_extreme_low_threshold"
                   )
                   or states(
-                    "sensor.side_yard_feels_like"
+                    "sensor.feelslike"
                   ) >= states(
                     "input_number.outdoor_extreme_high_threshold"
                   )
@@ -249,12 +249,12 @@ automation:
               value_template: >
                 {{
                   states(
-                    "sensor.side_yard_feels_like"
+                    "sensor.feelslike"
                   ) <= states(
                     "input_number.outdoor_extreme_low_threshold"
                   )
                   or states(
-                    "sensor.side_yard_feels_like"
+                    "sensor.feelslike"
                   ) >= states(
                     "input_number.outdoor_extreme_high_threshold"
                   )
@@ -397,18 +397,11 @@ sensor:
 
   - platform: filter
     name: Filtered Wind Speed
-    entity_id: sensor.side_yard_wind_speed
+    entity_id: sensor.windspeed
     filters:
       - filter: lowpass
         time_constant: 10
         precision: 1
-
-  - platform: filter
-    name: "Filtered Outdoor Brightness (%)"
-    entity_id: sensor.side_yard_solar_rad_log
-    filters:
-      - filter: range
-        upper_bound: 100
 
   - platform: min_max
     name: Average Indoor Humidity
@@ -416,10 +409,10 @@ sensor:
     round_digits: 1
     entity_ids:
       - sensor.bedroom_humidity
+      - sensor.humidityin
       - sensor.master_bathroom_humidity
       - sensor.office_node_pro_humidity
       - sensor.pure_humidify_cool_humidity
-      - sensor.side_yard_humidity_in
       - sensor.thermostat_humidity
 
   - platform: moon
@@ -451,14 +444,6 @@ sensor:
         value_template: >
           {{ states("sensor.moon") | replace('_', ' ') | title }}
         icon_template: mdi:weather-night
-      side_yard_solar_rad_log:
-        friendly_name: "Side Yard: Brightness (Perception)"
-        value_template: >
-          {{ (
-            states("sensor.side_yard_solar_rad_lx") | int | log(10)/5
-          )| round(2) * 100 }}
-        unit_of_measurement: "%"
-        device_class: illuminance
       sunrise:
         friendly_name: Next Sunrise
         value_template: >
@@ -488,7 +473,7 @@ sensor:
       - sensor.master_bathroom_temperature
       - sensor.office_node_pro_temperature
       - sensor.pure_humidify_cool_temperature
-      - sensor.side_yard_inside_temp
+      - sensor.tempin
       - sensor.thermostat_air_temperature
       - sensor.upstairs_hallway_sensor_temperature
 
@@ -516,7 +501,7 @@ sensor:
     round_digits: 1
     entity_ids:
       - sensor.office_node_pro_temperature
-      - sensor.side_yard_inside_temp
+      - sensor.tempin
 
 sun:
 
