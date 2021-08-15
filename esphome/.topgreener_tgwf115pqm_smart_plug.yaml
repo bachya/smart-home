@@ -59,10 +59,10 @@ sensor:
             - 129.04739 -> 119.9
     update_interval: 10s
 
-# status_led:
-#   pin:
-#     number: GPIO1
-#     inverted: true
+status_led:
+  pin:
+    number: GPIO1
+    inverted: true
 
 switch:
   - platform: gpio
