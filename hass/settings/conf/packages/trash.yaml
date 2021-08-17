@@ -15,13 +15,13 @@ automation:
       - service: notify.mobile_app_aarons_iphone
         data:
           message: >
-            🚮 Tomorrow's pickup will include: {{
+            The pickup will include: {{
               expand("group.trash_sensors")
               | selectattr("state", "equalto", "on")
               | join(", ", attribute="attributes.friendly_name")
               | lower
             }}
-          title: Tomorrow's Trash Pickup
+          title: 🚮 Tomorrow's Trash Pickup
 
 binary_sensor:
   - platform: template
