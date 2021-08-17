@@ -1,5 +1,23 @@
 ---
 automation:
+  - alias: "Notify Aaron to take allergy meds on appropriate mornings"
+    id: "notify_aaron_to_take_allergy_meds_on_appropriate_mornings"
+    trigger:
+      platform: state
+      entity_id: sun.sun
+      to: above_horizon
+    condition:
+      condition: numeric_state
+      entity_id: sensor.allergy_index_today
+      above: 8
+    action:
+      service: notify.mobile_app_aarons_iphone
+      data:
+        title: 🤧 Bad Allergies Today
+        message: >
+          Today's allergy index is {{ states("sensor.allergy_index_today") }}.
+          You might want to take some meds!
+
   - alias: "Update OpenUV every 30 minutes during the daytime"
     id: "update_openuv_every_30_minutes_during_the_daytime"
     initial_state: true
