@@ -55,7 +55,7 @@ automation:
           entity_id: cover.wemos_d1_mini_garage_controller
           state: closed
       - condition: numeric_state
-        entity_id: sensor.filtered_outdoor_brightness
+        entity_id: sensor.solarradiation_perceived
         below: 70
     action:
       service: switch.turn_on
