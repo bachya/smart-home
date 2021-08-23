@@ -9,6 +9,7 @@ services:
       - vernemq
     environment:
       HASS_DISCOVERY: "true"
+      LOG_LEVEL: DEBUG
       MQTT_BROKER: vernemq
       MQTT_PASSWORD: "${VERNEMQ_PASSWORD_ECOWITT}"
       MQTT_USERNAME: ecowitt
