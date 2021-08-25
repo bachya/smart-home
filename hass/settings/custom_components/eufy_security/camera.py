@@ -88,7 +88,7 @@ class EufySecurityCam(Camera):
         """Return a unique ID."""
         return self._camera.serial
 
-    async def async_camera_image(self):
+    async def async_camera_image(self, width=None, height=None):
         """Return a still image response from the camera."""
         if self._last_image_url != self._camera.last_camera_image_url:
             self._last_image = await asyncio.shield(
