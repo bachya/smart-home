@@ -106,6 +106,26 @@ automation:
     action:
       scene: scene.good_night
 
+  - alias: "Turn Britt's plug off if it's on when we leave"
+    id: "turn_britt_s_plug_off_if_it_s_on_when_we_leave"
+    trigger:
+      platform: state
+      entity_id: sensor.proximity_zone
+      from: Home
+    condition:
+      condition: numeric_state
+      entity_id: sensor.britt_s_bathroom_outlet_power
+      above: 0
+    action:
+      - service: notify.everyone
+        data:
+          title: 🔌 Turning Britt's Plug Off
+          message: >
+            Britt's plug was left on; turning it off since everyone is gone.
+      - service: switch.turn_off
+        data:
+          entity_id: switch.britt_s_bathroom_outlet
+
   - alias: "Turn master bedroom salt lamp on at sunset"
     id: "turn_master_bedroom_salt_lamp_on_at_sunset"
     trigger:
