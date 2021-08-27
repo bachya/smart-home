@@ -183,8 +183,8 @@ automation:
     action:
       service: notify.everyone
       data:
-        title: "🔐 Security Update"
-        message: "New state: {{ trigger.to_state.state }}"
+        title: Security Update
+        message: "🔐 New state: {{ trigger.to_state.state }}"
 
   - alias: "Simulate someone being home"
     id: "simulate_someone_being_home"

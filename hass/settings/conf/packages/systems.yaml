@@ -11,8 +11,8 @@ automation:
     action:
       service: notify.mobile_app_aarons_iphone
       data:
-        title: 📥 Home Assistant Notification
-        message: "{{ trigger.event.data.service_data.message }}"
+        title: Home Assistant Notification
+        message: "📥 {{ trigger.event.data.service_data.message }}"
 
   - alias: "Forward healthchecks.io notifications"
     id: "forward_healthchecks_io_notifications"
@@ -22,17 +22,12 @@ automation:
     action:
       service: notify.mobile_app_aarons_iphone
       data:
-        title: >
-          {% if trigger.json.status == "down" %}
-            ⛔️ healthchecks.io
-          {% else %}
-            ✅ healthchecks.io
-          {% endif %}
+        title: healthchecks.io
         message: >
           {% if trigger.json.status == "down" %}
-            {{ trigger.json.name }} is DOWN.
+            ⛔️ {{ trigger.json.name }} is DOWN.
           {% else %}
-            {{ trigger.json.name }} is UP.
+            ✅ {{ trigger.json.name }} is UP.
           {% endif %}
 
   - alias: "Notify on HACS updates"
@@ -47,8 +42,8 @@ automation:
     action:
       service: notify.mobile_app_aarons_iphone
       data:
-        title: 💿 HACS Updates
-        message: "There are {{ trigger.to_state.state }} updates."
+        title: HACS Updates
+        message: "💿 There are {{ trigger.to_state.state }} updates."
 
   - alias: "Notify when battery is low"
     id: "notify_when_battery_is_low"
@@ -78,8 +73,8 @@ automation:
     action:
       service: notify.mobile_app_aarons_iphone
       data:
-        title: 🔋 Low Battery
-        message: "The battery for {{ trigger.entity_id }} should be replaced."
+        title: Low Battery
+        message: "🔋 The battery for {{ trigger.entity_id }} should be replaced."
 
   - alias: "Notify when sensor goes offline"
     id: "notify_when_sensor_goes_offline"
@@ -99,8 +94,8 @@ automation:
     action:
       service: notify.mobile_app_aarons_iphone
       data:
-        title: 🤔 Device Offline
-        message: "{{ trigger.entity_id }} isn't responding."
+        title: Device Offline
+        message: "🤔 {{ trigger.entity_id }} isn't responding."
 
 sensor:
   - platform: dnsip

@@ -23,8 +23,8 @@ automation:
       service: notify.everyone
       data:
         message: >
-          A car isn't in the garage; should it be?
-        title: 🚗 Car Missing?
+          🚗 A car isn't in the garage; should it be?
+        title: Car Missing?
 
   - alias: "Turn off garage lights after garage door closes"
     id: "turn_off_garage_lights_after_garage_door_closes"
