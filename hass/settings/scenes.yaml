@@ -130,6 +130,8 @@
       state: locked
     lock.garage_fire_door_lock:
       state: locked
+    group.kitchen_lights:
+      state: "off"
     group.living_room_lights:
       state: "off"
     media_player.house_audio:
