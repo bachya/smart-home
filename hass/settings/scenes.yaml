@@ -176,8 +176,6 @@
       state: "off"
     group.outdoor_lights:
       state: "off"
-    group.master_bathroom:
-      state: "off"
     media_player.house_audio:
       state: paused
     media_player.sonos_playbar:
