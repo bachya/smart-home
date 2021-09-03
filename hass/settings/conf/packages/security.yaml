@@ -92,6 +92,7 @@ automation:
     action:
       - service: notify.everyone
         data:
+          title: Security Update
           message: "🔒 Locking up the house"
       - choose:
           - conditions:
