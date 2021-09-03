@@ -50,7 +50,9 @@ automation:
     action:
       service: homeassistant.turn_on
       data:
-        entity_id: group.sunset_living_room_lights
+        entity_id:
+          - switch.christmas_tree
+          - switch.reading_lamp
 
   - alias: "Turn powder room fan back on if someone turns it off"
     id: "turn_powder_room_fan_back_on_if_someone_turns_it_off"
@@ -81,12 +83,6 @@ group:
       - switch.christmas_tree
       - switch.reading_lamp
       - switch.sofa_lamp
-
-  sunset_living_room_lights:
-    entities:
-      - switch.christmas_tree
-      - switch.reading_lamp
-    all: true
 
 sensor:
   - platform: filter
