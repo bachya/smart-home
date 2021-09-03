@@ -62,15 +62,15 @@
       state: "on"
     automation.simulate_someone_being_home:
       state: "off"
+    automation.turn_garage_lights_off_after_garage_door_closes:
+      state: "on"
+    automation.turn_garage_lights_on_when_garage_door_is_open_and_its_dark:
+      state: "on"
     automation.turn_kitchen_lights_on_when_we_arrive_at_night:
       state: "on"
     automation.turn_living_room_lights_on_when_we_arrive_at_night:
       state: "on"
-    automation.turn_off_garage_lights_after_garage_door_closes:
-      state: "on"
     automation.turn_3d_printer_off_when_print_completes:
-      state: "on"
-    automation.turn_on_garage_lights_when_garage_door_is_open_and_its_dark:
       state: "on"
     automation.turn_powder_room_fan_back_on_if_someone_turns_it_off:
       state: "on"

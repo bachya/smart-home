@@ -26,8 +26,8 @@ automation:
           🚗 A car isn't in the garage; should it be?
         title: Car Missing?
 
-  - alias: "Turn off garage lights after garage door closes"
-    id: "turn_off_garage_lights_after_garage_door_closes"
+  - alias: "Turn garage lights off after garage door closes"
+    id: "turn_garage_lights_off_after_garage_door_closes"
     trigger:
       platform: state
       entity_id: cover.wemos_d1_mini_garage_controller
@@ -39,8 +39,8 @@ automation:
       data:
         entity_id: switch.garage_lights
 
-  - alias: "Turn on garage lights when garage door is open and it's dark"
-    id: "turn_on_garage_lights_when_garage_door_is_open_and_its_dark"
+  - alias: "Turn garage lights on when garage door is open and it's dark"
+    id: "turn_garage_lights_on_when_garage_door_is_open_and_its_dark"
     trigger:
       - platform: state
         entity_id: cover.wemos_d1_mini_garage_controller
