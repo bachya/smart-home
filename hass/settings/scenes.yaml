@@ -64,7 +64,9 @@
       state: "off"
     automation.turn_lights_on_when_doorbell_detects_person_at_nighttime:
       state: "on"
-    automation.turn_living_room_lights_on_when_we_arrive:
+    automation.turn_kitchen_lights_on_when_we_arrive_at_night:
+      state: "on"
+    automation.turn_living_room_lights_on_when_we_arrive_at_night:
       state: "on"
     automation.turn_off_garage_lights_after_garage_door_closes:
       state: "on"

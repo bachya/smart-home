@@ -12,8 +12,8 @@ alert:
       - everyone
 
 automation:
-  - alias: "Turn living room lights on when we arrive"
-    id: "turn_living_room_lights_on_when_we_arrive"
+  - alias: "Turn living room lights on when we arrive at night"
+    id: "turn_living_room_lights_on_when_we_arrive_at_night"
     trigger:
       platform: state
       entity_id: sensor.proximity_zone

@@ -83,6 +83,30 @@ automation:
               entity_id: input_select.dishwasher_status
               option: Clean
 
+  - alias: "Turn kitchen lights on when we arrive at night"
+    id: "turn_kitchen_lights_on_when_we_arrive_at_night"
+    trigger:
+      platform: state
+      entity_id: sensor.proximity_zone
+      to: Home
+    condition:
+      condition: and
+      conditions:
+        - condition: sun
+          after: sunset
+          # This condition ensures that when  sensor.proximity_zone goes from
+          # unavailable to Home (e.g., after a deployment), the lights don't
+          # turn on:
+        - condition: template
+          value_template: >
+            {{ trigger.from_state.state != "unavailable"}}
+    action:
+      service: switch.turn_on
+      data:
+        entity_id:
+          - switch.kitchen_pendant_lights
+          - switch.mud_counter_lights
+
 group:
   kitchen_lights:
     entities:
