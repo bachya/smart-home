@@ -83,6 +83,14 @@ automation:
               entity_id: input_select.dishwasher_status
               option: Clean
 
+group:
+  kitchen_lights:
+    entities:
+      - light.kitchen_can_lights
+      - switch.bar_cart_leds
+      - switch.kitchen_pendant_lights
+      - switch.mud_counter_lights
+
 input_select:
   dishwasher_status:
     name: Status
