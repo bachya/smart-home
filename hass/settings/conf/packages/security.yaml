@@ -199,15 +199,21 @@ automation:
       - platform: state
         entity_id: sensor.replay_christmas_tree
       - platform: state
-        entity_id: sensor.replay_reading_lamp
+        entity_id: sensor.replay_kitchen_can_lights
       - platform: state
-        entity_id: sensor.replay_sofa_lamp
+        entity_id: sensor.replay_kitchen_pendant_lights
       - platform: state
         entity_id: sensor.replay_living_room_tv
       - platform: state
+        entity_id: sensor.replay_master_bedroom_salt_lamp
+      - platform: state
+        entity_id: sensor.replay_mud_counter_lights
+      - platform: state
         entity_id: sensor.replay_outdoor_lights
       - platform: state
-        entity_id: sensor.replay_master_bedroom_salt_lamp
+        entity_id: sensor.replay_reading_lamp
+      - platform: state
+        entity_id: sensor.replay_sofa_lamp
     action:
       choose:
         - conditions:
@@ -297,11 +303,19 @@ automation:
               switch.basement_lights
             {% elif trigger.entity_id == "sensor.replay_christmas_tree" %}
               switch.christmas_tree
+            {% elif trigger.entity_id == "sensor.replay_kitchen_can_lights" %}
+              light.kitchen_can_lights
+            {% elif trigger.entity_id
+              == "sensor.replay_kitchen_pendant_lights"
+            %}
+              switch.kitchen_pendant_lights
             {%
               elif trigger.entity_id
               == "sensor.replay_master_bedroom_salt_lamp"
             %}
               switch.master_bedroom_salt_lamp
+            {% elif trigger.entity_id == "sensor.replay_mud_counter_lights" %}
+              switch.mud_counter_lights
             {%
               elif trigger.entity_id
               == "sensor.replay_outdoor_lights"
@@ -428,6 +442,24 @@ sensor:
     duration: 00:00:30
 
   - platform: history_stats
+    name: "Replay Kitchen Can Lights"
+    entity_id: light.kitchen_can_lights
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Kitchen Pendant Lights"
+    entity_id: switch.kitchen_pendant_lights
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
     name: "Replay Living Room TV"
     entity_id: remote.living_room_tv
     state: "on"
@@ -439,6 +471,15 @@ sensor:
   - platform: history_stats
     name: "Replay Master Bedroom Salt Lamp"
     entity_id: switch.master_bedroom_salt_lamp
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Mud Counter Lights"
+    entity_id: switch.mud_counter_lights
     state: "on"
     type: count
     start: >
