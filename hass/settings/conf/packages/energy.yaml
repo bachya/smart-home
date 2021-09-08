@@ -1,0 +1,26 @@
+---
+sensor:
+  - platform: mqtt
+    state_topic: amr/reading/SCMplus/110/100583244/message
+    name: Electricity Meter
+    unique_id: electricity_meter_01
+    unit_of_measurement: kWh
+    device_class: energy
+    state_class: total_increasing
+    availability_topic: amr/status/availability
+    value_template: "{{ value_json.Message.Consumption | float / 1000 }}"
+    json_attributes_template: "{{ value_json.Message | tojson }}"
+    json_attributes_topic: amr/reading/SCMplus/110/100583244/message
+
+  - platform: mqtt
+    state_topic: amr/reading/SCM/12/51643176/message
+    name: Gas Meter
+    unique_id: gas_meter_01
+    unit_of_measurement: m³
+    device_class: gas
+    state_class: total_increasing
+    availability_topic: amr/status/availability
+    value_template: >
+      {{ value_json.Message.Consumption | float / 100 * 2.83168 }}
+    json_attributes_template: "{{ value_json.Message | tojson }}"
+    json_attributes_topic: amr/reading/SCM/12/51643176/message
