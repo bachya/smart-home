@@ -192,141 +192,117 @@ automation:
     mode: parallel
     trigger:
       - platform: state
-        entity_id: sensor.replay_bar_cart_leds
+        id: switch
+        entity_id:
+          - sensor.replay_bar_cart_leds
+          - sensor.replay_basement_lights
+          - sensor.replay_christmas_tree
+          - sensor.replay_christmas_tree
+          - sensor.replay_kitchen_can_lights
+          - sensor.replay_kitchen_pendant_lights
+          - sensor.replay_master_bedroom_salt_lamp
+          - sensor.replay_mud_counter_lights
+          - sensor.replay_outdoor_lights
+          - sensor.replay_reading_lamp
+          - sensor.replay_sofa_lamp
       - platform: state
-        entity_id: sensor.replay_basement_lights
+        id: tv_off
+        entity_id:
+          - sensor.replay_basement_tv
+          - sensor.replay_living_room_tv
+        to: "0"
       - platform: state
-        entity_id: sensor.replay_basement_tv
-      - platform: state
-        entity_id: sensor.replay_christmas_tree
-      - platform: state
-        entity_id: sensor.replay_kitchen_can_lights
-      - platform: state
-        entity_id: sensor.replay_kitchen_pendant_lights
-      - platform: state
-        entity_id: sensor.replay_living_room_tv
-      - platform: state
-        entity_id: sensor.replay_master_bedroom_salt_lamp
-      - platform: state
-        entity_id: sensor.replay_mud_counter_lights
-      - platform: state
-        entity_id: sensor.replay_outdoor_lights
-      - platform: state
-        entity_id: sensor.replay_reading_lamp
-      - platform: state
-        entity_id: sensor.replay_sofa_lamp
+        id: tv_on
+        entity_id:
+          - sensor.replay_basement_tv
+          - sensor.replay_living_room_tv
+        to: "1"
     action:
       choose:
         - conditions:
-            condition: template
-            value_template: >
-              {{
-                trigger.entity_id == "sensor.replay_basement_tv"
-                and trigger.to_state.state == "1"
-              }}
+            condition: trigger
+            id: switch
+          variables:
+            eid: "{{ trigger.entity_id }}"
           sequence:
-            - service: remote.turn_on
-              data:
-                entity_id: remote.basement_tv
-            - wait_template: >
-                {{
-                  is_state_attr(
-                    "media_player.basement_roku",
-                    "app_name",
-                    "Locast.org"
-                  )
-                }}
-            - service: remote.send_command
-              data:
-                entity_id: media_player.basement_roku
-                command: select
-        - conditions:
-            condition: template
-            value_template: >
-              {{
-                trigger.entity_id == "sensor.replay_basement_tv"
-                and trigger.to_state.state == "0"
-              }}
-          sequence:
-            service: remote.turn_off
+            service: >
+              {% if trigger.to_state.state == "0" %}
+                switch.turn_off
+              {% else %}
+                switch.turn_on
+              {% endif %}
             data:
-              entity_id: remote.basement_tv
+              entity_id: >
+                {% if eid == "sensor.replay_bar_cart_leds" %}
+                  switch.bar_cart_leds
+                {% elif eid == "sensor.replay_basement_lights" %}
+                  switch.basement_lights
+                {% elif eid == "sensor.replay_christmas_tree" %}
+                  switch.christmas_tree
+                {% elif eid == "sensor.replay_kitchen_can_lights" %}
+                  light.kitchen_can_lights
+                {% elif eid == "sensor.replay_kitchen_pendant_lights" %}
+                  switch.kitchen_pendant_lights
+                {% elif eid == "sensor.replay_master_bedroom_salt_lamp" %}
+                  switch.master_bedroom_salt_lamp
+                {% elif eid == "sensor.replay_mud_counter_lights" %}
+                  switch.mud_counter_lights
+                {% elif eid == "sensor.replay_outdoor_lights" %}
+                  group.outdoor_lights
+                {% elif eid == "sensor.replay_reading_lamp" %}
+                  switch.reading_lamp
+                {% elif eid == "sensor.replay_sofa_lamp" %}
+                  switch.sofa_lamp
+                {% endif %}
         - conditions:
-            condition: template
-            value_template: >
-              {{
-                trigger.entity_id == "sensor.replay_living_room_tv"
-                and trigger.to_state.state == "1"
-              }}
+            condition: trigger
+            id: tv_off
           sequence:
-            - service: remote.turn_on
-              data:
-                entity_id: remote.living_room_tv
-            - wait_template: >
-                {{
-                  is_state_attr(
-                    "media_player.living_room_roku",
-                    "app_name",
-                    "Locast.org"
-                  )
-                }}
-            - service: remote.send_command
-              data:
-                entity_id: media_player.living_room_roku
-                command: select
-            - service: media_player.volume_set
-              data:
-                entity_id: media_player.sonos_playbar
-                volume_level: 0.25
-        - conditions:
-            condition: template
-            value_template: >
-              {{
-                trigger.entity_id == "sensor.replay_living_room_tv"
-                and trigger.to_state.state == "0"
-              }}
-          sequence:
-            service: remote.turn_off
+            variables:
+              eid: "{{ trigger.entity_id }}"
+            service: >
+                script.turn_roku_off
             data:
-              entity_id: remote.living_room_tv
-      default:
-        service: >
-          {% if trigger.to_state.state == "0" %}
-            switch.turn_off
-          {% else %}
-            switch.turn_on
-          {% endif %}
-        data:
-          entity_id: >
-            {% if trigger.entity_id == "sensor.replay_bar_cart_leds" %}
-              switch.bar_cart_leds
-            {% elif trigger.entity_id == "sensor.replay_basement_lights" %}
-              switch.basement_lights
-            {% elif trigger.entity_id == "sensor.replay_christmas_tree" %}
-              switch.christmas_tree
-            {% elif trigger.entity_id == "sensor.replay_kitchen_can_lights" %}
-              light.kitchen_can_lights
-            {% elif trigger.entity_id
-              == "sensor.replay_kitchen_pendant_lights"
-            %}
-              switch.kitchen_pendant_lights
-            {%
-              elif trigger.entity_id
-              == "sensor.replay_master_bedroom_salt_lamp"
-            %}
-              switch.master_bedroom_salt_lamp
-            {% elif trigger.entity_id == "sensor.replay_mud_counter_lights" %}
-              switch.mud_counter_lights
-            {%
-              elif trigger.entity_id
-              == "sensor.replay_outdoor_lights"
-            %}
-              group.outdoor_lights
-            {% elif trigger.entity_id == "sensor.replay_reading_lamp" %}
-              switch.reading_lamp
-            {% elif trigger.entity_id == "sensor.replay_sofa_lamp" %}
-              switch.sofa_lamp
-            {% endif %}
+              harmony_remote: >
+                {% if eid == "sensor.replay_basement_tv" %}
+                  remote.basement_tv
+                {% elif eid == "sensor.replay_living_room_tv" %}
+                  remote.living_room_tv
+                {% endif %}
+              roku_remote: >
+                {% if eid == "sensor.replay_basement_tv" %}
+                  remote.basement_roku
+                {% elif eid == "sensor.replay_living_room_tv" %}
+                  remote.living_room_roku
+                {% endif %}
+        - conditions:
+            condition: trigger
+            id: tv_on
+          sequence:
+            variables:
+              eid: "{{ trigger.entity_id }}"
+            service: >
+                script.simulate_watching_roku
+            data:
+              app: Denver News from 9News
+              harmony_remote: >
+                {% if eid == "sensor.replay_basement_tv" %}
+                  remote.basement_tv
+                {% elif eid == "sensor.replay_living_room_tv" %}
+                  remote.living_room_tv
+                {% endif %}
+              roku_media_player: >
+                {% if eid == "sensor.replay_basement_tv" %}
+                  media_player.basement_roku
+                {% elif eid == "sensor.replay_living_room_tv" %}
+                  media_player.living_room_roku
+                {% endif %}
+              roku_remote: >
+                {% if eid == "sensor.replay_basement_tv" %}
+                  remote.basement_roku
+                {% elif eid == "sensor.replay_living_room_tv" %}
+                  remote.living_room_roku
+                {% endif %}
 
   - alias: "Turn off simulation of someone being home"
     id: "turn_off_simulation_of_someone_being_home"
