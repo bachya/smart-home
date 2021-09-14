@@ -222,8 +222,6 @@ automation:
         - conditions:
             condition: trigger
             id: switch
-          variables:
-            eid: "{{ trigger.entity_id }}"
           sequence:
             service: >
               {% if trigger.to_state.state == "0" %}
@@ -233,6 +231,7 @@ automation:
               {% endif %}
             data:
               entity_id: >
+                {% set eid = trigger.entity_id %}
                 {% if eid == "sensor.replay_bar_cart_leds" %}
                   switch.bar_cart_leds
                 {% elif eid == "sensor.replay_basement_lights" %}
@@ -258,18 +257,18 @@ automation:
             condition: trigger
             id: tv_off
           sequence:
-            variables:
-              eid: "{{ trigger.entity_id }}"
             service: >
                 script.turn_roku_off
             data:
               harmony_remote: >
+                {% set eid = trigger.entity_id %}
                 {% if eid == "sensor.replay_basement_tv" %}
                   remote.basement_tv
                 {% elif eid == "sensor.replay_living_room_tv" %}
                   remote.living_room_tv
                 {% endif %}
               roku_remote: >
+                {% set eid = trigger.entity_id %}
                 {% if eid == "sensor.replay_basement_tv" %}
                   remote.basement_roku
                 {% elif eid == "sensor.replay_living_room_tv" %}
@@ -279,25 +278,26 @@ automation:
             condition: trigger
             id: tv_on
           sequence:
-            variables:
-              eid: "{{ trigger.entity_id }}"
             service: >
                 script.simulate_watching_roku
             data:
               app: Denver News from 9News
               harmony_remote: >
+                {% set eid = trigger.entity_id %}
                 {% if eid == "sensor.replay_basement_tv" %}
                   remote.basement_tv
                 {% elif eid == "sensor.replay_living_room_tv" %}
                   remote.living_room_tv
                 {% endif %}
               roku_media_player: >
+                {% set eid = trigger.entity_id %}
                 {% if eid == "sensor.replay_basement_tv" %}
                   media_player.basement_roku
                 {% elif eid == "sensor.replay_living_room_tv" %}
                   media_player.living_room_roku
                 {% endif %}
               roku_remote: >
+                {% set eid = trigger.entity_id %}
                 {% if eid == "sensor.replay_basement_tv" %}
                   remote.basement_roku
                 {% elif eid == "sensor.replay_living_room_tv" %}
