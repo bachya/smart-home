@@ -102,29 +102,3 @@ sensor:
           ) | round(2) * 100 }}
         unit_of_measurement: "%"
         device_class: illuminance
-
-  - platform: template
-    sensors:
-      roku_source:
-        friendly_name: Roku Source
-        value_template: >
-          {{ states.media_player.living_room_roku.attributes.app_name }}
-        icon_template: >
-          {% set state = state_attr(
-            "media_player.living_room_roku", "app_name"
-            ) %}
-          {% if state == 'Netflix'%}
-            mdi:netflix
-          {% elif state == 'Hulu'%}
-            mdi:hulu
-          {% elif state == 'XFINITY Stream'%}
-            mdi:television-classic
-          {% elif state == 'YouTube'%}
-            mdi:youtube-play
-          {% elif state == 'Aquatic Life'%}
-            mdi:fish
-          {% elif state == 'Plex'%}
-            mdi:plex
-          {% else %}
-            mdi:apps
-          {% endif %}
