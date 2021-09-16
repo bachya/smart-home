@@ -7,6 +7,9 @@ automation:
       - platform: homeassistant
         event: start
       - platform: state
+        entity_id: climate.thermostat
+        from: heat_cool
+      - platform: state
         id: away_mode_off
         entity_id: input_boolean.away_mode
         to: "off"
@@ -15,16 +18,8 @@ automation:
         entity_id: input_boolean.away_mode
         to: "on"
       - platform: state
-        id: in_bed
-        entity_id: binary_sensor.in_bed
-        to: "on"
-      - platform: state
-        id: not_in_bed
-        entity_id: binary_sensor.in_bed
-        to: "off"
-      - platform: state
         entity_id:
-          - climate.thermostat
+          - binary_sensor.in_bed
           - input_number.daytime_dyson_fan_speed
           - input_number.daytime_temperature_ac
           - input_number.daytime_temperature_heat
@@ -33,13 +28,6 @@ automation:
           - input_number.nighttime_temperature_heat
           - input_number.thermostat_eco_high_threshold
           - input_number.thermostat_eco_low_threshold
-    condition:
-      condition: template
-      value_template: >
-        # We explicitly look for moments where the state value itself has
-        # changed; this prevents, say, manually changing the thermostat's
-        # temperature from triggering this automation:
-        {{ trigger.to_state.state != trigger.from_state.state}}
     action:
       choose:
         - conditions:
@@ -82,8 +70,9 @@ automation:
             - service: fan.turn_on
               entity_id: fan.pure_humidify_cool
         - conditions:
-            - condition: trigger
-              id: not_in_bed
+            - condition: state
+              entity_id: binary_sensor.in_bed
+              state: "off"
             - condition: state
               entity_id: input_boolean.away_mode
               state: "off"
@@ -111,10 +100,10 @@ automation:
               data:
                 percentage: >
                   {{ states("input_number.daytime_dyson_fan_speed") | int }}
-        # Nighttime
         - conditions:
-            - condition: trigger
-              id: in_bed
+            - condition: state
+              entity_id: binary_sensor.in_bed
+              state: "on"
             - condition: state
               entity_id: input_boolean.away_mode
               state: "off"
