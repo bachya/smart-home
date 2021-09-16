@@ -47,7 +47,7 @@ automation:
         from: closed
       - platform: numeric_state
         entity_id: sensor.solarradiation_perceived
-        below: 70
+        below: 65
     condition:
       - condition: not
         conditions:
