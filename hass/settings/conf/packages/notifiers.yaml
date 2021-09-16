@@ -1,0 +1,39 @@
+---
+notify:
+  - platform: group
+    name: everyone
+    services:
+      - service: mobile_app_aarons_iphone
+      - service: mobile_app_britts_iphone
+
+script:
+  notify_everyone_at_home:
+    fields:
+      message:
+        description: The message to send
+        example: Your hair is on fire!
+      title:
+        description: The optional title to include
+        example: Heads Up
+    sequence:
+      - choose:
+          conditions:
+            condition: state
+            entity_id: person.aaron
+            state: home
+          sequence:
+            service: notify.mobile_app_aarons_iphone
+            data:
+              message: "{{ message }}"
+              title: "{{ title }}"
+
+      - choose:
+          conditions:
+            condition: state
+            entity_id: person.britt
+            state: home
+          sequence:
+            service: notify.mobile_app_britts_iphone
+            data:
+              message: "{{ message }}"
+              title: "{{ title }}"
