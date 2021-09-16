@@ -1,37 +1,4 @@
 ---
-alert:
-  dishwasher_clean:
-    name: 🍽 The dishwasher is clean and can be emptied.
-    title: Dishwasher
-    entity_id: input_select.dishwasher_status
-    state: Clean
-    repeat:
-      - 15
-      - 120
-    skip_first: true
-    notifiers:
-      - mobile_app_aarons_iphone
-    data:
-      push:
-        category: DISHWASHER
-
-  kitchen_sink_leak:
-    name: 💦 Leak detected under the kitchen sink!
-    title: Kitchen Sink Leak
-    entity_id: binary_sensor.kitchen_sink_sensor_leak_detector
-    state: "on"
-    repeat:
-      - 1
-    notifiers:
-      - everyone
-    data:
-      push:
-        category: WATER
-      sound:
-        name: default
-        critical: 1
-        volume: 0.3
-
 automation:
   - alias: "Manage dishwasher state"
     id: "manage_dishwasher_state"
@@ -82,6 +49,44 @@ automation:
             data:
               entity_id: input_select.dishwasher_status
               option: Clean
+
+  - alias: "Notify when the dishwasher is clean"
+    id: "dishwasher_clean"
+    trigger:
+      platform: state
+      entity_id: input_select.dishwasher_status
+      to: Clean
+    action:
+      repeat:
+        sequence:
+          - service: script.notify_everyone_at_home
+            data:
+              message: "🍽  The dishwasher is clean and can be emptied."
+              title: Dishwasher Done
+          - delay: "02:00:00"
+        until:
+          - condition: state
+            entity_id: input_select.dishwasher_status
+            state: Dirty
+
+  - alias: "Notify when there is a leak under the kitchen sink"
+    id: "kitchen_sink_leak"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.kitchen_sink_sensor_leak_detector
+      to: "on"
+    action:
+      repeat:
+        sequence:
+          - service: notify.everyone
+            data:
+              message: "💦 Leak detected under the kitchen sink!"
+              title: Kitchen Sink Leak
+          - delay: "00:01:00"
+        until:
+          - condition: state
+            entity_id: binary_sensor.kitchen_sink_sensor_leak_detector
+            state: "off"
 
   - alias: "Turn kitchen lights on when we arrive at night"
     id: "turn_kitchen_lights_on_when_we_arrive_at_night"

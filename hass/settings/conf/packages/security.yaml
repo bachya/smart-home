@@ -1,74 +1,4 @@
 ---
-alert:
-  alarm_triggered:
-    name: 🚨 The alarm has been triggered.
-    title: Security Alert
-    entity_id: alarm_control_panel.123_main_street
-    state: triggered
-    repeat:
-      - 1
-    notifiers:
-      - everyone
-    data:
-      push:
-        category: SECURITY
-      sound:
-        name: default
-        critical: 1
-        volume: 0.3
-
-  garage_left_open:
-    name: 🚗 The garage has been left open.
-    title: Security Alert
-    entity_id: cover.wemos_d1_mini_garage_controller
-    state: open
-    repeat:
-      - 5
-      - 10
-      - 30
-    skip_first: true
-    notifiers:
-      - everyone
-    data:
-      sound:
-        name: default
-        critical: 1
-        volume: 0.3
-
-  house_empty_and_insecure:
-    name: |
-      🚨 No one is home and the house isn't secure.
-    title: Security Alert
-    entity_id: binary_sensor.house_open_and_insecure
-    state: "on"
-    repeat:
-      - 5
-    skip_first: true
-    notifiers:
-      - everyone
-    data:
-      push:
-        category: SECURITY
-      sound:
-        name: default
-        critical: 1
-        volume: 0.3
-
-  smoke_detected:
-    name: "🚨 Smoke/CO has been detected."
-    title: House Alert
-    entity_id: group.smoke_detectors
-    state: "on"
-    repeat:
-      - 1
-    notifiers:
-      - everyone
-    data:
-      sound:
-        name: default
-        critical: 1
-        volume: 0.3
-
 automation:
   - alias: "Automatic Lockup"
     id: "automatic_lockup"
@@ -80,7 +10,7 @@ automation:
         id: departing
       # The house is insecure for 30 minutes while we're in bed:
       - platform: state
-        entity_id: binary_sensor.house_insecure_when_in_bed
+        entity_id: binary_sensor.in_bed
         for:
           minutes: 30
         id: in_bed
@@ -176,6 +106,48 @@ automation:
               chime_volume: 2
               voice_prompt_volume: 2
 
+  - alias: "Notify when alarm is triggered"
+    id: "alarm_triggered"
+    trigger:
+      platform: state
+      entity_id: alarm_control_panel.8673_e_55th_avenue
+      to: triggered
+    action:
+      repeat:
+        sequence:
+          - service: notify.everyone
+            data:
+              message: "🚨 The alarm has been triggered."
+              title: Security Alert
+          - delay: "00:01:00"
+        until:
+          - condition: not
+            conditions:
+              condition: state
+              entity_id: alarm_control_panel.8673_e_55th_avenue
+              state: triggered
+
+  - alias: "Notify when garage is left open"
+    id: "garage_left_open"
+    trigger:
+      platform: state
+      entity_id: cover.wemos_d1_mini_garage_controller
+      to: open
+    action:
+      repeat:
+        sequence:
+          - service: notify.everyone
+            data:
+              message: "🚗 The garage has been left open."
+              title: Security Alert
+          - delay: "00:10:00"
+        until:
+          - condition: not
+            conditions:
+              condition: state
+              entity_id: cover.wemos_d1_mini_garage_controller
+              state: open
+
   - alias: "Notify when security status changes"
     id: "notify_when_security_status_changes"
     trigger:
@@ -186,6 +158,53 @@ automation:
       data:
         title: Security Update
         message: "🔐 New state: {{ trigger.to_state.state }}"
+
+  - alias: "Notify when the house is empty and insecure"
+    id: "house_empty_and_insecure"
+    trigger:
+      platform: state
+      entity_id: sensor.proximity_zone
+      from: Home
+    condition:
+      condition: state
+      entity_id: binary_sensor.secure_status
+      state: "off"
+    action:
+      repeat:
+        sequence:
+          - service: notify.everyone
+            data:
+              message: "🚨 No one is home and the house isn't secure."
+              title: Security Alert
+          - delay: "00:05:00"
+        until:
+          condition: or
+          conditions:
+            - condition: state
+              entity_id: sensor.proximity_zone
+              state: Home
+            - condition: state
+              entity_id: binary_sensor.secure_status
+              state: "on"
+
+  - alias: "Notify when smoke is detected"
+    id: "smoke_detected"
+    trigger:
+      platform: state
+      entity_id: group.smoke_detectors
+      to: "on"
+    action:
+      repeat:
+        sequence:
+          - service: notify.everyone
+            data:
+              message: "🚨 Smoke/CO has been detected."
+              title: Security Alert
+          - delay: "00:01:00"
+        until:
+          - condition: state
+            entity_id: group.smoke_detectors
+            state: "off"
 
   - alias: "Simulate someone being home"
     id: "simulate_someone_being_home"
@@ -324,20 +343,6 @@ automation:
 binary_sensor:
   - platform: template
     sensors:
-      house_insecure_when_in_bed:
-        friendly_name: House Insecure When In Bed
-        value_template: >
-          {{
-            is_state("binary_sensor.in_bed", "on")
-            and is_state("binary_sensor.secure_status", "off")
-          }}
-      house_open_and_insecure:
-        value_template: >
-          {{
-            not is_state("sensor.proximity_zone", "Home")
-            and is_state("binary_sensor.secure_status", "off")
-          }}
-
       secure_status:
         friendly_name: Security Status
         value_template: >

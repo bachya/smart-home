@@ -1,17 +1,24 @@
 ---
-alert:
-  fiddle_leaf_fig_moisture:
-    name: "🌴 Fred is low on moisture and needs a drink."
-    title: Fred's Moisture
-    entity_id: binary_sensor.should_notify_about_fred_dry
-    state: "on"
-    repeat:
-      - 60
-    skip_first: true
-    notifiers:
-      - everyone
-
 automation:
+  - alias: "Notify when Fred's moisture is low"
+    id: "fiddle_leaf_fig_moisture"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.fiddle_leaf_fig_moisture
+      below: 10
+    action:
+      repeat:
+        sequence:
+          - service: script.notify_everyone_at_home
+            data:
+              message: "🌴 Fred is low on moisture and needs a drink."
+              title: Fred's Moisture
+          - delay: "01:00:00"
+        until:
+          - condition: numeric_state
+            entity_id: sensor.fiddle_leaf_fig_moisture
+            above: 10
+
   - alias: "Turn living room lights on when we arrive at night"
     id: "turn_living_room_lights_on_when_we_arrive_at_night"
     trigger:
@@ -58,16 +65,6 @@ automation:
       service: switch.turn_on
       data:
         entity_id: switch.powder_room_fan
-
-binary_sensor:
-  - platform: template
-    sensors:
-      should_notify_about_fred_dry:
-        value_template: >-
-          {{
-            not is_state("sensor.fiddle_leaf_fig_moisture", "unknown") and
-            states("sensor.fiddle_leaf_fig_moisture") | int < 10
-          }}
 
 group:
   living_room_lights:
