@@ -130,8 +130,14 @@ automation:
   - alias: "Notify when security status changes"
     id: "notify_when_security_status_changes"
     trigger:
-      platform: state
-      entity_id: binary_sensor.secure_status
+      - platform: state
+        entity_id: binary_sensor.secure_status
+        to: "off"
+        for: "00:03:00"
+      - platform: state
+        entity_id: binary_sensor.secure_status
+        to: "on"
+        for: "00:03:00"
     action:
       service: notify.everyone
       data:
