@@ -127,27 +127,6 @@ automation:
               entity_id: alarm_control_panel.8673_e_55th_avenue
               state: triggered
 
-  - alias: "Notify when garage is left open"
-    id: "garage_left_open"
-    trigger:
-      platform: state
-      entity_id: cover.wemos_d1_mini_garage_controller
-      to: open
-    action:
-      repeat:
-        sequence:
-          - service: notify.everyone
-            data:
-              message: "🚗 The garage has been left open."
-              title: Security Alert
-          - delay: "00:10:00"
-        until:
-          - condition: not
-            conditions:
-              condition: state
-              entity_id: cover.wemos_d1_mini_garage_controller
-              state: open
-
   - alias: "Notify when security status changes"
     id: "notify_when_security_status_changes"
     trigger:
