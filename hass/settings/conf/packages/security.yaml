@@ -144,6 +144,7 @@ automation:
       platform: state
       entity_id: sensor.proximity_zone
       from: Home
+      for: "00:05:00"
     condition:
       condition: state
       entity_id: binary_sensor.secure_status

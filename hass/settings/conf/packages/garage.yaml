@@ -54,8 +54,7 @@ automation:
       platform: state
       entity_id: cover.wemos_d1_mini_garage_controller
       to: closed
-      for:
-        minutes: 10
+      for: "00:10:00"
     action:
       service: switch.turn_off
       data:
