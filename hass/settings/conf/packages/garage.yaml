@@ -47,7 +47,7 @@ automation:
         from: closed
       - platform: numeric_state
         entity_id: sensor.solarradiation_perceived
-        below: 65
+        below: input_number.local_sunset_brightness
     condition:
       - condition: not
         conditions:
@@ -56,7 +56,7 @@ automation:
           state: closed
       - condition: numeric_state
         entity_id: sensor.solarradiation_perceived
-        below: 70
+        below: input_number.local_sunset_brightness
     action:
       service: switch.turn_on
       data:

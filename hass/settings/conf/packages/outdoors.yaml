@@ -16,7 +16,7 @@ automation:
           after: "15:00:00"
         - condition: numeric_state
           entity_id: sensor.solarradiation_perceived
-          below: 65
+          below: input_number.local_sunset_brightness
           # As it gets darker, this automation has the possibility of firing
           # multiple times; this condition forces it to only fire once per day:
         - condition: template
@@ -50,3 +50,12 @@ group:
       - switch.kitchen_patio_light
       - switch.master_patio_light
     all: true
+
+input_number:
+  local_sunset_brightness:
+    name: Local Sunset Brightness
+    min: 50
+    max: 70
+    step: 1
+    unit_of_measurement: "%"
+    icon: mdi:brightness-percent
