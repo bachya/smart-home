@@ -258,7 +258,7 @@ automation:
             condition: trigger
             id: tv_off
           sequence:
-            service: >
+            service: >-
                 script.turn_roku_off
             data:
               harmony_remote: >
@@ -279,7 +279,7 @@ automation:
             condition: trigger
             id: tv_on
           sequence:
-            service: >
+            service: >-
                 script.simulate_watching_roku
             data:
               app: Denver News from 9News
