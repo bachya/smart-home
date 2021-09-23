@@ -2,7 +2,6 @@
 version: "3"
 
 services:
-
   ecowitt2mqtt:
     container_name: ecowitt2mqtt
     depends_on:
@@ -192,7 +191,6 @@ services:
       - zwave-js-config:/usr/src/app/store
 
 volumes:
-
   fail2ban-data:
   hass-config:
   hass-db-data:

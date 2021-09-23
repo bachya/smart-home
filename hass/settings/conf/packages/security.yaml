@@ -259,7 +259,7 @@ automation:
             id: tv_off
           sequence:
             service: >-
-                script.turn_roku_off
+              script.turn_roku_off
             data:
               harmony_remote: >
                 {% set eid = trigger.entity_id %}
@@ -280,7 +280,7 @@ automation:
             id: tv_on
           sequence:
             service: >-
-                script.simulate_watching_roku
+              script.simulate_watching_roku
             data:
               app: Denver News from 9News
               harmony_remote: >

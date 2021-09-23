@@ -70,11 +70,11 @@ steps:
     failure: ignore
     commands:
       - "for file in $(
-          find /drone/src/esphome
-          -type f
-          -name \"*.yaml\"
-          -not \ -name \"secrets.yaml\"
-          -not -name \".*.yaml\"
+        find /drone/src/esphome
+        -type f
+        -name \"*.yaml\"
+        -not \ -name \"secrets.yaml\"
+        -not -name \".*.yaml\"
         ); do esphome config \"$file\"; done"
 
   - name: "Config Check: Latest"
@@ -82,11 +82,11 @@ steps:
     pull: always
     commands:
       - "for file in $(
-          find /drone/src/esphome
-          -type f
-          -name \"*.yaml\"
-          -not \ -name \"secrets.yaml\"
-          -not -name \".*.yaml\"
+        find /drone/src/esphome
+        -type f
+        -name \"*.yaml\"
+        -not \ -name \"secrets.yaml\"
+        -not -name \".*.yaml\"
         ); do esphome config \"$file\"; done"
 
 ---
@@ -131,7 +131,7 @@ steps:
     commands:
       - cd /usr/src/homeassistant
       - "python -m homeassistant -c /drone/src/hass/settings \
-         --script check_config"
+        --script check_config"
 
   - name: "Config Check: RC"
     image: homeassistant/home-assistant:rc
@@ -140,7 +140,7 @@ steps:
     commands:
       - cd /usr/src/homeassistant
       - "python -m homeassistant -c /drone/src/hass/settings \
-         --script check_config"
+        --script check_config"
 
   - name: "Config Check: Latest"
     image: homeassistant/home-assistant:latest
@@ -148,7 +148,7 @@ steps:
     commands:
       - cd /usr/src/homeassistant
       - "python -m homeassistant -c /drone/src/hass/settings \
-         --script check_config"
+        --script check_config"
 
 ---
 kind: pipeline
