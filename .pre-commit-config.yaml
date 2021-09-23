@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: https://github.com/codespell-project/codespell
-    rev: v1.16.0
+    rev: v2.1.0
     hooks:
       - id: codespell
         args:
@@ -15,8 +15,7 @@ repos:
     hooks:
       - id: prettier
   - repo: https://github.com/adrienverge/yamllint
-    rev: v1.20.0
+    rev: v1.26.3
     hooks:
       - id: yamllint
-        types: [file, yaml]
         exclude: ^hass/settings/custom_components/
