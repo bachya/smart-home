@@ -6,6 +6,8 @@
       state: "on"
     alert.house_empty_and_insecure:
       state: "on"
+    automation.3d_printer_state_notifications:
+      state: "on"
     automation.adjust_automations_in_blackout_mode:
       state: "on"
     automation.adjust_automations_in_guest_mode:
@@ -46,8 +48,6 @@
       state: "on"
     automation.notify_on_hacs_updates:
       state: "on"
-    automation.3d_printer_state_notifications:
-      state: "on"
     automation.notify_when_time_for_wolfie_to_run:
       state: "on"
     automation.notify_when_wolfie_needs_a_new_consumable:
@@ -76,8 +76,12 @@
       state: "on"
     automation.wolfie_stuck:
       state: "on"
+    input_boolean.guest_mode:
+      state: "off"
     input_boolean.notify_of_new_versions_automation:
       state: "on"
+    input_boolean.vacation_mode:
+      state: "off"
     switch.guardian_b4e62d98118d_valve:
       state: "on"
 
