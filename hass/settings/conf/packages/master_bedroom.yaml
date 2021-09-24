@@ -119,9 +119,9 @@ automation:
     action:
       - service: notify.everyone
         data:
-          title: 🔌 Turning Britt's Plug Off
+          title: Britt's Plug
           message: >
-            Britt's plug was left on; turning it off since everyone is gone.
+            🔌 Britt's plug was left on; turning it off since everyone is gone.
       - service: switch.turn_off
         data:
           entity_id: switch.britt_s_bathroom_outlet
