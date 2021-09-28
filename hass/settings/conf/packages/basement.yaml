@@ -60,7 +60,7 @@ sensor:
     type: count
     start: >
       {{
-        now().replace(hour=0, minute=0, second=0)
+        as_timestamp(now().replace(hour=0, minute=0, second=0))
         - now().weekday() * 86400
       }}
     end: "{{ now() }}"
