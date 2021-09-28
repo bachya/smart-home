@@ -41,7 +41,7 @@ binary_sensor:
       sump_pump_on:
         friendly_name: Sump Pump On
         value_template: >
-          {{ states("sensor.sump_pump_electric_consumed_w") > 0 }}
+          {{ states("sensor.sump_pump_electric_consumed_w") | int > 0 }}
 
 sensor:
   - platform: history_stats
