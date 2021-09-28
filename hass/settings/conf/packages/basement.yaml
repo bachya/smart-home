@@ -45,20 +45,25 @@ binary_sensor:
 
 sensor:
   - platform: history_stats
-    name: Sump Pump Runs (24 hours)
+    name: Sump Pump Runs (Today)
     entity_id: binary_sensor.sump_pump_on
     state: "on"
     type: count
     start: >
-      {{ now() - timedelta(days=1) }}
+      {{ now().replace(hour=0, minute=0, second=0) }}
+    end: "{{ now() }}"
 
   - platform: history_stats
-    name: Sump Pump Runs (1 week)
+    name: Sump Pump Runs (This Week)
     entity_id: binary_sensor.sump_pump_on
     state: "on"
     type: count
     start: >
-      {{ now() - timedelta(weeks=1) }}
+      {{
+        now().replace(hour=0, minute=0, second=0)
+        - now().weekday() * 86400
+      }}
+    end: "{{ now() }}"
 
   - platform: min_max
     name: Average Basement Temperature
