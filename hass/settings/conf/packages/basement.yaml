@@ -35,7 +35,31 @@ automation:
       data:
         entity_id: switch.guardian_b4e62d98118d_valve
 
+binary_sensor:
+  - platform: template
+    sensors:
+      sump_pump_on:
+        friendly_name: Sump Pump On
+        value_template: >
+          {{ states("sensor.sump_pump_electric_consumed_w") > 0 }}
+
 sensor:
+  - platform: history_stats
+    name: Sump Pump Runs (24 hours)
+    entity_id: binary_sensor.sump_pump_on
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(days=1) }}
+
+  - platform: history_stats
+    name: Sump Pump Runs (1 week)
+    entity_id: binary_sensor.sump_pump_on
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+
   - platform: min_max
     name: Average Basement Temperature
     type: mean
