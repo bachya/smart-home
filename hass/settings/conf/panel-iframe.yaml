@@ -3,6 +3,10 @@ ambient:
   title: Ambient PWS
   url: !secret panel_url_ambient
   icon: mdi:weather-cloudy
+esphome:
+  title: ESPHome
+  url: !secret panel_url_esphome
+  icon: mdi:chip
 rainmachine:
   title: RainMachine
   url: !secret panel_url_rainmachine

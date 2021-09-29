@@ -20,7 +20,17 @@ services:
     container_name: esphome
     depends_on:
       - traefik
+    environment:
+      PASSWORD: "${ESPHOME_PASSWORD}"
+      USERNAME: "${ESPHOME_USERNAME}"
     image: "esphome/esphome:${ESPHOME_VERSION}"
+    labels:
+      traefik.enable: true
+      traefik.http.routers.esphome.entrypoints: websecure
+      traefik.http.routers.esphome.middlewares: security
+      traefik.http.routers.esphome.rule: "Host(`${TRAEFIK_HOST_ESPHOME}`)"
+      traefik.http.routers.esphome.tls: true
+      traefik.http.services.esphome.loadbalancer.server.port: 6052
     network_mode: host
     restart: always
     volumes:
