@@ -5,6 +5,8 @@ substitutions:
   plant_1_friendly_name: Fiddle Leaf Fig
 
 api:
+  encryption:
+    key: !secret api_encryption_key
   password: !secret api_password
 
 binary_sensor:

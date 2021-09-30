@@ -3,6 +3,8 @@ substitutions:
   device_friendly_name: Wemos D1 Mini Garage Controller
 
 api:
+  encryption:
+    key: !secret api_encryption_key
   password: !secret api_password
 
 binary_sensor:
