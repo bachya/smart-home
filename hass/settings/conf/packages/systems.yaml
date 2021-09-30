@@ -14,22 +14,6 @@ automation:
         title: Home Assistant Notification
         message: "📥 {{ trigger.event.data.service_data.message }}"
 
-  - alias: "Forward healthchecks.io notifications"
-    id: "forward_healthchecks_io_notifications"
-    trigger:
-      platform: webhook
-      webhook_id: !secret webhook_healtchecks_io
-    action:
-      service: notify.mobile_app_aarons_iphone
-      data:
-        title: healthchecks.io
-        message: >
-          {% if trigger.json.status == "down" %}
-            ⛔️ {{ trigger.json.name }} is DOWN.
-          {% else %}
-            ✅ {{ trigger.json.name }} is UP.
-          {% endif %}
-
   - alias: "Notify on HACS updates"
     id: "notify_on_hacs_updates"
     trigger:
