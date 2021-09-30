@@ -34,17 +34,20 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id:
-          - sensor.basement_firefighter_battery_level
+          - sensor.aaron_bedside_nanomote_battery_level
           - sensor.fiddle_leaf_fig_battery
-          - sensor.front_door_lock_battery_level
-          - sensor.garage_fire_door_lock_battery_level
-          - sensor.nanomote_quad_battery_level
+          - sensor.office_node_pro_battery
+          - sensor.sonos_roam_battery
+          - sensor.vacuum_battery
         below: 20
         for:
           minutes: 5
       - platform: state
         entity_id:
+          - binary_sensor.basement_firefighter_low_battery_level
           - binary_sensor.basement_sensor_low_battery
+          - binary_sensor.front_door_lock_low_battery_level
+          - binary_sensor.garage_fire_door_lock_low_battery_level
           - binary_sensor.guest_bedroom_sensor_low_battery
           - binary_sensor.kitchen_sensor_low_battery
           - binary_sensor.kitchen_sink_sensor_low_battery
