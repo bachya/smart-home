@@ -127,13 +127,13 @@ binary_sensor:
   - platform: bayesian
     name: In Bed Estimate
     prior: 0.417
-    probability_threshold: 0.93
+    probability_threshold: 0.85
     observations:
       - platform: state
-        entity_id: input_boolean.blackout_mode
-        to_state: "on"
-        prob_given_true: 0.950
-        prob_given_false: 0.107
+        entity_id: sun.sun
+        to_state: below_horizon
+        prob_given_true: 0.800
+        prob_given_false: 0.214
       - platform: state
         entity_id: remote.living_room_tv
         to_state: "off"
