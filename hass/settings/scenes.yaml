@@ -2,17 +2,9 @@
 - id: base
   name: Base
   entities:
-    automation.dishwasher_clean:
-      state: "on"
-    alert.house_empty_and_insecure:
-      state: "on"
     automation.3d_printer_state_notifications:
       state: "on"
-    automation.adjust_automations_in_blackout_mode:
-      state: "on"
-    automation.adjust_automations_in_guest_mode:
-      state: "on"
-    automation.adjust_automations_in_vacation_mode:
+    automation.dishwasher_clean:
       state: "on"
     automation.alter_wolfie_based_on_alarm_status:
       state: "on"
@@ -20,54 +12,26 @@
       state: "on"
     automation.automatic_lockup:
       state: "on"
-    automation.backyard_light_switch_via_kitchen_patio_light_off:
-      state: "on"
-    automation.backyard_light_switch_via_kitchen_patio_light_on:
-      state: "on"
     automation.cycle_master_toilet_fan_during_the_day:
       state: "on"
-    automation.fiddle_leaf_fig_moisture:
-      state: "on"
     automation.forward_hass_persistent_notifications:
-      state: "on"
-    automation.forward_healthchecks_io_notifications:
       state: "on"
     automation.forward_simplisafe_notifications:
       state: "on"
     automation.notify_of_next_trash_pickup_the_night_before:
       state: "on"
-    automation.set_sleep_timer_on_master_bathroom_fan_when_switch_double_tapped:
-      state: "on"
-    automation.set_sleep_timer_on_master_toilet_fan_when_switch_double_tapped:
-      state: "on"
-    automation.manage_dishwasher_state:
-      state: "on"
-    automation.manage_simplisafe_sounds_during_blackout:
-      state: "on"
     automation.notify_on_hacs_updates:
       state: "on"
-    automation.notify_when_time_for_wolfie_to_run:
+    automation.notify_when_fiddle_leaf_fig_is_dry:
       state: "on"
     automation.notify_when_wolfie_needs_a_new_consumable:
       state: "on"
     automation.notify_when_security_status_changes:
       state: "off"
-    automation.reset_automations_when_no_mode_is_active:
+    automation.notify_when_time_for_wolfie_to_run:
       state: "on"
     automation.simulate_someone_being_home:
       state: "off"
-    automation.turn_garage_lights_off_after_garage_door_closes:
-      state: "on"
-    automation.turn_garage_lights_on_when_garage_door_is_open_and_its_dark:
-      state: "on"
-    automation.turn_kitchen_lights_on_when_we_arrive_at_night:
-      state: "on"
-    automation.turn_living_room_lights_on_when_we_arrive_at_night:
-      state: "on"
-    automation.turn_3d_printer_off_when_print_completes:
-      state: "on"
-    automation.turn_powder_room_fan_back_on_if_someone_turns_it_off:
-      state: "on"
     automation.update_openuv_every_30_minutes_during_the_daytime:
       state: "on"
     automation.wolfie_cycle_complete:
@@ -76,8 +40,6 @@
       state: "on"
     input_boolean.guest_mode:
       state: "off"
-    input_boolean.notify_of_new_versions_automation:
-      state: "on"
     input_boolean.vacation_mode:
       state: "off"
     switch.guardian_b4e62d98118d_valve:
@@ -94,7 +56,7 @@
       state: "off"
     automation.dishwasher_clean:
       state: "off"
-    automation.fiddle_leaf_fig_moisture:
+    automation.notify_when_fiddle_leaf_fig_is_dry:
       state: "off"
     automation.notify_when_time_for_wolfie_to_run:
       state: "off"
@@ -103,8 +65,6 @@
     automation.wolfie_cycle_complete:
       state: "off"
     automation.wolfie_stuck:
-      state: "off"
-    input_boolean.notify_of_new_versions_automation:
       state: "off"
 
 - id: depart_home
@@ -116,7 +76,7 @@
       state: "off"
     automation.dishwasher_clean:
       state: "off"
-    automation.fiddle_leaf_fig_moisture:
+    automation.notify_when_fiddle_leaf_fig_is_dry:
       state: "off"
     automation.simulate_someone_being_home:
       state: "on"
@@ -214,8 +174,6 @@
       state: "off"
     automation.notify_of_next_trash_pickup_the_night_before:
       state: "off"
-    input_boolean.notify_of_new_versions:
-      state: "off"
     automation.notify_when_time_for_wolfie_to_run:
       state: "off"
 
@@ -258,9 +216,9 @@
       state: "off"
     automation.dishwasher_clean:
       state: "off"
-    automation.fiddle_leaf_fig_moisture:
-      state: "off"
     automation.notify_of_next_trash_pickup_the_night_before:
+      state: "off"
+    automation.notify_when_fiddle_leaf_fig_is_dry:
       state: "off"
     automation.notify_when_security_status_changes:
       state: "on"
@@ -271,8 +229,6 @@
     automation.wolfie_cycle_complete:
       state: "off"
     automation.wolfie_stuck:
-      state: "off"
-    input_boolean.notify_of_new_versions_automation:
       state: "off"
     input_boolean.office_lights_schedule_automation:
       state: "off"

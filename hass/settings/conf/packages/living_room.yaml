@@ -1,7 +1,7 @@
 ---
 automation:
-  - alias: "Notify when Fred's moisture is low"
-    id: "fiddle_leaf_fig_moisture"
+  - alias: "Notify when fiddle leaf fig is dry"
+    id: "notify_when_fiddle_leaf_fig_is_dry"
     trigger:
       platform: numeric_state
       entity_id: sensor.fiddle_leaf_fig_moisture
