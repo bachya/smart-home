@@ -5,7 +5,7 @@ automation:
     trigger:
       - platform: state
         entity_id: binary_sensor.in_bed
-        state: "on"
+        to: "on"
     action:
       service: input_boolean.turn_on
       data:
