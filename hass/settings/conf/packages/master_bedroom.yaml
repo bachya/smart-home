@@ -5,10 +5,7 @@ automation:
     trigger:
       platform: time_pattern
       hours: "/1"
-    condition:
-      condition: state
-      entity_id: input_boolean.blackout_mode
-      state: "off"
+      minutes: 5
     action:
       service: input_number.set_value
       data:

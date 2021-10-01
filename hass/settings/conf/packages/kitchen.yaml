@@ -113,21 +113,6 @@ automation:
           - switch.kitchen_pendant_lights
           - switch.mud_counter_lights
 
-  - alias: "Turn kitchen lights on on dark mornings"
-    id: "turn_kitchen_lights_on_on_dark_mornings"
-    trigger:
-      platform: state
-      entity_id: binary_sensor.in_bed
-      to: "off"
-    condition:
-      condition: numeric_state
-      entity_id: sensor.solarradiation_perceived
-      below: input_number.local_sunset_brightness
-    action:
-      service: switch.turn_on
-      data:
-        entity_id: switch.kitchen_pendant_lights
-
 group:
   kitchen_lights:
     entities:

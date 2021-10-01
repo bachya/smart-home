@@ -1,65 +1,5 @@
 ---
 automation:
-  - alias: "Blackout Mode Schedule"
-    id: "blackout_mode_schedule"
-    trigger:
-      - platform: time
-        at: "07:00:00"
-        id: workday_stop
-      - platform: time
-        at: "09:00:00"
-        id: weekend_holiday_stop
-      - platform: time
-        at: "21:00:00"
-        id: workday_start
-      - platform: time
-        at: "22:00:00"
-        id: weekend_holiday_start
-    action:
-      choose:
-        # Blackout Mode on Workdays
-        - conditions:
-            - condition: trigger
-              id: workday_start
-            - condition: state
-              entity_id: binary_sensor.workday_tomorrow
-              state: "on"
-          sequence:
-            service: input_boolean.turn_on
-            data:
-              entity_id: input_boolean.blackout_mode
-        - conditions:
-            - condition: trigger
-              id: workday_stop
-            - condition: state
-              entity_id: binary_sensor.workday_today
-              state: "on"
-          sequence:
-            service: input_boolean.turn_off
-            data:
-              entity_id: input_boolean.blackout_mode
-        # Blackout Mode on Weekends/Holidays
-        - conditions:
-            - condition: trigger
-              id: weekend_holiday_start
-            - condition: state
-              entity_id: binary_sensor.workday_tomorrow
-              state: "off"
-          sequence:
-            service: input_boolean.turn_on
-            data:
-              entity_id: input_boolean.blackout_mode
-        - conditions:
-            - condition: trigger
-              id: weekend_holiday_stop
-            - condition: state
-              entity_id: binary_sensor.workday_today
-              state: "off"
-          sequence:
-            service: input_boolean.turn_off
-            data:
-              entity_id: input_boolean.blackout_mode
-
   - alias: "Activate Blackout Mode when the Good Night scene activates"
     id: "activate_blackout_mode_when_the_good_night_scene_activates"
     trigger:
@@ -78,13 +18,6 @@ automation:
   - alias: "Adjust automations in Blackout Mode"
     id: "adjust_automations_in_blackout_mode"
     trigger:
-      - platform: event
-        event_type: call_service
-        event_data:
-          domain: scene
-          service: turn_on
-          service_data:
-            entity_id: scene.good_night
       - platform: state
         entity_id: input_boolean.blackout_mode
         to: "on"

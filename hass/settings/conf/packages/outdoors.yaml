@@ -1,37 +1,34 @@
 ---
 automation:
-  - alias: "Fire local event for weather station-detected sunset"
-    id: "fire_local_event_for_weather_stationdetected_sunset"
+  - alias: "Handle Local Sun Events"
+    id: "handle_local_sun_events"
     trigger:
-      - platform: state
+      - platform: numeric_state
+        id: sunrise
         entity_id: sensor.solarradiation_perceived
-        # If for some reason the weather station is down and the actual trigger
-        # fails, we also watch for "regular" sunset:
+        above: input_number.local_sunset_brightness
       - platform: sun
+        id: sunrise
+        event: sunrise
+      - platform: numeric_state
+        id: sunset
+        entity_id: sensor.solarradiation_perceived
+        below: input_number.local_sunset_brightness
+      - platform: sun
+        id: sunset
         event: sunset
-    condition:
-      condition: and
-      conditions:
-        - condition: time
-          after: "15:00:00"
-        - condition: numeric_state
-          entity_id: sensor.solarradiation_perceived
-          below: input_number.local_sunset_brightness
-          # As it gets darker, this automation has the possibility of firing
-          # multiple times; this condition forces it to only fire once per day:
-        - condition: template
-          value_template: >
-            {{
-              as_timestamp(
-                state_attr(
-                  "automation.fire_local_event_for_weather_station_detected_sunset",
-                  "last_triggered"
-                )
-              ) | timestamp_custom('%-d')
-              != as_timestamp(now()) | timestamp_custom('%-d')
-            }}
     action:
-      - scene: scene.sunset
+      choose:
+        - conditions:
+            condition: trigger
+            id: sunrise
+          sequence:
+            - scene: scene.sunrise
+        - conditions:
+            condition: trigger
+            id: sunset
+          sequence:
+            - scene: scene.sunset
 
 group:
   outdoor_lights:

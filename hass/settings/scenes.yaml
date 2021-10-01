@@ -24,8 +24,6 @@
       state: "on"
     automation.backyard_light_switch_via_kitchen_patio_light_on:
       state: "on"
-    automation.blackout_mode_schedule:
-      state: "on"
     automation.cycle_master_toilet_fan_during_the_day:
       state: "on"
     automation.fiddle_leaf_fig_moisture:
@@ -221,10 +219,24 @@
     automation.notify_when_time_for_wolfie_to_run:
       state: "off"
 
+- id: sunrise
+  name: Sunrise
+  entities:
+    automation.cycle_master_toilet_fan_during_the_day:
+      state: "on"
+    input_boolean.blackout_mode:
+      state: "on"
+    switch.kitchen_pendant_lights:
+      state: "on"
+
 - id: sunset
   name: Sunset
   entities:
+    automation.cycle_master_toilet_fan_during_the_day:
+      state: "off"
     group.outdoor_lights:
+      state: "on"
+    input_boolean.blackout_mode:
       state: "on"
     switch.christmas_tree:
       state: "on"
@@ -241,8 +253,6 @@
   name: Vacation Mode
   entities:
     automation.3d_printer_state_notifications:
-      state: "off"
-    automation.blackout_mode_schedule:
       state: "off"
     automation.cycle_master_toilet_fan_during_the_day:
       state: "off"
