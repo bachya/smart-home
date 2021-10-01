@@ -17,16 +17,6 @@ automation:
           - service: switch.turn_on
             entity_id: switch.office_salt_lamp_switch
 
-  - alias: "Turn office salt lamp off at 10pm"
-    id: "turn_office_salt_lamp_off_at_10pm"
-    trigger:
-      platform: time
-      at: "22:00:00"
-    action:
-      service: switch.turn_off
-      data:
-        entity_id: switch.office_salt_lamp
-
 input_number:
   office_salt_lamp_timer:
     name: Sleep Timer

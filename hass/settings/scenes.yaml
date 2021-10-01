@@ -198,6 +198,8 @@
       state: "off"
     switch.fireplace:
       state: "off"
+    switch.office_salt_lamp:
+      state: "off"
 
 - id: guest_mode
   name: Guest Mode
