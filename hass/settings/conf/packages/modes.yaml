@@ -1,15 +1,11 @@
 ---
 automation:
-  - alias: "Activate Blackout Mode when the Good Night scene activates"
-    id: "activate_blackout_mode_when_the_good_night_scene_activates"
+  - alias: "Activate Blackout when we're in bed"
+    id: "activate_blackout_when_we_re_in_bed"
     trigger:
-      - platform: event
-        event_type: call_service
-        event_data:
-          domain: scene
-          service: turn_on
-          service_data:
-            entity_id: scene.good_night
+      - platform: state
+        entity_id: binary_sensor.in_bed
+        state: "on"
     action:
       service: input_boolean.turn_on
       data:

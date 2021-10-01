@@ -32,8 +32,6 @@
       state: "on"
     automation.simulate_someone_being_home:
       state: "off"
-    automation.update_openuv_every_30_minutes_during_the_daytime:
-      state: "on"
     automation.wolfie_cycle_complete:
       state: "on"
     automation.wolfie_stuck:
@@ -50,17 +48,31 @@
   entities:
     automation.3d_printer_state_notifications:
       state: "off"
+    automation.dishwasher_clean:
+      state: "off"
     automation.alter_wolfie_based_on_alarm_status:
       state: "off"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
       state: "off"
-    automation.dishwasher_clean:
+    automation.automatic_lockup:
+      state: "off"
+    automation.cycle_master_toilet_fan_during_the_day:
+      state: "off"
+    automation.forward_hass_persistent_notifications:
+      state: "off"
+    automation.forward_simplisafe_notifications:
+      state: "off"
+    automation.notify_of_next_trash_pickup_the_night_before:
+      state: "off"
+    automation.notify_on_hacs_updates:
       state: "off"
     automation.notify_when_fiddle_leaf_fig_is_dry:
       state: "off"
+    automation.notify_when_wolfie_needs_a_new_consumable:
+      state: "off"
     automation.notify_when_time_for_wolfie_to_run:
       state: "off"
-    automation.notify_when_wolfie_needs_a_new_consumable:
+    automation.simulate_someone_being_home:
       state: "off"
     automation.wolfie_cycle_complete:
       state: "off"
@@ -182,8 +194,6 @@
   entities:
     automation.cycle_master_toilet_fan_during_the_day:
       state: "on"
-    input_boolean.blackout_mode:
-      state: "on"
     switch.kitchen_pendant_lights:
       state: "on"
 
@@ -193,8 +203,6 @@
     automation.cycle_master_toilet_fan_during_the_day:
       state: "off"
     group.outdoor_lights:
-      state: "on"
-    input_boolean.blackout_mode:
       state: "on"
     switch.christmas_tree:
       state: "on"
