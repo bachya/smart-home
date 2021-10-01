@@ -1,7 +1,8 @@
 ---
 substitutions:
   device_friendly_name: ESP32 Plant Monitor 1
-  device_name: esp32_plant_monitor1
+  device_name: esp32-plant-monitor1
+  device_static_ip: 172.16.20.197
   plant_1_friendly_name: Fiddle Leaf Fig
 
 api:
@@ -50,4 +51,9 @@ text_sensor:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
-  fast_connect: true
+  output_power: 20dB
+
+  manual_ip:
+    static_ip: "${device_static_ip}"
+    gateway: 172.16.20.1
+    subnet: 255.255.255.0

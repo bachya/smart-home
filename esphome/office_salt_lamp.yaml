@@ -1,6 +1,7 @@
 ---
 substitutions:
-  device_name: office_salt_lamp
+  device_name: office-salt-lamp
   device_friendly_name: Office Salt Lamp
+  device_static_ip: 172.16.20.192
 
 <<: !include .sonoff_basic.yaml

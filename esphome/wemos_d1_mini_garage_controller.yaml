@@ -88,7 +88,7 @@ cover:
       - switch.turn_off: relay
 
 esphome:
-  name: wemos_d1_mini_garage_controller
+  name: wemos-d1-mini-garage-controller
   platform: ESP8266
   board: d1_mini
 
@@ -146,6 +146,8 @@ text_sensor:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
+  output_power: 20dB
+
   manual_ip:
     static_ip: 172.16.20.101
     gateway: 172.16.20.1

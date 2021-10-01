@@ -59,5 +59,9 @@ text_sensor:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
-  fast_connect: true
   output_power: 20dB
+
+  manual_ip:
+    static_ip: "${device_static_ip}"
+    gateway: 172.16.20.1
+    subnet: 255.255.255.0

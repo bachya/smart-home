@@ -9,7 +9,7 @@ binary_sensor:
     name: "Master Bathroom Climate Sensor Status"
 
 esphome:
-  name: master_bathroom_climate_sensor
+  name: master-bathroom-climate-sensor
   platform: ESP8266
   board: d1_mini
 
@@ -49,4 +49,9 @@ text_sensor:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
-  fast_connect: true
+  output_power: 20dB
+
+  manual_ip:
+    static_ip: 172.16.20.226
+    gateway: 172.16.20.1
+    subnet: 255.255.255.0
