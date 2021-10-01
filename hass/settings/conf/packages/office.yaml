@@ -27,16 +27,6 @@ automation:
       data:
         entity_id: switch.office_salt_lamp
 
-  - alias: "Turn office salt lamp on at sunset"
-    id: "turn_office_salt_lamp_on_at_sunset"
-    trigger:
-      platform: event
-      event_type: LOCAL_SUNSET
-    action:
-      service: switch.turn_on
-      data:
-        entity_id: switch.office_salt_lamp
-
 input_number:
   office_salt_lamp_timer:
     name: Sleep Timer

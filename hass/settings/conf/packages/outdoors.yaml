@@ -31,16 +31,7 @@ automation:
               != as_timestamp(now()) | timestamp_custom('%-d')
             }}
     action:
-      - event: LOCAL_SUNSET
-
-  - alias: "Turn outdoor lights on at sunset"
-    id: "turn_outdoor_lights_on_at_sunset"
-    trigger:
-      platform: event
-      event_type: LOCAL_SUNSET
-    action:
-      service: homeassistant.turn_on
-      entity_id: group.outdoor_lights
+      - scene: scene.sunset
 
 group:
   outdoor_lights:

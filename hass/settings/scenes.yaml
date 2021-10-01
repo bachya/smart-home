@@ -219,6 +219,22 @@
     automation.notify_when_time_for_wolfie_to_run:
       state: "off"
 
+- id: sunset
+  name: Sunset
+  entities:
+    group.outdoor_lights:
+      state: "on"
+    switch.christmas_tree:
+      state: "on"
+    switch.kitchen_pendant_lights:
+      state: "on"
+    switch.master_bedroom_salt_lamp:
+      state: "on"
+    switch.office_salt_lamp:
+      state: "on"
+    switch.reading_lamp:
+      state: "on"
+
 - id: vacation_mode
   name: Vacation Mode
   entities:

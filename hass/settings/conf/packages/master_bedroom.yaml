@@ -126,16 +126,6 @@ automation:
         data:
           entity_id: switch.britt_s_bathroom_outlet
 
-  - alias: "Turn master bedroom salt lamp on at sunset"
-    id: "turn_master_bedroom_salt_lamp_on_at_sunset"
-    trigger:
-      platform: event
-      event_type: LOCAL_SUNSET
-    action:
-      service: switch.turn_on
-      data:
-        entity_id: switch.master_bedroom_salt_lamp
-
 binary_sensor:
   - platform: bayesian
     name: In Bed Estimate

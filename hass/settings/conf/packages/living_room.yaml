@@ -41,18 +41,6 @@ automation:
       data:
         entity_id: group.living_room_lights
 
-  - alias: "Turn living room lights on at sunset"
-    id: "turn_living_room_lights_on_at_sunset"
-    trigger:
-      platform: event
-      event_type: LOCAL_SUNSET
-    action:
-      service: homeassistant.turn_on
-      data:
-        entity_id:
-          - switch.christmas_tree
-          - switch.reading_lamp
-
   - alias: "Turn powder room fan back on if someone turns it off"
     id: "turn_powder_room_fan_back_on_if_someone_turns_it_off"
     trigger:

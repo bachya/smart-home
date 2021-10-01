@@ -113,16 +113,6 @@ automation:
           - switch.kitchen_pendant_lights
           - switch.mud_counter_lights
 
-  - alias: "Turn kitchen lights on at sunset"
-    id: "turn_kitchen_lights_on_at_sunset"
-    trigger:
-      platform: event
-      event_type: LOCAL_SUNSET
-    action:
-      service: switch.turn_on
-      data:
-        entity_id: switch.kitchen_pendant_lights
-
   - alias: "Turn kitchen lights on on dark mornings"
     id: "turn_kitchen_lights_on_on_dark_mornings"
     trigger:
