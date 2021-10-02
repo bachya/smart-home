@@ -52,10 +52,6 @@
       state: "off"
     automation.alter_wolfie_based_on_alarm_status:
       state: "off"
-    automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
-      state: "off"
-    automation.automatic_lockup:
-      state: "off"
     automation.cycle_master_toilet_fan_during_the_day:
       state: "off"
     automation.forward_hass_persistent_notifications:
@@ -71,8 +67,6 @@
     automation.notify_when_wolfie_needs_a_new_consumable:
       state: "off"
     automation.notify_when_time_for_wolfie_to_run:
-      state: "off"
-    automation.simulate_someone_being_home:
       state: "off"
     automation.wolfie_cycle_complete:
       state: "off"
