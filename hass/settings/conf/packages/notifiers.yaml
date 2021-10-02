@@ -13,6 +13,26 @@ notify:
       - service: mobile_app_britts_iphone
 
 script:
+  notify_everyone_critical:
+    fields:
+      message:
+        description: The message to send
+        example: Your hair is on fire!
+      title:
+        description: The optional title to include
+        example: Heads Up
+    sequence:
+      - service: notify.aaron
+        data:
+          message: "{{ message }}"
+          title: "{{ title }}"
+          data:
+            push:
+              sound:
+                name: "default"
+                critical: 1
+                volume: 0.5
+
   notify_everyone_at_home:
     fields:
       message:
@@ -28,7 +48,7 @@ script:
             entity_id: person.aaron
             state: home
           sequence:
-            service: notify.mobile_app_aarons_iphone
+            service: notify.aaron
             data:
               message: "{{ message }}"
               title: "{{ title }}"

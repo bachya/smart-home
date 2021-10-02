@@ -12,7 +12,7 @@ automation:
     action:
       repeat:
         sequence:
-          - service: notify.everyone
+          - service: script.notify_everyone_critical
             data:
               message: "💦 Leak detected in the basement!"
               title: Basement Leak

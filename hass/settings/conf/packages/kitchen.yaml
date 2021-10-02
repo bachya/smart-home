@@ -79,7 +79,7 @@ automation:
     action:
       repeat:
         sequence:
-          - service: notify.everyone
+          - service: script.notify_everyone_critical
             data:
               message: "💦 Leak detected under the kitchen sink!"
               title: Kitchen Sink Leak

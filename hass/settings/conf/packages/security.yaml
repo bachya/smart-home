@@ -115,7 +115,7 @@ automation:
     action:
       repeat:
         sequence:
-          - service: notify.everyone
+          - service: script.notify_everyone_critical
             data:
               message: "🚨 The alarm has been triggered."
               title: Security Alert
@@ -154,7 +154,7 @@ automation:
     action:
       repeat:
         sequence:
-          - service: notify.everyone
+          - service: script.notify_everyone_critical
             data:
               message: "🚨 No one is home and the house isn't secure."
               title: Security Alert
@@ -178,7 +178,7 @@ automation:
     action:
       repeat:
         sequence:
-          - service: notify.everyone
+          - service: script.notify_everyone_critical
             data:
               message: "🚨 Smoke/CO has been detected."
               title: Security Alert
