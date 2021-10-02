@@ -12,7 +12,7 @@ automation:
           (states("sensor.recollect_waste") | as_datetime - now()).days == 0
         }}
     action:
-      - service: notify.mobile_app_aarons_iphone
+      - service: script.notify_everyone_at_home
         data:
           message: >
             🚮 The pickup will include: {{

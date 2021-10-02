@@ -11,7 +11,7 @@ automation:
       entity_id: sensor.allergy_index_today
       above: 8
     action:
-      service: notify.mobile_app_aarons_iphone
+      service: notify.aaron
       data:
         title: Bad Allergies Today
         message: >

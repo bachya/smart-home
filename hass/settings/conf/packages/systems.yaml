@@ -9,7 +9,7 @@ automation:
         domain: persistent_notification
         service: create
     action:
-      service: notify.mobile_app_aarons_iphone
+      service: notify.aaron
       data:
         title: Home Assistant Notification
         message: "📥 {{ trigger.event.data.service_data.message }}"

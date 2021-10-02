@@ -1,9 +1,15 @@
 ---
 notify:
   - platform: group
-    name: everyone
+    name: aaron
     services:
       - service: mobile_app_aarons_iphone
+      - service: mobile_app_aaron_s_personal_macbook_pro 
+
+  - platform: group
+    name: everyone
+    services:
+      - service: aaron
       - service: mobile_app_britts_iphone
 
 script:
