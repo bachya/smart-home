@@ -3,13 +3,10 @@ automation:
   - alias: "Handle Local Sun Events"
     id: "handle_local_sun_events"
     trigger:
-      - platform: numeric_state
+      - platform: state
         id: sunrise
-        entity_id: sensor.solarradiation_perceived
-        above: input_number.local_sunset_brightness
-      - platform: sun
-        id: sunrise
-        event: sunrise
+        entity_id: binary_sensor.in_bed
+        to: "off"
       - platform: numeric_state
         id: sunset
         entity_id: sensor.solarradiation_perceived
@@ -25,8 +22,10 @@ automation:
           sequence:
             - scene: scene.sunrise
         - conditions:
-            condition: trigger
-            id: sunset
+            - condition: trigger
+              id: sunset
+            - condition: time
+              after: "15:00:00"
           sequence:
             - scene: scene.sunset
 
