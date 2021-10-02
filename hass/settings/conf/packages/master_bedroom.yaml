@@ -122,6 +122,18 @@ automation:
       - service: switch.turn_off
         data:
           entity_id: switch.britt_s_bathroom_outlet
+ 
+  - alias: "Turn master bathroom fan off after 2 hours"
+    id: "turn_master_bathroom_fan_off_after_2_hours"
+    trigger:
+      platform: state
+      entity_id: switch.master_bathroom_fan
+      to: "on"
+      for: "02:00:00"
+    action:
+      service: switch.turn_off
+      data:
+        entity_id: switch.master_bathroom_fan
 
 binary_sensor:
   - platform: bayesian
