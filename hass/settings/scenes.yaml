@@ -10,6 +10,8 @@
       state: "on"
     automation.forward_simplisafe_notifications:
       state: "on"
+    automation.handle_local_sun_events:
+      state: "on"
     automation.house_empty_and_insecure:
       state: "on"
     automation.notify_on_hacs_updates:
