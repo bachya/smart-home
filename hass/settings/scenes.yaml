@@ -1,7 +1,5 @@
 ---
-- id: base
-  name: Base
-  entities:
+- entities:
     automation.3d_printer_state_notifications:
       state: "on"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
@@ -28,9 +26,9 @@
       state: "on"
     automation.notify_when_wolfie_cycle_is_complete:
       state: "off"
-    automation.notify_when_wolfie_needs_a_new_consumable:
-      state: "on"
     automation.notify_when_wolfie_is_stuck:
+      state: "on"
+    automation.notify_when_wolfie_needs_a_new_consumable:
       state: "on"
     automation.notify_when_wolfie_time_to_run:
       state: "on"
@@ -42,10 +40,10 @@
       state: "off"
     switch.guardian_b4e62d98118d_valve:
       state: "on"
+  id: base
+  name: Base
 
-- id: blackout_mode
-  name: Blackout Mode
-  entities: 
+- entities:
     automation.3d_printer_state_notifications:
       state: "off"
     automation.cycle_master_toilet_fan_during_the_day:
@@ -68,16 +66,16 @@
       state: "off"
     automation.notify_when_wolfie_cycle_is_complete:
       state: "off"
-    automation.notify_when_wolfie_needs_a_new_consumable:
-      state: "off"
     automation.notify_when_wolfie_is_stuck:
+      state: "off"
+    automation.notify_when_wolfie_needs_a_new_consumable:
       state: "off"
     automation.notify_when_wolfie_time_to_run:
       state: "off"
+  id: blackout_mode
+  name: Blackout Mode
 
-- id: depart_home
-  name: Depart Home
-  entities:
+- entities:
     alarm_control_panel.123_main_street:
       state: armed_away
     automation.cycle_master_toilet_fan_during_the_day:
@@ -88,16 +86,16 @@
       state: "on"
     cover.wemos_d1_mini_garage_controller:
       state: closed
+    group.kitchen_lights:
+      state: "off"
+    group.living_room_lights:
+      state: "off"
     lock.123_main_street_patio_door:
       state: locked
     lock.front_door_lock:
       state: locked
     lock.garage_fire_door_lock:
       state: locked
-    group.kitchen_lights:
-      state: "off"
-    group.living_room_lights:
-      state: "off"
     media_player.house_audio:
       state: paused
     media_player.sonos_playbar:
@@ -108,40 +106,40 @@
       state: "off"
     switch.basement_lights:
       state: "off"
-    switch.garage_lights:
-      state: "off"
     switch.fireplace:
       state: "off"
+    switch.garage_lights:
+      state: "off"
+  id: depart_home
+  name: Depart Home
 
-- id: drive_home
-  name: Drive Home
-  entities:
+- entities:
     alarm_control_panel.123_main_street:
       state: disarmed
     cover.wemos_d1_mini_garage_controller:
       state: open
     lock.garage_fire_door_lock:
       state: unlocked
+  id: drive_home
+  name: Drive Home
 
-- id: good_night
-  name: Good Night
-  entities:
+- entities:
     alarm_control_panel.123_main_street:
       state: armed_home
     cover.wemos_d1_mini_garage_controller:
       state: closed
+    group.kitchen_lights:
+      state: "off"
+    group.living_room_lights:
+      state: "off"
+    group.outdoor_lights:
+      state: "off"
     lock.123_main_street_patio_door:
       state: locked
     lock.front_door_lock:
       state: locked
     lock.garage_fire_door_lock:
       state: locked
-    group.living_room_lights:
-      state: "off"
-    group.kitchen_lights:
-      state: "off"
-    group.outdoor_lights:
-      state: "off"
     media_player.house_audio:
       state: paused
     media_player.sonos_playbar:
@@ -152,16 +150,16 @@
       state: "off"
     switch.basement_lights:
       state: "off"
-    switch.garage_lights:
-      state: "off"
     switch.fireplace:
+      state: "off"
+    switch.garage_lights:
       state: "off"
     switch.office_salt_lamp:
       state: "off"
+  id: good_night
+  name: Good Night
 
-- id: guest_mode
-  name: Guest Mode
-  entities:
+- entities:
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
       state: "off"
     automation.automatic_lockup:
@@ -170,18 +168,18 @@
       state: "off"
     automation.house_empty_and_insecure:
       state: "off"
+  id: guest_mode
+  name: Guest Mode
 
-- id: sunrise
-  name: Sunrise
-  entities:
+- entities:
     automation.cycle_master_toilet_fan_during_the_day:
       state: "on"
     switch.kitchen_pendant_lights:
       state: "on"
+  id: sunrise
+  name: Sunrise
 
-- id: sunset
-  name: Sunset
-  entities:
+- entities:
     automation.cycle_master_toilet_fan_during_the_day:
       state: "off"
     group.outdoor_lights:
@@ -196,19 +194,21 @@
       state: "on"
     switch.reading_lamp:
       state: "on"
+  id: sunset
+  name: Sunset
 
-- id: vacation_mode
-  name: Vacation Mode
-  entities:
+- entities:
     automation.notify_when_security_status_changes:
       state: "on"
     switch.guardian_b4e62d98118d_valve:
       state: "off"
+  id: vacation_mode
+  name: Vacation Mode
 
-- id: walk_home
-  name: Walk Home
-  entities:
+- entities:
     alarm_control_panel.123_main_street:
       state: disarmed
     lock.front_door_lock:
       state: unlocked
+  id: walk_home
+  name: Walk Home
