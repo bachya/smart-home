@@ -24,7 +24,7 @@ automation:
       entity_id: sensor.hacs
       above: 0
     action:
-      service: notify.mobile_app_aarons_iphone
+      service: notify.aaron
       data:
         title: HACS Updates
         message: "💿 There are {{ trigger.to_state.state }} updates."
@@ -57,7 +57,7 @@ automation:
         for:
           minutes: 5
     action:
-      service: notify.mobile_app_aarons_iphone
+      service: notify.notify_everyone_at_home
       data:
         title: Low Battery
         message: "🔋 The battery for {{ trigger.entity_id }} should be replaced."
@@ -78,7 +78,7 @@ automation:
         for:
           minutes: 5
     action:
-      service: notify.mobile_app_aarons_iphone
+      service: notify.notify_everyone_at_home
       data:
         title: Device Offline
         message: "🤔 {{ trigger.entity_id }} isn't responding."

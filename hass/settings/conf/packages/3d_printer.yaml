@@ -19,7 +19,7 @@ automation:
             condition: trigger
             id: printing_stoppped
           sequence:
-            service: notify.aaron
+            service: script.notify_everyone_at_home
             data:
               message: "🦿 3D print completed"
         - conditions:
@@ -40,7 +40,7 @@ automation:
       for:
         minutes: 10
     action:
-      - service: notify.mobile_app_aarons_iphone
+      - service: script.notify_everyone_at_home
         data:
           message: "🦿 Turning 3D printer off"
       - service: "switch.turn_off"

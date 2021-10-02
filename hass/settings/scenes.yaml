@@ -4,13 +4,7 @@
   entities:
     automation.3d_printer_state_notifications:
       state: "on"
-    automation.dishwasher_clean:
-      state: "on"
-    automation.alter_wolfie_based_on_alarm_status:
-      state: "on"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
-      state: "on"
-    automation.automatic_lockup:
       state: "on"
     automation.cycle_master_toilet_fan_during_the_day:
       state: "on"
@@ -18,23 +12,29 @@
       state: "on"
     automation.forward_simplisafe_notifications:
       state: "on"
-    automation.notify_of_next_trash_pickup_the_night_before:
+    automation.house_empty_and_insecure:
       state: "on"
     automation.notify_on_hacs_updates:
       state: "on"
-    automation.notify_when_fiddle_leaf_fig_is_dry:
+    automation.notify_when_battery_is_low:
       state: "on"
-    automation.notify_when_wolfie_needs_a_new_consumable:
+    automation.notify_when_fiddle_leaf_fig_is_dry:
       state: "on"
     automation.notify_when_security_status_changes:
       state: "off"
-    automation.notify_when_time_for_wolfie_to_run:
+    automation.notify_when_sensor_goes_offline:
+      state: "on"
+    automation.notify_when_the_dishwasher_is_clean:
+      state: "on"
+    automation.notify_when_wolfie_cycle_is_complete:
+      state: "off"
+    automation.notify_when_wolfie_needs_a_new_consumable:
+      state: "on"
+    automation.notify_when_wolfie_is_stuck:
+      state: "on"
+    automation.notify_when_wolfie_time_to_run:
       state: "on"
     automation.simulate_someone_being_home:
-      state: "off"
-    automation.wolfie_cycle_complete:
-      state: "on"
-    automation.wolfie_stuck:
       state: "on"
     input_boolean.guest_mode:
       state: "off"
@@ -45,32 +45,34 @@
 
 - id: blackout_mode
   name: Blackout Mode
-  entities:
+  entities: 
     automation.3d_printer_state_notifications:
       state: "off"
-    automation.dishwasher_clean:
-      state: "off"
-    automation.alter_wolfie_based_on_alarm_status:
-      state: "off"
     automation.cycle_master_toilet_fan_during_the_day:
+      state: "off"
+    automation.dishwasher_clean:
       state: "off"
     automation.forward_hass_persistent_notifications:
       state: "off"
     automation.forward_simplisafe_notifications:
       state: "off"
-    automation.notify_of_next_trash_pickup_the_night_before:
-      state: "off"
     automation.notify_on_hacs_updates:
+      state: "off"
+    automation.notify_when_battery_is_low:
       state: "off"
     automation.notify_when_fiddle_leaf_fig_is_dry:
       state: "off"
+    automation.notify_when_sensor_goes_offline:
+      state: "off"
+    automation.notify_when_the_dishwasher_is_clean:
+      state: "off"
+    automation.notify_when_wolfie_cycle_is_complete:
+      state: "off"
     automation.notify_when_wolfie_needs_a_new_consumable:
       state: "off"
-    automation.notify_when_time_for_wolfie_to_run:
+    automation.notify_when_wolfie_is_stuck:
       state: "off"
-    automation.wolfie_cycle_complete:
-      state: "off"
-    automation.wolfie_stuck:
+    automation.notify_when_wolfie_time_to_run:
       state: "off"
 
 - id: depart_home
@@ -80,18 +82,10 @@
       state: armed_away
     automation.cycle_master_toilet_fan_during_the_day:
       state: "off"
-    automation.dishwasher_clean:
-      state: "off"
     automation.handle_local_sun_events:
-      state: "off"
-    automation.notify_when_fiddle_leaf_fig_is_dry:
       state: "off"
     automation.simulate_someone_being_home:
       state: "on"
-    automation.wolfie_cycle_complete:
-      state: "off"
-    automation.wolfie_stuck:
-      state: "off"
     cover.wemos_d1_mini_garage_controller:
       state: closed
     lock.123_main_street_patio_door:
@@ -134,8 +128,6 @@
   entities:
     alarm_control_panel.123_main_street:
       state: armed_home
-    automation.automatic_lockup:
-      state: "on"
     cover.wemos_d1_mini_garage_controller:
       state: closed
     lock.123_main_street_patio_door:
@@ -170,19 +162,13 @@
 - id: guest_mode
   name: Guest Mode
   entities:
-    alert.house_empty_and_insecure:
-      state: "off"
-    automation.alter_wolfie_based_on_alarm_status:
-      state: "off"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
       state: "off"
     automation.automatic_lockup:
       state: "off"
     automation.cycle_master_toilet_fan_during_the_day:
       state: "off"
-    automation.notify_of_next_trash_pickup_the_night_before:
-      state: "off"
-    automation.notify_when_time_for_wolfie_to_run:
+    automation.house_empty_and_insecure:
       state: "off"
 
 - id: sunrise
@@ -214,28 +200,8 @@
 - id: vacation_mode
   name: Vacation Mode
   entities:
-    automation.3d_printer_state_notifications:
-      state: "off"
-    automation.cycle_master_toilet_fan_during_the_day:
-      state: "off"
-    automation.dishwasher_clean:
-      state: "off"
-    automation.notify_of_next_trash_pickup_the_night_before:
-      state: "off"
-    automation.notify_when_fiddle_leaf_fig_is_dry:
-      state: "off"
     automation.notify_when_security_status_changes:
       state: "on"
-    automation.notify_when_time_for_wolfie_to_run:
-      state: "off"
-    automation.notify_when_wolfie_needs_a_new_consumable:
-      state: "off"
-    automation.wolfie_cycle_complete:
-      state: "off"
-    automation.wolfie_stuck:
-      state: "off"
-    input_boolean.office_lights_schedule_automation:
-      state: "off"
     switch.guardian_b4e62d98118d_valve:
       state: "off"
 

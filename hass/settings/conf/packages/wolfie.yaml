@@ -86,20 +86,39 @@ automation:
               data:
                 entity_id: input_boolean.wolfie_running
 
-  - alias: "Notify when time for Wolfie to run"
-    id: "notify_when_time_for_wolfie_to_run"
+  - alias: "Notify when Wolfie cycle is complete"
+    id: "notify_when_wolfie_cycle_is_complete"
+    trigger:
+      platform: state
+      entity_id: input_select.wolfie_bin_status
+      to: Full
+    action:
+      repeat:
+        sequence:
+          - service: script.notify_everyone_at_home
+            data:
+              message: "🤖 Wolfie has finished cleaning and can be emptied."
+              title: Vacuuming Complete
+          - delay: "02:00:00"
+        until:
+          - condition: state
+            entity_id: input_select.wolfie_bin_status
+            state: Empty
+
+  - alias: "Notify when Wolfie time to run"
+    id: "notify_when_wolfie_time_to_run"
     trigger:
       platform: state
       entity_id: calendar.wolfie_schedule
       to: "on"
     action:
-      service: notify.everyone
+      service: script.notify_everyone_at_home
       data:
         message: 🤖 It's time to run Wolfie!
         title: Vacuum Time
 
   - alias: "Notify when Wolfie is stuck"
-    id: "wolfie_stuck"
+    id: "notify_when_wolfie_is_stuck"
     trigger:
       platform: state
       entity_id: vacuum.rockrobo
@@ -144,7 +163,7 @@ automation:
           != as_timestamp(now()) | timestamp_custom('%-d')
         }}
     action:
-      service: notify.mobile_app_aarons_iphone
+      service: script.notify_everyone_at_home
       data:
         title: Wolfie Consumable Update
         message: >
@@ -161,25 +180,6 @@ automation:
           {% endif %}
 
           🤖 Wolfie needs {{ name }}!
-
-  - alias: "Notify when Wolfie's cycle is complete"
-    id: "wolfie_cycle_complete"
-    trigger:
-      platform: state
-      entity_id: input_select.wolfie_bin_status
-      to: Full
-    action:
-      repeat:
-        sequence:
-          - service: script.notify_everyone_at_home
-            data:
-              message: "🤖 Wolfie has finished cleaning and can be emptied."
-              title: Vacuuming Complete
-          - delay: "02:00:00"
-        until:
-          - condition: state
-            entity_id: input_select.wolfie_bin_status
-            state: Empty
 
 input_boolean:
   wolfie_running:
