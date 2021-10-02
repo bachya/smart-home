@@ -33,7 +33,7 @@
     automation.notify_when_wolfie_time_to_run:
       state: "on"
     automation.simulate_someone_being_home:
-      state: "on"
+      state: "off"
     input_boolean.guest_mode:
       state: "off"
     input_boolean.vacation_mode:
