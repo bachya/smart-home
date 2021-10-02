@@ -88,6 +88,8 @@
       state: "off"
     automation.dishwasher_clean:
       state: "off"
+    automation.handle_local_sun_events:
+      state: "off"
     automation.notify_when_fiddle_leaf_fig_is_dry:
       state: "off"
     automation.simulate_someone_being_home:
