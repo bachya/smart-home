@@ -25,7 +25,7 @@
     automation.notify_when_the_dishwasher_is_clean:
       state: "on"
     automation.notify_when_wolfie_cycle_is_complete:
-      state: "off"
+      state: "on"
     automation.notify_when_wolfie_is_stuck:
       state: "on"
     automation.notify_when_wolfie_needs_a_new_consumable:
