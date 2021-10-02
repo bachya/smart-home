@@ -22,7 +22,7 @@ script:
         description: The optional title to include
         example: Heads Up
     sequence:
-      - service: notify.aaron
+      - service: notify.everyone
         data:
           message: "{{ message }}"
           title: "{{ title }}"
