@@ -82,8 +82,8 @@ automation:
       data:
         title: Device Offline
         message: >-
-        🤔 {{ trigger.to_state.attributes.friendly_name }} isn't
-        responding and may be offline.
+          🤔{{ trigger.to_state.attributes.friendly_name }} isn't
+          responding and may be offline.
 
 sensor:
   - platform: dnsip
