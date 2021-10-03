@@ -4,7 +4,7 @@ notify:
     name: aaron
     services:
       - service: mobile_app_aarons_iphone
-      - service: mobile_app_aaron_s_personal_macbook_pro 
+      - service: mobile_app_aaron_s_personal_macbook_pro
 
   - platform: group
     name: everyone
