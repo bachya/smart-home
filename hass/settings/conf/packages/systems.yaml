@@ -118,11 +118,3 @@ sensor:
     resource: !secret healthchecksio_ping_url
     scan_interval:
       minutes: 5
-
-  - platform: version
-    name: HASS Available
-    source: docker
-    beta: true
-
-  - platform: version
-    name: HASS Installed
