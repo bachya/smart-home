@@ -60,7 +60,7 @@ automation:
       service: script.notify_everyone_at_home
       data:
         title: Low Battery
-        message: "🔋 The battery for {{ trigger.entity_id }} should be replaced."
+        message: "🔋 The battery for {{ trigger.entity_id }} is low."
 
   - alias: "Notify when sensor goes offline"
     id: "notify_when_sensor_goes_offline"
