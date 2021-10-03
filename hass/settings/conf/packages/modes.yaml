@@ -1,14 +1,5 @@
 ---
 automation:
-  - alias: "Adjust automations in Blackout Mode"
-    id: "adjust_automations_in_blackout_mode"
-    trigger:
-      - platform: state
-        entity_id: input_boolean.blackout_mode
-        to: "on"
-    action:
-      scene: scene.blackout_mode
-
   - alias: "Adjust automations in Guest Mode"
     id: "adjust_automations_in_guest_mode"
     trigger:
@@ -45,9 +36,6 @@ automation:
           service_data:
             entity_id: scene.walk_home
       - platform: state
-        entity_id: input_boolean.blackout_mode
-        to: "off"
-      - platform: state
         entity_id: input_boolean.guest_mode
         to: "off"
       - platform: state
@@ -60,9 +48,6 @@ automation:
       scene: scene.base
 
 input_boolean:
-  blackout_mode:
-    icon: mdi:weather-night
-    name: Blackout Mode
   guest_mode:
     icon: mdi:hotel
     name: Guest Mode

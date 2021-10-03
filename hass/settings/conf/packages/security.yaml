@@ -78,17 +78,30 @@ automation:
             - service: alert.turn_off
               entity_id: alert.house_empty_and_insecure
 
-  - alias: "Manage SimpliSafe sounds during blackout"
-    id: "manage_simplisafe_sounds_during_blackout"
+  - alias: "Manage SimpliSafe sounds"
+    id: "manage_simplisafe_sounds"
     trigger:
-      platform: state
-      entity_id: input_boolean.blackout_mode
+      - platform: event
+        id: turn_off
+        event_type: call_service
+        event_data:
+          domain: scene
+          service: turn_on
+          service_data:
+            entity_id: scene.good_night
+      - platform: event
+        id: turn_on
+        event_type: call_service
+        event_data:
+          domain: scene
+          service: turn_on
+          service_data:
+            entity_id: scene.sunrise
     action:
       choose:
         - conditions:
-            condition: state
-            entity_id: input_boolean.blackout_mode
-            state: "on"
+            condition: trigger
+            id: turn_off
           sequence:
             service: simplisafe.set_system_properties
             data:
@@ -96,9 +109,8 @@ automation:
               chime_volume: 0
               voice_prompt_volume: 0
         - conditions:
-            condition: state
-            entity_id: input_boolean.blackout_mode
-            state: "off"
+            condition: trigger
+            id: turn_on
           sequence:
             service: simplisafe.set_system_properties
             data:

@@ -46,38 +46,6 @@
   name: Base
 
 - entities:
-    automation.3d_printer_state_notifications:
-      state: "off"
-    automation.cycle_master_toilet_fan_during_the_day:
-      state: "off"
-    automation.dishwasher_clean:
-      state: "off"
-    automation.forward_hass_persistent_notifications:
-      state: "off"
-    automation.forward_simplisafe_notifications:
-      state: "off"
-    automation.notify_on_hacs_updates:
-      state: "off"
-    automation.notify_when_battery_is_low:
-      state: "off"
-    automation.notify_when_fiddle_leaf_fig_is_dry:
-      state: "off"
-    automation.notify_when_sensor_goes_offline:
-      state: "off"
-    automation.notify_when_the_dishwasher_is_clean:
-      state: "off"
-    automation.notify_when_wolfie_cycle_is_complete:
-      state: "off"
-    automation.notify_when_wolfie_is_stuck:
-      state: "off"
-    automation.notify_when_wolfie_needs_a_new_consumable:
-      state: "off"
-    automation.notify_when_wolfie_time_to_run:
-      state: "off"
-  id: blackout_mode
-  name: Blackout Mode
-
-- entities:
     alarm_control_panel.123_main_street:
       state: armed_away
     automation.cycle_master_toilet_fan_during_the_day:
@@ -136,8 +104,6 @@
       state: "off"
     group.outdoor_lights:
       state: "off"
-    input_boolean.blackout_mode:
-      state: "on"
     lock.123_main_street_patio_door:
       state: locked
     lock.front_door_lock:
@@ -178,8 +144,6 @@
 - entities:
     automation.cycle_master_toilet_fan_during_the_day:
       state: "on"
-    input_boolean.blackout_mode:
-      state: "off"
     switch.kitchen_pendant_lights:
       state: "on"
   id: sunrise
