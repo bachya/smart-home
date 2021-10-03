@@ -1,39 +1,15 @@
 ---
 - entities:
-    automation.3d_printer_state_notifications:
-      state: "on"
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
       state: "on"
     automation.cycle_master_toilet_fan_during_the_day:
-      state: "on"
-    automation.forward_hass_persistent_notifications:
-      state: "on"
-    automation.forward_simplisafe_notifications:
       state: "on"
     automation.handle_local_sun_events:
       state: "on"
     automation.house_empty_and_insecure:
       state: "on"
-    automation.notify_on_hacs_updates:
-      state: "on"
-    automation.notify_when_battery_is_low:
-      state: "on"
-    automation.notify_when_fiddle_leaf_fig_is_dry:
-      state: "on"
     automation.notify_when_security_status_changes:
       state: "off"
-    automation.notify_when_sensor_goes_offline:
-      state: "on"
-    automation.notify_when_the_dishwasher_is_clean:
-      state: "on"
-    automation.notify_when_wolfie_cycle_is_complete:
-      state: "on"
-    automation.notify_when_wolfie_is_stuck:
-      state: "on"
-    automation.notify_when_wolfie_needs_a_new_consumable:
-      state: "on"
-    automation.notify_when_wolfie_time_to_run:
-      state: "on"
     automation.simulate_someone_being_home:
       state: "off"
     input_boolean.guest_mode:
