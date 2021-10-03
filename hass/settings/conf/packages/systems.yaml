@@ -57,7 +57,7 @@ automation:
         for:
           minutes: 5
     action:
-      service: notify.notify_everyone_at_home
+      service: script.notify_everyone_at_home
       data:
         title: Low Battery
         message: "🔋 The battery for {{ trigger.entity_id }} should be replaced."
@@ -78,7 +78,7 @@ automation:
         for:
           minutes: 5
     action:
-      service: notify.notify_everyone_at_home
+      service: script.notify_everyone_at_home
       data:
         title: Device Offline
         message: "🤔 {{ trigger.entity_id }} isn't responding."
