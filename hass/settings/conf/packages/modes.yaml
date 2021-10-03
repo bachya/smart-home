@@ -1,16 +1,5 @@
 ---
 automation:
-  - alias: "Activate Blackout when we're in bed"
-    id: "activate_blackout_when_we_re_in_bed"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.in_bed
-        to: "on"
-    action:
-      service: input_boolean.turn_on
-      data:
-        entity_id: input_boolean.blackout_mode
-
   - alias: "Adjust automations in Blackout Mode"
     id: "adjust_automations_in_blackout_mode"
     trigger:

@@ -136,6 +136,8 @@
       state: "off"
     group.outdoor_lights:
       state: "off"
+    input_boolean.blackout_mode:
+      state: "on"
     lock.123_main_street_patio_door:
       state: locked
     lock.front_door_lock:
@@ -176,6 +178,8 @@
 - entities:
     automation.cycle_master_toilet_fan_during_the_day:
       state: "on"
+    input_boolean.blackout_mode:
+      state: "off"
     switch.kitchen_pendant_lights:
       state: "on"
   id: sunrise
