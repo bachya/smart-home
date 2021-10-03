@@ -5,63 +5,61 @@ api:
   password: !secret api_password
 
 binary_sensor:
-  - platform: gpio
-    pin:
-      number: GPIO4
-      inverted: true
-    name: Power Button
+  - name: Power Button
     on_press:
       - switch.toggle: relay
+    pin:
+      inverted: true
+      number: GPIO4
+    platform: gpio
 
-  - platform: status
-    name: "${device_friendly_name} Status"
+  - name: ${device_friendly_name} Status
+    platform: status
 
 esphome:
-  name: "${device_name}"
-  platform: ESP8266
   board: esp8285
+  name: ${device_name}
+  platform: ESP8266
 
-logger:
+logger: null
 
-ota:
+ota: null
 
 status_led:
   pin:
-    number: GPIO1
     inverted: true
+    number: GPIO1
 
 switch:
-  - platform: gpio
-    id: led
-    pin: GPIO13
+  - id: led
     inverted: true
+    pin: GPIO13
+    platform: gpio
 
-  - platform: gpio
-    name: "${device_friendly_name}"
-    pin: GPIO14
-    id: relay
-    on_turn_on:
-      - switch.turn_on: led
+  - id: relay
+    name: ${device_friendly_name}
     on_turn_off:
       - switch.turn_off: led
+    on_turn_on:
+      - switch.turn_on: led
+    pin: GPIO14
+    platform: gpio
 
 text_sensor:
-  - platform: template
-    name: "${device_friendly_name}: ESPHome Version (Short)"
-    lambda: |-
+  - lambda: |-
       auto state = id(esphome_version).state;
       return state.substr(0, state.find(' '));
+    name: "${device_friendly_name}: ESPHome Version (Short)"
+    platform: template
 
-  - platform: version
+  - id: esphome_version
     name: "${device_friendly_name}: ESPHome Version"
-    id: esphome_version
+    platform: version
 
 wifi:
+  manual_ip:
+    gateway: 172.16.20.1
+    static_ip: ${device_static_ip}
+    subnet: 255.255.255.0
   ssid: !secret wifi_ssid
   password: !secret wifi_password
-  output_power: 20dB
-
-  manual_ip:
-    static_ip: "${device_static_ip}"
-    gateway: 172.16.20.1
-    subnet: 255.255.255.0
