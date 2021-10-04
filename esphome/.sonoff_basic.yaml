@@ -10,7 +10,6 @@ binary_sensor:
       - switch.toggle: relay
     pin:
       inverted: true
-      mode: INPUT_PULLUP
       number: GPIO0
     platform: gpio
 
