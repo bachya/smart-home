@@ -1,7 +1,7 @@
 ---
 api:
-  # encryption:
-  #   key: !secret api_encryption_key
+  encryption:
+    key: !secret api_encryption_key
   password: !secret api_password
 
 binary_sensor:
