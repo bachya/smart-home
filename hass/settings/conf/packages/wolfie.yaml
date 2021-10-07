@@ -5,13 +5,9 @@ automation:
     trigger:
       - platform: state
         entity_id: vacuum.rockrobo
-        to: cleaning
       - platform: state
         entity_id: alarm_control_panel.123_main_street
         to: armed_away
-      - platform: state
-        entity_id: input_select.wolfie_bin_status
-        to: Full
     action:
       choose:
         - conditions:
@@ -22,6 +18,12 @@ automation:
               entity_id: vacuum.rockrobo
               state: cleaning
           sequence:
+            - service: notify.everyone
+              data:
+                title: Security Update
+                message: >
+                  🤖 Temporarily arming the security system to "home" while
+                  Wolfie cleans.
             - service: vacuum.pause
               data:
                 entity_id: vacuum.rockrobo
@@ -38,18 +40,27 @@ automation:
               data:
                 entity_id: vacuum.rockrobo
         - conditions:
-            condition: not
-            conditions:
-              - condition: state
-                entity_id: sensor.proximity_zone
-                state: Home
-              - condition: state
-                entity_id: alarm_control_panel.8673_e_55th_avenue
-                state: armed_away
-          sequence:
-            service: alarm_control_panel.alarm_arm_away
-            data:
+            - condition: state
               entity_id: alarm_control_panel.8673_e_55th_avenue
+              state: armed_home
+            - condition: state
+              entity_id: vacuum.rockrobo
+              state: docked
+            - condition: not
+              conditions:
+                - condition: state
+                  entity_id: sensor.proximity_zone
+                  state: Home
+          sequence:
+            - service: notify.everyone
+              data:
+                title: Security Update
+                message: >
+                  🤖 Re-arming the security system to "away" now that Wolfie
+                  is done cleaning.
+            - service: alarm_control_panel.alarm_arm_away
+              data:
+                entity_id: alarm_control_panel.8673_e_55th_avenue
 
   - alias: "Manage Wolfie's Bin"
     id: "manage_wolfies_bin"
