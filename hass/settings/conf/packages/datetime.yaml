@@ -18,7 +18,7 @@ binary_sensor:
           {% if states("binary_sensor.workday_sensor") == "on" %}
             {{ states("binary_sensor.daytime_workday") }}
           {% else %}
-            {{ states("binary_sensor.daytime_holidy") }}
+            {{ states("binary_sensor.daytime_holiday") }}
           {% endif %}
 
   - platform: tod
