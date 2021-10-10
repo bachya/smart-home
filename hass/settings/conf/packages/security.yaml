@@ -96,7 +96,7 @@ automation:
           domain: scene
           service: turn_on
           service_data:
-            entity_id: scene.sunrise
+            entity_id: scene.good_morning
     action:
       choose:
         - conditions:
@@ -122,7 +122,7 @@ automation:
     id: "alarm_triggered"
     trigger:
       platform: state
-      entity_id: alarm_control_panel.8673_e_55th_avenue
+      entity_id: alarm_control_panel.123_main_street
       to: triggered
     action:
       repeat:
@@ -136,7 +136,7 @@ automation:
           - condition: not
             conditions:
               condition: state
-              entity_id: alarm_control_panel.8673_e_55th_avenue
+              entity_id: alarm_control_panel.123_main_street
               state: triggered
 
   - alias: "Notify when security status changes"
@@ -341,7 +341,7 @@ binary_sensor:
         friendly_name: Security Status
         value_template: >
           {{
-            is_state("lock.8673_e_55th_avenue_patio_door", "locked")
+            is_state("lock.123_main_street_patio_door", "locked")
             and is_state("lock.front_door_lock", "locked")
             and is_state("lock.garage_fire_door_lock", "locked")
             and (
@@ -363,7 +363,7 @@ binary_sensor:
               or
               (
                 is_state(
-                  "alarm_control_panel.8673_e_55th_avenue",
+                  "alarm_control_panel.123_main_street",
                   "armed_home"
                 )
                 and is_state("vacuum.rockrobo", "cleaning")
@@ -375,9 +375,9 @@ binary_sensor:
 group:
   security_devices:
     entities:
-      - alarm_control_panel.8673_e_55th_avenue
+      - alarm_control_panel.123_main_street
       - cover.wemos_d1_mini_garage_controller
-      - lock.8673_e_55th_avenue_patio_door
+      - lock.123_main_street_patio_door
       - lock.front_door_lock
       - lock.garage_fire_door_lock
   smoke_detectors:

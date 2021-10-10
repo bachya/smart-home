@@ -2,9 +2,11 @@
 - entities:
     automation.arm_alarm_when_wolfie_finishes_cleaning_an_empty_house:
       state: "on"
-    automation.cycle_master_toilet_fan_during_the_day:
+    automation.automatically_execute_good_morning:
       state: "on"
-    automation.handle_local_sun_events:
+    automation.automatically_handle_sunset:
+      state: "on"
+    automation.cycle_master_toilet_fan_during_the_day:
       state: "on"
     automation.house_empty_and_insecure:
       state: "on"
@@ -24,9 +26,11 @@
 - entities:
     alarm_control_panel.123_main_street:
       state: armed_away
-    automation.cycle_master_toilet_fan_during_the_day:
+    automation.automatically_execute_good_morning:
       state: "off"
-    automation.handle_local_sun_events:
+    automation.automatically_handle_sunset:
+      state: "off"
+    automation.cycle_master_toilet_fan_during_the_day:
       state: "off"
     automation.simulate_someone_being_home:
       state: "on"
@@ -68,6 +72,14 @@
       state: unlocked
   id: drive_home
   name: Drive Home
+
+- entities:
+    automation.cycle_master_toilet_fan_during_the_day:
+      state: "on"
+    switch.kitchen_pendant_lights:
+      state: "on"
+  id: good_morning
+  name: Good Morning
 
 - entities:
     alarm_control_panel.123_main_street:
@@ -116,14 +128,6 @@
       state: "off"
   id: guest_mode
   name: Guest Mode
-
-- entities:
-    automation.cycle_master_toilet_fan_during_the_day:
-      state: "on"
-    switch.kitchen_pendant_lights:
-      state: "on"
-  id: sunrise
-  name: Sunrise
 
 - entities:
     automation.cycle_master_toilet_fan_during_the_day:

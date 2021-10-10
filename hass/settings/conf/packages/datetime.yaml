@@ -1,0 +1,42 @@
+---
+automation:
+  - alias: "Automatically execute Good Morning"
+    id: "automatically_execute_good_morning"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.daytime
+      to: "on"
+    action:
+      scene: scene.good_morning
+
+binary_sensor:
+  - platform: template
+    sensors:
+      daytime:
+        friendly_name: Daytime
+        value_template: >
+          {% if states("binary_sensor.workday_sensor") == "on" %}
+            {{ states("binary_sensor.daytime_workday") }}
+          {% else %}
+            {{ states("binary_sensor.daytime_holidy") }}
+          {% endif %}
+
+  - platform: tod
+    name: Daytime (Workday)
+    after: sunrise
+    after_offset: "01:00:00"
+    before: sunset
+
+  - platform: tod
+    name: Daytime (Holiday)
+    after: sunrise
+    after_offset: "03:00:00"
+    before: sunset
+
+  - platform: workday
+    country: US
+    province: CO
+
+google:
+  client_id: !secret google_calendar_client_id
+  client_secret: !secret google_calendar_client_secret

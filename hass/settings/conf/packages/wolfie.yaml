@@ -41,7 +41,7 @@ automation:
                 entity_id: vacuum.rockrobo
         - conditions:
             - condition: state
-              entity_id: alarm_control_panel.8673_e_55th_avenue
+              entity_id: alarm_control_panel.123_main_street
               state: armed_home
             - condition: state
               entity_id: vacuum.rockrobo
@@ -60,7 +60,7 @@ automation:
                   is done cleaning.
             - service: alarm_control_panel.alarm_arm_away
               data:
-                entity_id: alarm_control_panel.8673_e_55th_avenue
+                entity_id: alarm_control_panel.123_main_street
 
   - alias: "Manage Wolfie's Bin"
     id: "manage_wolfies_bin"
@@ -68,7 +68,7 @@ automation:
       - platform: state
         entity_id: vacuum.rockrobo
       - platform: state
-        entity_id: alarm_control_panel.8673_e_55th_avenue
+        entity_id: alarm_control_panel.123_main_street
     action:
       choose:
         # When Wolfie starts running, mark it (since the WiFi is flaky):

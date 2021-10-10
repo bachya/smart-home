@@ -1,33 +1,26 @@
 ---
 automation:
-  - alias: "Handle Local Sun Events"
-    id: "handle_local_sun_events"
+  - alias: "Automatically handle sunset"
+    id: "automatically_handle_sunset"
     trigger:
-      - platform: state
-        id: sunrise
-        entity_id: binary_sensor.in_bed
-        to: "off"
       - platform: numeric_state
-        id: sunset
         entity_id: sensor.solarradiation_perceived
         below: input_number.local_sunset_brightness
       - platform: sun
-        id: sunset
         event: sunset
+    condition:
+      - condition: time
+        after: "15:00:00"
+      - condition: template
+        value_template: >
+          {{
+            as_timestamp(
+              state_attr("automation.handle_sunset", "last_triggered")
+            ) | timestamp_custom("%-d")
+            != as_timestamp(now()) | timestamp_custom("%-d")
+          }}
     action:
-      choose:
-        - conditions:
-            condition: trigger
-            id: sunrise
-          sequence:
-            - scene: scene.sunrise
-        - conditions:
-            - condition: trigger
-              id: sunset
-            - condition: time
-              after: "15:00:00"
-          sequence:
-            - scene: scene.sunset
+      scene: scene.sunset
 
 group:
   outdoor_lights:
