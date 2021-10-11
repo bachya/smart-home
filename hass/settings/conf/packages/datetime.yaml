@@ -30,7 +30,7 @@ binary_sensor:
   - platform: tod
     name: Daytime (Holiday)
     after: sunrise
-    after_offset: "03:00:00"
+    after_offset: "02:00:00"
     before: sunset
 
   - platform: workday
