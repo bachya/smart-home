@@ -84,6 +84,8 @@
 - entities:
     alarm_control_panel.123_main_street:
       state: armed_home
+    automation.cycle_master_toilet_fan_during_the_day:
+      state: "off"
     cover.wemos_d1_mini_garage_controller:
       state: closed
     group.kitchen_lights:
