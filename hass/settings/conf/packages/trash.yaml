@@ -1,5 +1,28 @@
 ---
 automation:
+  - alias: "Notify of next Ridwell pickup the night before"
+    id: "notify_of_next_trash_pickup_the_night_before"
+    trigger:
+      platform: time
+      at: "19:00:00"
+    condition:
+      condition: template
+      value_template: >
+        {{
+          (states("sensor.ridwell_pickup") | as_datetime - now()).days == 0
+        }}
+    action:
+      - service: script.notify_everyone_at_home
+        data:
+          message: >
+            🚮 The pickup will include: {{
+              expand("group.trash_sensors")
+              | selectattr("state", "equalto", "on")
+              | join(", ", attribute="attributes.friendly_name")
+              | lower
+            }}
+          title: Tomorrow's Trash Pickup
+
   - alias: "Notify of next trash pickup the night before"
     id: "notify_of_next_trash_pickup_the_night_before"
     trigger:
