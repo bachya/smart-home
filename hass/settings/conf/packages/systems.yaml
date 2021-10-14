@@ -115,6 +115,8 @@ sensor:
         time_constant: 10
         precision: 2
 
+  - platform: uptime
+
   - platform: rest
     name: Healthchecks.io Ping
     resource: !secret healthchecksio_ping_url

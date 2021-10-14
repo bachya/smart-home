@@ -6,6 +6,12 @@ automation:
       platform: state
       entity_id: binary_sensor.daytime
       to: "on"
+    condition:
+      condition: template
+      value_template: >
+        {{
+          (now() - states("sensor.uptime") | as_datetime).total_seconds() > 60
+        }}
     action:
       scene: scene.good_morning
 
