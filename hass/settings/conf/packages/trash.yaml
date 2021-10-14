@@ -78,6 +78,10 @@ binary_sensor:
           {{ "garbage" in state_attr(
             "sensor.recollect_waste", "pickup_types"
           ) }}
+      ridwell_next_pickup_scheduled:
+        friendly_name: Ridwell Next Pickup Scheduled
+        value_template: >
+          {{ state_attr("sensor.ridwell_pickup", "pickup_types") != {} }}
 
 group:
   trash_sensors:
@@ -87,3 +91,17 @@ group:
       - binary_sensor.recollect_next_pickup_includes_extra_trash
       - binary_sensor.recollect_next_pickup_includes_recycling
       - binary_sensor.recollect_next_pickup_includes_trash
+
+sensor:
+  - platform: template
+    sensors:
+      ridwell_rotating_pickup:
+        friendly_name: Ridwell Nex tRotating Pickup
+        value_template: >
+          {% for name, attrs in state_attr(
+            "sensor.ridwell_pickup", "pickup_types"
+          ).items() -%}
+            {% if attrs["category"] == "rotating" %}
+              {{ name }}
+            {% endif %}
+          {% endfor %}
