@@ -127,7 +127,7 @@ sensor:
   - platform: template
     sensors:
       ridwell_rotating_pickup:
-        friendly_name: Ridwell Nex tRotating Pickup
+        friendly_name: Ridwell Next Rotating Pickup
         value_template: >
           {% for name, attrs in state_attr(
             "sensor.ridwell_pickup", "pickup_types"
