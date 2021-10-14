@@ -112,7 +112,9 @@ binary_sensor:
       ridwell_next_pickup_scheduled:
         friendly_name: Ridwell Next Pickup Scheduled
         value_template: >
-          {{ state_attr("sensor.ridwell_pickup", "pickup_types") != {} }}
+          {{
+            state_attr("sensor.ridwell_pickup", "pickup_state") == "scheduled"
+          }}
 
 group:
   trash_sensors:
