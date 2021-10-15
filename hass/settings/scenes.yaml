@@ -136,6 +136,8 @@
       state: "off"
     group.outdoor_lights:
       state: "on"
+    switch.bar_cart_leds:
+      state: "on"
     switch.christmas_tree:
       state: "on"
     switch.kitchen_pendant_lights:
