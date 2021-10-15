@@ -7,10 +7,6 @@ esphome:
   title: ESPHome
   url: !secret panel_url_esphome
   icon: mdi:chip
-rainmachine:
-  title: RainMachine
-  url: !secret panel_url_rainmachine
-  icon: mdi:water
 traefik:
   title: Traefik
   url: !secret panel_url_traefik
