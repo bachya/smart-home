@@ -14,10 +14,7 @@ automation:
       - condition: template
         value_template: >
           {{
-            as_timestamp(
-              state_attr("automation.handle_sunset", "last_triggered")
-            ) | timestamp_custom("%-d")
-            != as_timestamp(now()) | timestamp_custom("%-d")
+            (now() - states("sensor.uptime") | as_datetime).total_seconds() > 60
           }}
     action:
       scene: scene.sunset
