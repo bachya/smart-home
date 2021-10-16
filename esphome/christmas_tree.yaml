@@ -1,6 +1,7 @@
 ---
 substitutions:
-  device_name: christmas_tree
+  device_name: christmas-tree
   device_friendly_name: Christmas Tree
+  device_static_ip: 172.16.20.13
 
 <<: !include .topgreener_tgwf115pqm_smart_plug.yaml
