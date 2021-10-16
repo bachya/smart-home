@@ -19,6 +19,12 @@ sensor:
     round: 2
 
   - platform: integration
+    source: sensor.christmas_tree_power
+    name: "Christmas Tree: Energy Spent"
+    unit_prefix: k
+    round: 2
+
+  - platform: integration
     source: sensor.sofa_lamp_power
     name: "Sofa Lamp: Energy Spent"
     unit_prefix: k
