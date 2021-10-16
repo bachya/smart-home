@@ -6,6 +6,12 @@ from typing import Any
 from simplipy.device.lock import Lock, LockStates
 from simplipy.errors import SimplipyError
 from simplipy.system.v3 import SystemV3
+from simplipy.websocket import (
+    EVENT_LOCK_ERROR,
+    EVENT_LOCK_LOCKED,
+    EVENT_LOCK_UNLOCKED,
+    WebsocketEvent,
+)
 
 from homeassistant.components.lock import LockEntity
 from homeassistant.config_entries import ConfigEntry
@@ -23,7 +29,7 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up SimpliSafe locks based on a config entry."""
-    simplisafe = hass.data[DOMAIN][DATA_CLIENT][entry.entry_id]
+    simplisafe = hass.data[DOMAIN][entry.entry_id][DATA_CLIENT]
     locks = []
 
     for system in simplisafe.systems.values():
@@ -45,6 +51,9 @@ class SimpliSafeLock(SimpliSafeEntity, LockEntity):
         super().__init__(simplisafe, system, lock.name, serial=lock.serial)
 
         self._lock = lock
+
+        for websocket_event_type in (EVENT_LOCK_LOCKED, EVENT_LOCK_UNLOCKED):
+            self.websocket_events_to_listen_for.append(websocket_event_type)
 
     async def async_lock(self, **kwargs: Any) -> None:
         """Lock the lock."""
@@ -80,3 +89,22 @@ class SimpliSafeLock(SimpliSafeEntity, LockEntity):
 
         self._attr_is_jammed = self._lock.state == LockStates.jammed
         self._attr_is_locked = self._lock.state == LockStates.locked
+
+    @callback
+    def async_update_from_websocket_event(self, event: WebsocketEvent) -> None:
+        """Update the entity when new data comes from the websocket."""
+        if event.event_type == EVENT_LOCK_ERROR:
+            # Unfortunately, the websocket doesn't give insight into *what* type of
+            # error we have (the lock could be jammed, the batteries could be dead,
+            # etc.) – so, if we get this event, we settle for setting the state as None:
+            self._attr_is_locked = None
+        elif event.event_type == EVENT_LOCK_LOCKED:
+            self._attr_is_locked = True
+        elif event.event_type == EVENT_LOCK_UNLOCKED:
+            self._attr_is_locked = False
+        else:
+            LOGGER.error(
+                "Unknown websocket event triggered lock state change: %s",
+                event.event_type,
+            )
+            self._attr_is_locked = None

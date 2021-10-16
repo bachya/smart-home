@@ -39,13 +39,20 @@ automation:
   - alias: "Forward SimpliSafe notifications"
     id: "forward_simplisafe_notifications"
     trigger:
-      platform: event
-      event_type: SIMPLISAFE_NOTIFICATION
+      - platform: event
+        event_type: SIMPLISAFE_EVENT
+      - platform: event
+        event_type: SIMPLISAFE_NOTIFICATION
     action:
       service: notify.aaron
       data:
         message: >
-          📥 SimpliSafe Message: {{ trigger.event.data.message  }}
+          {% if trigger.event.event_type == "SIMPLISAFE_EVENT" %}
+            {% set message = trigger.event.data.last_event_info %}
+          {% else %}
+            {% set message = trigger.event.data.message %}
+          {% endif %}
+          📥 SimpliSafe Message: {{ message }}
 
   - alias: "Manage Security via iOS Notifications"
     id: "manage_security_via_ios_notifications"
