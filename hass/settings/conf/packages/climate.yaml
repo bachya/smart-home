@@ -11,11 +11,11 @@ automation:
         from: heat_cool
       - platform: state
         id: away_mode_off
-        entity_id: input_boolean.away_mode
+        entity_id: input_boolean.climate_away_mode
         to: "off"
       - platform: state
         id: away_mode_on
-        entity_id: input_boolean.away_mode
+        entity_id: input_boolean.climate_away_mode
         to: "on"
       - platform: state
         entity_id:
@@ -74,7 +74,7 @@ automation:
               entity_id: binary_sensor.in_bed
               state: "off"
             - condition: state
-              entity_id: input_boolean.away_mode
+              entity_id: input_boolean.climate_away_mode
               state: "off"
           sequence:
             - service: climate.set_temperature
@@ -105,7 +105,7 @@ automation:
               entity_id: binary_sensor.in_bed
               state: "on"
             - condition: state
-              entity_id: input_boolean.away_mode
+              entity_id: input_boolean.climate_away_mode
               state: "off"
           sequence:
             - service: climate.set_temperature
@@ -161,7 +161,7 @@ automation:
           sequence:
             service: input_boolean.turn_off
             data:
-              entity_id: input_boolean.away_mode
+              entity_id: input_boolean.climate_away_mode
         # Leaving (Normal Temperature)
         - conditions:
             - condition: not
@@ -179,7 +179,7 @@ automation:
           sequence:
             service: input_boolean.turn_on
             data:
-              entity_id: input_boolean.away_mode
+              entity_id: input_boolean.climate_away_mode
         # Arriving (Extreme Temperature)
         - conditions:
             - condition: not
@@ -204,7 +204,7 @@ automation:
           sequence:
             service: input_boolean.turn_off
             data:
-              entity_id: input_boolean.away_mode
+              entity_id: input_boolean.climate_away_mode
         # Leaving (Extreme Temperature)
         - conditions:
             - condition: state
@@ -227,7 +227,7 @@ automation:
           sequence:
             service: input_boolean.turn_on
             data:
-              entity_id: input_boolean.away_mode
+              entity_id: input_boolean.climate_away_mode
 
   - alias: "Thermostat Sleep Timer"
     id: "thermostat_sleep_timer"
@@ -255,6 +255,11 @@ automation:
             data:
               entity_id: climate.thermostat
               hvac_mode: "off"
+
+input_boolean:
+  climate_away_mode:
+    name: "Climate Away Mode"
+    icon: mdi:home-search
 
 input_number:
   daytime_dyson_fan_speed:
