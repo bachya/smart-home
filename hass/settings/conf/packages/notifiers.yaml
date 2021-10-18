@@ -29,6 +29,7 @@ script:
           title: "{{ title }}"
           data:
             push:
+              interruption-level: critical
               sound:
                 name: "default"
                 critical: 1
