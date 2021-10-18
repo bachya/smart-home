@@ -506,8 +506,6 @@ class SimpliSafe:
             self._api.add_refresh_token_listener(async_save_refresh_token)
         )
 
-        if TYPE_CHECKING:
-            assert self._api.refresh_token
         async_save_refresh_token(self._api.refresh_token)
 
     async def async_update(self) -> None:

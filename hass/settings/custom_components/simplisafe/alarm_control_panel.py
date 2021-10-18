@@ -70,6 +70,8 @@ ATTR_RF_JAMMING = "rf_jamming"
 ATTR_WALL_POWER_LEVEL = "wall_power_level"
 ATTR_WIFI_STRENGTH = "wifi_strength"
 
+DEFAULT_ERRORS_TO_ACCOMMODATE = 2
+
 VOLUME_STRING_MAP = {
     VOLUME_HIGH: "high",
     VOLUME_LOW: "low",
@@ -95,6 +97,8 @@ class SimpliSafeAlarm(SimpliSafeEntity, AlarmControlPanelEntity):
     def __init__(self, simplisafe: SimpliSafe, system: SystemV2 | SystemV3) -> None:
         """Initialize the SimpliSafe alarm."""
         super().__init__(simplisafe, system, "Alarm Control Panel")
+
+        self._errors = 0
 
         if code := self._simplisafe.entry.options.get(CONF_CODE):
             if code.isdigit():
@@ -221,6 +225,19 @@ class SimpliSafeAlarm(SimpliSafeEntity, AlarmControlPanelEntity):
                 }
             )
 
+        # SimpliSafe can incorrectly return an error state when there isn't any
+        # error. This can lead to the system having an unknown state frequently.
+        # To protect against that, we measure how many "error states" we receive
+        # and only alter the state if we detect a few in a row:
+        if self._system.state == SystemStates.error:
+            if self._errors > DEFAULT_ERRORS_TO_ACCOMMODATE:
+                self._attr_state = None
+            else:
+                self._errors += 1
+            return
+
+        self._errors = 0
+
         if self._system.state == SystemStates.alarm:
             self._attr_state = STATE_ALARM_TRIGGERED
         elif self._system.state == SystemStates.away:
@@ -260,11 +277,5 @@ class SimpliSafeAlarm(SimpliSafeEntity, AlarmControlPanelEntity):
             EVENT_HOME_EXIT_DELAY,
         ):
             self._attr_state = STATE_ALARM_ARMING
-        else:
-            LOGGER.error(
-                "Unknown websocket event triggered alarm_control_panel state change: %s",
-                event.event_type,
-            )
-            self._attr_state = None
 
         self._attr_changed_by = event.changed_by
