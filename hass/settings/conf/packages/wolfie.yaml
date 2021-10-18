@@ -72,7 +72,10 @@ automation:
     condition:
       - condition: template
         value_template: >
-          {{ trigger.from_state.state != "unavailable" }}
+          {{
+            trigger.from_state.state != "unavailable"
+            and trigger.to_state.state != "unavailable"
+          }}
     action:
       choose:
         # When Wolfie starts running, mark it (since the WiFi is flaky):
