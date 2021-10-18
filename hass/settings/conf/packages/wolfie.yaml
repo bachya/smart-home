@@ -75,6 +75,7 @@ automation:
           {{
             trigger.from_state.state != "unavailable"
             and trigger.to_state.state != "unavailable"
+            and trigger.from_state.state != trigger.to_state.state
           }}
     action:
       choose:
