@@ -66,9 +66,14 @@ binary_sensor:
 
 cover:
   - close_action:
-      - switch.turn_on: relay
-      - delay: 200ms
-      - switch.turn_off: relay
+      - if:
+          condition:
+            not:
+              lambda: "return id(garage_door_closed).state;"
+          then:
+            - switch.turn_on: relay
+            - delay: 200ms
+            - switch.turn_off: relay
     device_class: garage
     id: garage_door_cover
     lambda: |-
@@ -79,9 +84,14 @@ cover:
       }
     name: Wemos D1 Mini Garage Controller
     open_action:
-      - switch.turn_on: relay
-      - delay: 200ms
-      - switch.turn_off: relay
+      - if:
+          condition:
+            not:
+              lambda: "return id(garage_door_open).state;"
+          then:
+            - switch.turn_on: relay
+            - delay: 200ms
+            - switch.turn_off: relay
     platform: template
 
 esphome:
