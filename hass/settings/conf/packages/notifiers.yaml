@@ -55,7 +55,9 @@ script:
             data:
               message: "{{ message }}"
               title: "{{ title }}"
-              tag: "{{ message }}"
+              data:
+                push:
+                  tag: "{{ message }}"
 
       - choose:
           conditions:
@@ -67,4 +69,6 @@ script:
             data:
               message: "{{ message }}"
               title: "{{ title }}"
-              tag: "{{ message }}"
+              data:
+                push:
+                  tag: "{{ message }}"
