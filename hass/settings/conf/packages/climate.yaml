@@ -8,6 +8,14 @@ automation:
         event: start
       - platform: state
         entity_id: climate.thermostat
+        from: cool
+        to: heat
+      - platform: state
+        entity_id: climate.thermostat
+        from: heat
+        to: cool
+      - platform: state
+        entity_id: climate.thermostat
         from: heat_cool
       - platform: state
         id: away_mode_off
