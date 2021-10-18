@@ -14,9 +14,6 @@ automation:
             - condition: state
               entity_id: alarm_control_panel.123_main_street
               state: armed_away
-            - condition: template
-              value_template: >
-                {{ trigger.from_state.state != "unavailable" }}
             - condition: state
               entity_id: vacuum.rockrobo
               state: cleaning
@@ -72,6 +69,10 @@ automation:
         entity_id: vacuum.rockrobo
       - platform: state
         entity_id: alarm_control_panel.123_main_street
+    condition:
+      - condition: template
+        value_template: >
+          {{ trigger.from_state.state != "unavailable" }}
     action:
       choose:
         # When Wolfie starts running, mark it (since the WiFi is flaky):
