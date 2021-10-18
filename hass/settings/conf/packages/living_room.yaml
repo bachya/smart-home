@@ -19,28 +19,6 @@ automation:
             entity_id: sensor.fiddle_leaf_fig_moisture
             above: 10
 
-  - alias: "Turn living room lights on when we arrive at night"
-    id: "turn_living_room_lights_on_when_we_arrive_at_night"
-    trigger:
-      platform: state
-      entity_id: sensor.proximity_zone
-      to: Home
-    condition:
-      condition: and
-      conditions:
-        - condition: sun
-          after: sunset
-          # This condition ensures that when  sensor.proximity_zone goes from
-          # unavailable to Home (e.g., after a deployment), the lights don't
-          # turn on:
-        - condition: template
-          value_template: >
-            {{ trigger.from_state.state != "unavailable"}}
-    action:
-      service: switch.turn_on
-      data:
-        entity_id: group.living_room_lights
-
   - alias: "Turn powder room fan back on if someone turns it off"
     id: "turn_powder_room_fan_back_on_if_someone_turns_it_off"
     trigger:

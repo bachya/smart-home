@@ -93,6 +93,7 @@ script:
       - service: homeassistant.turn_on
         target:
           entity_id:
+            - group.living_room_lights
             - switch.front_patio_light
             - switch.kitchen_pendant_lights
             - switch.master_bedroom_salt_lamp
