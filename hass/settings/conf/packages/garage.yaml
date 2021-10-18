@@ -6,10 +6,8 @@ automation:
       - platform: event
         event_type: call_service
         event_data:
-          domain: scene
-          service: turn_on
-          service_data:
-            entity_id: scene.good_night
+          domain: script
+          service: good_night_mode
     condition:
       condition: or
       conditions:

@@ -1,4 +1,14 @@
 ---
+automation:
+  - alias: "Trigger Arrive Home Mode when we arrive"
+    id: "trigger_arrive_home_mode_when_we_arrive"
+    trigger:
+      platform: state
+      entity_id: sensor.proximity_zone
+      to: Home
+    action:
+      service: script.arrive_home_mode
+
 group:
   people:
     name: People

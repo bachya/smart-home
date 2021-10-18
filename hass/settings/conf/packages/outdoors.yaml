@@ -11,13 +11,8 @@ automation:
     condition:
       - condition: time
         after: "15:00:00"
-      - condition: template
-        value_template: >
-          {{
-            (now() - states("sensor.uptime") | as_datetime).total_seconds() > 60
-          }}
     action:
-      scene: scene.sunset
+      service: script.sunset_mode
 
 group:
   outdoor_lights:

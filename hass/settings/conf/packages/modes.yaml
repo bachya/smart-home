@@ -1,56 +1,257 @@
 ---
 automation:
-  - alias: "Adjust automations in Guest Mode"
-    id: "adjust_automations_in_guest_mode"
+  - alias: "Manage iOS Actions"
+    id: "manage_ios_actions"
     trigger:
-      platform: state
-      entity_id: input_boolean.guest_mode
-      to: "on"
+      platform: event
+      event_type: ios.action_fired
     action:
-      scene: scene.guest_mode
+      service: >
+        {% if trigger.event.data.actionName == "Depart Home" %}
+          script.depart_home_mode
+        {% elif trigger.event.data.actionName == "Drive Home" %}
+          script.drive_home_mode
+        {% elif trigger.event.data.actionName == "Good Morning" %}
+          script.good_morning_mode
+        {% elif trigger.event.data.actionName == "Good Night" %}
+          script.good_night_mode
+        {% elif trigger.event.data.actionName == "Walk Home" %}
+          script.walk_home_mode
+        {% endif %}
 
-  - alias: "Adjust automations in Vacation Mode"
-    id: "adjust_automations_in_vacation_mode"
-    trigger:
-      platform: state
-      entity_id: input_boolean.vacation_mode
-      to: "on"
-    action:
-      scene: scene.vacation_mode
+ios:
+  actions:
+    - name: Depart Home
+      background_color: "#95a5a9"
+      label:
+        text: "Depart Home"
+        color: "#efe6dd"
+      icon:
+        icon: garage
+        color: "#efe6dd"
+    - name: Drive Home
+      background_color: "#7c8596"
+      label:
+        text: "Drive Home"
+        color: "#efe6dd"
+      icon:
+        icon: garage
+        color: "#efe6dd"
+    - name: Good Morning
+      background_color: "#855954"
+      label:
+        text: "Good Morning"
+        color: "#efe6dd"
+      icon:
+        icon: white-balance-sunny
+        color: "#efe6dd"
+    - name: Good Night
+      background_color: "#7e84b6"
+      label:
+        text: "Good Night"
+        color: "#efe6dd"
+      icon:
+        icon: sleep
+        color: "#efe6dd"
+    - name: Walk Home
+      background_color: "#7488b4"
+      label:
+        text: "Walk Home"
+        color: "#efe6dd"
+      icon:
+        icon: door-open
+        color: "#efe6dd"
 
-  - alias: "Reset automations when no mode is active"
-    id: "reset_automations_when_no_mode_is_active"
-    trigger:
-      - platform: event
-        event_type: call_service
-        event_data:
-          domain: scene
-          service: turn_on
-          service_data:
-            entity_id: scene.drive_home
-      - platform: event
-        event_type: call_service
-        event_data:
-          domain: scene
-          service: turn_on
-          service_data:
-            entity_id: scene.walk_home
-      - platform: state
-        entity_id: input_boolean.guest_mode
-        to: "off"
-      - platform: state
-        entity_id: input_boolean.vacation_mode
-        to: "off"
-      - platform: state
-        entity_id: sensor.proximity_zone
-        to: Home
-    action:
-      scene: scene.base
+script:
+  arrive_home_mode:
+    alias: "Arrive Home Mode"
+    description: "Alter the home when we arrive (regardless of entrypoint)"
+    sequence:
+      - alias: "Are we ensuring HASS didn't just start?"
+        condition: template
+        value_template: >
+          {{
+            (now() - states("sensor.uptime") | as_datetime).total_seconds() > 60
+          }}
+      - service: homeassistant.turn_off
+        target:
+          entity_id:
+            - automation.notify_when_security_status_changes
+            - automation.simulate_someone_being_home
+      - service: homeassistant.turn_on
+        target:
+          entity_id:
+            - automation.automatically_handle_sunrise
+            - automation.automatically_handle_sunset
+            - automation.cycle_master_toilet_fan_during_the_day
+            - automation.notify_when_house_empty_and_insecure
+            - switch.guardian_b4e62d98118d_valve
+      - alias: "Is it after sunset?"
+        condition: numeric_state
+        entity_id: sensor.solarradiation_perceived
+        below: input_number.local_sunset_brightness
+      - service: homeassistant.turn_on
+        target:
+          entity_id:
+            - switch.front_patio_light
+            - switch.kitchen_pendant_lights
+            - switch.master_bedroom_salt_lamp
 
-input_boolean:
-  guest_mode:
-    icon: mdi:hotel
-    name: Guest Mode
-  vacation_mode:
-    icon: mdi:beach
-    name: Vacation Mode
+  depart_home_mode:
+    alias: "Depart Home Mode"
+    description: "Alter the home when we leave"
+    sequence:
+      - service: alarm_control_panel.alarm_arm_away
+        target:
+          entity_id: alarm_control_panel.123_main_street
+      - service: cover.close_cover
+        target:
+          entity_id: cover.wemos_d1_mini_garage_controller
+      - service: homeassistant.turn_off
+        target:
+          entity_id:
+            - automation.automatically_handle_sunrise
+            - automation.automatically_handle_sunset
+            - automation.cycle_master_toilet_fan_during_the_day
+            - automation.simulate_someone_being_home
+            - group.kitchen_lights
+            - group.living_room_lights
+            - remote.basement_tv
+            - remote.living_room_tv
+            - switch.basement_lights
+            - switch.fireplace
+            - switch.garage_lights
+      - service: homeassistant.turn_on
+        target:
+          entity_id:
+            - automation.notify_when_security_status_changes
+            - automation.simulate_someone_being_home
+      - service: lock.lock
+        target:
+          entity_id:
+            - lock.123_main_street_patio_door
+            - lock.front_door_lock
+            - lock.garage_fire_door_lock
+      - service: media_player.media_pause
+        target:
+          entity_id:
+            - media_player.living_room
+            - media_player.main_level_outdoors
+            - media_player.master_bedroom_bathroom
+            - media_player.office
+            - media_player.sonos_roam
+
+  drive_home_mode:
+    alias: "Drive Home Mode"
+    description: "Alter the home when we arrive via the garage door"
+    sequence:
+      - service: script.arrive_home_mode
+      - service: alarm_control_panel.alarm_disarm
+        target:
+          entity_id: alarm_control_panel.123_main_street
+      - service: cover.open_cover
+        target:
+          entity_id: cover.wemos_d1_mini_garage_controller
+      - service: lock.unlock
+        target:
+          entity_id: lock.garage_fire_door_lock
+
+  good_morning_mode:
+    alias: "Good Morning Mode"
+    description: "Alter the home at when we get up in the morning"
+    sequence:
+      - alias: "Are we ensuring HASS didn't just start?"
+        condition: template
+        value_template: >
+          {{
+            (now() - states("sensor.uptime") | as_datetime).total_seconds() > 60
+          }}
+      - service: homeassistant.turn_on
+        target:
+          entity_id:
+            - automation.cycle_master_toilet_fan_during_the_day
+            - switch.kitchen_pendant_lights
+      - service: simplisafe.set_system_properties
+        data:
+          system_id: !secret simplisafe_system_id
+          chime_volume: 2
+          voice_prompt_volume: 2
+
+  good_night_mode:
+    alias: "Good Night Mode"
+    description: "Alter the home when we're going to bed"
+    sequence:
+      - service: alarm_control_panel.alarm_arm_home
+        target:
+          entity_id: alarm_control_panel.123_main_street
+      - service: cover.close_cover
+        target:
+          entity_id: cover.wemos_d1_mini_garage_controller
+      - service: homeassistant.turn_off
+        target:
+          entity_id:
+            - automation.cycle_master_toilet_fan_during_the_day
+            - group.kitchen_lights
+            - group.living_room_lights
+            - group.outdoor_lights
+            - remote.basement_tv
+            - remote.living_room_tv
+            - switch.basement_lights
+            - switch.fireplace
+            - switch.garage_lights
+            - switch.office_salt_lamp
+      - service: lock.lock
+        target:
+          entity_id:
+            - lock.123_main_street_patio_door
+            - lock.front_door_lock
+            - lock.garage_fire_door_lock
+      - service: media_player.media_pause
+        target:
+          entity_id:
+            - media_player.living_room
+            - media_player.main_level_outdoors
+            - media_player.master_bedroom_bathroom
+            - media_player.office
+            - media_player.sonos_roam
+      - service: simplisafe.set_system_properties
+        data:
+          system_id: !secret simplisafe_system_id
+          chime_volume: 0
+          voice_prompt_volume: 0
+
+  sunset_mode:
+    alias: "Sunset Mode"
+    description: "Alter the home at sunset"
+    sequence:
+      - alias: "Are we ensuring HASS didn't just start?"
+        condition: template
+        value_template: >
+          {{
+            (now() - states("sensor.uptime") | as_datetime).total_seconds() > 60
+          }}
+      - service: homeassistant.turn_off
+        target:
+          entity_id: automation.cycle_master_toilet_fan_during_the_day
+      - service: homeassistant.turn_on
+        target:
+          entity_id:
+            - group.outdoor_lights
+            - switch.bar_cart_leds
+            - switch.christmas_tree
+            - switch.kitchen_pendant_lights
+            - switch.master_bedroom_salt_lamp
+            - switch.office_salt_lamp
+            - switch.reading_lamp
+
+  walk_home_mode:
+    alias: "Walk Home Mode"
+    description: "Alter the home when we arrive via the front door"
+    sequence:
+      - service: script.arrive_home_mode
+      - service: alarm_control_panel.alarm_disarm
+        target:
+          entity_id: alarm_control_panel.123_main_street
+      - service: lock.unlock
+        target:
+          entity_id: lock.front_door_lock

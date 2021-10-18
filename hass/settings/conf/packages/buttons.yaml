@@ -32,7 +32,7 @@ automation:
                   {{ c + 2 }}
                 {% endif %}
         button_3:
-          - scene: scene.good_night
+          - service: script.good_night_mode
         button_4:
           - service: switch.toggle
             entity_id: switch.master_patio_light

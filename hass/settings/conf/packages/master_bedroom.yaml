@@ -101,7 +101,7 @@ automation:
       event_data:
         tag_id: 43cfde8e-b887-4b6d-8832-4287cc712542
     action:
-      scene: scene.good_night
+      service: script.good_night_mode
 
   - alias: "Turn Britt's plug off if it's on when we leave"
     id: "turn_britt_s_plug_off_if_it_s_on_when_we_leave"
@@ -122,7 +122,7 @@ automation:
       - service: switch.turn_off
         data:
           entity_id: switch.britt_s_bathroom_outlet
- 
+
   - alias: "Turn master bathroom fan off after 2 hours"
     id: "turn_master_bathroom_fan_off_after_2_hours"
     trigger:

@@ -1,19 +1,13 @@
 ---
 automation:
-  - alias: "Automatically execute Good Morning"
-    id: "automatically_execute_good_morning"
+  - alias: "Automatically handle sunrise"
+    id: "automatically_handle_sunrise"
     trigger:
       platform: state
       entity_id: binary_sensor.daytime
       to: "on"
-    condition:
-      condition: template
-      value_template: >
-        {{
-          (now() - states("sensor.uptime") | as_datetime).total_seconds() > 60
-        }}
     action:
-      scene: scene.good_morning
+      service: script.good_morning_mode
 
 binary_sensor:
   - platform: template

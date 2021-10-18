@@ -24,17 +24,12 @@ automation:
         data:
           title: Security Update
           message: "🔒 Locking up the house"
-      - choose:
-          - conditions:
-              condition: trigger
-              id: departing
-            sequence:
-              scene: scene.depart_home
-          - conditions:
-              condition: trigger
-              id: in_bed
-            sequence:
-              scene: scene.good_night
+      - service: >
+          {% if trigger.id == "departing" %}
+            script.depart_home_mode
+          {% elif trigger.id == "in_bed" %}
+            script.good_night_mode
+          {% endif %}
 
   - alias: "Forward SimpliSafe notifications"
     id: "forward_simplisafe_notifications"
@@ -68,13 +63,13 @@ automation:
             value_template: >
               {{ trigger.event.data.actionName == "DEPART_HOME" }}
           sequence:
-            scene: scene.depart_home
+            service: script.depart_home_mode
         - conditions:
             condition: template
             value_template: >
               {{ trigger.event.data.actionName == "GOOD_NIGHT" }}
           sequence:
-            scene: scene.good_night
+            service: script.good_night_mode
         - conditions:
             condition: template
             value_template: >
@@ -83,47 +78,7 @@ automation:
             - service: automation.turn_off
               entity_id: automation.automatic_lockup
             - service: alert.turn_off
-              entity_id: alert.house_empty_and_insecure
-
-  - alias: "Manage SimpliSafe sounds"
-    id: "manage_simplisafe_sounds"
-    trigger:
-      - platform: event
-        id: turn_off
-        event_type: call_service
-        event_data:
-          domain: scene
-          service: turn_on
-          service_data:
-            entity_id: scene.good_night
-      - platform: event
-        id: turn_on
-        event_type: call_service
-        event_data:
-          domain: scene
-          service: turn_on
-          service_data:
-            entity_id: scene.good_morning
-    action:
-      choose:
-        - conditions:
-            condition: trigger
-            id: turn_off
-          sequence:
-            service: simplisafe.set_system_properties
-            data:
-              system_id: !secret simplisafe_system_id
-              chime_volume: 0
-              voice_prompt_volume: 0
-        - conditions:
-            condition: trigger
-            id: turn_on
-          sequence:
-            service: simplisafe.set_system_properties
-            data:
-              system_id: !secret simplisafe_system_id
-              chime_volume: 2
-              voice_prompt_volume: 2
+              entity_id: alert.notify_when_house_empty_and_insecure
 
   - alias: "Notify when alarm is triggered"
     id: "alarm_triggered"
@@ -146,21 +101,8 @@ automation:
               entity_id: alarm_control_panel.123_main_street
               state: triggered
 
-  - alias: "Notify when security status changes"
-    id: "notify_when_security_status_changes"
-    trigger:
-      platform: state
-      entity_id: binary_sensor.secure_status
-      to: "off"
-      for: "00:03:00"
-    action:
-      service: notify.everyone
-      data:
-        title: Security Update
-        message: "🔐 New state: {{ trigger.to_state.state }}"
-
   - alias: "Notify when the house is empty and insecure"
-    id: "house_empty_and_insecure"
+    id: "notify_when_house_empty_and_insecure"
     trigger:
       platform: state
       entity_id: sensor.proximity_zone
@@ -187,6 +129,19 @@ automation:
             - condition: state
               entity_id: binary_sensor.secure_status
               state: "on"
+
+  - alias: "Notify when security status changes"
+    id: "notify_when_security_status_changes"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.secure_status
+      to: "off"
+      for: "00:03:00"
+    action:
+      service: notify.everyone
+      data:
+        title: Security Update
+        message: "🔐 New state: {{ trigger.to_state.state }}"
 
   - alias: "Notify when smoke is detected"
     id: "smoke_detected"
