@@ -18,6 +18,14 @@ automation:
         entity_id: climate.thermostat
         from: heat_cool
       - platform: state
+        entity_id: climate.thermostat
+        from: off
+        to: heat
+      - platform: state
+        entity_id: climate.thermostat
+        from: off
+        to: cool
+      - platform: state
         id: away_mode_off
         entity_id: input_boolean.climate_away_mode
         to: "off"
