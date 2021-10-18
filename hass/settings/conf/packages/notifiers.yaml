@@ -33,6 +33,7 @@ script:
                 name: "default"
                 critical: 1
                 volume: 0.5
+              tag: "{{ message }}"
 
   notify_everyone_at_home:
     fields:
@@ -53,6 +54,7 @@ script:
             data:
               message: "{{ message }}"
               title: "{{ title }}"
+              tag: "{{ message }}"
 
       - choose:
           conditions:
@@ -64,3 +66,4 @@ script:
             data:
               message: "{{ message }}"
               title: "{{ title }}"
+              tag: "{{ message }}"
