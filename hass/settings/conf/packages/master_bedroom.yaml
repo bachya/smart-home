@@ -83,7 +83,7 @@ automation:
         up_action:
           - service: input_number.set_value
             target:
-              entity_id: switch.master_toilet_fan
+              entity_id: input_number.master_toilet_fan_timer
             data:
               value: 10
 
