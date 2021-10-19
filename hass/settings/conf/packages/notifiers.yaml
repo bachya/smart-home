@@ -20,6 +20,7 @@ notify:
 
 script:
   notify_everyone_at_home:
+    alias: "Notify Everyone at Home"
     fields:
       message:
         description: The message to send

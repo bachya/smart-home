@@ -373,7 +373,7 @@ group:
 
 script:
   simulate_watching_roku:
-    alias: Simulate watching a Roku
+    alias: "Simulate Watching a Roku"
     fields:
       app:
         description: The Roku app to select

@@ -121,6 +121,7 @@ input_select:
 
 script:
   empty_dishwasher:
+    alias: "Empty Dishwasher"
     sequence:
       - service: input_select.select_option
         data:

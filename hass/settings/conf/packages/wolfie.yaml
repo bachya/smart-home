@@ -234,6 +234,7 @@ input_select:
 
 script:
   empty_wolfie:
+    alias: "Empty Wolfie"
     sequence:
       - service: input_select.select_option
         data:
