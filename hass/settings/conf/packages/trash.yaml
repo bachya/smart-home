@@ -22,8 +22,9 @@ automation:
                   ) | as_datetime - now()).days == -1
                 }}
           sequence:
-            - service: script.notify_everyone_at_home
-              data:
+            - service: script.turn_on
+                target:
+                  entity_id: script.notify_everyone_at_home
                 message: >-
                   ♻️ The pickup will include:
                     {% for name, attrs in state_attr(
@@ -46,7 +47,9 @@ automation:
                   ) | as_datetime - now()).days == 0
                 }}
           sequence:
-            - service: script.notify_everyone_at_home
+            - service: script.turn_on
+              target:
+                entity_id: script.notify_everyone_at_home
               data:
                 message: >-
                   ♻️ The pickup will include:
@@ -71,7 +74,9 @@ automation:
           (states("sensor.recollect_waste") | as_datetime - now()).days == 0
         }}
     action:
-      - service: script.notify_everyone_at_home
+      - service: script.turn_on
+        target:
+          entity_id: script.notify_everyone_at_home
         data:
           message: >
             🚮 The pickup will include: {{

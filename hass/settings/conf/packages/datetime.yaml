@@ -7,7 +7,9 @@ automation:
       entity_id: binary_sensor.daytime
       to: "on"
     action:
-      service: script.good_morning_mode
+      service: script.turn_on
+        target:
+          entity_id: script.good_morning_mode
 
 binary_sensor:
   - platform: template

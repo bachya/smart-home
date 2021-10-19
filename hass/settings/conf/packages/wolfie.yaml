@@ -120,7 +120,9 @@ automation:
     action:
       repeat:
         sequence:
-          - service: script.notify_everyone_at_home
+          - service: script.turn_on
+            target:
+              entity_id: script.notify_everyone_at_home
             data:
               message: "🤖 Wolfie has finished cleaning and can be emptied."
               title: Vacuuming Complete
@@ -137,7 +139,9 @@ automation:
       entity_id: calendar.wolfie_schedule
       to: "on"
     action:
-      service: script.notify_everyone_at_home
+      service: script.turn_on
+        target:
+          entity_id: script.notify_everyone_at_home
       data:
         message: 🤖 It's time to run Wolfie!
         title: Vacuum Time
@@ -151,7 +155,9 @@ automation:
     action:
       repeat:
         sequence:
-          - service: script.notify_everyone_at_home
+          - service: script.turn_on
+            target:
+              entity_id: script.notify_everyone_at_home
             data:
               message: "🤖 Wolfie is stuck on something and needs help."
               title: Vacuuming Stopped
@@ -188,7 +194,9 @@ automation:
           != as_timestamp(now()) | timestamp_custom('%-d')
         }}
     action:
-      service: script.notify_everyone_at_home
+      service: script.turn_on
+        target:
+          entity_id: script.notify_everyone_at_home
       data:
         title: Wolfie Consumable Update
         message: >

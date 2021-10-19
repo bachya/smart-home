@@ -18,7 +18,9 @@ automation:
           entity_id: binary_sensor.britt_s_parking_spot_occupied
           state: "off"
     action:
-      service: script.notify_everyone_critical
+      service: script.turn_on
+        target:
+          entity_id: script.notify_everyone_critical
       data:
         message: >
           🚗 A car isn't in the garage; should it be?
@@ -34,7 +36,9 @@ automation:
     action:
       repeat:
         sequence:
-          - service: script.notify_everyone_critical
+          - service: script.turn_on
+            target:
+              entity_id: script.notify_everyone_critical
             data:
               message: "🚗 The garage has been left open."
               title: Security Alert

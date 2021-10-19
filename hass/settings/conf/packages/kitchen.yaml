@@ -66,7 +66,9 @@ automation:
     action:
       repeat:
         sequence:
-          - service: script.notify_everyone_at_home
+          - service: script.turn_on
+            target:
+              entity_id: script.notify_everyone_at_home
             data:
               message: "🍽  The dishwasher is clean and can be emptied."
               title: Dishwasher Done
@@ -85,7 +87,9 @@ automation:
     action:
       repeat:
         sequence:
-          - service: script.notify_everyone_critical
+          - service: script.turn_on
+            target:
+              entity_id: script.notify_everyone_critical
             data:
               message: "💦 Leak detected under the kitchen sink!"
               title: Kitchen Sink Leak

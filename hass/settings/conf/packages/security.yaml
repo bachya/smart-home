@@ -63,13 +63,17 @@ automation:
             value_template: >
               {{ trigger.event.data.actionName == "DEPART_HOME" }}
           sequence:
-            service: script.depart_home_mode
+            service: script.turn_on
+            target:
+              entity_id: script.depart_home_mode
         - conditions:
             condition: template
             value_template: >
               {{ trigger.event.data.actionName == "GOOD_NIGHT" }}
           sequence:
-            service: script.good_night_mode
+            service: script.turn_on
+            target:
+              entity_id: script.good_night_mode
         - conditions:
             condition: template
             value_template: >
@@ -89,7 +93,9 @@ automation:
     action:
       repeat:
         sequence:
-          - service: script.notify_everyone_critical
+          - service: script.turn_on
+            target:
+              entity_id: script.notify_everyone_critical
             data:
               message: "🚨 The alarm has been triggered."
               title: Security Alert
@@ -115,7 +121,9 @@ automation:
     action:
       repeat:
         sequence:
-          - service: script.notify_everyone_critical
+          - service: script.turn_on
+            target:
+              entity_id: script.notify_everyone_critical
             data:
               message: "🚨 No one is home and the house isn't secure."
               title: Security Alert
@@ -152,7 +160,9 @@ automation:
     action:
       repeat:
         sequence:
-          - service: script.notify_everyone_critical
+          - service: script.turn_on
+            target:
+              entity_id: script.notify_everyone_critical
             data:
               message: "🚨 Smoke/CO has been detected."
               title: Security Alert

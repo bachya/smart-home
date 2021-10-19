@@ -19,7 +19,9 @@ automation:
             condition: trigger
             id: printing_stoppped
           sequence:
-            service: script.notify_everyone_at_home
+            service: script.turn_on
+            target:
+              entity_id: script.notify_everyone_at_home
             data:
               message: "🦿 3D print completed"
         - conditions:
@@ -40,7 +42,9 @@ automation:
       for:
         minutes: 10
     action:
-      - service: script.notify_everyone_at_home
+      service: script.turn_on
+            target:
+              entity_id: script.notify_everyone_at_home
         data:
           message: "🦿 Turning 3D printer off"
       - service: "switch.turn_off"

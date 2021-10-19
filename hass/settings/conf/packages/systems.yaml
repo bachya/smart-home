@@ -57,7 +57,9 @@ automation:
         for:
           minutes: 5
     action:
-      service: script.notify_everyone_at_home
+      service: script.turn_on
+      target:
+        entity_id: script.notify_everyone_at_home
       data:
         title: Low Battery
         message: >
@@ -80,7 +82,9 @@ automation:
         for:
           minutes: 5
     action:
-      service: script.notify_everyone_at_home
+      service: script.turn_on
+      target:
+        entity_id: script.notify_everyone_at_home
       data:
         title: Device Offline
         message: >-
