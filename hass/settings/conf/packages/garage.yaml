@@ -19,12 +19,13 @@ automation:
           state: "off"
     action:
       service: script.turn_on
-        target:
-          entity_id: script.notify_everyone_critical
+      target:
+        entity_id: script.notify_everyone_critical
       data:
-        message: >
-          🚗 A car isn't in the garage; should it be?
-        title: Car Missing?
+        variables:
+          message: >
+            🚗 A car isn't in the garage; should it be?
+          title: Car Missing?
 
   - alias: "Notify when garage is left open"
     id: "garage_left_open"
@@ -40,8 +41,9 @@ automation:
             target:
               entity_id: script.notify_everyone_critical
             data:
-              message: "🚗 The garage has been left open."
-              title: Security Alert
+              variables:
+                message: "🚗 The garage has been left open."
+                title: Security Alert
           - delay: "00:10:00"
         until:
           - condition: not
@@ -59,7 +61,7 @@ automation:
       for: "00:10:00"
     action:
       service: switch.turn_off
-      data:
+      target:
         entity_id: switch.garage_lights
 
   - alias: "Turn garage lights on when garage door is open and it's dark"
@@ -82,5 +84,5 @@ automation:
         below: input_number.local_sunset_brightness
     action:
       service: switch.turn_on
-      data:
+      target:
         entity_id: switch.garage_lights

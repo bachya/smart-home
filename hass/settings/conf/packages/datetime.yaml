@@ -8,8 +8,8 @@ automation:
       to: "on"
     action:
       service: script.turn_on
-        target:
-          entity_id: script.good_morning_mode
+      target:
+        entity_id: script.good_morning_mode
 
 binary_sensor:
   - platform: template

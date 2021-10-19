@@ -24,7 +24,8 @@ automation:
         data:
           title: Security Update
           message: "🔒 Locking up the house"
-      - service: >
+      - service: script.turn_on
+        target: >-
           {% if trigger.id == "departing" %}
             script.depart_home_mode
           {% elif trigger.id == "in_bed" %}
@@ -80,9 +81,11 @@ automation:
               {{ trigger.event.data.actionName == "IGNORE" }}
           sequence:
             - service: automation.turn_off
-              entity_id: automation.automatic_lockup
+              target:
+                entity_id: automation.automatic_lockup
             - service: alert.turn_off
-              entity_id: alert.notify_when_house_empty_and_insecure
+              target:
+                entity_id: alert.notify_when_house_empty_and_insecure
 
   - alias: "Notify when alarm is triggered"
     id: "alarm_triggered"
@@ -97,8 +100,9 @@ automation:
             target:
               entity_id: script.notify_everyone_critical
             data:
-              message: "🚨 The alarm has been triggered."
-              title: Security Alert
+              variables:
+                message: "🚨 The alarm has been triggered."
+                title: Security Alert
           - delay: "00:01:00"
         until:
           - condition: not
@@ -125,8 +129,9 @@ automation:
             target:
               entity_id: script.notify_everyone_critical
             data:
-              message: "🚨 No one is home and the house isn't secure."
-              title: Security Alert
+              variables:
+                message: "🚨 No one is home and the house isn't secure."
+                title: Security Alert
           - delay: "00:05:00"
         until:
           condition: or
@@ -164,8 +169,9 @@ automation:
             target:
               entity_id: script.notify_everyone_critical
             data:
-              message: "🚨 Smoke/CO has been detected."
-              title: Security Alert
+              variables:
+                message: "🚨 Smoke/CO has been detected."
+                title: Security Alert
           - delay: "00:01:00"
         until:
           - condition: state
@@ -214,7 +220,7 @@ automation:
               {% else %}
                 switch.turn_on
               {% endif %}
-            data:
+            target:
               entity_id: >
                 {% set eid = trigger.entity_id %}
                 {% if eid == "sensor.replay_bar_cart_leds" %}
@@ -242,8 +248,9 @@ automation:
             condition: trigger
             id: tv_off
           sequence:
-            service: >-
-              script.turn_roku_off
+            service: script.turn_on
+            target:
+              entity_id: script.turn_roku_off
             data:
               harmony_remote: >
                 {% set eid = trigger.entity_id %}
@@ -263,8 +270,9 @@ automation:
             condition: trigger
             id: tv_on
           sequence:
-            service: >-
-              script.simulate_watching_roku
+            service: script.turn_om
+            target:
+              entity_id: script.simulate_watching_roku
             data:
               app: Denver News from 9News
               harmony_remote: >
@@ -297,13 +305,13 @@ automation:
       to: "off"
     action:
       - service: remote.turn_off
-        data:
+        target:
           entity_id: remote.basement_tv
       - service: remote.turn_off
-        data:
+        target:
           entity_id: remote.living_room_tv
       - service: switch.turn_off
-        data:
+        target:
           entity_id: switch.basement_lights
 
 binary_sensor:

@@ -9,25 +9,25 @@ automation:
         timer: timer.flower_box_timer
         timer_cancel_action:
           - service: rainmachine.stop_zone
-            data:
-              zone_id: 2
             target:
               device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
+            data:
+              zone_id: 2
         timer_expire_action:
           - service: rainmachine.stop_zone
-            data:
-              zone_id: 2
             target:
               device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
+            data:
+              zone_id: 2
         timer_start_action:
           - variables:
               input: !input input_number
           - service: rainmachine.start_zone
+            target:
+              device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
             data:
               zone_id: 2
               zone_run_time: "{{ states(input) | int * 60 }}"
-            target:
-              device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
 
   - alias: "Landscaping Timer"
     id: "landscaping_timer"
@@ -38,24 +38,25 @@ automation:
         timer: timer.landscaping_timer
         timer_cancel_action:
           - service: rainmachine.stop_zone
-            data:
-              zone_id: 1
             target:
               device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
+            data:
+              zone_id: 1
         timer_expire_action:
           - service: rainmachine.stop_zone
-            data:
+            target:
               device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
+            data:
               zone_id: 1
         timer_start_action:
           - variables:
               input: !input input_number
           - service: rainmachine.start_zone
+            target:
+              device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
             data:
               zone_id: 1
               zone_run_time: "{{ states(input) | int * 60 }}"
-            target:
-              device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
 
 input_number:
   flower_box_timer:

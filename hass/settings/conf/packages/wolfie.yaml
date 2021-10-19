@@ -25,10 +25,10 @@ automation:
                   🤖 Temporarily arming the security system to "home" while
                   Wolfie cleans.
             - service: vacuum.pause
-              data:
+              target:
                 entity_id: vacuum.rockrobo
             - service: alarm_control_panel.alarm_arm_home
-              data:
+              target:
                 entity_id: alarm_control_panel.123_main_street
             - wait_template: >
                 {{ is_state(
@@ -37,7 +37,7 @@ automation:
               timeout: "00:01:00"
               continue_on_timeout: false
             - service: vacuum.start
-              data:
+              target:
                 entity_id: vacuum.rockrobo
         - conditions:
             - condition: state
@@ -59,7 +59,7 @@ automation:
                   🤖 Re-arming the security system to "away" now that Wolfie
                   is done cleaning.
             - service: alarm_control_panel.alarm_arm_away
-              data:
+              target:
                 entity_id: alarm_control_panel.123_main_street
 
   - alias: "Manage Wolfie's Bin"
@@ -86,7 +86,7 @@ automation:
             state: cleaning
           sequence:
             service: input_boolean.turn_on
-            data:
+            target:
               entity_id: input_boolean.wolfie_running
         # When Wolfie returns to the dock, alter the bin appropriately:
         - conditions:
@@ -98,11 +98,12 @@ automation:
               state: "on"
           sequence:
             - service: input_select.select_option
-              data:
+              target:
                 entity_id: input_select.wolfie_bin_status
+              data:
                 option: Full
             - service: input_boolean.turn_off
-              data:
+              target:
                 entity_id: input_boolean.wolfie_running
 
   - alias: "Notify when Wolfie cycle is complete"
@@ -124,8 +125,9 @@ automation:
             target:
               entity_id: script.notify_everyone_at_home
             data:
-              message: "🤖 Wolfie has finished cleaning and can be emptied."
-              title: Vacuuming Complete
+              variables:
+                message: "🤖 Wolfie has finished cleaning and can be emptied."
+                title: Vacuuming Complete
           - delay: "02:00:00"
         until:
           - condition: state
@@ -140,11 +142,12 @@ automation:
       to: "on"
     action:
       service: script.turn_on
-        target:
-          entity_id: script.notify_everyone_at_home
+      target:
+        entity_id: script.notify_everyone_at_home
       data:
-        message: 🤖 It's time to run Wolfie!
-        title: Vacuum Time
+        variables:
+          message: 🤖 It's time to run Wolfie!
+          title: Vacuum Time
 
   - alias: "Notify when Wolfie is stuck"
     id: "notify_when_wolfie_is_stuck"
@@ -159,8 +162,9 @@ automation:
             target:
               entity_id: script.notify_everyone_at_home
             data:
-              message: "🤖 Wolfie is stuck on something and needs help."
-              title: Vacuuming Stopped
+              variables:
+                message: "🤖 Wolfie is stuck on something and needs help."
+                title: Vacuuming Stopped
           - delay: "00:10:00"
         until:
           - condition: not
@@ -195,24 +199,26 @@ automation:
         }}
     action:
       service: script.turn_on
-        target:
-          entity_id: script.notify_everyone_at_home
+      target:
+        entity_id: script.notify_everyone_at_home
       data:
-        title: Wolfie Consumable Update
-        message: >
-          {% if trigger.entity_id == "sensor.vacuum_filter_remaining" %}
-            {% set name = "a new filter" %}
-          {% elif trigger.entity_id == "sensor.vacuum_main_brush_remaining" %}
-            {% set name = "a new main brush" %}
-          {%
-            elif trigger.entity_id == "sensor.vacuum_sensor_dirtiness_remaining"
-          %}
-            {% set name = "to have his sensors cleaned" %}
-          {% elif trigger.entity_id == "sensor.vacuum_side_brush_remaining" %}
-            {% set name = "a new side brush" %}
-          {% endif %}
+        variables:
+          title: Wolfie Consumable Update
+          message: >
+            {% if trigger.entity_id == "sensor.vacuum_filter_remaining" %}
+              {% set name = "a new filter" %}
+            {% elif trigger.entity_id == "sensor.vacuum_main_brush_remaining" %}
+              {% set name = "a new main brush" %}
+            {%
+              elif trigger.entity_id
+              == "sensor.vacuum_sensor_dirtiness_remaining"
+            %}
+              {% set name = "to have his sensors cleaned" %}
+            {% elif trigger.entity_id == "sensor.vacuum_side_brush_remaining" %}
+              {% set name = "a new side brush" %}
+            {% endif %}
 
-          🤖 Wolfie needs {{ name }}!
+            🤖 Wolfie needs {{ name }}!
 
 input_boolean:
   wolfie_running:

@@ -7,7 +7,9 @@ automation:
       entity_id: sensor.proximity_zone
       to: Home
     action:
-      service: script.arrive_home_mode
+      service: script.turn_on
+      target:
+        entity_id: script.arrive_home_mode
 
 group:
   people:

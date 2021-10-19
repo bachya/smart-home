@@ -8,8 +8,9 @@ automation:
       minutes: 5
     action:
       service: input_number.set_value
-      data:
+      target:
         entity_id: input_number.master_toilet_fan_timer
+      data:
         value: 15
 
   - alias: "Master Bathroom Fan Double-Tap"
@@ -20,10 +21,12 @@ automation:
         ge_switch: 26da9edc7a5af4e09bae6ee15ea2d94c
         down_action:
           - service: switch.turn_off
-            entity_id: switch.master_bathroom_fan
+            target:
+              entity_id: switch.master_bathroom_fan
         up_action:
           - service: input_number.set_value
-            entity_id: input_number.master_bathroom_fan_timer
+            target:
+              entity_id: input_number.master_bathroom_fan_timer
             data:
               value: 30
 
@@ -36,13 +39,16 @@ automation:
         timer: timer.master_bathroom_fan_timer
         timer_cancel_action:
           - service: switch.turn_off
-            entity_id: switch.master_bathroom_fan
+            target:
+              entity_id: switch.master_bathroom_fan
         timer_expire_action:
           - service: switch.turn_off
-            entity_id: switch.master_bathroom_fan
+            target:
+              entity_id: switch.master_bathroom_fan
         timer_start_action:
           - service: switch.turn_on
-            entity_id: switch.master_bathroom_fan
+            target:
+              entity_id: switch.master_bathroom_fan
 
   - alias: "Master Bedroom Salt Lamp Timer"
     id: "master_bedroom_salt_lamp_timer"
@@ -53,13 +59,16 @@ automation:
         timer: timer.master_bedroom_salt_lamp_timer
         timer_cancel_action:
           - service: switch.turn_off
-            entity_id: switch.master_bedroom_salt_lamp
+            target:
+              entity_id: switch.master_bathroom_salt_lamp
         timer_expire_action:
           - service: switch.turn_off
-            entity_id: switch.master_bedroom_salt_lamp
+            target:
+              entity_id: switch.master_bathroom_salt_lamp
         timer_start_action:
           - service: switch.turn_on
-            entity_id: switch.master_bedroom_salt_lamp
+            target:
+              entity_id: switch.master_bathroom_salt_lamp
 
   - alias: "Master Toilet Fan Double-Tap"
     id: "master_toilet_fan_doubletap"
@@ -69,10 +78,12 @@ automation:
         ge_switch: 7adf54008205f0df3e350b1e913ce7ed
         down_action:
           - service: switch.turn_off
-            entity_id: switch.master_toilet_fan
+            target:
+              entity_id: switch.master_toilet_fan
         up_action:
           - service: input_number.set_value
-            entity_id: input_number.master_toilet_fan_timer
+            target:
+              entity_id: switch.master_toilet_fan
             data:
               value: 10
 
@@ -85,13 +96,16 @@ automation:
         timer: timer.master_toilet_fan_timer
         timer_cancel_action:
           - service: switch.turn_off
-            entity_id: switch.master_toilet_fan
+            target:
+              entity_id: switch.master_toilet_fan
         timer_expire_action:
           - service: switch.turn_off
-            entity_id: switch.master_toilet_fan
+            target:
+              entity_id: switch.master_toilet_fan
         timer_start_action:
           - service: switch.turn_on
-            entity_id: switch.master_toilet_fan
+            target:
+              entity_id: switch.master_toilet_fan
 
   - alias: "Trigger Good Night when Aaron's NFC tag is scanned"
     id: "trigger_good_night_when_aaron's_nfc_tag_is_scanned"
@@ -101,7 +115,9 @@ automation:
       event_data:
         tag_id: 43cfde8e-b887-4b6d-8832-4287cc712542
     action:
-      service: script.good_night_mode
+      service: script.turn_on
+      target:
+        entity_id: script.good_night_mode
 
   - alias: "Turn Britt's plug off if it's on when we leave"
     id: "turn_britt_s_plug_off_if_it_s_on_when_we_leave"
@@ -120,7 +136,7 @@ automation:
           message: >
             🔌 Britt's plug was left on; turning it off since everyone is gone.
       - service: switch.turn_off
-        data:
+        target:
           entity_id: switch.britt_s_bathroom_outlet
 
   - alias: "Turn master bathroom fan off after 2 hours"
@@ -132,7 +148,7 @@ automation:
       for: "02:00:00"
     action:
       service: switch.turn_off
-      data:
+      target:
         entity_id: switch.master_bathroom_fan
 
 binary_sensor:

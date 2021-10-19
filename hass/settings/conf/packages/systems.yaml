@@ -61,10 +61,11 @@ automation:
       target:
         entity_id: script.notify_everyone_at_home
       data:
-        title: Low Battery
-        message: >
-          🔋 The battery for {{ trigger.to_state.attributes.friendly_name }}
-          is low.
+        variables:
+          title: Low Battery
+          message: >
+            🔋 The battery for {{ trigger.to_state.attributes.friendly_name }}
+            is low.
 
   - alias: "Notify when sensor goes offline"
     id: "notify_when_sensor_goes_offline"
@@ -86,10 +87,11 @@ automation:
       target:
         entity_id: script.notify_everyone_at_home
       data:
-        title: Device Offline
-        message: >-
-          🤔{{ trigger.to_state.attributes.friendly_name }} isn't
-          responding and may be offline.
+        variables:
+          title: Device Offline
+          message: >-
+            🤔{{ trigger.to_state.attributes.friendly_name }} isn't
+            responding and may be offline.
 
 sensor:
   - platform: dnsip

@@ -8,7 +8,8 @@ automation:
         aeotec_nanomote: 05c007dbc0414368bf672799ca5ac05a
         button_1:
           - service: switch.toggle
-            entity_id: switch.master_bedroom_salt_lamp
+            target:
+              entity_id: switch.master_bedroom_salt_lamp
         button_2:
           - condition: not
             conditions:
@@ -16,7 +17,8 @@ automation:
                 entity_id: climate.thermostat
                 state: "off"
           - service: climate.set_temperature
-            entity_id: climate.thermostat
+            target:
+              entity_id: climate.thermostat
             data:
               temperature: >
                 {%
@@ -32,7 +34,10 @@ automation:
                   {{ c + 2 }}
                 {% endif %}
         button_3:
-          - service: script.good_night_mode
+          - service: script.turn_on
+            target:
+              entity_id: script.good_night_mode
         button_4:
           - service: switch.toggle
-            entity_id: switch.master_patio_light
+            target:
+              entity_id: switch.master_patio_light

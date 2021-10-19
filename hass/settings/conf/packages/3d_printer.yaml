@@ -40,11 +40,11 @@ automation:
       for:
         minutes: 10
     action:
-      service: notify.aaron
+      - service: notify.aaron
         data:
           message: "🦿 Turning 3D printer off"
-      - service: "switch.turn_off"
-        data:
+      - service: switch.turn_off
+        target:
           entity_id: switch.toggle_3d_printer
 
 octoprint:
@@ -74,9 +74,9 @@ switch:
           - delay:
               seconds: 10
           - service: switch.turn_off
-            data:
+            target:
               entity_id: switch.3d_printer
         turn_on:
           service: switch.turn_on
-          data:
+          target:
             entity_id: switch.3d_printer

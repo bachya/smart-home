@@ -51,20 +51,23 @@ automation:
             id: away_mode_on
           sequence:
             - service: input_select.select_option
-              data:
+              target:
                 entity_id: input_select.last_hvac_mode
+              data:
                 option: "{{ states('climate.thermostat') }}"
             - service: climate.set_hvac_mode
-              data:
+              target:
                 entity_id: climate.thermostat
+              data:
                 hvac_mode: heat_cool
             - wait_template: >
                 {{
                   is_state("climate.thermostat", "heat_cool")
                 }}
             - service: climate.set_temperature
-              data:
+              target:
                 entity_id: climate.thermostat
+              data:
                 target_temp_high: >
                   {{
                     states("input_number.thermostat_eco_high_threshold") | float
@@ -74,17 +77,20 @@ automation:
                     states("input_number.thermostat_eco_low_threshold") | float
                   }}
             - service: fan.turn_off
-              entity_id: fan.pure_humidify_cool
+              target:
+                entity_id: fan.pure_humidify_cool
         - conditions:
             condition: trigger
             id: away_mode_off
           sequence:
             - service: climate.set_hvac_mode
-              data:
+              target:
                 entity_id: climate.thermostat
+              data:
                 hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
             - service: fan.turn_on
-              entity_id: fan.pure_humidify_cool
+              target:
+                entity_id: fan.pure_humidify_cool
         - conditions:
             - condition: state
               entity_id: binary_sensor.in_bed
@@ -94,7 +100,8 @@ automation:
               state: "off"
           sequence:
             - service: climate.set_temperature
-              entity_id: climate.thermostat
+              target:
+                entity_id: climate.thermostat
               data:
                 temperature: >
                   {%
@@ -107,9 +114,11 @@ automation:
                     }}
                   {% endif %}
             - service: switch.turn_off
-              entity_id: switch.pure_humidify_cool_night_mode
+              target:
+                entity_id: switch.pure_humidify_cool_night_mode
             - service: humidifier.turn_off
-              entity_id: humidifier.pure_humidify_cool
+              target:
+                entity_id: humidifier.pure_humidify_cool
             - service: fan.set_percentage
               target:
                 entity_id: fan.pure_humidify_cool
@@ -125,7 +134,8 @@ automation:
               state: "off"
           sequence:
             - service: climate.set_temperature
-              entity_id: climate.thermostat
+              target:
+                entity_id: climate.thermostat
               data:
                 temperature: >
                   {%
@@ -140,9 +150,11 @@ automation:
                     }}
                   {% endif %}
             - service: switch.turn_on
-              entity_id: switch.pure_humidify_cool_night_mode
+              target:
+                entity_id: switch.pure_humidify_cool_night_mode
             - service: humidifier.turn_on
-              entity_id: humidifier.pure_humidify_cool
+              target:
+                entity_id: humidifier.pure_humidify_cool
             - service: fan.set_percentage
               target:
                 entity_id: fan.pure_humidify_cool
@@ -176,7 +188,7 @@ automation:
                 }}
           sequence:
             service: input_boolean.turn_off
-            data:
+            target:
               entity_id: input_boolean.climate_away_mode
         # Leaving (Normal Temperature)
         - conditions:
@@ -194,7 +206,7 @@ automation:
                 }}
           sequence:
             service: input_boolean.turn_on
-            data:
+            target:
               entity_id: input_boolean.climate_away_mode
         # Arriving (Extreme Temperature)
         - conditions:
@@ -219,7 +231,7 @@ automation:
                 }}
           sequence:
             service: input_boolean.turn_off
-            data:
+            target:
               entity_id: input_boolean.climate_away_mode
         # Leaving (Extreme Temperature)
         - conditions:
@@ -242,7 +254,7 @@ automation:
                 }}
           sequence:
             service: input_boolean.turn_on
-            data:
+            target:
               entity_id: input_boolean.climate_away_mode
 
   - alias: "Thermostat Sleep Timer"
@@ -254,22 +266,26 @@ automation:
         timer: timer.thermostat_sleep_timer
         timer_cancel_action:
           - service: climate.set_hvac_mode
-            data:
+            target:
               entity_id: climate.thermostat
+            data:
               hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
         timer_expire_action:
           - service: climate.set_hvac_mode
-            data:
+            target:
               entity_id: climate.thermostat
+            data:
               hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
         timer_start_action:
           - service: input_select.select_option
-            data:
+            target:
               entity_id: input_select.last_hvac_mode
+            data:
               option: "{{ states('climate.thermostat') }}"
           - service: climate.set_hvac_mode
-            data:
+            target:
               entity_id: climate.thermostat
+            data:
               hvac_mode: "off"
 
 input_boolean:

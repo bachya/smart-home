@@ -70,8 +70,9 @@ automation:
             target:
               entity_id: script.notify_everyone_at_home
             data:
-              message: "🍽  The dishwasher is clean and can be emptied."
-              title: Dishwasher Done
+              variables:
+                message: "🍽  The dishwasher is clean and can be emptied."
+                title: Dishwasher Done
           - delay: "02:00:00"
         until:
           - condition: state
@@ -91,8 +92,9 @@ automation:
             target:
               entity_id: script.notify_everyone_critical
             data:
-              message: "💦 Leak detected under the kitchen sink!"
-              title: Kitchen Sink Leak
+              variables:
+                message: "💦 Leak detected under the kitchen sink!"
+                title: Kitchen Sink Leak
           - delay: "00:01:00"
         until:
           - condition: state

@@ -16,8 +16,9 @@ automation:
             target:
               entity_id: script.notify_everyone_critical
             data:
-              message: "💦 Leak detected in the basement!"
-              title: Basement Leak
+              variables:
+                message: "💦 Leak detected in the basement!"
+                title: Basement Leak
           - delay: "00:01:00"
         until:
           - condition: state
@@ -34,7 +35,7 @@ automation:
       at: "02:00:00"
     action:
       service: guardian.reboot
-      data:
+      target:
         entity_id: switch.guardian_b4e62d98118d_valve
 
 binary_sensor:

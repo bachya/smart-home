@@ -23,18 +23,20 @@ automation:
                 }}
           sequence:
             - service: script.turn_on
-                target:
-                  entity_id: script.notify_everyone_at_home
-                message: >-
-                  ♻️ The pickup will include:
-                    {% for name, attrs in state_attr(
-                      "sensor.ridwell_pickup", "pickup_types"
-                    ).items() | sort -%}
-                        {{ name }} (x{{ attrs["quantity"] }})
-                        {%- if not loop.last %}, {% endif -%}
-                    {% endfor %}
-                title: >-
-                  Today's Ridwell Pickup
+              target:
+                entity_id: script.notify_everyone_at_home
+              data:
+                variables:
+                  message: >-
+                    ♻️ The pickup will include:
+                      {% for name, attrs in state_attr(
+                        "sensor.ridwell_pickup", "pickup_types"
+                      ).items() | sort -%}
+                          {{ name }} (x{{ attrs["quantity"] }})
+                          {%- if not loop.last %}, {% endif -%}
+                      {% endfor %}
+                  title: >-
+                    Today's Ridwell Pickup
       - choose:
           conditions:
             - condition: trigger
@@ -51,16 +53,17 @@ automation:
               target:
                 entity_id: script.notify_everyone_at_home
               data:
-                message: >-
-                  ♻️ The pickup will include:
-                    {% for name, attrs in state_attr(
-                      "sensor.ridwell_pickup", "pickup_types"
-                    ).items() | sort -%}
-                        {{ name }} (x{{ attrs["quantity"] }})
-                        {%- if not loop.last %}, {% endif -%}
-                    {% endfor %}
-                title: >-
-                  Tomorrow's Ridwell Pickup
+                variables:
+                  message: >-
+                    ♻️ The pickup will include:
+                      {% for name, attrs in state_attr(
+                        "sensor.ridwell_pickup", "pickup_types"
+                      ).items() | sort -%}
+                          {{ name }} (x{{ attrs["quantity"] }})
+                          {%- if not loop.last %}, {% endif -%}
+                      {% endfor %}
+                  title: >-
+                    Tomorrow's Ridwell Pickup
 
   - alias: "Notify of next trash pickup the night before"
     id: "notify_of_next_trash_pickup_the_night_before"
@@ -78,14 +81,15 @@ automation:
         target:
           entity_id: script.notify_everyone_at_home
         data:
-          message: >
-            🚮 The pickup will include: {{
-              expand("group.trash_sensors")
-              | selectattr("state", "equalto", "on")
-              | join(", ", attribute="attributes.friendly_name")
-              | lower
-            }}
-          title: Tomorrow's Trash Pickup
+          variables:
+            message: >
+              🚮 The pickup will include: {{
+                expand("group.trash_sensors")
+                | selectattr("state", "equalto", "on")
+                | join(", ", attribute="attributes.friendly_name")
+                | lower
+              }}
+            title: Tomorrow's Trash Pickup
 
 binary_sensor:
   - platform: template

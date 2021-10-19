@@ -13,8 +13,9 @@ automation:
             target:
               entity_id: script.notify_everyone_at_home
             data:
-              message: "🌴 Fred is low on moisture and needs a drink."
-              title: Fred's Moisture
+              variables:
+                message: "🌴 Fred is low on moisture and needs a drink."
+                title: Fred's Moisture
           - delay: "01:00:00"
         until:
           - condition: numeric_state

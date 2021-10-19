@@ -12,7 +12,9 @@ automation:
       - condition: time
         after: "15:00:00"
     action:
-      service: script.sunset_mode
+      service: script.turn_on
+      target:
+        entity_id: script.sunset_mode
 
 group:
   outdoor_lights:

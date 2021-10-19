@@ -9,13 +9,16 @@ automation:
         timer: timer.office_salt_lamp_timer
         timer_cancel_action:
           - service: switch.turn_off
-            entity_id: switch.office_salt_lamp_switch
+            target:
+              entity_id: switch.office_salt_lamp_switch
         timer_expire_action:
           - service: switch.turn_off
-            entity_id: switch.office_salt_lamp_switch
+            target:
+              entity_id: switch.office_salt_lamp_switch
         timer_start_action:
           - service: switch.turn_on
-            entity_id: switch.office_salt_lamp_switch
+            target:
+              entity_id: switch.office_salt_lamp_switch
 
 input_number:
   office_salt_lamp_timer:
