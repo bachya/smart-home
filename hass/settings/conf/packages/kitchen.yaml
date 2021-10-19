@@ -53,12 +53,10 @@ automation:
   - alias: "Notify when the dishwasher is clean"
     id: "notify_when_the_dishwasher_is_clean"
     trigger:
-      - platform: homeassistant
-        event: start
-      - platform: state
-        entity_id: input_select.dishwasher_status
-        to: Clean
-        for: "00:15:00"
+      platform: state
+      entity_id: input_select.dishwasher_status
+      to: Clean
+      for: "00:15:00"
     condition:
       condition: state
       entity_id: input_select.dishwasher_status

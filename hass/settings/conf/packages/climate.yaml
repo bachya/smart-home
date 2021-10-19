@@ -4,8 +4,6 @@ automation:
     id: "climate_schedule"
     mode: queued
     trigger:
-      - platform: homeassistant
-        event: start
       - platform: state
         entity_id: climate.thermostat
         from: cool
