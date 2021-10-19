@@ -15,7 +15,6 @@ binary_sensor:
             } else {
               id(garage_door_cover).current_operation = COVER_OPERATION_CLOSING;
             }
-
             id(garage_door_cover).publish_state();
     pin:
       inverted: true
@@ -33,7 +32,6 @@ binary_sensor:
             } else {
               id(garage_door_cover).current_operation = COVER_OPERATION_OPENING;
             }
-
             id(garage_door_cover).publish_state();
     pin:
       inverted: true
@@ -70,14 +68,16 @@ cover:
           condition:
             or:
               - binary_sensor.is_on: garage_door_closed
-              - lambda: |-
-                  return id(garage_door_cover).current_operation == COVER_OPERATION_CLOSING;
+              - lambda: >-
+                  return id(garage_door_cover).current_operation ==
+                  COVER_OPERATION_CLOSING;
           else:
             - switch.turn_on: relay
             - delay: 200ms
             - switch.turn_off: relay
-            - lambda: |-
-                id(garage_door_cover).current_operation = COVER_OPERATION_CLOSING;
+            - lambda: >-
+                id(garage_door_cover).current_operation =
+                COVER_OPERATION_CLOSING;
                 id(garage_door_cover).publish_state();
     device_class: garage
     id: garage_door_cover
@@ -93,14 +93,16 @@ cover:
           condition:
             or:
               - binary_sensor.is_on: garage_door_open
-              - lambda: |-
-                  return id(garage_door_cover).current_operation == COVER_OPERATION_OPENING;
+              - lambda: >-
+                  return id(garage_door_cover).current_operation ==
+                  COVER_OPERATION_OPENING;
           else:
             - switch.turn_on: relay
             - delay: 200ms
             - switch.turn_off: relay
-            - lambda: |-
-                id(garage_door_cover).current_operation = COVER_OPERATION_OPENING;
+            - lambda: >-
+                id(garage_door_cover).current_operation =
+                COVER_OPERATION_OPENING;
                 id(garage_door_cover).publish_state();
     platform: template
 
