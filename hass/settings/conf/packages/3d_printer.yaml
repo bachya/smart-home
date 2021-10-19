@@ -19,16 +19,14 @@ automation:
             condition: trigger
             id: printing_stoppped
           sequence:
-            service: script.turn_on
-            target:
-              entity_id: script.notify_everyone_at_home
+            service: notify.aaron
             data:
               message: "🦿 3D print completed"
         - conditions:
             condition: trigger
             id: printing_started
           sequence:
-            service: notify.mobile_app_aarons_iphone
+            service: notify.aaron
             data:
               message: "🦿 3D print started"
 
@@ -42,9 +40,7 @@ automation:
       for:
         minutes: 10
     action:
-      service: script.turn_on
-            target:
-              entity_id: script.notify_everyone_at_home
+      service: notify.aaron
         data:
           message: "🦿 Turning 3D printer off"
       - service: "switch.turn_off"
