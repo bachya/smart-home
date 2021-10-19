@@ -40,6 +40,7 @@ automation:
         entity_id: script.notify_everyone_at_home
       data:
         variables:
+          interruption_level: time-sensitive
           message: >-
             ♻️ The pickup will include:
               {% for name, attrs in state_attr(
@@ -72,6 +73,7 @@ automation:
           entity_id: script.notify_everyone_at_home
         data:
           variables:
+            interruption_level: time-sensitive
             message: >
               🚮 The pickup will include: {{
                 expand("group.trash_sensors")

@@ -146,6 +146,7 @@ automation:
         entity_id: script.notify_everyone_at_home
       data:
         variables:
+          interruption_level: time-sensitive
           message: 🤖 It's time to run Wolfie!
           title: Vacuum Time
 
@@ -163,6 +164,7 @@ automation:
               entity_id: script.notify_everyone_at_home
             data:
               variables:
+                interruption_level: time-sensitive
                 message: "🤖 Wolfie is stuck on something and needs help."
                 title: Vacuuming Stopped
           - delay: "00:10:00"
