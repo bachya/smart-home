@@ -7,6 +7,11 @@ notify:
       - service: mobile_app_aaron_s_personal_macbook_pro
 
   - platform: group
+    name: britt
+    services:
+      - service: mobile_app_britts_iphone
+
+  - platform: group
     name: everyone
     services:
       - service: mobile_app_aarons_iphone
@@ -64,7 +69,7 @@ script:
             entity_id: person.britt
             state: home
           sequence:
-            service: notify.mobile_app_britts_iphone
+            service: notify.britt
             data:
               message: "{{ message }}"
               title: "{{ title }}"
