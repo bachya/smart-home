@@ -19,28 +19,6 @@ notify:
       - service: mobile_app_britts_iphone
 
 script:
-  notify_everyone_critical:
-    fields:
-      message:
-        description: The message to send
-        example: Your hair is on fire!
-      title:
-        description: The optional title to include
-        example: Heads Up
-    sequence:
-      - service: notify.everyone
-        data:
-          message: "{{ message }}"
-          title: "{{ title }}"
-          data:
-            push:
-              interruption-level: critical
-              sound:
-                name: "default"
-                critical: 1
-                volume: 0.5
-            tag: "{{ message }}"
-
   notify_everyone_at_home:
     fields:
       message:
@@ -49,6 +27,9 @@ script:
       title:
         description: The optional title to include
         example: Heads Up
+      interruption_level:
+        description: The interruption level to set
+        example: critical
     sequence:
       - choose:
           conditions:
@@ -61,8 +42,9 @@ script:
               message: "{{ message }}"
               title: "{{ title }}"
               data:
+                push:
+                  interruption-level: "{{ interruption_level }}"
                 tag: "{{ message }}"
-
       - choose:
           conditions:
             condition: state
@@ -74,4 +56,6 @@ script:
               message: "{{ message }}"
               title: "{{ title }}"
               data:
+                push:
+                  interruption-level: "{{ interruption_level }}"
                 tag: "{{ message }}"

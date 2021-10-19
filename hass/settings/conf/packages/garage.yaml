@@ -20,9 +20,10 @@ automation:
     action:
       service: script.turn_on
       target:
-        entity_id: script.notify_everyone_critical
+        entity_id: script.notify_everyone_at_home
       data:
         variables:
+          interruption_level: critical
           message: >
             🚗 A car isn't in the garage; should it be?
           title: Car Missing?
@@ -39,9 +40,10 @@ automation:
         sequence:
           - service: script.turn_on
             target:
-              entity_id: script.notify_everyone_critical
+              entity_id: script.notify_everyone_at_home
             data:
               variables:
+                interruption_level: critical
                 message: "🚗 The garage has been left open."
                 title: Security Alert
           - delay: "00:10:00"

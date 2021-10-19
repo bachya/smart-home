@@ -98,9 +98,10 @@ automation:
         sequence:
           - service: script.turn_on
             target:
-              entity_id: script.notify_everyone_critical
+              entity_id: script.notify_everyone_at_home
             data:
               variables:
+                interruption_level: critical
                 message: "🚨 The alarm has been triggered."
                 title: Security Alert
           - delay: "00:01:00"
@@ -127,9 +128,10 @@ automation:
         sequence:
           - service: script.turn_on
             target:
-              entity_id: script.notify_everyone_critical
+              entity_id: script.notify_everyone_at_home
             data:
               variables:
+                interruption_level: critical
                 message: "🚨 No one is home and the house isn't secure."
                 title: Security Alert
           - delay: "00:05:00"
@@ -167,9 +169,10 @@ automation:
         sequence:
           - service: script.turn_on
             target:
-              entity_id: script.notify_everyone_critical
+              entity_id: script.notify_everyone_at_home
             data:
               variables:
+                interruption_level: critical
                 message: "🚨 Smoke/CO has been detected."
                 title: Security Alert
           - delay: "00:01:00"

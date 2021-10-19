@@ -14,9 +14,10 @@ automation:
         sequence:
           - service: script.turn_on
             target:
-              entity_id: script.notify_everyone_critical
+              entity_id: script.notify_everyone_at_home
             data:
               variables:
+                interruption_level: critical
                 message: "💦 Leak detected in the basement!"
                 title: Basement Leak
           - delay: "00:01:00"
