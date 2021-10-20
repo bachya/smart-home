@@ -2,27 +2,38 @@
 automation:
   - alias: "Flower Box Timer"
     id: "flower_box_timer"
+
     use_blueprint:
       path: bachya/sleep-timer.yaml
+
       input:
         input_number: input_number.flower_box_timer
+
         timer: timer.flower_box_timer
+
         timer_cancel_action:
-          - service: rainmachine.stop_zone
+          - alias: "Stop the zone"
+            service: rainmachine.stop_zone
             target:
               device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
             data:
               zone_id: 2
+
         timer_expire_action:
-          - service: rainmachine.stop_zone
+          - alias: "Stop the zone"
+            service: rainmachine.stop_zone
             target:
               device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
             data:
               zone_id: 2
+
         timer_start_action:
-          - variables:
+          - alias: "Set needed variables"
+            variables:
               input: !input input_number
-          - service: rainmachine.start_zone
+
+          - alias: "Start the zone"
+            service: rainmachine.start_zone
             target:
               device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
             data:
@@ -31,27 +42,38 @@ automation:
 
   - alias: "Landscaping Timer"
     id: "landscaping_timer"
+
     use_blueprint:
       path: bachya/sleep-timer.yaml
+
       input:
         input_number: input_number.landscaping_timer
+
         timer: timer.landscaping_timer
+
         timer_cancel_action:
-          - service: rainmachine.stop_zone
+          - alias: "Stop the zone"
+            service: rainmachine.stop_zone
             target:
               device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
             data:
               zone_id: 1
+
         timer_expire_action:
-          - service: rainmachine.stop_zone
+          - alias: "Stop the zone"
+            service: rainmachine.stop_zone
             target:
               device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
             data:
               zone_id: 1
+
         timer_start_action:
-          - variables:
+          - alias: "Set needed variables"
+            variables:
               input: !input input_number
-          - service: rainmachine.start_zone
+
+          - alias: "Start the zone"
+            service: rainmachine.start_zone
             target:
               device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
             data:
@@ -67,6 +89,7 @@ input_number:
     step: 5
     unit_of_measurement: minutes
     icon: mdi:timer
+
   landscaping_timer:
     name: Landscaping Timer
     initial: 0
@@ -79,5 +102,6 @@ input_number:
 timer:
   flower_box_timer:
     name: Sleep Timer Remaining
+
   landscaping_timer:
     name: Sleep Timer Remaining

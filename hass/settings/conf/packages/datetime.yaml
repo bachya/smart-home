@@ -2,14 +2,17 @@
 automation:
   - alias: "Automatically handle sunrise"
     id: "automatically_handle_sunrise"
+
     trigger:
-      platform: state
-      entity_id: binary_sensor.daytime
-      to: "on"
+      - platform: state
+        entity_id: binary_sensor.daytime
+        to: "on"
+
     action:
-      service: script.turn_on
-      target:
-        entity_id: script.good_morning_mode
+      - alias: "Turn 'Good Morning' mode on"
+        service: script.turn_on
+        target:
+          entity_id: script.good_morning_mode
 
 binary_sensor:
   - platform: template

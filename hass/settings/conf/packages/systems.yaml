@@ -2,50 +2,61 @@
 automation:
   - alias: "Execute certain automations on HASS start"
     id: "execute_certain_automations_on_hass_start"
+
     trigger:
-      platform: homeassistant
-      event: start
+      - platform: homeassistant
+        event: start
+
     action:
-      service: automation.trigger
-      target:
-        entity_id:
-          - automation.climate_schedule
-          - automation.notify_when_the_dishwasher_is_clean
-          - automation.notify_when_wolfie_cycle_is_complete
-      data:
-        skip_condition: false
+      - alias: "Trigger appropriate automations"
+        service: automation.trigger
+        target:
+          entity_id:
+            - automation.climate_schedule
+            - automation.notify_when_the_dishwasher_is_clean
+            - automation.notify_when_wolfie_cycle_is_complete
+        data:
+          skip_condition: false
 
   - alias: "Forward HASS persistent notifications"
     id: "forward_hass_persistent_notifications"
+
     trigger:
-      platform: event
-      event_type: call_service
-      event_data:
-        domain: persistent_notification
-        service: create
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: persistent_notification
+          service: create
+
     action:
-      service: notify.aaron
-      data:
-        title: Home Assistant Notification
-        message: "📥 {{ trigger.event.data.service_data.message }}"
+      - alias: "Send the notification"
+        service: notify.aaron
+        data:
+          title: Home Assistant Notification
+          message: "📥 {{ trigger.event.data.service_data.message }}"
 
   - alias: "Notify on HACS updates"
     id: "notify_on_hacs_updates"
+
     trigger:
-      platform: state
-      entity_id: sensor.hacs
+      - platform: state
+        entity_id: sensor.hacs
+
     condition:
-      condition: numeric_state
-      entity_id: sensor.hacs
-      above: 0
+      - condition: numeric_state
+        entity_id: sensor.hacs
+        above: 0
+
     action:
-      service: notify.aaron
-      data:
-        title: HACS Updates
-        message: "💿 There are {{ trigger.to_state.state }} updates."
+      - alias: "Send the notification"
+        service: notify.aaron
+        data:
+          title: HACS Updates
+          message: "💿 There are {{ trigger.to_state.state }} updates."
 
   - alias: "Notify when battery is low"
     id: "notify_when_battery_is_low"
+
     trigger:
       - platform: numeric_state
         entity_id:
@@ -55,8 +66,8 @@ automation:
           - sensor.sonos_roam_battery
           - sensor.vacuum_battery
         below: 20
-        for:
-          minutes: 5
+        for: "00:05:00"
+
       - platform: state
         entity_id:
           - binary_sensor.basement_firefighter_low_battery_level
@@ -69,21 +80,23 @@ automation:
           - binary_sensor.upstairs_hallway_sensor_low_battery
           - binary_sensor.wh65batt
         to: "on"
-        for:
-          minutes: 5
+        for: "00:05:00"
+
     action:
-      service: script.turn_on
-      target:
-        entity_id: script.notify_everyone_at_home
-      data:
-        variables:
-          title: Low Battery
-          message: >
-            🔋 The battery for {{ trigger.to_state.attributes.friendly_name }}
-            is low.
+      - alias: "Send the notification"
+        service: script.turn_on
+        target:
+          entity_id: script.notify_everyone_at_home
+        data:
+          variables:
+            title: Low Battery
+            message: >
+              🔋 The battery for {{ trigger.to_state.attributes.friendly_name }}
+              is low.
 
   - alias: "Notify when sensor goes offline"
     id: "notify_when_sensor_goes_offline"
+
     trigger:
       - platform: state
         entity_id:
@@ -95,18 +108,19 @@ automation:
           - binary_sensor.office_salt_lamp_status
           - binary_sensor.upstairs_hallway_sensor_missing
         to: "off"
-        for:
-          minutes: 5
+        for: "00:05:00"
+
     action:
-      service: script.turn_on
-      target:
-        entity_id: script.notify_everyone_at_home
-      data:
-        variables:
-          title: Device Offline
-          message: >-
-            🤔{{ trigger.to_state.attributes.friendly_name }} isn't
-            responding and may be offline.
+      - alias: "Send the notification"
+        service: script.turn_on
+        target:
+          entity_id: script.notify_everyone_at_home
+        data:
+          variables:
+            title: Device Offline
+            message: >-
+              🤔{{ trigger.to_state.attributes.friendly_name }} isn't
+              responding and may be offline.
 
 sensor:
   - platform: dnsip
@@ -141,5 +155,4 @@ sensor:
   - platform: rest
     name: Healthchecks.io Ping
     resource: !secret healthchecksio_ping_url
-    scan_interval:
-      minutes: 5
+    scan_interval: "00:05:00"

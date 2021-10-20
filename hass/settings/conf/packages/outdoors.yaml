@@ -2,19 +2,24 @@
 automation:
   - alias: "Automatically handle sunset"
     id: "automatically_handle_sunset"
+
     trigger:
       - platform: numeric_state
         entity_id: sensor.solarradiation_perceived
         below: input_number.local_sunset_brightness
+
       - platform: sun
         event: sunset
+
     condition:
       - condition: time
         after: "15:00:00"
+
     action:
-      service: script.turn_on
-      target:
-        entity_id: script.sunset_mode
+      - alias: "Turn 'Sunset' mode on"
+        service: script.turn_on
+        target:
+          entity_id: script.sunset_mode
 
 group:
   outdoor_lights:

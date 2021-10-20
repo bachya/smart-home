@@ -2,89 +2,106 @@
 automation:
   - alias: "Notify when cars are missing"
     id: "notify_when_cars_are_missing"
+
     trigger:
       - platform: event
         event_type: call_service
         event_data:
           domain: script
           service: good_night_mode
+
     condition:
-      condition: or
-      conditions:
-        - condition: state
-          entity_id: binary_sensor.aaron_s_parking_spot_occupied
-          state: "off"
-        - condition: state
-          entity_id: binary_sensor.britt_s_parking_spot_occupied
-          state: "off"
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.aaron_s_parking_spot_occupied
+            state: "off"
+          - condition: state
+            entity_id: binary_sensor.britt_s_parking_spot_occupied
+            state: "off"
+
     action:
-      service: script.turn_on
-      target:
-        entity_id: script.notify_everyone_at_home
-      data:
-        variables:
-          interruption_level: critical
-          message: >
-            🚗 A car isn't in the garage; should it be?
-          title: Car Missing?
+      - alias: "Send the notification"
+        service: script.turn_on
+        target:
+          entity_id: script.notify_everyone_at_home
+        data:
+          variables:
+            interruption_level: critical
+            message: >
+              🚗 A car isn't in the garage; should it be?
+            title: Car Missing?
 
   - alias: "Notify when garage is left open"
     id: "garage_left_open"
+
     trigger:
-      platform: state
-      entity_id: cover.wemos_d1_mini_garage_controller
-      to: open
-      for: "00:10:00"
+      - platform: state
+        entity_id: cover.wemos_d1_mini_garage_controller
+        to: open
+        for: "00:10:00"
+
     action:
-      repeat:
-        sequence:
-          - service: script.turn_on
-            target:
-              entity_id: script.notify_everyone_at_home
-            data:
-              variables:
-                interruption_level: critical
+      - repeat:
+          sequence:
+            - alias: "Send the notification"
+              service: notify.everyone
+              data:
                 message: "🚗 The garage has been left open."
                 title: Security Alert
-          - delay: "00:10:00"
-        until:
-          - condition: not
-            conditions:
-              condition: state
-              entity_id: cover.wemos_d1_mini_garage_controller
-              state: open
+                data:
+                  push:
+                    interruption_level: critical
+
+            - alias: "Delay for 10 minutes"
+              delay: "00:10:00"
+          until:
+            - condition: not
+              conditions:
+                condition: state
+                entity_id: cover.wemos_d1_mini_garage_controller
+                state: open
 
   - alias: "Turn garage lights off after garage door closes"
     id: "turn_garage_lights_off_after_garage_door_closes"
+
     trigger:
-      platform: state
-      entity_id: cover.wemos_d1_mini_garage_controller
-      to: closed
-      for: "00:10:00"
+      - platform: state
+        entity_id: cover.wemos_d1_mini_garage_controller
+        to: closed
+        for: "00:10:00"
+
     action:
-      service: switch.turn_off
-      target:
-        entity_id: switch.garage_lights
+      - alias: "Turn the garage lights off"
+        service: switch.turn_off
+        target:
+          entity_id: switch.garage_lights
 
   - alias: "Turn garage lights on when garage door is open and it's dark"
     id: "turn_garage_lights_on_when_garage_door_is_open_and_its_dark"
+
     trigger:
       - platform: state
         entity_id: cover.wemos_d1_mini_garage_controller
         from: closed
+
       - platform: numeric_state
         entity_id: sensor.solarradiation_perceived
         below: input_number.local_sunset_brightness
+
     condition:
       - condition: not
         conditions:
           condition: state
           entity_id: cover.wemos_d1_mini_garage_controller
           state: closed
+
       - condition: numeric_state
         entity_id: sensor.solarradiation_perceived
         below: input_number.local_sunset_brightness
+
     action:
-      service: switch.turn_on
-      target:
-        entity_id: switch.garage_lights
+      - alias: "Turn the garage lights on"
+        service: switch.turn_on
+        target:
+          entity_id: switch.garage_lights

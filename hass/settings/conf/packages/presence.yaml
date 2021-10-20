@@ -2,14 +2,17 @@
 automation:
   - alias: "Trigger Arrive Home Mode when we arrive"
     id: "trigger_arrive_home_mode_when_we_arrive"
+
     trigger:
-      platform: state
-      entity_id: sensor.proximity_zone
-      to: Home
+      - platform: state
+        entity_id: sensor.proximity_zone
+        to: Home
+
     action:
-      service: script.turn_on
-      target:
-        entity_id: script.arrive_home_mode
+      - alias: "Turn 'Arrive Home' mode on"
+        service: script.turn_on
+        target:
+          entity_id: script.arrive_home_mode
 
 group:
   people:
@@ -26,6 +29,7 @@ input_number:
     step: 1
     unit_of_measurement: miles
     icon: mdi:radius-outline
+
   home_radius:
     name: Home Radius
     min: 0
@@ -33,6 +37,7 @@ input_number:
     step: 1
     unit_of_measurement: miles
     icon: mdi:radius-outline
+
   nearby_radius:
     name: Nearby Radius
     min: 0

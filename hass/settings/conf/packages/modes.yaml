@@ -2,24 +2,26 @@
 automation:
   - alias: "Manage iOS Actions"
     id: "manage_ios_actions"
+
     trigger:
-      platform: event
-      event_type: ios.action_fired
+      - platform: event
+        event_type: ios.action_fired
     action:
-      service: script.turn_on
-      target:
-        entity_id: >-
-          {% if trigger.event.data.actionName == "Depart Home" %}
-            script.depart_home_mode
-          {% elif trigger.event.data.actionName == "Drive Home" %}
-            script.drive_home_mode
-          {% elif trigger.event.data.actionName == "Good Morning" %}
-            script.good_morning_mode
-          {% elif trigger.event.data.actionName == "Good Night" %}
-            script.good_night_mode
-          {% elif trigger.event.data.actionName == "Walk Home" %}
-            script.walk_home_mode
-          {% endif %}
+      - alias: "Turn on the appropriate mode"
+        service: script.turn_on
+        target:
+          entity_id: >-
+            {% if trigger.event.data.actionName == "Depart Home" %}
+              script.depart_home_mode
+            {% elif trigger.event.data.actionName == "Drive Home" %}
+              script.drive_home_mode
+            {% elif trigger.event.data.actionName == "Good Morning" %}
+              script.good_morning_mode
+            {% elif trigger.event.data.actionName == "Good Night" %}
+              script.good_night_mode
+            {% elif trigger.event.data.actionName == "Walk Home" %}
+              script.walk_home_mode
+            {% endif %}
 
 ios:
   actions:
@@ -31,6 +33,7 @@ ios:
       icon:
         icon: garage
         color: "#efe6dd"
+
     - name: Drive Home
       background_color: "#7c8596"
       label:
@@ -39,6 +42,7 @@ ios:
       icon:
         icon: garage
         color: "#efe6dd"
+
     - name: Good Morning
       background_color: "#855954"
       label:
@@ -47,6 +51,7 @@ ios:
       icon:
         icon: white-balance-sunny
         color: "#efe6dd"
+
     - name: Good Night
       background_color: "#7e84b6"
       label:
@@ -55,6 +60,7 @@ ios:
       icon:
         icon: sleep
         color: "#efe6dd"
+
     - name: Walk Home
       background_color: "#7488b4"
       label:
@@ -68,6 +74,7 @@ script:
   arrive_home_mode:
     alias: "Arrive Home Mode"
     description: "Alter the home when we arrive (regardless of entrypoint)"
+
     sequence:
       - alias: "Are we ensuring HASS didn't just start?"
         condition: template
@@ -75,12 +82,16 @@ script:
           {{
             (now() - states("sensor.uptime") | as_datetime).total_seconds() > 60
           }}
-      - service: homeassistant.turn_off
+
+      - alias: "Turn off appropriate automations/switches/etc."
+        service: homeassistant.turn_off
         target:
           entity_id:
             - automation.notify_when_security_status_changes
             - automation.simulate_someone_being_home
-      - service: homeassistant.turn_on
+
+      - alias: "Turn on appropriate automations/switches/etc."
+        service: homeassistant.turn_on
         target:
           entity_id:
             - automation.automatically_handle_sunrise
@@ -88,11 +99,14 @@ script:
             - automation.cycle_master_toilet_fan_during_the_day
             - automation.notify_when_house_empty_and_insecure
             - switch.guardian_b4e62d98118d_valve
+
       - alias: "Is it after sunset?"
         condition: numeric_state
         entity_id: sensor.solarradiation_perceived
         below: input_number.local_sunset_brightness
-      - service: homeassistant.turn_on
+
+      - alias: "Turn on lights that should come on when it's dark"
+        service: homeassistant.turn_on
         target:
           entity_id:
             - group.living_room_lights
@@ -103,14 +117,20 @@ script:
   depart_home_mode:
     alias: "Depart Home Mode"
     description: "Alter the home when we leave"
+
     sequence:
-      - service: alarm_control_panel.alarm_arm_away
+      - alias: "Arm the alarm"
+        service: alarm_control_panel.alarm_arm_away
         target:
           entity_id: alarm_control_panel.123_main_street
-      - service: cover.close_cover
+
+      - alias: "Close the garage"
+        service: cover.close_cover
         target:
           entity_id: cover.wemos_d1_mini_garage_controller
-      - service: homeassistant.turn_off
+
+      - alias: "Turn off appropriate automations/switches/etc."
+        service: homeassistant.turn_off
         target:
           entity_id:
             - automation.automatically_handle_sunrise
@@ -124,18 +144,24 @@ script:
             - switch.basement_lights
             - switch.fireplace
             - switch.garage_lights
-      - service: homeassistant.turn_on
+
+      - alias: "Turn on appropriate automations/switches/etc."
+        service: homeassistant.turn_on
         target:
           entity_id:
             - automation.notify_when_security_status_changes
             - automation.simulate_someone_being_home
-      - service: lock.lock
+
+      - alias: "Lock all of our door locks"
+        service: lock.lock
         target:
           entity_id:
             - lock.123_main_street_patio_door
             - lock.front_door_lock
             - lock.garage_fire_door_lock
-      - service: media_player.media_pause
+
+      - alias: "Pause all media players"
+        service: media_player.media_pause
         target:
           entity_id:
             - media_player.living_room
@@ -147,23 +173,32 @@ script:
   drive_home_mode:
     alias: "Drive Home Mode"
     description: "Alter the home when we arrive via the garage door"
+
     sequence:
-      - service: script.turn_on
+      - alias: "Perform universal 'when we arrive' actions"
+        service: script.turn_on
         target:
           entity_id: script.arrive_home_mode
-      - service: alarm_control_panel.alarm_disarm
+
+      - alias: "Disarm the alarm"
+        service: alarm_control_panel.alarm_disarm
         target:
           entity_id: alarm_control_panel.123_main_street
-      - service: cover.open_cover
+
+      - alias: "Open the garage"
+        service: cover.open_cover
         target:
           entity_id: cover.wemos_d1_mini_garage_controller
-      - service: lock.unlock
+
+      - alias: "Unlock the garage fire door"
+        service: lock.unlock
         target:
           entity_id: lock.garage_fire_door_lock
 
   good_morning_mode:
     alias: "Good Morning Mode"
     description: "Alter the home at when we get up in the morning"
+
     sequence:
       - alias: "Are we ensuring HASS didn't just start?"
         condition: template
@@ -171,12 +206,16 @@ script:
           {{
             (now() - states("sensor.uptime") | as_datetime).total_seconds() > 60
           }}
-      - service: homeassistant.turn_on
+
+      - alias: "Turn on various appropriate automations/switches/etc."
+        service: homeassistant.turn_on
         target:
           entity_id:
             - automation.cycle_master_toilet_fan_during_the_day
             - switch.kitchen_pendant_lights
-      - service: simplisafe.set_system_properties
+
+      - alias: "Turn on SimpliSafe audible notifications"
+        service: simplisafe.set_system_properties
         data:
           system_id: !secret simplisafe_system_id
           chime_volume: 2
@@ -185,14 +224,20 @@ script:
   good_night_mode:
     alias: "Good Night Mode"
     description: "Alter the home when we're going to bed"
+
     sequence:
-      - service: alarm_control_panel.alarm_arm_home
+      - alias: "Arm the alarm"
+        service: alarm_control_panel.alarm_arm_home
         target:
           entity_id: alarm_control_panel.123_main_street
-      - service: cover.close_cover
+
+      - alias: "Close the garage"
+        service: cover.close_cover
         target:
           entity_id: cover.wemos_d1_mini_garage_controller
-      - service: homeassistant.turn_off
+
+      - alias: "Turn off various appropriate automations/switches/etc."
+        service: homeassistant.turn_off
         target:
           entity_id:
             - automation.cycle_master_toilet_fan_during_the_day
@@ -205,13 +250,17 @@ script:
             - switch.fireplace
             - switch.garage_lights
             - switch.office_salt_lamp
-      - service: lock.lock
+
+      - alias: "Lock all of our door locks"
+        service: lock.lock
         target:
           entity_id:
             - lock.123_main_street_patio_door
             - lock.front_door_lock
             - lock.garage_fire_door_lock
-      - service: media_player.media_pause
+
+      - alias: "Pause all media players"
+        service: media_player.media_pause
         target:
           entity_id:
             - media_player.living_room
@@ -219,7 +268,9 @@ script:
             - media_player.master_bedroom_bathroom
             - media_player.office
             - media_player.sonos_roam
-      - service: simplisafe.set_system_properties
+
+      - alias: "Turn off SimpliSafe audible notifications"
+        service: simplisafe.set_system_properties
         data:
           system_id: !secret simplisafe_system_id
           chime_volume: 0
@@ -228,6 +279,7 @@ script:
   sunset_mode:
     alias: "Sunset Mode"
     description: "Alter the home at sunset"
+
     sequence:
       - alias: "Are we ensuring HASS didn't just start?"
         condition: template
@@ -235,10 +287,14 @@ script:
           {{
             (now() - states("sensor.uptime") | as_datetime).total_seconds() > 60
           }}
-      - service: homeassistant.turn_off
+
+      - alias: "Turn off various appropriate automations/switches/etc."
+        service: homeassistant.turn_off
         target:
           entity_id: automation.cycle_master_toilet_fan_during_the_day
-      - service: homeassistant.turn_on
+
+      - alias: "Turn on various appropriate automations/switches/etc."
+        service: homeassistant.turn_on
         target:
           entity_id:
             - group.outdoor_lights
@@ -252,13 +308,19 @@ script:
   walk_home_mode:
     alias: "Walk Home Mode"
     description: "Alter the home when we arrive via the front door"
+
     sequence:
-      - service: script.turn_on
+      - alias: "Perform universal 'when we arrive' actions"
+        service: script.turn_on
         target:
           entity_id: script.arrive_home_mode
-      - service: alarm_control_panel.alarm_disarm
+
+      - alias: "Disarm the alarm"
+        service: alarm_control_panel.alarm_disarm
         target:
           entity_id: alarm_control_panel.123_main_street
-      - service: lock.unlock
+
+      - alias: "Unlock the front door"
+        service: lock.unlock
         target:
           entity_id: lock.front_door_lock

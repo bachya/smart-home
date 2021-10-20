@@ -2,42 +2,51 @@
 automation:
   - alias: "Notify when there is a leak near the sump pump"
     id: "basement_leak"
+
     trigger:
       - platform: state
         entity_id: binary_sensor.basement_sensor_leak_detector
         to: "on"
+
       - platform: state
         entity_id: binary_sensor.guardian_b4e62d98118d_leak_detected
         to: "on"
+
     action:
       repeat:
         sequence:
-          - service: script.turn_on
-            target:
-              entity_id: script.notify_everyone_at_home
+          - alias: "Send the notification"
+            service: notify.everyone
             data:
-              variables:
-                interruption_level: critical
-                message: "💦 Leak detected in the basement!"
-                title: Basement Leak
-          - delay: "00:01:00"
+              message: "💦 Leak detected in the basement!"
+              title: Basement Leak
+              data:
+                push:
+                  interruption-level: critical
+
+          - alias: "Wait 1 minute before notifying again"
+            delay: "00:01:00"
         until:
           - condition: state
             entity_id: binary_sensor.basement_sensor_leak_detector
             state: "off"
+
           - condition: state
             entity_id: binary_sensor.guardian_b4e62d98118d_leak_detected
             state: "off"
 
   - alias: "Reboot Guardian every night at 2am"
     id: "reboot_guardian_every_night_at_2am"
+
     trigger:
-      platform: time
-      at: "02:00:00"
+      - platform: time
+        at: "02:00:00"
+
     action:
-      service: guardian.reboot
-      target:
-        entity_id: switch.guardian_b4e62d98118d_valve
+      - alias: "Reboot the Guardian"
+        service: guardian.reboot
+        target:
+          entity_id: switch.guardian_b4e62d98118d_valve
 
 binary_sensor:
   - platform: template

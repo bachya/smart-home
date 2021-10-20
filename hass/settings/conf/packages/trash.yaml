@@ -2,73 +2,83 @@
 automation:
   - alias: "Notify of next Ridwell pickup the night before and the morning of"
     id: "notify_of_next_ridwell_pickup_the_night_before_time_and_the_morning_of"
+
     trigger:
       - platform: time
         id: day_of_time
         at: "07:45:00"
+
       - platform: time
         id: night_before_time
         at: "19:00:00"
+
     condition:
-      condition: or
-      conditions:
-        - condition: and
-          conditions:
-            - condition: trigger
-              id: day_of_time
-            - condition: template
-              value_template: >
-                {{
-                  (states(
-                    "sensor.ridwell_pickup"
-                  ) | as_datetime - now()).days == -1
-                }}
-        - condition: and
-          conditions:
-            - condition: trigger
-              id: night_before_time
-            - condition: template
-              value_template: >
-                {{
-                  (states(
-                    "sensor.ridwell_pickup"
-                  ) | as_datetime - now()).days == 0
-                }}
+      - condition: or
+        conditions:
+          - condition: and
+            conditions:
+              - condition: trigger
+                id: day_of_time
+              - condition: template
+                value_template: >
+                  {{
+                    (states(
+                      "sensor.ridwell_pickup"
+                    ) | as_datetime - now()).days == -1
+                  }}
+
+          - condition: and
+            conditions:
+              - condition: trigger
+                id: night_before_time
+              - condition: template
+                value_template: >
+                  {{
+                    (states(
+                      "sensor.ridwell_pickup"
+                    ) | as_datetime - now()).days == 0
+                  }}
+
     action:
-      service: script.turn_on
-      target:
-        entity_id: script.notify_everyone_at_home
-      data:
-        variables:
-          interruption_level: time-sensitive
-          message: >-
-            ♻️ The pickup will include:
-              {% for name, attrs in state_attr(
-                "sensor.ridwell_pickup", "pickup_types"
-              ).items() | sort -%}
-                  {{ name }} (x{{ attrs["quantity"] }})
-                  {%- if not loop.last %}, {% endif -%}
-              {% endfor %}
-          title: >-
-            {% if trigger.id == "day_of_time" %}
-              Today's Ridwell Pickup
-            {% else %}
-              Tomorrow's Ridwell Pickup
-            {% endif %}
+      - alias: "Send the notification"
+        service: script.turn_on
+        target:
+          entity_id: script.notify_everyone_at_home
+        data:
+          variables:
+            interruption_level: time-sensitive
+            message: >-
+              ♻️ The pickup will include:
+                {% for name, attrs in state_attr(
+                  "sensor.ridwell_pickup", "pickup_types"
+                ).items() | sort -%}
+                    {{ name }} (x{{ attrs["quantity"] }})
+                    {%- if not loop.last %}, {% endif -%}
+                {% endfor %}
+            title: >-
+              {% if trigger.id == "day_of_time" %}
+                Today's Ridwell Pickup
+              {% else %}
+                Tomorrow's Ridwell Pickup
+              {% endif %}
 
   - alias: "Notify of next trash pickup the night before"
     id: "notify_of_next_trash_pickup_the_night_before"
+
     trigger:
-      platform: time
-      at: "19:00:00"
+      - platform: time
+        at: "19:00:00"
+
     condition:
-      condition: template
-      value_template: >
-        {{
-          (states("sensor.recollect_waste") | as_datetime - now()).days == 0
-        }}
+      - condition: template
+        value_template: >
+          {{
+            (states("sensor.recollect_waste") | as_datetime - now()).days == 0
+          }}
+
     action:
-      - service: script.turn_on
+      - alias: "Send the notification"
+        service: script.turn_on
         target:
           entity_id: script.notify_everyone_at_home
         data:
@@ -92,24 +102,28 @@ binary_sensor:
           {{ "organics" in state_attr(
             "sensor.recollect_waste", "pickup_types"
           ) }}
+
       recollect_next_pickup_includes_extra_trash:
         friendly_name: Extra Trash
         value_template: >
           {{ "ExtraTrash_Day" in state_attr(
             "sensor.recollect_waste", "pickup_types"
           ) }}
+
       recollect_next_pickup_includes_recycling:
         friendly_name: Recycling
         value_template: >
           {{ "recycle" in state_attr(
             "sensor.recollect_waste", "pickup_types"
           ) }}
+
       recollect_next_pickup_includes_trash:
         friendly_name: Trash
         value_template: >
           {{ "garbage" in state_attr(
             "sensor.recollect_waste", "pickup_types"
           ) }}
+
       ridwell_next_pickup_scheduled:
         friendly_name: Ridwell Next Pickup Scheduled
         value_template: >

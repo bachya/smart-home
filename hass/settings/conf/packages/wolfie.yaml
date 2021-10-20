@@ -2,73 +2,97 @@
 automation:
   - alias: "Alter Wolfie based on alarm status"
     id: "alter_wolfie_based_on_alarm_status"
+
     trigger:
       - platform: state
         entity_id: vacuum.rockrobo
+
       - platform: state
         entity_id: alarm_control_panel.123_main_street
         to: armed_away
+
     action:
-      choose:
-        - conditions:
-            - condition: state
-              entity_id: alarm_control_panel.123_main_street
-              state: armed_away
-            - condition: state
-              entity_id: vacuum.rockrobo
-              state: cleaning
-          sequence:
-            - service: notify.everyone
-              data:
-                title: Security Update
-                message: >
-                  🤖 Temporarily arming the security system to "home" while
-                  Wolfie cleans.
-            - service: vacuum.pause
-              target:
-                entity_id: vacuum.rockrobo
-            - service: alarm_control_panel.alarm_arm_home
-              target:
+      - choose:
+          - conditions:
+              - condition: state
                 entity_id: alarm_control_panel.123_main_street
-            - wait_template: >
-                {{ is_state(
-                  "alarm_control_panel.123_main_street", "armed_home"
-                ) }}
-              timeout: "00:01:00"
-              continue_on_timeout: false
-            - service: vacuum.start
-              target:
+                state: armed_away
+
+              - condition: state
                 entity_id: vacuum.rockrobo
-        - conditions:
-            - condition: state
-              entity_id: alarm_control_panel.123_main_street
-              state: armed_home
-            - condition: state
-              entity_id: vacuum.rockrobo
-              state: docked
-            - condition: not
-              conditions:
-                - condition: state
-                  entity_id: sensor.proximity_zone
-                  state: Home
-          sequence:
-            - service: notify.everyone
-              data:
-                title: Security Update
-                message: >
-                  🤖 Re-arming the security system to "away" now that Wolfie
-                  is done cleaning.
-            - service: alarm_control_panel.alarm_arm_away
-              target:
+                state: cleaning
+
+            sequence:
+              - alias: "Send the notification"
+                service: notify.everyone
+                data:
+                  title: Security Update
+                  message: >
+                    🤖 Temporarily arming the security system to "home" while
+                    Wolfie cleans.
+
+              - alias: "Pause Wolfie"
+                service: vacuum.pause
+                target:
+                  entity_id: vacuum.rockrobo
+
+              - alias: "Arm the alarm in home mode"
+                service: alarm_control_panel.alarm_arm_home
+                target:
+                  entity_id: alarm_control_panel.123_main_street
+
+              - alias: "Wait until the alarm arming is complete"
+                wait_template: >
+                  {{ is_state(
+                    "alarm_control_panel.123_main_street", "armed_home"
+                  ) }}
+                timeout: "00:01:00"
+                continue_on_timeout: false
+
+              - alias: "Start Wolfie"
+                service: vacuum.start
+                target:
+                  entity_id: vacuum.rockrobo
+
+          - conditions:
+              - condition: state
                 entity_id: alarm_control_panel.123_main_street
+                state: armed_home
+
+              - condition: state
+                entity_id: vacuum.rockrobo
+                state: docked
+
+              - condition: not
+                conditions:
+                  - condition: state
+                    entity_id: sensor.proximity_zone
+                    state: Home
+
+            sequence:
+              - alias: "Send the notification"
+                service: notify.everyone
+                data:
+                  title: Security Update
+                  message: >
+                    🤖 Re-arming the security system to "away" now that Wolfie
+                    is done cleaning.
+
+              - alias: "Arm the alarm in away mode"
+                service: alarm_control_panel.alarm_arm_away
+                target:
+                  entity_id: alarm_control_panel.123_main_street
 
   - alias: "Manage Wolfie's Bin"
     id: "manage_wolfies_bin"
+
     trigger:
       - platform: state
         entity_id: vacuum.rockrobo
+
       - platform: state
         entity_id: alarm_control_panel.123_main_street
+
     condition:
       - condition: template
         value_template: >
@@ -77,104 +101,128 @@ automation:
             and trigger.to_state.state != "unavailable"
             and trigger.from_state.state != trigger.to_state.state
           }}
-    action:
-      choose:
-        # When Wolfie starts running, mark it (since the WiFi is flaky):
-        - conditions:
-            condition: state
-            entity_id: vacuum.rockrobo
-            state: cleaning
-          sequence:
-            service: input_boolean.turn_on
-            target:
-              entity_id: input_boolean.wolfie_running
-        # When Wolfie returns to the dock, alter the bin appropriately:
-        - conditions:
-            - condition: state
-              entity_id: vacuum.rockrobo
-              state: docked
-            - condition: state
-              entity_id: input_boolean.wolfie_running
-              state: "on"
-          sequence:
-            - service: input_select.select_option
-              target:
-                entity_id: input_select.wolfie_bin_status
-              data:
-                option: Full
-            - service: input_boolean.turn_off
-              target:
-                entity_id: input_boolean.wolfie_running
 
-  - alias: "Notify when Wolfie cycle is complete"
-    id: "notify_when_wolfie_cycle_is_complete"
-    trigger:
-      platform: state
-      entity_id: input_select.wolfie_bin_status
-      to: Full
-    condition:
-      condition: state
-      entity_id: input_select.wolfie_bin_status
-      state: Full
     action:
-      repeat:
-        sequence:
-          - service: script.turn_on
-            target:
-              entity_id: script.notify_everyone_at_home
-            data:
-              variables:
-                message: "🤖 Wolfie has finished cleaning and can be emptied."
-                title: Vacuuming Complete
-          - delay: "02:00:00"
-        until:
-          - condition: state
-            entity_id: input_select.wolfie_bin_status
-            state: Empty
-
-  - alias: "Notify when Wolfie time to run"
-    id: "notify_when_wolfie_time_to_run"
-    trigger:
-      platform: state
-      entity_id: calendar.wolfie_schedule
-      to: "on"
-    action:
-      service: script.turn_on
-      target:
-        entity_id: script.notify_everyone_at_home
-      data:
-        variables:
-          interruption_level: time-sensitive
-          message: 🤖 It's time to run Wolfie!
-          title: Vacuum Time
-
-  - alias: "Notify when Wolfie is stuck"
-    id: "notify_when_wolfie_is_stuck"
-    trigger:
-      platform: state
-      entity_id: vacuum.rockrobo
-      to: error
-    action:
-      repeat:
-        sequence:
-          - service: script.turn_on
-            target:
-              entity_id: script.notify_everyone_at_home
-            data:
-              variables:
-                interruption_level: time-sensitive
-                message: "🤖 Wolfie is stuck on something and needs help."
-                title: Vacuuming Stopped
-          - delay: "00:10:00"
-        until:
-          - condition: not
+      - choose:
+          - alias: "Note that Wolfie is running (since the WiFi is flaky)"
             conditions:
               condition: state
               entity_id: vacuum.rockrobo
-              state: error
+              state: cleaning
+
+            sequence:
+              - alias: "Set the 'is Wolfie running?' input boolean to true"
+                service: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.wolfie_running
+
+          - alias: "Alter the bin state when Wolfie returns to the dock"
+            conditions:
+              - condition: state
+                entity_id: vacuum.rockrobo
+                state: docked
+
+              - condition: state
+                entity_id: input_boolean.wolfie_running
+                state: "on"
+
+            sequence:
+              - alias: "Set the bin input select"
+                service: input_select.select_option
+                target:
+                  entity_id: input_select.wolfie_bin_status
+                data:
+                  option: Full
+
+              - alias: "Set the 'is Wolfie running?' input boolean to false"
+                service: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.wolfie_running
+
+  - alias: "Notify when Wolfie cycle is complete"
+    id: "notify_when_wolfie_cycle_is_complete"
+
+    trigger:
+      - platform: state
+        entity_id: input_select.wolfie_bin_status
+        to: Full
+
+    condition:
+      - condition: state
+        entity_id: input_select.wolfie_bin_status
+        state: Full
+
+    action:
+      - repeat:
+          sequence:
+            - alias: "Send the notification"
+              service: script.turn_on
+              target:
+                entity_id: script.notify_everyone_at_home
+              data:
+                variables:
+                  message: "🤖 Wolfie has finished cleaning and can be emptied."
+                  title: Vacuuming Complete
+
+            - alias: "Delay for 2 hours"
+              delay: "02:00:00"
+          until:
+            - condition: state
+              entity_id: input_select.wolfie_bin_status
+              state: Empty
+
+  - alias: "Notify when Wolfie time to run"
+    id: "notify_when_wolfie_time_to_run"
+
+    trigger:
+      - platform: state
+        entity_id: calendar.wolfie_schedule
+        to: "on"
+
+    action:
+      - alias: "Send the notification"
+        service: script.turn_on
+        target:
+          entity_id: script.notify_everyone_at_home
+        data:
+          variables:
+            interruption_level: time-sensitive
+            message: 🤖 It's time to run Wolfie!
+            title: Vacuum Time
+
+  - alias: "Notify when Wolfie is stuck"
+    id: "notify_when_wolfie_is_stuck"
+
+    trigger:
+      - platform: state
+        entity_id: vacuum.rockrobo
+        to: error
+
+    action:
+      - repeat:
+          sequence:
+            - alias: "Send the notification"
+              service: script.turn_on
+              target:
+                entity_id: script.notify_everyone_at_home
+              data:
+                variables:
+                  interruption_level: time-sensitive
+                  message: "🤖 Wolfie is stuck on something and needs help."
+                  title: Vacuuming Stopped
+
+            - alias: "Delay for 10 minutes"
+              delay: "00:10:00"
+          until:
+            - condition: not
+              conditions:
+                condition: state
+                entity_id: vacuum.rockrobo
+                state: error
 
   - alias: "Notify when Wolfie needs a new consumable"
     id: "notify_when_wolfie_needs_a_new_consumable"
+
     trigger:
       - platform: numeric_state
         entity_id:
@@ -183,6 +231,7 @@ automation:
           - sensor.vacuum_sensor_dirtiness_remaining
           - sensor.vacuum_side_brush_remaining
         below: 5
+
     condition:
       # This automation can get very chatty, so we only allow a notification
       # once per day:
@@ -197,28 +246,28 @@ automation:
           ) | timestamp_custom('%-d')
           != as_timestamp(now()) | timestamp_custom('%-d')
         }}
-    action:
-      service: script.turn_on
-      target:
-        entity_id: script.notify_everyone_at_home
-      data:
-        variables:
-          title: Wolfie Consumable Update
-          message: >
-            {% if trigger.entity_id == "sensor.vacuum_filter_remaining" %}
-              {% set name = "a new filter" %}
-            {% elif trigger.entity_id == "sensor.vacuum_main_brush_remaining" %}
-              {% set name = "a new main brush" %}
-            {%
-              elif trigger.entity_id
-              == "sensor.vacuum_sensor_dirtiness_remaining"
-            %}
-              {% set name = "to have his sensors cleaned" %}
-            {% elif trigger.entity_id == "sensor.vacuum_side_brush_remaining" %}
-              {% set name = "a new side brush" %}
-            {% endif %}
 
-            🤖 Wolfie needs {{ name }}!
+    action:
+      - alias: "Send the notification"
+        service: script.turn_on
+        target:
+          entity_id: script.notify_everyone_at_home
+        data:
+          variables:
+            title: Wolfie Consumable Update
+            message: >
+              {% set eid = trigger.entity_id %}
+              {% if eid == "sensor.vacuum_filter_remaining" %}
+                {% set name = "a new filter" %}
+              {% elif eid == "sensor.vacuum_main_brush_remaining" %}
+                {% set name = "a new main brush" %}
+              {% elif eid == "sensor.vacuum_sensor_dirtiness_remaining" %}
+                {% set name = "to have his sensors cleaned" %}
+              {% elif eid == "sensor.vacuum_side_brush_remaining" %}
+                {% set name = "a new side brush" %}
+              {% endif %}
+
+              🤖 Wolfie needs {{ name }}!
 
 input_boolean:
   wolfie_running:

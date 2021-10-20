@@ -2,21 +2,29 @@
 automation:
   - alias: "Aaron's Bedside NanoMote Quad"
     id: "aarons_bedside_nanomote_quad"
+
     use_blueprint:
       path: troy/ozw-aeotec-zwa003-nanomote-quad.yaml
+
       input:
         aeotec_nanomote: 05c007dbc0414368bf672799ca5ac05a
+
         button_1:
-          - service: switch.toggle
+          - alias: "Toggle the master bedroom salt lamp"
+            service: switch.toggle
             target:
               entity_id: switch.master_bedroom_salt_lamp
+
         button_2:
-          - condition: not
+          - alias: "Is the thermostat on?"
+            condition: not
             conditions:
               - condition: state
                 entity_id: climate.thermostat
                 state: "off"
-          - service: climate.set_temperature
+
+          - alias: "Set the thermostat's target temperature"
+            service: climate.set_temperature
             target:
               entity_id: climate.thermostat
             data:
@@ -33,11 +41,15 @@ automation:
                 %}
                   {{ c + 2 }}
                 {% endif %}
+
         button_3:
-          - service: script.turn_on
+          - alias: "Turn 'Good Night' mode on"
+            service: script.turn_on
             target:
               entity_id: script.good_night_mode
+
         button_4:
-          - service: switch.toggle
+          - alias: "Toggle the master patio light"
+            service: switch.toggle
             target:
               entity_id: switch.master_patio_light

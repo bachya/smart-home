@@ -26,9 +26,11 @@ script:
       interruption_level:
         description: The interruption level to set
         example: critical
+
       message:
         description: The message to send
         example: Your hair is on fire!
+
       title:
         description: The optional title to include
         example: Heads Up
@@ -61,12 +63,15 @@ script:
       interruption_level:
         description: The interruption level to set
         example: critical
+
       message:
         description: The message to send
         example: Your hair is on fire!
+
       name:
         description: The lowercase name of the person to notify
         example: aaron
+
       title:
         description: The optional title to include
         example: Heads Up

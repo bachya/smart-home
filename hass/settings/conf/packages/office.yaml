@@ -2,21 +2,30 @@
 automation:
   - alias: "Office Salt Lamp Timer"
     id: "office_salt_lamp_timer"
+
     use_blueprint:
       path: bachya/sleep-timer.yaml
+
       input:
         input_number: input_number.office_salt_lamp_timer
+
         timer: timer.office_salt_lamp_timer
+
         timer_cancel_action:
-          - service: switch.turn_off
+          - alias: "Turn the lamp off"
+            service: switch.turn_off
             target:
               entity_id: switch.office_salt_lamp_switch
+
         timer_expire_action:
-          - service: switch.turn_off
+          - alias: "Turn the lamp off"
+            service: switch.turn_off
             target:
               entity_id: switch.office_salt_lamp_switch
+
         timer_start_action:
-          - service: switch.turn_on
+          - alias: "Turn the lamp on"
+            service: switch.turn_on
             target:
               entity_id: switch.office_salt_lamp_switch
 

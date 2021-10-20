@@ -3,6 +3,7 @@ blueprint:
   name: Sleep Timer
   description: Perform one or more actions after a sleep timer expires
   domain: automation
+
   input:
     input_number:
       name: Input Number
@@ -11,30 +12,35 @@ blueprint:
       selector:
         entity:
           domain: input_number
+
     timer:
       name: Timer
       description: The entity that represents the timer itself
       selector:
         entity:
           domain: timer
+
     timer_cancel_action:
       name: Action on Timer Cancel
       description: The action(s) to run when the timer is canceled
       default: []
       selector:
         action: {}
+
     timer_expire_action:
       name: Action on Timer Expire
       description: The action(s) to run when the timer expires
       default: []
       selector:
         action: {}
+
     timer_start_action:
       name: Action on Timer Start
       description: The action(s) to run when the timer starts
       default: []
       selector:
         action: {}
+
   source_url: https://community.home-assistant.io/t/sleep-timer/256463/2
 
 mode: restart
@@ -46,39 +52,58 @@ variables:
 trigger:
   - platform: state
     entity_id: !input input_number
+
   - platform: state
     entity_id: !input timer
     to: idle
+
 action:
-  choose:
-    - conditions:
-        - condition: template
-          value_template: '{{ trigger.to_state.state == "idle" }}'
-      sequence:
-        - service: input_number.set_value
-          data:
+  - choose:
+      - alias: "Handle the idle state"
+        conditions:
+          - condition: template
+            value_template: '{{ trigger.to_state.state == "idle" }}'
+
+        sequence:
+          - alias: "Set the input number"
+            service: input_number.set_value
+            data:
+              entity_id: !input input_number
+              value: 0
+
+          - alias: "Run timer_expire_action"
+            choose: []
+            default: !input timer_expire_action
+
+      - alias: "Handle when the input number goes to 0"
+        conditions:
+          - condition: numeric_state
             entity_id: !input input_number
-            value: 0
-        - choose: []
-          default: !input timer_expire_action
-    - conditions:
-        - condition: numeric_state
-          entity_id: !input input_number
-          below: 1
-      sequence:
-        - service: timer.cancel
-          data:
-            entity_id: !input timer
-        - choose: []
-          default: !input timer_cancel_action
-    - conditions:
-        - condition: numeric_state
-          entity_id: !input input_number
-          above: 0
-      sequence:
-        - service: timer.start
-          data:
-            entity_id: !input timer
-            duration: "{{ slider_value }}"
-        - choose: []
-          default: !input timer_start_action
+            below: 1
+
+        sequence:
+          - alias: "Cancel the timer"
+            service: timer.cancel
+            data:
+              entity_id: !input timer
+
+          - alias: "Run timer_cancel_action"
+            choose: []
+            default: !input timer_cancel_action
+
+      - alias: "Handle when the input number goes up from 0"
+        conditions:
+          - condition: numeric_state
+            entity_id: !input input_number
+            above: 0
+
+        sequence:
+          - alias: "Start the timer"
+            service: timer.start
+            data:
+              entity_id: !input timer
+              duration: "{{ slider_value }}"
+
+          - alias: "Run timer_start_action"
+            choose: []
+            default: !input timer_start_action

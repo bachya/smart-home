@@ -2,29 +2,33 @@
 automation:
   - alias: "Automatic Lockup"
     id: "automatic_lockup"
+
     trigger:
-      # Everyone leaves home:
       - platform: state
+        id: departing
         entity_id: sensor.proximity_zone
         from: Home
-        id: departing
-      # The house is insecure for 30 minutes while we're in bed:
+
       - platform: state
-        entity_id: binary_sensor.in_bed
-        for:
-          minutes: 30
         id: in_bed
+        entity_id: binary_sensor.in_bed
         to: "on"
+        for: "00:30:00"
+
     condition:
-      condition: state
-      entity_id: binary_sensor.secure_status
-      state: "off"
+      - condition: state
+        entity_id: binary_sensor.secure_status
+        state: "off"
+
     action:
-      - service: notify.everyone
+      - alias: "Send a notification that the house is being locked up"
+        service: notify.everyone
         data:
           title: Security Update
           message: "🔒 Locking up the house"
-      - service: script.turn_on
+
+      - alias: "Activate the correct mode"
+        service: script.turn_on
         target: >-
           {% if trigger.id == "departing" %}
             script.depart_home_mode
@@ -34,159 +38,196 @@ automation:
 
   - alias: "Forward SimpliSafe notifications"
     id: "forward_simplisafe_notifications"
+
     trigger:
       - platform: event
         event_type: SIMPLISAFE_EVENT
+
       - platform: event
         event_type: SIMPLISAFE_NOTIFICATION
+
     action:
-      service: notify.aaron
-      data:
-        message: >
-          {% if trigger.event.event_type == "SIMPLISAFE_EVENT" %}
-            {% set message = trigger.event.data.last_event_info %}
-          {% else %}
-            {% set message = trigger.event.data.message %}
-          {% endif %}
-          📥 SimpliSafe Message: {{ message }}
+      - alias: "Send the notification to Aaron"
+        service: notify.aaron
+        data:
+          message: >
+            {% if trigger.event.event_type == "SIMPLISAFE_EVENT" %}
+              {% set message = trigger.event.data.last_event_info %}
+            {% else %}
+              {% set message = trigger.event.data.message %}
+            {% endif %}
+            📥 SimpliSafe Message: {{ message }}
 
   - alias: "Manage Security via iOS Notifications"
     id: "manage_security_via_ios_notifications"
+
     trigger:
       - platform: event
         event_type: ios.notification_action_fired
         event_data:
           categoryName: SECURITY
+
     action:
       choose:
-        - conditions:
-            condition: template
-            value_template: >
-              {{ trigger.event.data.actionName == "DEPART_HOME" }}
+        - alias: "Handle the 'Depart Home' request"
+          conditions:
+            - condition: template
+              value_template: >
+                {{ trigger.event.data.actionName == "DEPART_HOME" }}
+
           sequence:
-            service: script.turn_on
-            target:
-              entity_id: script.depart_home_mode
-        - conditions:
-            condition: template
-            value_template: >
-              {{ trigger.event.data.actionName == "GOOD_NIGHT" }}
+            - alias: "Turn 'Depart Home' mode on"
+              service: script.turn_on
+              target:
+                entity_id: script.depart_home_mode
+
+        - alias: "Handle the 'Good Night' request"
+          conditions:
+            - condition: template
+              value_template: >
+                {{ trigger.event.data.actionName == "GOOD_NIGHT" }}
+
           sequence:
-            service: script.turn_on
-            target:
-              entity_id: script.good_night_mode
-        - conditions:
-            condition: template
-            value_template: >
-              {{ trigger.event.data.actionName == "IGNORE" }}
+            - alias: "Turn 'Good Night' mode on"
+              service: script.turn_on
+              target:
+                entity_id: script.good_night_mode
+
+        - alias: "Handle the 'Ignore' request"
+          conditions:
+            - condition: template
+              value_template: >
+                {{ trigger.event.data.actionName == "IGNORE" }}
+
           sequence:
-            - service: automation.turn_off
+            - alias: "Turn the automatic lockup automation off"
+              service: automation.turn_off
               target:
                 entity_id: automation.automatic_lockup
-            - service: alert.turn_off
+
+            - alias: "Turn notifications off"
+              service: alert.turn_off
               target:
                 entity_id: alert.notify_when_house_empty_and_insecure
 
   - alias: "Notify when alarm is triggered"
     id: "alarm_triggered"
+
     trigger:
-      platform: state
-      entity_id: alarm_control_panel.123_main_street
-      to: triggered
+      - platform: state
+        entity_id: alarm_control_panel.123_main_street
+        to: triggered
+
     action:
-      repeat:
-        sequence:
-          - service: script.turn_on
-            target:
-              entity_id: script.notify_everyone_at_home
-            data:
-              variables:
-                interruption_level: critical
+      - repeat:
+          sequence:
+            - alias: "Send the notification"
+              service: notify.everyone
+              data:
                 message: "🚨 The alarm has been triggered."
                 title: Security Alert
-          - delay: "00:01:00"
-        until:
-          - condition: not
-            conditions:
-              condition: state
-              entity_id: alarm_control_panel.123_main_street
-              state: triggered
+                data:
+                  push:
+                    interruption_level: critical
+
+            - alias: "Delay for 1 minute"
+              delay: "00:01:00"
+          until:
+            - condition: not
+              conditions:
+                condition: state
+                entity_id: alarm_control_panel.123_main_street
+                state: triggered
 
   - alias: "Notify when the house is empty and insecure"
     id: "notify_when_house_empty_and_insecure"
+
     trigger:
-      platform: state
-      entity_id: sensor.proximity_zone
-      from: Home
-      for: "00:05:00"
+      - platform: state
+        entity_id: sensor.proximity_zone
+        from: Home
+        for: "00:05:00"
+
     condition:
-      condition: state
-      entity_id: binary_sensor.secure_status
-      state: "off"
+      - condition: state
+        entity_id: binary_sensor.secure_status
+        state: "off"
+
     action:
-      repeat:
-        sequence:
-          - service: script.turn_on
-            target:
-              entity_id: script.notify_everyone_at_home
-            data:
-              variables:
-                interruption_level: critical
+      - repeat:
+          sequence:
+            - alias: "Send the notification"
+              service: notify.everyone
+              data:
                 message: "🚨 No one is home and the house isn't secure."
                 title: Security Alert
-          - delay: "00:05:00"
-        until:
-          condition: or
-          conditions:
-            - condition: state
-              entity_id: sensor.proximity_zone
-              state: Home
-            - condition: state
-              entity_id: binary_sensor.secure_status
-              state: "on"
+                data:
+                  push:
+                    interruption_level: critical
+
+            - alias: "Delay for 5 minutes"
+              delay: "00:05:00"
+          until:
+            condition: or
+            conditions:
+              - condition: state
+                entity_id: sensor.proximity_zone
+                state: Home
+
+              - condition: state
+                entity_id: binary_sensor.secure_status
+                state: "on"
 
   - alias: "Notify when security status changes"
     id: "notify_when_security_status_changes"
+
     trigger:
-      platform: state
-      entity_id: binary_sensor.secure_status
-      to: "off"
-      for: "00:03:00"
+      - platform: state
+        entity_id: binary_sensor.secure_status
+        to: "off"
+        for: "00:03:00"
+
     action:
-      service: notify.aaron
-      data:
-        title: Security Update
-        message: "🔐 New state: {{ trigger.to_state.state }}"
+      - alias: "Send the notification"
+        service: notify.aaron
+        data:
+          title: Security Update
+          message: "🔐 New state: {{ trigger.to_state.state }}"
 
   - alias: "Notify when smoke is detected"
     id: "smoke_detected"
+
     trigger:
-      platform: state
-      entity_id: group.smoke_detectors
-      to: "on"
+      - platform: state
+        entity_id: group.smoke_detectors
+        to: "on"
+
     action:
-      repeat:
-        sequence:
-          - service: script.turn_on
-            target:
-              entity_id: script.notify_everyone_at_home
-            data:
-              variables:
-                interruption_level: critical
+      - repeat:
+          sequence:
+            - alias: "Send the notification"
+              service: notify.everyone
+              data:
                 message: "🚨 Smoke/CO has been detected."
                 title: Security Alert
-          - delay: "00:01:00"
-        until:
-          - condition: state
-            entity_id: group.smoke_detectors
-            state: "off"
+                data:
+                  push:
+                    interruption_level: critical
+
+            - alias: "Delay for 1 minute"
+              delay: "00:01:00"
+          until:
+            - condition: state
+              entity_id: group.smoke_detectors
+              state: "off"
 
   - alias: "Simulate someone being home"
     id: "simulate_someone_being_home"
     mode: parallel
+
     trigger:
       - platform: state
-        id: switch
+        id: toggle_switch
         entity_id:
           - sensor.replay_bar_cart_leds
           - sensor.replay_basement_lights
@@ -199,121 +240,146 @@ automation:
           - sensor.replay_outdoor_lights
           - sensor.replay_reading_lamp
           - sensor.replay_sofa_lamp
+
       - platform: state
         id: tv_off
         entity_id:
           - sensor.replay_basement_tv
           - sensor.replay_living_room_tv
         to: "0"
+
       - platform: state
         id: tv_on
         entity_id:
           - sensor.replay_basement_tv
           - sensor.replay_living_room_tv
         to: "1"
+
     action:
-      choose:
-        - conditions:
-            condition: trigger
-            id: switch
-          sequence:
-            service: >
-              {% if trigger.to_state.state == "0" %}
-                switch.turn_off
-              {% else %}
-                switch.turn_on
-              {% endif %}
-            target:
-              entity_id: >
-                {% set eid = trigger.entity_id %}
-                {% if eid == "sensor.replay_bar_cart_leds" %}
-                  switch.bar_cart_leds
-                {% elif eid == "sensor.replay_basement_lights" %}
-                  switch.basement_lights
-                {% elif eid == "sensor.replay_christmas_tree" %}
-                  switch.christmas_tree
-                {% elif eid == "sensor.replay_kitchen_can_lights" %}
-                  light.kitchen_can_lights
-                {% elif eid == "sensor.replay_kitchen_pendant_lights" %}
-                  switch.kitchen_pendant_lights
-                {% elif eid == "sensor.replay_master_bedroom_salt_lamp" %}
-                  switch.master_bedroom_salt_lamp
-                {% elif eid == "sensor.replay_mud_counter_lights" %}
-                  switch.mud_counter_lights
-                {% elif eid == "sensor.replay_outdoor_lights" %}
-                  group.outdoor_lights
-                {% elif eid == "sensor.replay_reading_lamp" %}
-                  switch.reading_lamp
-                {% elif eid == "sensor.replay_sofa_lamp" %}
-                  switch.sofa_lamp
-                {% endif %}
-        - conditions:
-            condition: trigger
-            id: tv_off
-          sequence:
-            service: script.turn_on
-            target:
-              entity_id: script.turn_roku_off
-            data:
-              harmony_remote: >
-                {% set eid = trigger.entity_id %}
-                {% if eid == "sensor.replay_basement_tv" %}
-                  remote.basement_tv
-                {% elif eid == "sensor.replay_living_room_tv" %}
-                  remote.living_room_tv
-                {% endif %}
-              roku_remote: >
-                {% set eid = trigger.entity_id %}
-                {% if eid == "sensor.replay_basement_tv" %}
-                  remote.basement_roku
-                {% elif eid == "sensor.replay_living_room_tv" %}
-                  remote.living_room_roku
-                {% endif %}
-        - conditions:
-            condition: trigger
-            id: tv_on
-          sequence:
-            service: script.turn_om
-            target:
-              entity_id: script.simulate_watching_roku
-            data:
-              app: Denver News from 9News
-              harmony_remote: >
-                {% set eid = trigger.entity_id %}
-                {% if eid == "sensor.replay_basement_tv" %}
-                  remote.basement_tv
-                {% elif eid == "sensor.replay_living_room_tv" %}
-                  remote.living_room_tv
-                {% endif %}
-              roku_media_player: >
-                {% set eid = trigger.entity_id %}
-                {% if eid == "sensor.replay_basement_tv" %}
-                  media_player.basement_roku
-                {% elif eid == "sensor.replay_living_room_tv" %}
-                  media_player.living_room_roku
-                {% endif %}
-              roku_remote: >
-                {% set eid = trigger.entity_id %}
-                {% if eid == "sensor.replay_basement_tv" %}
-                  remote.basement_roku
-                {% elif eid == "sensor.replay_living_room_tv" %}
-                  remote.living_room_roku
-                {% endif %}
+      - choose:
+          - conditions:
+              - alias: "Handle a switch that needs to be toggled"
+                condition: trigger
+                id: toggle_switch
+
+            sequence:
+              - alias: "Toggle the switch"
+                service: >
+                  {% if trigger.to_state.state == "0" %}
+                    switch.turn_off
+                  {% else %}
+                    switch.turn_on
+                  {% endif %}
+                target:
+                  entity_id: >
+                    {% set eid = trigger.entity_id %}
+                    {% if eid == "sensor.replay_bar_cart_leds" %}
+                      switch.bar_cart_leds
+                    {% elif eid == "sensor.replay_basement_lights" %}
+                      switch.basement_lights
+                    {% elif eid == "sensor.replay_christmas_tree" %}
+                      switch.christmas_tree
+                    {% elif eid == "sensor.replay_kitchen_can_lights" %}
+                      light.kitchen_can_lights
+                    {% elif eid == "sensor.replay_kitchen_pendant_lights" %}
+                      switch.kitchen_pendant_lights
+                    {% elif eid == "sensor.replay_master_bedroom_salt_lamp" %}
+                      switch.master_bedroom_salt_lamp
+                    {% elif eid == "sensor.replay_mud_counter_lights" %}
+                      switch.mud_counter_lights
+                    {% elif eid == "sensor.replay_outdoor_lights" %}
+                      group.outdoor_lights
+                    {% elif eid == "sensor.replay_reading_lamp" %}
+                      switch.reading_lamp
+                    {% elif eid == "sensor.replay_sofa_lamp" %}
+                      switch.sofa_lamp
+                    {% endif %}
+
+          - conditions:
+              - alias: "Handle turning a TV off"
+                condition: trigger
+                id: tv_off
+
+            sequence:
+              - alias: "Turn the TV off"
+                service: script.turn_on
+                target:
+                  entity_id: script.turn_roku_off
+                data:
+                  harmony_remote: >
+                    {% set eid = trigger.entity_id %}
+                    {% if eid == "sensor.replay_basement_tv" %}
+                      remote.basement_tv
+                    {% elif eid == "sensor.replay_living_room_tv" %}
+                      remote.living_room_tv
+                    {% endif %}
+
+                  roku_remote: >
+                    {% set eid = trigger.entity_id %}
+                    {% if eid == "sensor.replay_basement_tv" %}
+                      remote.basement_roku
+                    {% elif eid == "sensor.replay_living_room_tv" %}
+                      remote.living_room_roku
+                    {% endif %}
+
+          - conditions:
+              - alias: "Handle turning a TV off"
+                condition: trigger
+                id: tv_on
+
+            sequence:
+              - alias: "Turn the TV on"
+                service: script.turn_on
+                target:
+                  entity_id: script.simulate_watching_roku
+                data:
+                  app: Denver News from 9News
+
+                  harmony_remote: >
+                    {% set eid = trigger.entity_id %}
+                    {% if eid == "sensor.replay_basement_tv" %}
+                      remote.basement_tv
+                    {% elif eid == "sensor.replay_living_room_tv" %}
+                      remote.living_room_tv
+                    {% endif %}
+
+                  roku_media_player: >
+                    {% set eid = trigger.entity_id %}
+                    {% if eid == "sensor.replay_basement_tv" %}
+                      media_player.basement_roku
+                    {% elif eid == "sensor.replay_living_room_tv" %}
+                      media_player.living_room_roku
+                    {% endif %}
+
+                  roku_remote: >
+                    {% set eid = trigger.entity_id %}
+                    {% if eid == "sensor.replay_basement_tv" %}
+                      remote.basement_roku
+                    {% elif eid == "sensor.replay_living_room_tv" %}
+                      remote.living_room_roku
+                    {% endif %}
 
   - alias: "Turn off simulation of someone being home"
     id: "turn_off_simulation_of_someone_being_home"
+
     trigger:
-      platform: state
-      entity_id: automation.simulate_someone_being_home
-      to: "off"
+      - platform: state
+        entity_id: automation.simulate_someone_being_home
+        to: "off"
+
     action:
-      - service: remote.turn_off
+      - alias: "Turn the basement TV off"
+        service: remote.turn_off
         target:
           entity_id: remote.basement_tv
-      - service: remote.turn_off
+
+      - alias: "Turn the living room TV off"
+        service: remote.turn_off
         target:
           entity_id: remote.living_room_tv
-      - service: switch.turn_off
+
+      - alias: "Turn the basement lights of"
+        service: switch.turn_off
         target:
           entity_id: switch.basement_lights
 
@@ -363,6 +429,7 @@ group:
       - lock.123_main_street_patio_door
       - lock.front_door_lock
       - lock.garage_fire_door_lock
+
   smoke_detectors:
     entities:
       - binary_sensor.basement_sensor_smoke_carbon_monoxide_detector
@@ -374,30 +441,42 @@ group:
 script:
   simulate_watching_roku:
     alias: "Simulate Watching a Roku"
+
     fields:
       app:
         description: The Roku app to select
         example: Netflix
+
       harmony_remote:
         description: The Harmony Hub remote entity
         example: remote.living_room_tv
+
       roku_media_player:
         description: The Roku media player entity
         example: media_player.living_room_roku
+
       roku_remote:
         description: The Roku remote entity
         example: remote.living_room_roku
+
     sequence:
-      - service: remote.turn_on
+      - alias: "Turn the TV on"
+        service: remote.turn_on
         target:
           entity_id: "{{ harmony_remote }}"
-      - service: media_player.select_source
+
+      - alias: "Highlight the appropriate Roku app"
+        service: media_player.select_source
         target:
           entity_id: "{{ roku_media_player }}"
         data:
           source: "{{ app }}"
-      - delay: "00:00:15"
-      - service: remote.send_command
+
+      - alias: "Delay for 15 seconds"
+        delay: "00:00:15"
+
+      - alias: "Selec the highlighted Roku app"
+        service: remote.send_command
         target:
           entity_id: "{{ roku_remote }}"
         data:
@@ -405,21 +484,29 @@ script:
 
   turn_roku_off:
     alias: Turn a Roku off
+
     fields:
       harmony_remote:
         description: The Harmony Hub remote entity
         example: remote.living_room_tv
+
       roku_remote:
         description: The Roku remote entity
         example: remote.living_room_roku
+
     sequence:
-      - service: remote.send_command
+      - alias: "Return to the Roku home screen"
+        service: remote.send_command
         target:
           entity_id: "{{ roku_remote }}"
         data:
           command: Home
-      - delay: "00:00:03"
-      - service: remote.turn_off
+
+      - alias: "Delay for 3 seconds"
+        delay: "00:00:03"
+
+      - alias: "Turn the TV off"
+        service: remote.turn_off
         target:
           entity_id: "{{ harmony_remote }}"
 

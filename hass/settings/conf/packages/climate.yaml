@@ -3,34 +3,22 @@ automation:
   - alias: "Climate Schedule"
     id: "climate_schedule"
     mode: queued
+
     trigger:
       - platform: state
+        id: thermostat_state_change
         entity_id: climate.thermostat
-        from: cool
-        to: heat
-      - platform: state
-        entity_id: climate.thermostat
-        from: heat
-        to: cool
-      - platform: state
-        entity_id: climate.thermostat
-        from: heat_cool
-      - platform: state
-        entity_id: climate.thermostat
-        from: "off"
-        to: heat
-      - platform: state
-        entity_id: climate.thermostat
-        from: "off"
-        to: cool
+
       - platform: state
         id: away_mode_off
         entity_id: input_boolean.climate_away_mode
         to: "off"
+
       - platform: state
         id: away_mode_on
         entity_id: input_boolean.climate_away_mode
         to: "on"
+
       - platform: state
         entity_id:
           - binary_sensor.in_bed
@@ -42,27 +30,45 @@ automation:
           - input_number.nighttime_temperature_heat
           - input_number.thermostat_eco_high_threshold
           - input_number.thermostat_eco_low_threshold
+
+    condition:
+      # In the case of the thermostat, we want to make sure that we only trigger
+      # this automation when the actual state changes (so that actions like
+      # bumping the heat a few degrees higher doesn't trigger it):
+      - condition: template
+        value_template: >-
+          {{ trigger.to_state.state != trigger.from_state.state }}
+
     action:
       choose:
-        - conditions:
-            condition: trigger
-            id: away_mode_on
+        - alias: "Handle turning Climate Away Mode on"
+          conditions:
+            - condition: trigger
+              id: away_mode_on
+
           sequence:
-            - service: input_select.select_option
+            - alias: "Save the current thermostat mode so we can use it alter"
+              service: input_select.select_option
               target:
                 entity_id: input_select.last_hvac_mode
               data:
                 option: "{{ states('climate.thermostat') }}"
-            - service: climate.set_hvac_mode
+
+            - alias: "Set the thermostat mode to auto"
+              service: climate.set_hvac_mode
               target:
                 entity_id: climate.thermostat
               data:
                 hvac_mode: heat_cool
-            - wait_template: >
+
+            - alias: "Wait until the thermostat is set to auto mode"
+              wait_template: >
                 {{
                   is_state("climate.thermostat", "heat_cool")
                 }}
-            - service: climate.set_temperature
+
+            - alias: "Set the high and low temperatures for auto mode"
+              service: climate.set_temperature
               target:
                 entity_id: climate.thermostat
               data:
@@ -74,30 +80,43 @@ automation:
                   {{
                     states("input_number.thermostat_eco_low_threshold") | float
                   }}
-            - service: fan.turn_off
+
+            - alias: "Turn off our bedroom fan"
+              service: fan.turn_off
               target:
                 entity_id: fan.pure_humidify_cool
-        - conditions:
-            condition: trigger
-            id: away_mode_off
+
+        - alias: "Handle turning Climate Away Mode off"
+          conditions:
+            - condition: trigger
+              id: away_mode_off
+
           sequence:
-            - service: climate.set_hvac_mode
+            - alias: "Set the thermostat mode to what we saved before"
+              service: climate.set_hvac_mode
               target:
                 entity_id: climate.thermostat
               data:
                 hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
-            - service: fan.turn_on
+
+            - alias: "Turn on our bedroom fan"
+              service: fan.turn_on
               target:
                 entity_id: fan.pure_humidify_cool
-        - conditions:
+
+        - alias: "Handle our daytime-and-at-home climate schedule"
+          conditions:
             - condition: state
               entity_id: binary_sensor.in_bed
               state: "off"
+
             - condition: state
               entity_id: input_boolean.climate_away_mode
               state: "off"
+
           sequence:
-            - service: climate.set_temperature
+            - alias: "Set the target thermostat temperature"
+              service: climate.set_temperature
               target:
                 entity_id: climate.thermostat
               data:
@@ -111,27 +130,38 @@ automation:
                       states("input_number.daytime_temperature_heat") | float
                     }}
                   {% endif %}
-            - service: switch.turn_off
+
+            - alias: "Turn off our bedroom fan's night mode"
+              service: switch.turn_off
               target:
                 entity_id: switch.pure_humidify_cool_night_mode
-            - service: humidifier.turn_off
+
+            - alias: "Turn off our bedroom fan's humidifier"
+              service: humidifier.turn_off
               target:
                 entity_id: humidifier.pure_humidify_cool
-            - service: fan.set_percentage
+
+            - alias: "Set the bedroom fan's speed"
+              service: fan.set_percentage
               target:
                 entity_id: fan.pure_humidify_cool
               data:
                 percentage: >
                   {{ states("input_number.daytime_dyson_fan_speed") | int }}
-        - conditions:
+
+        - alias: "Handle our nighttime-and-at-home climate schedule"
+          conditions:
             - condition: state
               entity_id: binary_sensor.in_bed
               state: "on"
+
             - condition: state
               entity_id: input_boolean.climate_away_mode
               state: "off"
+
           sequence:
-            - service: climate.set_temperature
+            - alias: "Set the target thermostat temperature"
+              service: climate.set_temperature
               target:
                 entity_id: climate.thermostat
               data:
@@ -147,13 +177,19 @@ automation:
                       states("input_number.nighttime_temperature_heat") | float
                     }}
                   {% endif %}
-            - service: switch.turn_on
+
+            - alias: "Turn on our bedroom fan's night mode"
+              service: switch.turn_on
               target:
                 entity_id: switch.pure_humidify_cool_night_mode
-            - service: humidifier.turn_on
+
+            - alias: "Turn on our bedroom fan's humidifier"
+              service: humidifier.turn_on
               target:
                 entity_id: humidifier.pure_humidify_cool
-            - service: fan.set_percentage
+
+            - alias: "Set the bedroom fan's speed"
+              service: fan.set_percentage
               target:
                 entity_id: fan.pure_humidify_cool
               data:
@@ -162,21 +198,25 @@ automation:
 
   - alias: "Proximity Climate Away Mode"
     id: "proximity_climate_away_mode"
+
     trigger:
-      platform: state
-      entity_id: sensor.proximity_zone
+      - platform: state
+        entity_id: sensor.proximity_zone
+
     action:
       choose:
-        # Arriving (Normal Temperature)
-        - conditions:
+        - alias: "Handle our arrival with 'normal' outdoor temperatures"
+          conditions:
             - condition: or
               conditions:
                 - condition: state
                   entity_id: sensor.proximity_zone
                   state: Nearby
+
                 - condition: state
                   entity_id: sensor.proximity_zone
                   state: Home
+
             - condition: template
               value_template: >
                 {{
@@ -184,12 +224,15 @@ automation:
                   states("sensor.feelslike") <=
                   states("input_number.outdoor_extreme_high_threshold")
                 }}
+
           sequence:
-            service: input_boolean.turn_off
-            target:
-              entity_id: input_boolean.climate_away_mode
-        # Leaving (Normal Temperature)
-        - conditions:
+            - alias: "Turn off Climate Away Mode"
+              service: input_boolean.turn_off
+              target:
+                entity_id: input_boolean.climate_away_mode
+
+        - alias: "Handle our departure with 'normal' outdoor temperatures"
+          conditions:
             - condition: not
               conditions:
                 - condition: state
@@ -202,17 +245,21 @@ automation:
                   states("sensor.feelslike") <=
                   states("input_number.outdoor_extreme_high_threshold")
                 }}
+
           sequence:
-            service: input_boolean.turn_on
-            target:
-              entity_id: input_boolean.climate_away_mode
-        # Arriving (Extreme Temperature)
-        - conditions:
+            - alias: "Turn on Climate Away Mode"
+              service: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.climate_away_mode
+
+        - alias: "Handle our arrival with 'extreme' outdoor temperatures"
+          conditions:
             - condition: not
               conditions:
                 - condition: state
                   entity_id: sensor.proximity_zone
                   state: Away
+
             - condition: template
               value_template: >
                 {{
@@ -227,15 +274,19 @@ automation:
                     "input_number.outdoor_extreme_high_threshold"
                   )
                 }}
+
           sequence:
-            service: input_boolean.turn_off
-            target:
-              entity_id: input_boolean.climate_away_mode
-        # Leaving (Extreme Temperature)
-        - conditions:
+            - alias: "Turn off Climate Away Mode"
+              service: input_boolean.turn_off
+              target:
+                entity_id: input_boolean.climate_away_mode
+
+        - alias: "Handle our departure with 'extreme' outdoor temperatures"
+          conditions:
             - condition: state
               entity_id: sensor.proximity_zone
               state: Away
+
             - condition: template
               value_template: >
                 {{
@@ -250,37 +301,48 @@ automation:
                     "input_number.outdoor_extreme_high_threshold"
                   )
                 }}
+
           sequence:
-            service: input_boolean.turn_on
-            target:
-              entity_id: input_boolean.climate_away_mode
+            - alias: "Turn on Climate Away Mode"
+              service: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.climate_away_mode
 
   - alias: "Thermostat Sleep Timer"
     id: "thermostat_sleep_timer"
+
     use_blueprint:
       path: bachya/sleep-timer.yaml
+
       input:
         input_number: input_number.thermostat_sleep_timer
         timer: timer.thermostat_sleep_timer
         timer_cancel_action:
-          - service: climate.set_hvac_mode
+          - alias: "Set the thermostat mode to what we saved before"
+            service: climate.set_hvac_mode
             target:
               entity_id: climate.thermostat
             data:
               hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
+
         timer_expire_action:
-          - service: climate.set_hvac_mode
+          - alias: "Set the thermostat mode to what we saved before"
+            service: climate.set_hvac_mode
             target:
               entity_id: climate.thermostat
             data:
               hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
+
         timer_start_action:
-          - service: input_select.select_option
+          - alias: "Save the current thermostat mode so we can use it alter"
+            service: input_select.select_option
             target:
               entity_id: input_select.last_hvac_mode
             data:
               option: "{{ states('climate.thermostat') }}"
-          - service: climate.set_hvac_mode
+
+          - alias: "Set the thermostat mode to off"
+            service: climate.set_hvac_mode
             target:
               entity_id: climate.thermostat
             data:
@@ -299,6 +361,7 @@ input_number:
     step: 10
     unit_of_measurement: "%"
     icon: mdi:fan
+
   nighttime_dyson_fan_speed:
     name: "Nighttime Dyson Fan Speed"
     min: 0
@@ -306,6 +369,7 @@ input_number:
     step: 10
     unit_of_measurement: "%"
     icon: mdi:fan
+
   daytime_temperature_ac:
     name: "Daytime Temperature (A/C)"
     min: 65
@@ -313,6 +377,7 @@ input_number:
     step: 1
     unit_of_measurement: °F
     icon: mdi:thermostat
+
   nighttime_temperature_ac:
     name: "Nighttime Temperature (A/C)"
     min: 65
@@ -320,6 +385,7 @@ input_number:
     step: 1
     unit_of_measurement: °F
     icon: mdi:thermostat
+
   daytime_temperature_heat:
     name: "Daytime Temperature (Heat)"
     min: 65
@@ -327,6 +393,7 @@ input_number:
     step: 1
     unit_of_measurement: °F
     icon: mdi:thermostat
+
   nighttime_temperature_heat:
     name: "Nighttime Temperature (Heat)"
     min: 65
@@ -334,6 +401,7 @@ input_number:
     step: 1
     unit_of_measurement: °F
     icon: mdi:thermostat
+
   outdoor_extreme_high_threshold:
     name: "Outdoor: Extreme High"
     min: 20
@@ -341,6 +409,7 @@ input_number:
     step: 1
     unit_of_measurement: °F
     icon: mdi:thermometer-chevron-up
+
   outdoor_extreme_low_threshold:
     name: "Outdoor: Extreme Low"
     min: 20
@@ -348,6 +417,7 @@ input_number:
     step: 1
     unit_of_measurement: °F
     icon: mdi:thermometer-chevron-down
+
   thermostat_eco_high_threshold:
     name: "Eco: High"
     min: 50
@@ -355,6 +425,7 @@ input_number:
     step: 1
     unit_of_measurement: °F
     icon: mdi:thermostat
+
   thermostat_eco_low_threshold:
     name: "Eco: Low"
     min: 50
@@ -362,6 +433,7 @@ input_number:
     step: 1
     unit_of_measurement: °F
     icon: mdi:thermostat
+
   thermostat_sleep_timer:
     name: Sleep Timer
     initial: 0
