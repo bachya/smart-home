@@ -40,7 +40,7 @@ ios:
         text: "Drive Home"
         color: "#efe6dd"
       icon:
-        icon: garage
+        icon: garage-open
         color: "#efe6dd"
 
     - name: Good Morning
