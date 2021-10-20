@@ -19,16 +19,24 @@ automation:
             condition: trigger
             id: printing_stoppped
           sequence:
-            service: notify.aaron
+            service: script.turn_on
+            target:
+              entity_id: script.notify_person_if_at_home
             data:
-              message: "🦿 3D print completed"
+              name: aaron
+              message: "🦿 Print is complete!"
+              title: 3D Printer
         - conditions:
             condition: trigger
             id: printing_started
           sequence:
-            service: notify.aaron
+            service: script.turn_on
+            target:
+              entity_id: script.notify_person_if_at_home
             data:
-              message: "🦿 3D print started"
+              name: aaron
+              message: "🦿 Print has started..."
+              title: 3D Printer
 
   - alias: "Turn 3D printer off when print completes"
     id: "turn_3d_printer_off_when_print_completes"
@@ -40,9 +48,13 @@ automation:
       for:
         minutes: 10
     action:
-      - service: notify.aaron
+      - service: script.turn_on
+        target:
+          entity_id: script.notify_person_if_at_home
         data:
-          message: "🦿 Turning 3D printer off"
+          name: aaron
+          message: "🦿 Turning printer off."
+          title: 3D Printer
       - service: switch.turn_off
         target:
           entity_id: switch.toggle_3d_printer

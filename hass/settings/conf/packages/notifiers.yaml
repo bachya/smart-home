@@ -21,42 +21,67 @@ notify:
 script:
   notify_everyone_at_home:
     alias: "Notify Everyone at Home"
+
     fields:
+      interruption_level:
+        description: The interruption level to set
+        example: critical
       message:
         description: The message to send
         example: Your hair is on fire!
       title:
         description: The optional title to include
         example: Heads Up
+
+    sequence:
+      - alias: "Notify Aaron if he's at home"
+        service: script.turn_on
+        target:
+          entity_id: script.notify_person_if_at_home
+        data:
+          interruption_level: "{{ interruption_level }}"
+          message: "{{ message }}"
+          name: aaron
+          title: "{{ title }}"
+
+      - alias: "Notify Britt if she's at home"
+        service: script.turn_on
+        target:
+          entity_id: script.notify_person_if_at_home
+        data:
+          interruption_level: "{{ interruption_level }}"
+          message: "{{ message }}"
+          name: britt
+          title: "{{ title }}"
+
+  notify_person_if_at_home:
+    alias: "Notify Person if at Home"
+
+    fields:
       interruption_level:
         description: The interruption level to set
         example: critical
+      message:
+        description: The message to send
+        example: Your hair is on fire!
+      name:
+        description: The lowercase name of the person to notify
+        example: aaron
+      title:
+        description: The optional title to include
+        example: Heads Up
+
     sequence:
-      - choose:
-          conditions:
-            condition: state
-            entity_id: person.aaron
-            state: home
-          sequence:
-            service: notify.aaron
-            data:
-              message: "{{ message }}"
-              title: "{{ title }}"
-              data:
-                push:
-                  interruption-level: "{{ interruption_level }}"
-                tag: "{{ message }}"
-      - choose:
-          conditions:
-            condition: state
-            entity_id: person.britt
-            state: home
-          sequence:
-            service: notify.britt
-            data:
-              message: "{{ message }}"
-              title: "{{ title }}"
-              data:
-                push:
-                  interruption-level: "{{ interruption_level }}"
-                tag: "{{ message }}"
+      - alias: "Is the person at home?"
+        condition: template
+        value_template: "{{ states('person.' + name) == 'home' }}"
+
+      - alias: "Send the message"
+        service: "notify.{{ name }}"
+        data:
+          message: "{{ message }}"
+          title: "{{ title }}"
+          data:
+            push:
+              interruption-level: "{{ interruption_level }}"
+            tag: "{{ message }}"
