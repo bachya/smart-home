@@ -6,7 +6,6 @@ automation:
 
     trigger:
       - platform: state
-        id: thermostat_state_change
         entity_id: climate.thermostat
 
       - platform: state
@@ -37,7 +36,11 @@ automation:
       # bumping the heat a few degrees higher doesn't trigger it):
       - condition: template
         value_template: >-
-          {{ trigger.to_state.state != trigger.from_state.state }}
+          {% if trigger.entity_id == "climate.thermostat" %}
+            {{ trigger.to_state.state != trigger.from_state.state }}
+          {% else %}
+            true
+          {% endif %}
 
     action:
       choose:
