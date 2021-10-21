@@ -29,12 +29,13 @@ automation:
 
       - alias: "Activate the correct mode"
         service: script.turn_on
-        target: >-
-          {% if trigger.id == "departing" %}
-            script.depart_home_mode
-          {% elif trigger.id == "in_bed" %}
-            script.good_night_mode
-          {% endif %}
+        target:
+          entity_id: >-
+            {% if trigger.id == "departing" %}
+              script.depart_home_mode
+            {% elif trigger.id == "in_bed" %}
+              script.good_night_mode
+            {% endif %}
 
   - alias: "Forward SimpliSafe notifications"
     id: "forward_simplisafe_notifications"
