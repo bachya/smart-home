@@ -307,21 +307,22 @@ automation:
                 target:
                   entity_id: script.turn_roku_off
                 data:
-                  harmony_remote: >
-                    {% set eid = trigger.entity_id %}
-                    {% if eid == "sensor.replay_basement_tv" %}
-                      remote.basement_tv
-                    {% elif eid == "sensor.replay_living_room_tv" %}
-                      remote.living_room_tv
-                    {% endif %}
+                  variables:
+                    harmony_remote: >
+                      {% set eid = trigger.entity_id %}
+                      {% if eid == "sensor.replay_basement_tv" %}
+                        remote.basement_tv
+                      {% elif eid == "sensor.replay_living_room_tv" %}
+                        remote.living_room_tv
+                      {% endif %}
 
-                  roku_remote: >
-                    {% set eid = trigger.entity_id %}
-                    {% if eid == "sensor.replay_basement_tv" %}
-                      remote.basement_roku
-                    {% elif eid == "sensor.replay_living_room_tv" %}
-                      remote.living_room_roku
-                    {% endif %}
+                    roku_remote: >
+                      {% set eid = trigger.entity_id %}
+                      {% if eid == "sensor.replay_basement_tv" %}
+                        remote.basement_roku
+                      {% elif eid == "sensor.replay_living_room_tv" %}
+                        remote.living_room_roku
+                      {% endif %}
 
           - conditions:
               - alias: "Handle turning a TV off"
@@ -334,31 +335,32 @@ automation:
                 target:
                   entity_id: script.simulate_watching_roku
                 data:
-                  app: Denver News from 9News
+                  variables:
+                    app: Denver News from 9News
 
-                  harmony_remote: >
-                    {% set eid = trigger.entity_id %}
-                    {% if eid == "sensor.replay_basement_tv" %}
-                      remote.basement_tv
-                    {% elif eid == "sensor.replay_living_room_tv" %}
-                      remote.living_room_tv
-                    {% endif %}
+                    harmony_remote: >
+                      {% set eid = trigger.entity_id %}
+                      {% if eid == "sensor.replay_basement_tv" %}
+                        remote.basement_tv
+                      {% elif eid == "sensor.replay_living_room_tv" %}
+                        remote.living_room_tv
+                      {% endif %}
 
-                  roku_media_player: >
-                    {% set eid = trigger.entity_id %}
-                    {% if eid == "sensor.replay_basement_tv" %}
-                      media_player.basement_roku
-                    {% elif eid == "sensor.replay_living_room_tv" %}
-                      media_player.living_room_roku
-                    {% endif %}
+                    roku_media_player: >
+                      {% set eid = trigger.entity_id %}
+                      {% if eid == "sensor.replay_basement_tv" %}
+                        media_player.basement_roku
+                      {% elif eid == "sensor.replay_living_room_tv" %}
+                        media_player.living_room_roku
+                      {% endif %}
 
-                  roku_remote: >
-                    {% set eid = trigger.entity_id %}
-                    {% if eid == "sensor.replay_basement_tv" %}
-                      remote.basement_roku
-                    {% elif eid == "sensor.replay_living_room_tv" %}
-                      remote.living_room_roku
-                    {% endif %}
+                    roku_remote: >
+                      {% set eid = trigger.entity_id %}
+                      {% if eid == "sensor.replay_basement_tv" %}
+                        remote.basement_roku
+                      {% elif eid == "sensor.replay_living_room_tv" %}
+                        remote.living_room_roku
+                      {% endif %}
 
   - alias: "Turn off simulation of someone being home"
     id: "turn_off_simulation_of_someone_being_home"
