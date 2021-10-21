@@ -41,20 +41,22 @@ script:
         target:
           entity_id: script.notify_person_if_at_home
         data:
-          interruption_level: "{{ interruption_level }}"
-          message: "{{ message }}"
-          name: aaron
-          title: "{{ title }}"
+          variables:
+            interruption_level: "{{ interruption_level }}"
+            message: "{{ message }}"
+            name: aaron
+            title: "{{ title }}"
 
       - alias: "Notify Britt if she's at home"
         service: script.turn_on
         target:
           entity_id: script.notify_person_if_at_home
         data:
-          interruption_level: "{{ interruption_level }}"
-          message: "{{ message }}"
-          name: britt
-          title: "{{ title }}"
+          variables:
+            interruption_level: "{{ interruption_level }}"
+            message: "{{ message }}"
+            name: britt
+            title: "{{ title }}"
 
   notify_person_if_at_home:
     alias: "Notify Person if at Home"
