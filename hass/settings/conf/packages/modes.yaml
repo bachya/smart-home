@@ -321,6 +321,16 @@ script:
             - switch.office_salt_lamp
             - switch.reading_lamp
 
+  vacation_mode:
+    alias: "Vacation Mode"
+    description: "Alter the home when we depart on a trip"
+
+    sequence:
+      - alias: "Turn off the water main"
+        service: homeassistant.turn_off
+        target:
+          entity_id: switch.guardian_b4e62d98118d_valve
+
   walk_home_mode:
     alias: "Walk Home Mode"
     description: "Alter the home when we arrive via the front door"
