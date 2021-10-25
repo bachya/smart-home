@@ -163,7 +163,7 @@ services:
       DOCKER_VERNEMQ_USER_WYZE: ${VERNEMQ_PASSWORD_WYZE}
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0: ${VERNEMQ_BRIDGE_HOST}
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.cafile: |
-        /etc/ssl/certs/DST_Root_CA_X3.pem
+        /etc/ssl/certs/ISRG_Root_X1.pem
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.insecure: "on"
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.max_outgoing_buffered_messages: 100
       DOCKER_VERNEMQ_vmq_bridge.ssl.br0.password: ${VERNEMQ_BRIDGE_PASSWORD}
