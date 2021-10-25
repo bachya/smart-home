@@ -98,7 +98,20 @@ script:
             - automation.automatically_handle_sunset
             - automation.cycle_master_toilet_fan_during_the_day
             - automation.notify_when_house_empty_and_insecure
-            - switch.guardian_b4e62d98118d_valve
+
+      - alias: "Is the water main off?"
+        choose:
+          - conditions:
+              - condition: state
+                entity_id: switch.guardian_b4e62d98118d_valve
+                state: "off"
+
+            sequence:
+              - alias: "Turn the water main on"
+                service: homeassistant.turn_on
+                target:
+                  entity_id:
+                    - switch.guardian_b4e62d98118d_valve
 
       - alias: "Is it after sunset?"
         choose:
