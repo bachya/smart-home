@@ -101,18 +101,21 @@ script:
             - switch.guardian_b4e62d98118d_valve
 
       - alias: "Is it after sunset?"
-        condition: numeric_state
-        entity_id: sensor.solarradiation_perceived
-        below: input_number.local_sunset_brightness
+        choose:
+          - conditions:
+              - condition: numeric_state
+                entity_id: sensor.solarradiation_perceived
+                below: input_number.local_sunset_brightness
 
-      - alias: "Turn on lights that should come on when it's dark"
-        service: homeassistant.turn_on
-        target:
-          entity_id:
-            - group.living_room_lights
-            - switch.front_patio_light
-            - switch.kitchen_pendant_lights
-            - switch.master_bedroom_salt_lamp
+            sequence:
+              - alias: "Turn various lights on"
+                service: homeassistant.turn_on
+                target:
+                  entity_id:
+                    - group.living_room_lights
+                    - switch.front_patio_light
+                    - switch.kitchen_pendant_lights
+                    - switch.master_bedroom_salt_lamp
 
   depart_home_mode:
     alias: "Depart Home Mode"
