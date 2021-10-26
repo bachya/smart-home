@@ -2,12 +2,14 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Awaitable, Callable, Iterable
+from collections.abc import Awaitable, Callable
 from datetime import timedelta
 from typing import TYPE_CHECKING, Any, cast
 
 from simplipy import API
-from simplipy.device import Device, DeviceTypes
+from simplipy.device import DeviceTypes
+from simplipy.device.sensor.v2 import SensorV2
+from simplipy.device.sensor.v3 import SensorV3
 from simplipy.errors import (
     EndpointUnavailableError,
     InvalidCredentialsError,
@@ -58,7 +60,6 @@ from homeassistant.helpers.dispatcher import (
     async_dispatcher_connect,
     async_dispatcher_send,
 )
-from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.service import (
     async_register_admin_service,
     verify_domain_control,
@@ -101,8 +102,6 @@ ATTR_PIN_VALUE = "pin"
 ATTR_SYSTEM_ID = "system_id"
 ATTR_TIMESTAMP = "timestamp"
 
-DEFAULT_ENTITY_MODEL = "alarm_control_panel"
-DEFAULT_ENTITY_NAME = "Alarm Control Panel"
 DEFAULT_SCAN_INTERVAL = timedelta(seconds=30)
 DEFAULT_SOCKET_MIN_RETRY = 15
 
@@ -208,7 +207,7 @@ async def async_register_base_station(
     device_registry = await dr.async_get_registry(hass)
     device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
-        identifiers={(DOMAIN, system.system_id)},
+        identifiers={(DOMAIN, system.serial)},
         manufacturer="SimpliSafe",
         model=system.version,
         name=system.address,
@@ -459,9 +458,7 @@ class SimpliSafe:
             """Define an event handler to disconnect from the websocket."""
             if TYPE_CHECKING:
                 assert self._api.websocket
-
-            if self._api.websocket.connected:
-                await self._api.websocket.async_disconnect()
+            await self._api.websocket.async_disconnect()
 
         self.entry.async_on_unload(
             self._hass.bus.async_listen_once(
@@ -543,22 +540,18 @@ class SimpliSafeEntity(CoordinatorEntity):
         self,
         simplisafe: SimpliSafe,
         system: SystemV2 | SystemV3,
+        name: str,
         *,
-        device: Device | None = None,
-        additional_websocket_events: Iterable[str] | None = None,
+        serial: str | None = None,
     ) -> None:
         """Initialize."""
         assert simplisafe.coordinator
         super().__init__(simplisafe.coordinator)
 
-        if device:
-            model = device.type.name
-            device_name = device.name
-            serial = device.serial
+        if serial:
+            self._serial = serial
         else:
-            model = DEFAULT_ENTITY_MODEL
-            device_name = DEFAULT_ENTITY_NAME
-            serial = system.serial
+            self._serial = system.serial
 
         try:
             device_type = DeviceTypes(
@@ -567,38 +560,37 @@ class SimpliSafeEntity(CoordinatorEntity):
         except ValueError:
             device_type = DeviceTypes.unknown
 
-        event = simplisafe.initial_event_to_use[system.system_id]
-
         self._attr_extra_state_attributes = {
-            ATTR_LAST_EVENT_INFO: event.get("info"),
-            ATTR_LAST_EVENT_SENSOR_NAME: event.get("sensorName"),
+            ATTR_LAST_EVENT_INFO: simplisafe.initial_event_to_use[system.system_id].get(
+                "info"
+            ),
+            ATTR_LAST_EVENT_SENSOR_NAME: simplisafe.initial_event_to_use[
+                system.system_id
+            ].get("sensorName"),
             ATTR_LAST_EVENT_SENSOR_TYPE: device_type.name,
-            ATTR_LAST_EVENT_TIMESTAMP: event.get("eventTimestamp"),
+            ATTR_LAST_EVENT_TIMESTAMP: simplisafe.initial_event_to_use[
+                system.system_id
+            ].get("eventTimestamp"),
             ATTR_SYSTEM_ID: system.system_id,
         }
-
-        self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, serial)},
-            manufacturer="SimpliSafe",
-            model=model,
-            name=device_name,
-            via_device=(DOMAIN, system.system_id),
-        )
-
-        self._attr_name = f"{system.address} {device_name} {' '.join([w.title() for w in model.split('_')])}"
-        self._attr_unique_id = serial
-        self._device = device
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, system.system_id)},
+            "manufacturer": "SimpliSafe",
+            "model": str(system.version),
+            "name": name,
+            "via_device": (DOMAIN, system.serial),
+        }
+        self._attr_name = f"{system.address} {name}"
+        self._attr_unique_id = self._serial
         self._online = True
         self._simplisafe = simplisafe
         self._system = system
-        self._websocket_events_to_listen_for = [
+        self.websocket_events_to_listen_for = [
             EVENT_CONNECTION_LOST,
             EVENT_CONNECTION_RESTORED,
             EVENT_POWER_OUTAGE,
             EVENT_POWER_RESTORED,
         ]
-        if additional_websocket_events:
-            self._websocket_events_to_listen_for += additional_websocket_events
 
     @property
     def available(self) -> bool:
@@ -629,15 +621,14 @@ class SimpliSafeEntity(CoordinatorEntity):
             return
 
         # Ignore this event if this entity hasn't expressed interest in its type:
-        if event.event_type not in self._websocket_events_to_listen_for:
+        if event.event_type not in self.websocket_events_to_listen_for:
             return
 
         # Ignore this event if it belongs to a entity with a different serial
         # number from this one's:
         if (
-            self._device
-            and event.event_type in WEBSOCKET_EVENTS_REQUIRING_SERIAL
-            and event.sensor_serial != self._device.serial
+            event.event_type in WEBSOCKET_EVENTS_REQUIRING_SERIAL
+            and event.sensor_serial != self._serial
         ):
             return
 
@@ -658,14 +649,12 @@ class SimpliSafeEntity(CoordinatorEntity):
         else:
             sensor_type = None
 
-        self._attr_extra_state_attributes.update(
-            {
-                ATTR_LAST_EVENT_INFO: event.info,
-                ATTR_LAST_EVENT_SENSOR_NAME: event.sensor_name,
-                ATTR_LAST_EVENT_SENSOR_TYPE: sensor_type,
-                ATTR_LAST_EVENT_TIMESTAMP: event.timestamp,
-            }
-        )
+        self._attr_extra_state_attributes[ATTR_LAST_EVENT_INFO] = event.info
+        self._attr_extra_state_attributes[
+            ATTR_LAST_EVENT_SENSOR_NAME
+        ] = event.sensor_name
+        self._attr_extra_state_attributes[ATTR_LAST_EVENT_SENSOR_TYPE] = sensor_type
+        self._attr_extra_state_attributes[ATTR_LAST_EVENT_TIMESTAMP] = event.timestamp
 
         self.async_update_from_websocket_event(event)
         self.async_write_ha_state()
@@ -693,3 +682,29 @@ class SimpliSafeEntity(CoordinatorEntity):
     def async_update_from_websocket_event(self, event: WebsocketEvent) -> None:
         """Update the entity when new data comes from the websocket."""
         raise NotImplementedError()
+
+
+class SimpliSafeBaseSensor(SimpliSafeEntity):
+    """Define a SimpliSafe base (binary) sensor."""
+
+    def __init__(
+        self,
+        simplisafe: SimpliSafe,
+        system: SystemV2 | SystemV3,
+        sensor: SensorV2 | SensorV3,
+    ) -> None:
+        """Initialize."""
+        super().__init__(simplisafe, system, sensor.name, serial=sensor.serial)
+
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, sensor.serial)},
+            "manufacturer": "SimpliSafe",
+            "model": sensor.type.name,
+            "name": sensor.name,
+            "via_device": (DOMAIN, system.serial),
+        }
+
+        human_friendly_name = " ".join([w.title() for w in sensor.type.name.split("_")])
+        self._attr_name = f"{super().name} {human_friendly_name}"
+
+        self._sensor = sensor
