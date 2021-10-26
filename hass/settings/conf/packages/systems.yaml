@@ -1,23 +1,5 @@
 ---
 automation:
-  - alias: "Execute certain automations on HASS start"
-    id: "execute_certain_automations_on_hass_start"
-
-    trigger:
-      - platform: homeassistant
-        event: start
-
-    action:
-      - alias: "Trigger appropriate automations"
-        service: automation.trigger
-        target:
-          entity_id:
-            - automation.climate_schedule
-            - automation.notify_when_the_dishwasher_is_clean
-            - automation.notify_when_wolfie_cycle_is_complete
-        data:
-          skip_condition: false
-
   - alias: "Forward HASS persistent notifications"
     id: "forward_hass_persistent_notifications"
 
