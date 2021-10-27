@@ -71,12 +71,6 @@ automation:
         target:
           entity_id: switch.toggle_3d_printer
 
-octoprint:
-  host: octopi.phil.iot
-  api_key: !secret octoprint_api_key
-  bed: true
-  number_of_tools: 1
-
 rest_command:
   turn_off_octopi:
     url: "http://octopi.phil.iot/api/system/commands/core/shutdown"
