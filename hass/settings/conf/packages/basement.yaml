@@ -48,6 +48,20 @@ automation:
         target:
           entity_id: switch.guardian_b4e62d98118d_valve
 
+  - alias: "Retrieve humidistat Switchbot's battery level every hour"
+    id: "retrieve_humidistat_switchbot_s_battery_level_every_hour"
+    initial_state: true
+
+    trigger:
+      - platform: time_pattern
+        hours: "/1"
+
+    action:
+      - alias: "Send the battery level MQTT request"
+        service: mqtt.publish
+        data:
+          topic: !secret humidistat_switchbot_device_info_command_topic
+
 binary_sensor:
   - platform: template
     sensors:
@@ -86,6 +100,11 @@ sensor:
       - sensor.basement_sensor_temperature
       - sensor.basement_firefighter_air_temperature
 
+  - platform: mqtt
+    name: Humidistat Switchbot Battery
+    state_topic: !secret humidistat_switchbot_battery_percentage_topic
+    device_class: battery
+
 sonos:
   media_player:
     hosts:
@@ -93,3 +112,10 @@ sonos:
       - 172.16.20.155
       - 172.16.20.18
       - 172.16.20.253
+
+switch:
+  - platform: mqtt
+    name: Humidistat Switchbot
+    command_topic: !secret humidistat_switchbot_command_topic
+    state_topic: !secret humidistat_switchbot_state_topic
+    icon: mdi:air-humidifier

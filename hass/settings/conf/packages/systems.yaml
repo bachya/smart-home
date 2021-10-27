@@ -44,6 +44,7 @@ automation:
         entity_id:
           - sensor.aaron_bedside_nanomote_battery_level
           - sensor.fiddle_leaf_fig_battery
+          - sensor.humidistat_switchbot_battery
           - sensor.office_node_pro_battery
           - sensor.sonos_roam_battery
           - sensor.vacuum_battery
