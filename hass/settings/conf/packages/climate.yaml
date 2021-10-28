@@ -203,7 +203,13 @@ automation:
 
     trigger:
       - platform: state
-        entity_id: sensor.proximity_zone
+        entity_id:
+          - input_number.outdoor_extreme_high_threshold
+          - input_number.outdoor_extreme_low_threshold
+          - input_number.thermostat_eco_high_threshold
+          - input_number.thermostat_eco_low_threshold
+          - sensor.feelslike
+          - sensor.proximity_zone
 
     action:
       choose:
