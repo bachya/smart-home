@@ -83,7 +83,7 @@ automation:
                     states("input_number.thermostat_eco_low_threshold") | float
                   }}
 
-            - alias: "Turn off our bedroom fan"
+            - alias: "Turn our bedroom fan off"
               service: fan.turn_off
               target:
                 entity_id: fan.pure_humidify_cool
@@ -101,7 +101,7 @@ automation:
               data:
                 hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
 
-            - alias: "Turn on our bedroom fan"
+            - alias: "Turn our bedroom fan on "
               service: fan.turn_on
               target:
                 entity_id: fan.pure_humidify_cool
@@ -133,12 +133,12 @@ automation:
                     }}
                   {% endif %}
 
-            - alias: "Turn off our bedroom fan's night mode"
+            - alias: "Turn our bedroom fan's night mode off"
               service: switch.turn_off
               target:
                 entity_id: switch.pure_humidify_cool_night_mode
 
-            - alias: "Turn off our bedroom fan's humidifier"
+            - alias: "Turn our bedroom fan's humidifier off"
               service: humidifier.turn_off
               target:
                 entity_id: humidifier.pure_humidify_cool
@@ -180,12 +180,12 @@ automation:
                     }}
                   {% endif %}
 
-            - alias: "Turn on our bedroom fan's night mode"
+            - alias: "Turn our bedroom fan's night mode on"
               service: switch.turn_on
               target:
                 entity_id: switch.pure_humidify_cool_night_mode
 
-            - alias: "Turn on our bedroom fan's humidifier"
+            - alias: "Turn our bedroom fan's humidifier on "
               service: humidifier.turn_on
               target:
                 entity_id: humidifier.pure_humidify_cool
@@ -228,7 +228,7 @@ automation:
                 }}
 
           sequence:
-            - alias: "Turn off Climate Away Mode"
+            - alias: "Turn Climate Away Mode off"
               service: input_boolean.turn_off
               target:
                 entity_id: input_boolean.climate_away_mode
@@ -249,7 +249,7 @@ automation:
                 }}
 
           sequence:
-            - alias: "Turn on Climate Away Mode"
+            - alias: "Turn Climate Away Mode on"
               service: input_boolean.turn_on
               target:
                 entity_id: input_boolean.climate_away_mode
@@ -278,7 +278,7 @@ automation:
                 }}
 
           sequence:
-            - alias: "Turn off Climate Away Mode"
+            - alias: "Turn Climate Away Mode off"
               service: input_boolean.turn_off
               target:
                 entity_id: input_boolean.climate_away_mode
@@ -305,7 +305,7 @@ automation:
                 }}
 
           sequence:
-            - alias: "Turn on Climate Away Mode"
+            - alias: "Turn Climate Away Mode on"
               service: input_boolean.turn_on
               target:
                 entity_id: input_boolean.climate_away_mode

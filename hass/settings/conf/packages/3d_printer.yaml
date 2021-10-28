@@ -96,13 +96,13 @@ switch:
           - alias: "Delay for 10 seconds"
             delay: "00:00:10"
 
-          - alias: "Turn off the printer's power"
+          - alias: "Turn the printer's power off"
             service: switch.turn_off
             target:
               entity_id: switch.3d_printer
 
         turn_on:
-          - alias: "Turn on the printer's power"
+          - alias: "Turn the printer's power on"
             service: switch.turn_on
             target:
               entity_id: switch.3d_printer

@@ -7,7 +7,7 @@ automation:
       - platform: event
         event_type: ios.action_fired
     action:
-      - alias: "Turn on the appropriate mode"
+      - alias: "Turn the appropriate mode on"
         service: script.turn_on
         target:
           entity_id: >-
@@ -83,14 +83,14 @@ script:
             (now() - states("sensor.uptime") | as_datetime).total_seconds() > 60
           }}
 
-      - alias: "Turn off appropriate automations/switches/etc."
+      - alias: "Turn appropriate automations/switches/etc. off"
         service: homeassistant.turn_off
         target:
           entity_id:
             - automation.notify_when_security_status_changes
             - automation.simulate_someone_being_home
 
-      - alias: "Turn on appropriate automations/switches/etc."
+      - alias: "Turn appropriate automations/switches/etc. on"
         service: homeassistant.turn_on
         target:
           entity_id:
@@ -146,7 +146,7 @@ script:
         target:
           entity_id: cover.wemos_d1_mini_garage_controller
 
-      - alias: "Turn off appropriate automations/switches/etc."
+      - alias: "Turn appropriate automations/switches/etc. off"
         service: homeassistant.turn_off
         target:
           entity_id:
@@ -162,7 +162,7 @@ script:
             - switch.fireplace
             - switch.garage_lights
 
-      - alias: "Turn on appropriate automations/switches/etc."
+      - alias: "Turn appropriate automations/switches/etc. on"
         service: homeassistant.turn_on
         target:
           entity_id:
@@ -224,14 +224,14 @@ script:
             (now() - states("sensor.uptime") | as_datetime).total_seconds() > 60
           }}
 
-      - alias: "Turn on various appropriate automations/switches/etc."
+      - alias: "Turn various appropriate automations/switches/etc. on"
         service: homeassistant.turn_on
         target:
           entity_id:
             - automation.cycle_master_toilet_fan_during_the_day
             - switch.kitchen_pendant_lights
 
-      - alias: "Turn on SimpliSafe audible notifications"
+      - alias: "Turn SimpliSafe audible notifications on"
         service: simplisafe.set_system_properties
         data:
           system_id: !secret simplisafe_system_id
@@ -253,7 +253,7 @@ script:
         target:
           entity_id: cover.wemos_d1_mini_garage_controller
 
-      - alias: "Turn off various appropriate automations/switches/etc."
+      - alias: "Turn various appropriate automations/switches/etc. off"
         service: homeassistant.turn_off
         target:
           entity_id:
@@ -286,7 +286,7 @@ script:
             - media_player.office
             - media_player.sonos_roam
 
-      - alias: "Turn off SimpliSafe audible notifications"
+      - alias: "Turn SimpliSafe audible notifications off"
         service: simplisafe.set_system_properties
         data:
           system_id: !secret simplisafe_system_id
@@ -305,12 +305,12 @@ script:
             (now() - states("sensor.uptime") | as_datetime).total_seconds() > 60
           }}
 
-      - alias: "Turn off various appropriate automations/switches/etc."
+      - alias: "Turn various appropriate automations/switches/etc. off"
         service: homeassistant.turn_off
         target:
           entity_id: automation.cycle_master_toilet_fan_during_the_day
 
-      - alias: "Turn on various appropriate automations/switches/etc."
+      - alias: "Turn various appropriate automations/switches/etc. on"
         service: homeassistant.turn_on
         target:
           entity_id:
@@ -327,7 +327,7 @@ script:
     description: "Alter the home when we depart on a trip"
 
     sequence:
-      - alias: "Turn off the water main and humidistat"
+      - alias: "Turn the water main and humidistat off"
         service: homeassistant.turn_off
         target:
           entity_id:
