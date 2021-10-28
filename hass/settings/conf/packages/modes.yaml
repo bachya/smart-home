@@ -107,11 +107,12 @@ script:
                 state: "off"
 
             sequence:
-              - alias: "Turn the water main on"
+              - alias: "Turn the water main ahd humidistat on"
                 service: homeassistant.turn_on
                 target:
                   entity_id:
                     - switch.guardian_b4e62d98118d_valve
+                    - switch.humidistat_switchbot
 
       - alias: "Is it after sunset?"
         choose:
@@ -326,10 +327,12 @@ script:
     description: "Alter the home when we depart on a trip"
 
     sequence:
-      - alias: "Turn off the water main"
+      - alias: "Turn off the water main and humidistat"
         service: homeassistant.turn_off
         target:
-          entity_id: switch.guardian_b4e62d98118d_valve
+          entity_id:
+            - switch.guardian_b4e62d98118d_valve
+            - switch.humidistat_switchbot
 
   walk_home_mode:
     alias: "Walk Home Mode"
