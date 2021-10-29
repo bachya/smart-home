@@ -186,11 +186,6 @@ script:
             - media_player.office
             - media_player.sonos_roam
 
-       - alias: "Trigger someone-at-home simulation"
-        service: automation.trigger
-        target:
-          entity_id: automation.simulate_someone_being_home
-
   drive_home_mode:
     alias: "Drive Home Mode"
     description: "Alter the home when we arrive via the garage door"
