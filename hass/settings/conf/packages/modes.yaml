@@ -70,6 +70,18 @@ ios:
         icon: door-open
         color: "#efe6dd"
 
+group:
+  entities_to_turn_on_at_sunset:
+    name: "Entities to turn on at sunset"
+    entities:
+      - group.outdoor_lights
+      - switch.bar_cart_leds
+      - switch.christmas_tree
+      - switch.kitchen_pendant_lights
+      - switch.master_bedroom_salt_lamp
+      - switch.office_salt_lamp
+      - switch.reading_lamp
+
 script:
   arrive_home_mode:
     alias: "Arrive Home Mode"
@@ -125,11 +137,7 @@ script:
               - alias: "Turn various lights on"
                 service: homeassistant.turn_on
                 target:
-                  entity_id:
-                    - group.living_room_lights
-                    - switch.front_patio_light
-                    - switch.kitchen_pendant_lights
-                    - switch.master_bedroom_salt_lamp
+                  entity_id: group.entities_to_turn_on_at_sunset
 
   depart_home_mode:
     alias: "Depart Home Mode"
@@ -153,13 +161,23 @@ script:
             - automation.automatically_handle_sunrise
             - automation.automatically_handle_sunset
             - automation.cycle_master_toilet_fan_during_the_day
-            - group.kitchen_lights
-            - group.living_room_lights
             - remote.basement_tv
             - remote.living_room_tv
             - switch.basement_lights
             - switch.fireplace
             - switch.garage_lights
+
+      - alias: "Is it before sunset?"
+        choose:
+          - conditions:
+              - condition: sun
+                before: sunset
+
+            sequence:
+              - alias: "Turn off any sunset-related switches"
+                service: homeassistant.turn_off
+                target:
+                  entity_id: group.entities_to_turn_on_at_sunset
 
       - alias: "Turn appropriate automations/switches/etc. on"
         service: homeassistant.turn_on
@@ -312,14 +330,7 @@ script:
       - alias: "Turn various appropriate automations/switches/etc. on"
         service: homeassistant.turn_on
         target:
-          entity_id:
-            - group.outdoor_lights
-            - switch.bar_cart_leds
-            - switch.christmas_tree
-            - switch.kitchen_pendant_lights
-            - switch.master_bedroom_salt_lamp
-            - switch.office_salt_lamp
-            - switch.reading_lamp
+          entity_id: group.entities_to_turn_on_at_sunset
 
   vacation_mode:
     alias: "Vacation Mode"
