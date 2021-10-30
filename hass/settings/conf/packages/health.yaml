@@ -19,12 +19,13 @@ automation:
         target:
           entity_id: script.notify_person_if_at_home
         data:
-          name: aaron
-          title: Bad Allergies Today
-          message: >
-            🤧 Today's allergy index is
-            {{ states("sensor.allergy_index_today") }}. You might want to take
-            some meds!
+          variables:
+            name: aaron
+            title: Bad Allergies Today
+            message: >
+              🤧 Today's allergy index is
+              {{ states("sensor.allergy_index_today") }}. You might want to take
+              some meds!
 
   - alias: "Update OpenUV every 1 hour during the daytime"
     id: "update_openuv_every_1_hour_during_the_daytime"
