@@ -21,6 +21,7 @@ services:
     depends_on:
       - traefik
     environment:
+      ESPHOME_DASHBOARD_USE_PING: true
       PASSWORD: ${ESPHOME_PASSWORD}
       USERNAME: ${ESPHOME_USERNAME}
     image: esphome/esphome:${ESPHOME_VERSION}
