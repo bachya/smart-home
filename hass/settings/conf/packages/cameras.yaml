@@ -6,11 +6,11 @@ eufy_security:
 camera:
   - platform: ffmpeg
     name: Basement Camera
-    input: -rtsp_transport tcp -i rtsp://basement-camera.phil.iot:8554/unicast
+    input: -rtsp_transport tcp -i rtsp://172.16.20.198:8554/unicast
 
   - platform: ffmpeg
     name: Garage Camera
-    input: -rtsp_transport tcp -i rtsp://garage-camera.myserver.com:8554/unicast
+    input: -rtsp_transport tcp -i rtsp://172.16.20.158:8554/unicast
 
   - platform: ffmpeg
     name: Kitchen Camera
