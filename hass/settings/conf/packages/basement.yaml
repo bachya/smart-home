@@ -104,7 +104,7 @@ sensor:
     name: Humidistat Switchbot Battery
     state_topic: !secret humidistat_switchbot_battery_percentage_topic
     device_class: battery
-    unit_of_measurement: %
+    unit_of_measurement: "%"
 
 sonos:
   media_player:
