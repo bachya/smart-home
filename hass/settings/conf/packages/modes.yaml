@@ -317,8 +317,8 @@ script:
         service: simplisafe.set_system_properties
         data:
           system_id: !secret simplisafe_system_id
-          chime_volume: 2
-          voice_prompt_volume: 2
+          chime_volume: medium
+          voice_prompt_volume: medium
 
   good_night_mode:
     alias: "Good Night Mode"
@@ -372,8 +372,8 @@ script:
         service: simplisafe.set_system_properties
         data:
           system_id: !secret simplisafe_system_id
-          chime_volume: 0
-          voice_prompt_volume: 0
+          chime_volume: "off"
+          voice_prompt_volume: "off"
 
   sunset_mode:
     alias: "Sunset Mode"
