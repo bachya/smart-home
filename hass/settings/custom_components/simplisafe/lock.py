@@ -101,7 +101,7 @@ class SimpliSafeLock(SimpliSafeEntity, LockEntity):
             assert event.event_type
         if state := STATE_MAP_FROM_WEBSOCKET_EVENT.get(event.event_type):
             self._attr_is_locked = state
-            self._errors = 0
+            self.async_reset_error_count()
         else:
             LOGGER.error("Unknown lock websocket event: %s", event.event_type)
-            self._errors += 1
+            self.async_increment_error_count()

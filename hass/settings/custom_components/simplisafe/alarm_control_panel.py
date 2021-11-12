@@ -167,12 +167,14 @@ class SimpliSafeAlarm(SimpliSafeEntity, AlarmControlPanelEntity):
         """Set the state based on the latest REST API data."""
         if self._system.alarm_going_off:
             self._attr_state = STATE_ALARM_TRIGGERED
+        elif self._system.state == SystemStates.error:
+            self.async_increment_error_count()
         elif state := STATE_MAP_FROM_REST_API.get(self._system.state):
             self._attr_state = state
-            self._errors = 0
+            self.async_reset_error_count()
         else:
             LOGGER.error("Unknown system state (REST API): %s", self._system.state)
-            self._errors += 1
+            self.async_increment_error_count()
 
     async def async_alarm_disarm(self, code: str | None = None) -> None:
         """Send disarm command."""
@@ -255,7 +257,7 @@ class SimpliSafeAlarm(SimpliSafeEntity, AlarmControlPanelEntity):
             assert event.event_type
         if state := STATE_MAP_FROM_WEBSOCKET_EVENT.get(event.event_type):
             self._attr_state = state
-            self._errors = 0
+            self.async_reset_error_count()
         else:
             LOGGER.error("Unknown alarm websocket event: %s", event.event_type)
-            self._errors += 1
+            self.async_increment_error_count()
