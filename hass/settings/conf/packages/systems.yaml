@@ -49,7 +49,7 @@ automation:
           - sensor.sonos_roam_battery
           - sensor.vacuum_battery
         below: 20
-        for: "00:05:00"
+        for: "01:01:00"
 
       - platform: state
         entity_id:
@@ -63,7 +63,7 @@ automation:
           - binary_sensor.upstairs_hallway_sensor_low_battery
           - binary_sensor.wh65batt
         to: "on"
-        for: "00:05:00"
+        for: "01:01:00"
 
     action:
       - alias: "Send the notification"
