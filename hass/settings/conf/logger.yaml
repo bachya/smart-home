@@ -1,5 +1,5 @@
 ---
 default: error
 logs:
-  homeassistant.components.simplisafe: debug
+  custom_components.simplisafe: debug
   simplipy: debug
