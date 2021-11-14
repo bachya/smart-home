@@ -1,13 +1,13 @@
 ---
 sensor.bar_cart_leds_energy_spent:
-  friendly_name: Bar Cart LEDs
+  friendly_name: "Bar Cart LEDs"
 sensor.basement_lights_energy_spent:
-  friendly_name: Basement Lights
+  friendly_name: "Basement Lights"
 sensor.britt_s_bathroom_outlet_energy_spent:
-  friendly_name: Britt's Bathroom Outlet
+  friendly_name: "Britt's Bathroom Outlet"
 sensor.christmas_tree_energy_spent:
-  friendly_name: Christmas Tree
+  friendly_name: "Christmas Tree"
 sensor.reading_lamp_energy_spent:
-  friendly_name: Reading Lamp
+  friendly_name: "Reading Lamp"
 sensor.sofa_lamp_energy_spent:
-  friendly_name: Sofa Lamp
+  friendly_name: "Sofa Lamp"

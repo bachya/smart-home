@@ -1,7 +1,7 @@
 ---
 substitutions:
-  device_name: reading-lamp
-  device_friendly_name: Reading Lamp
-  device_static_ip: 172.16.20.85
+  device_name: "reading-lamp"
+  device_friendly_name: "Reading Lamp"
+  device_static_ip: "172.16.20.85"
 
-<<: !include .topgreener_tgwf115pqm_smart_plug.yaml
+<<: !include ".topgreener_tgwf115pqm_smart_plug.yaml"

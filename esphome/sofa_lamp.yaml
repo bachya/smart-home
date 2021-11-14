@@ -1,7 +1,7 @@
 ---
 substitutions:
-  device_name: sofa-lamp
-  device_friendly_name: Sofa Lamp
-  device_static_ip: 172.16.20.42
+  device_name: "sofa-lamp"
+  device_friendly_name: "Sofa Lamp"
+  device_static_ip: "172.16.20.42"
 
-<<: !include .topgreener_tgwf115pqm_smart_plug.yaml
+<<: !include ".topgreener_tgwf115pqm_smart_plug.yaml"

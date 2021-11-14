@@ -1,7 +1,7 @@
 ---
 substitutions:
-  device_name: bar-cart-leds
-  device_friendly_name: Bar Cart LEDs
-  device_static_ip: 172.16.20.22
+  device_name: "bar-cart-leds"
+  device_friendly_name: "Bar Cart LEDs"
+  device_static_ip: "172.16.20.22"
 
-<<: !include .topgreener_tgwf115pqm_smart_plug.yaml
+<<: !include ".topgreener_tgwf115pqm_smart_plug.yaml"
