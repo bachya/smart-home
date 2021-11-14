@@ -1,7 +1,7 @@
 ---
 substitutions:
-  device_name: "britts-bathroom-outlet"
-  device_friendly_name: "Britt's Bathroom Outlet"
-  device_static_ip: "172.16.20.67"
+  device_name: britts-bathroom-outlet
+  device_friendly_name: Britt's Bathroom Outlet
+  device_static_ip: 172.16.20.67
 
-<<: !include ".topgreener_tgwf115pqm_smart_plug.yaml"
+<<: !include .topgreener_tgwf115pqm_smart_plug.yaml

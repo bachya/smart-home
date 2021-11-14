@@ -5,8 +5,8 @@ api:
   password: !secret api_password
 
 binary_sensor:
-  - id: "garage_door_open"
-    name: "Wemos D1 Mini Garage Controller Open"
+  - id: garage_door_open
+    name: Wemos D1 Mini Garage Controller Open
     on_state:
       then:
         - lambda: |-
@@ -18,12 +18,12 @@ binary_sensor:
             id(garage_door_cover).publish_state();
     pin:
       inverted: true
-      mode: "INPUT_PULLUP"
-      number: "GPIO2"
-    platform: "gpio"
+      mode: INPUT_PULLUP
+      number: GPIO2
+    platform: gpio
 
-  - id: "garage_door_closed"
-    name: "Wemos D1 Mini Garage Controller Closed"
+  - id: garage_door_closed
+    name: Wemos D1 Mini Garage Controller Closed
     on_state:
       then:
         - lambda: |-
@@ -35,124 +35,124 @@ binary_sensor:
             id(garage_door_cover).publish_state();
     pin:
       inverted: true
-      mode: "INPUT_PULLUP"
-      number: "GPIO13"
-    platform: "gpio"
+      mode: INPUT_PULLUP
+      number: GPIO13
+    platform: gpio
 
-  - name: "Wemos D1 Mini Garage Controller Status"
-    platform: "status"
+  - name: Wemos D1 Mini Garage Controller Status
+    platform: status
 
-  - device_class: "occupancy"
+  - device_class: occupancy
     lambda: |-
       if (id(aaron_parking_spot_distance).state > 2.50) {
         return false;
       } else {
         return true;
       }
-    name: "Aaron's Parking Spot Occupied"
-    platform: "template"
+    name: Aaron's Parking Spot Occupied
+    platform: template
 
-  - device_class: "occupancy"
+  - device_class: occupancy
     lambda: |-
       if (id(britt_parking_spot_distance).state > 2.50) {
         return false;
       } else {
         return true;
       }
-    name: "Britt's Parking Spot Occupied"
-    platform: "template"
+    name: Britt's Parking Spot Occupied
+    platform: template
 
 cover:
   - close_action:
       - if:
           condition:
             or:
-              - binary_sensor.is_on: "garage_door_closed"
+              - binary_sensor.is_on: garage_door_closed
               - lambda: >-
                   return id(garage_door_cover).current_operation ==
                   COVER_OPERATION_CLOSING;
           else:
-            - switch.turn_on: "relay"
-            - delay: "200ms"
-            - switch.turn_off: "relay"
+            - switch.turn_on: relay
+            - delay: 200ms
+            - switch.turn_off: relay
             - lambda: >-
                 id(garage_door_cover).current_operation =
                 COVER_OPERATION_CLOSING;
                 id(garage_door_cover).publish_state();
-    device_class: "garage"
-    id: "garage_door_cover"
+    device_class: garage
+    id: garage_door_cover
     lambda: |-
       if (id(garage_door_closed).state) {
         return COVER_CLOSED;
       } else {
         return COVER_OPEN;
       }
-    name: "Wemos D1 Mini Garage Controller"
+    name: Wemos D1 Mini Garage Controller
     open_action:
       - if:
           condition:
             or:
-              - binary_sensor.is_on: "garage_door_open"
+              - binary_sensor.is_on: garage_door_open
               - lambda: >-
                   return id(garage_door_cover).current_operation ==
                   COVER_OPERATION_OPENING;
           else:
-            - switch.turn_on: "relay"
-            - delay: "200ms"
-            - switch.turn_off: "relay"
+            - switch.turn_on: relay
+            - delay: 200ms
+            - switch.turn_off: relay
             - lambda: >-
                 id(garage_door_cover).current_operation =
                 COVER_OPERATION_OPENING;
                 id(garage_door_cover).publish_state();
-    platform: "template"
+    platform: template
 
 esphome:
-  board: "d1_mini"
-  name: "wemos-d1-mini-garage-controller"
-  platform: "ESP8266"
+  board: d1_mini
+  name: wemos-d1-mini-garage-controller
+  platform: ESP8266
 
 logger:
 
 ota:
 
 sensor:
-  - echo_pin: "GPIO16"
+  - echo_pin: GPIO16
     filters:
       - median:
           send_every: 4
           send_first_at: 3
           window_size: 7
-    id: "aaron_parking_spot_distance"
-    name: "Aaron's Parking Spot Distance"
-    platform: "ultrasonic"
-    timeout: "4m"
-    trigger_pin: "GPIO14"
-    update_interval: "10s"
+    id: aaron_parking_spot_distance
+    name: Aaron's Parking Spot Distance
+    platform: ultrasonic
+    timeout: 4m
+    trigger_pin: GPIO14
+    update_interval: 10s
 
-  - echo_pin: "GPIO15"
+  - echo_pin: GPIO15
     filters:
       - median:
           send_every: 4
           send_first_at: 3
           window_size: 7
-    id: "britt_parking_spot_distance"
-    name: "Britt's Parking Spot Distance"
-    platform: "ultrasonic"
-    timeout: "4m"
-    trigger_pin: "GPIO4"
-    update_interval: "10s"
+    id: britt_parking_spot_distance
+    name: Britt's Parking Spot Distance
+    platform: ultrasonic
+    timeout: 4m
+    trigger_pin: GPIO4
+    update_interval: 10s
 
 switch:
-  - id: "relay"
-    name: "Wemos D1 Mini Garage Controller Relay"
-    pin: "GPIO5"
-    platform: "gpio"
+  - id: relay
+    name: Wemos D1 Mini Garage Controller Relay
+    pin: GPIO5
+    platform: gpio
 
-  - name: "Wemos D1 Mini Garage Controller Restart"
-    platform: "restart"
+  - name: Wemos D1 Mini Garage Controller Restart
+    platform: restart
 
 text_sensor:
-  - id: "esphome_version"
+  - id: esphome_version
     name: "Wemos D1 Mini Garage Controller: ESPHome Version"
     platform: version
 
@@ -160,12 +160,12 @@ text_sensor:
       auto state = id(esphome_version).state;
       return state.substr(0, state.find(' '));
     name: "Wemos D1 Mini Garage Controller: ESPHome Version (Short)"
-    platform: "template"
+    platform: template
 
 wifi:
   manual_ip:
-    gateway: "172.16.20.1"
-    static_ip: "172.16.20.101"
-    subnet: "255.255.255.0"
+    gateway: 172.16.20.1
+    static_ip: 172.16.20.101
+    subnet: 255.255.255.0
   ssid: !secret wifi_ssid
   password: !secret wifi_password

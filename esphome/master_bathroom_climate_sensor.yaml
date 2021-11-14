@@ -5,17 +5,17 @@ api:
   password: !secret api_password
 
 binary_sensor:
-  - name: "Master Bathroom Climate Sensor Status"
-    platform: "status"
+  - name: Master Bathroom Climate Sensor Status
+    platform: status
 
 esphome:
-  board: "d1_mini"
-  name: "master-bathroom-climate-sensor"
-  platform: "ESP8266"
+  board: d1_mini
+  name: master-bathroom-climate-sensor
+  platform: ESP8266
 
 i2c:
-  scl: "GPIO5"
-  sda: "GPIO4"
+  scl: GPIO5
+  sda: GPIO4
 
 logger:
 
@@ -24,32 +24,32 @@ ota:
 sensor:
   - address: 118
     humidity:
-      name: "Master Bathroom Humidity"
-    platform: "bme280"
+      name: Master Bathroom Humidity
+    platform: bme280
     pressure:
-      name: "Master Bathroom Pressure"
+      name: Master Bathroom Pressure
     temperature:
-      name: "Master Bathroom Temperature"
+      name: Master Bathroom Temperature
 
 switch:
-  - name: "Bathroom Climate Sensor Restart"
-    platform: "restart"
+  - name: Bathroom Climate Sensor Restart
+    platform: restart
 
 text_sensor:
   - lambda: |-
       auto state = id(esphome_version).state;
       return state.substr(0, state.find(' '));
     name: "Master Bathroom Climate Sensor: ESPHome Version (Short)"
-    platform: "template"
+    platform: template
 
-  - id: "esphome_version"
+  - id: esphome_version
     name: "Master Bathroom Climate Sensor: ESPHome Version"
-    platform: "version"
+    platform: version
 
 wifi:
   manual_ip:
-    gateway: "172.16.20.1"
-    static_ip: "172.16.20.226"
-    subnet: "255.255.255.0"
+    gateway: 172.16.20.1
+    static_ip: 172.16.20.226
+    subnet: 255.255.255.0
   ssid: !secret wifi_ssid
   password: !secret wifi_password
