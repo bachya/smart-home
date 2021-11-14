@@ -724,6 +724,9 @@ class SimpliSafeEntity(CoordinatorEntity):
     @callback
     def async_reset_error_count(self) -> None:
         """Reset this entity's error count."""
+        if self._error_count == 0:
+            return
+
         LOGGER.debug('Resetting error count for "%s"', self.name)
         self._error_count = 0
 
