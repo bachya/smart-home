@@ -670,9 +670,9 @@ class SimpliSafeEntity(CoordinatorEntity):
         ):
             return
 
-        if event.event_type in (EVENT_CONNECTION_LOST, EVENT_POWER_OUTAGE):
+        if event.event_type == EVENT_POWER_OUTAGE:
             self._online = False
-        elif event.event_type in (EVENT_CONNECTION_RESTORED, EVENT_POWER_RESTORED):
+        elif event.event_type == EVENT_POWER_RESTORED:
             self._online = True
 
         # It's uncertain whether SimpliSafe events will still propagate down the
