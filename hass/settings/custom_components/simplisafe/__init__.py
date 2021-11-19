@@ -107,7 +107,7 @@ ATTR_TIMESTAMP = "timestamp"
 
 DEFAULT_ENTITY_MODEL = "alarm_control_panel"
 DEFAULT_ENTITY_NAME = "Alarm Control Panel"
-DEFAULT_ERROR_THRESHOLD = 2
+DEFAULT_REST_API_ERROR_COUNT = 2
 DEFAULT_SCAN_INTERVAL = timedelta(seconds=30)
 DEFAULT_SOCKET_MIN_RETRY = 15
 
@@ -192,6 +192,29 @@ CONFIG_SCHEMA = cv.deprecated(DOMAIN)
 
 
 @callback
+def _async_get_changed_keys(dict1: dict[str, Any], dict2: dict[str, Any]) -> list[str]:
+    """Get a list of keys whose values are different between two dicts."""
+    set1 = set(dict1.items())
+    set2 = set(dict2.items())
+    return list(dict(set2 ^ set1))
+
+
+@callback
+def _async_register_base_station(
+    hass: HomeAssistant, entry: ConfigEntry, system: SystemV2 | SystemV3
+) -> None:
+    """Register a new bridge."""
+    device_registry = dr.async_get(hass)
+    device_registry.async_get_or_create(
+        config_entry_id=entry.entry_id,
+        identifiers={(DOMAIN, system.system_id)},
+        manufacturer="SimpliSafe",
+        model=system.version,
+        name=system.address,
+    )
+
+
+@callback
 def _async_standardize_config_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Bring a config entry up to current standards."""
     if CONF_TOKEN not in entry.data:
@@ -214,21 +237,6 @@ def _async_standardize_config_entry(hass: HomeAssistant, entry: ConfigEntry) -> 
         }
     if entry_updates:
         hass.config_entries.async_update_entry(entry, **entry_updates)
-
-
-@callback
-def _async_register_base_station(
-    hass: HomeAssistant, entry: ConfigEntry, system: SystemV2 | SystemV3
-) -> None:
-    """Register a new bridge."""
-    device_registry = dr.async_get(hass)
-    device_registry.async_get_or_create(
-        config_entry_id=entry.entry_id,
-        identifiers={(DOMAIN, system.system_id)},
-        manufacturer="SimpliSafe",
-        model=system.version,
-        name=system.address,
-    )
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -351,6 +359,29 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     ):
         async_register_admin_service(hass, DOMAIN, service, method, schema=schema)
 
+    current_entry_data = {**entry.data}
+
+    async def async_reload_entry(_: HomeAssistant, updated_entry: ConfigEntry) -> None:
+        """Handle an options update.
+
+        This method will get called in two scenarios:
+          1. When SimpliSafeOptionsFlowHandler is initiated
+          2. When a new refresh token is saved to the config entry data
+
+        We don't want #2 to trigger a reload of the config entry – because of the
+        SimpliSafe API's tendency to have delayed responses, triggering a reload will
+        temporarily cause SimpliSafe entities to show as unavailable.
+        """
+        nonlocal current_entry_data
+        updated_data = {**updated_entry.data}
+        changed = _async_get_changed_keys(current_entry_data, updated_data)
+        current_entry_data = updated_data
+
+        if CONF_TOKEN in changed:
+            return
+
+        return await hass.config_entries.async_reload(entry.entry_id)
+
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
     return True
@@ -363,11 +394,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
-
-
-async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Handle an options update."""
-    await hass.config_entries.async_reload(entry.entry_id)
 
 
 class SimpliSafe:
@@ -564,11 +590,7 @@ class SimpliSafeEntity(CoordinatorEntity):
         assert simplisafe.coordinator
         super().__init__(simplisafe.coordinator)
 
-        # SimpliSafe can incorrectly return an error state when there isn't any
-        # error. This can lead to entities having an unknown state frequently.
-        # To protect against that, we measure an error count for each entity and only
-        # mark the state as unavailable if we detect a few in a row:
-        self._error_count = 0
+        self._rest_api_errors = 0
 
         if device:
             model = device.type.name
@@ -592,7 +614,7 @@ class SimpliSafeEntity(CoordinatorEntity):
         self._attr_extra_state_attributes = {
             ATTR_LAST_EVENT_INFO: event.get("info"),
             ATTR_LAST_EVENT_SENSOR_NAME: event.get("sensorName"),
-            ATTR_LAST_EVENT_SENSOR_TYPE: device_type.name,
+            ATTR_LAST_EVENT_SENSOR_TYPE: device_type.name.lower(),
             ATTR_LAST_EVENT_TIMESTAMP: event.get("eventTimestamp"),
             ATTR_SYSTEM_ID: system.system_id,
         }
@@ -634,7 +656,7 @@ class SimpliSafeEntity(CoordinatorEntity):
             system_offline = False
 
         return (
-            self._error_count < DEFAULT_ERROR_THRESHOLD
+            self._rest_api_errors < DEFAULT_REST_API_ERROR_COUNT
             and self._online
             and not system_offline
         )
@@ -642,10 +664,14 @@ class SimpliSafeEntity(CoordinatorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Update the entity with new REST API data."""
+        # SimpliSafe can incorrectly return an error state when there isn't any
+        # error. This can lead to the system having an unknown state frequently.
+        # To protect against that, we measure how many "error states" we receive
+        # and only alter the state if we detect a few in a row:
         if self.coordinator.last_update_success:
-            self.async_reset_error_count()
+            self._rest_api_errors = 0
         else:
-            self.async_increment_error_count()
+            self._rest_api_errors += 1
 
         self.async_update_from_rest_api()
         self.async_write_ha_state()
@@ -670,9 +696,9 @@ class SimpliSafeEntity(CoordinatorEntity):
         ):
             return
 
-        if event.event_type == EVENT_POWER_OUTAGE:
+        if event.event_type in (EVENT_CONNECTION_LOST, EVENT_POWER_OUTAGE):
             self._online = False
-        elif event.event_type == EVENT_POWER_RESTORED:
+        elif event.event_type in (EVENT_CONNECTION_RESTORED, EVENT_POWER_RESTORED):
             self._online = True
 
         # It's uncertain whether SimpliSafe events will still propagate down the
@@ -712,21 +738,6 @@ class SimpliSafeEntity(CoordinatorEntity):
         )
 
         self.async_update_from_rest_api()
-
-    @callback
-    def async_increment_error_count(self) -> None:
-        """Increment this entity's error count."""
-        LOGGER.debug('Error for entity "%s" (total: %s)', self.name, self._error_count)
-        self._error_count += 1
-
-    @callback
-    def async_reset_error_count(self) -> None:
-        """Reset this entity's error count."""
-        if self._error_count == 0:
-            return
-
-        LOGGER.debug('Resetting error count for "%s"', self.name)
-        self._error_count = 0
 
     @callback
     def async_update_from_rest_api(self) -> None:
