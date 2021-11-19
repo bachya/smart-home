@@ -374,14 +374,17 @@ async def async_setup_entry(  # noqa: C901
         SimpliSafe API's tendency to have delayed responses, triggering a reload will
         temporarily cause SimpliSafe entities to show as unavailable.
         """
+        LOGGER.debug("Considering entry reload")
         nonlocal current_entry_data
         updated_data = {**updated_entry.data}
         changed = _async_get_changed_keys(current_entry_data, updated_data)
         current_entry_data = updated_data
 
         if CONF_TOKEN in changed:
+            LOGGER.debug("Token refreshed; skipping reload")
             return
 
+        LOGGER.debug("Reloading entry")
         await hass.config_entries.async_reload(entry.entry_id)
 
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
