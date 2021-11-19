@@ -377,9 +377,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         changed = _async_get_changed_keys(current_entry_data, updated_data)
         current_entry_data = updated_data
 
+        LOGGER.debug("Current data", current_entry_data)
+        LOGGER.debug("New data", updated_data)
+        LOGGER.debug("Changed data: %s", changed)
+
         if CONF_TOKEN in changed:
+            LOGGER.debug("Skipping reload due to just a token refresh")
             return
 
+        LOGGER.debug("Reloading entry")
         return await hass.config_entries.async_reload(entry.entry_id)
 
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
