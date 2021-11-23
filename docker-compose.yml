@@ -122,21 +122,20 @@ services:
       - hass-db-data:/var/lib/postgresql/data
 
   traefik:
-    command:
-      - "--accesslog.filepath=/var/log/access.log"
-      - "--accesslog.filters.statusCodes=400-499"
-      - "--api"
-      - >-
-        --certificatesResolvers.linode.acme.dnschallenge.resolvers=1.1.1.1:53,1.0.0.1:53
-      - "--certificatesresolvers.linode.acme.dnschallenge.provider=linodev4"
-      - "--certificatesresolvers.linode.acme.dnschallenge=true"
-      - "--certificatesresolvers.linode.acme.email=${ACME_EMAIL_ADDRESS}"
-      - "--certificatesresolvers.linode.acme.storage=/letsencrypt/acme.json"
-      - "--entrypoints.websecure.address=:443"
-      - "--providers.docker"
-      - "--providers.docker.endpoint=tcp://docker-socket-proxy:2375"
-      - "--providers.docker.exposedbydefault=false"
-      - "--providers.file.directory=/etc/traefik/"
+    command: |
+      --accesslog.filepath=/var/log/access.log
+      --accesslog.filters.statusCodes=400-499
+      --api
+      --certificatesResolvers.linode.acme.dnschallenge.resolvers=1.1.1.1:53,1.0.0.1:53
+      --certificatesresolvers.linode.acme.dnschallenge.provider=linodev4
+      --certificatesresolvers.linode.acme.dnschallenge=true
+      --certificatesresolvers.linode.acme.email=${ACME_EMAIL_ADDRESS}
+      --certificatesresolvers.linode.acme.storage=/letsencrypt/acme.json
+      --entrypoints.websecure.address=:443
+      --providers.docker
+      --providers.docker.endpoint=tcp://docker-socket-proxy:2375
+      --providers.docker.exposedbydefault=false
+      --providers.file.directory=/etc/traefik/
     container_name: traefik
     depends_on:
       - docker-socket-proxy
