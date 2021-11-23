@@ -1,7 +1,23 @@
 ---
 version: "3"
 
+networks:
+  traefik:
+
 services:
+  docker-socket-proxy:
+    container_name: docker-socket-proxy
+    environment:
+      CONTAINERS: 1
+    image: tecnativa/docker-socket-proxy:latest
+    networks:
+      - traefik
+    ports:
+      - 127.0.0.1:2375:2375/tcp
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
   ecowitt2mqtt:
     container_name: ecowitt2mqtt
     depends_on:
@@ -118,9 +134,12 @@ services:
       - "--certificatesresolvers.linode.acme.storage=/letsencrypt/acme.json"
       - "--entrypoints.websecure.address=:443"
       - "--providers.docker"
+      - "--providers.docker.endpoint=tcp://docker-socket-proxy:2375"
       - "--providers.docker.exposedbydefault=false"
       - "--providers.file.directory=/etc/traefik/"
     container_name: traefik
+    depends_on:
+      - docker-socket-proxy
     environment:
       LINODE_PROPAGATION_TIMEOUT: 900
       LINODE_TOKEN: ${TRAEFIK_LINODE_API_KEY}
@@ -143,13 +162,15 @@ services:
         ${TRAEFIK_DOMAIN}
       traefik.http.routers.wildcard-certs.tls.domains[0].sans: |
         *.${TRAEFIK_DOMAIN}
+    networks:
+      - default
+      - traefik
     ports:
       - 443:443/tcp
     restart: always
     volumes:
       - ./traefik/settings:/etc/traefik:ro
       - /var/log/traefik:/var/log
-      - /var/run/docker.sock:/var/run/docker.sock:ro
       - letsencrypt-data:/letsencrypt
 
   vernemq:
