@@ -1,0 +1,5 @@
+---
+- type: homeassistant
+- type: trusted_networks
+  trusted_networks:
+    - 172.16.40.0/24

@@ -1,0 +1,7 @@
+---
+substitutions:
+  device_name: basement-cantina-lights
+  device_friendly_name: Basement Cantina Lights
+  device_static_ip: 172.16.20.74
+
+<<: !include devices/topgreener_tgwf115pqm_smart_plug.yaml

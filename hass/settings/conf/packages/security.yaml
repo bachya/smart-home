@@ -1,0 +1,847 @@
+---
+automation:
+  - alias: "Security: Automatically lock up the house when appropriate"
+    id: "security_automatically_lock_up_the_house_when_appropriate"
+
+    trigger:
+      - platform: state
+        id: departing
+        entity_id: sensor.proximity_zone
+        from: Home
+
+      - platform: state
+        id: in_bed
+        entity_id: binary_sensor.in_bed
+        to: "on"
+        for: "00:30:00"
+
+      - platform: state
+        id: teddy_departing
+        entity_id: sensor.proximity_zone
+        from: Home
+
+    condition:
+      - condition: state
+        entity_id: binary_sensor.secure_status
+        state: "off"
+
+    action:
+      - choose:
+          - alias: "We are departing home"
+            conditions:
+              - condition: trigger
+                id: departing
+
+            sequence:
+              - alias: "Activate 'Depart Home'"
+                service: script.turn_on
+                target:
+                  entity_id: script.depart_home_mode
+
+          - alias: "We are going to bed"
+            conditions:
+              - condition: trigger
+                id: in_bed
+
+            sequence:
+              - alias: "Activate 'Good Night'"
+                service: script.turn_on
+                target:
+                  entity_id: script.good_night_mode
+
+          - alias: "Teddy is roaming while we are away from home"
+            conditions:
+              - condition: trigger
+                id: teddy_departing
+
+              - condition: not
+                conditions:
+                  - condition: state
+                    entity_id: sensor.proximity_zone
+                    state: Home
+
+            sequence:
+              - alias: "Arm the alarm in away mode"
+                service: alarm_control_panel.alarm_arm_away
+                target:
+                  entity_id: alarm_control_panel.123_main_street
+
+      - alias: "Send a notification that the house is being locked up"
+        service: notify.everyone
+        data:
+          title: Security Update
+          message: "🔒 Locking up the house"
+
+  - alias: "Security: Forward SimpliSafe notifications to Aaron"
+    id: "security_forward_simplisafe_notifications_to_aaron"
+
+    trigger:
+      - platform: event
+        event_type: SIMPLISAFE_EVENT
+
+      - platform: event
+        event_type: SIMPLISAFE_NOTIFICATION
+
+    action:
+      - alias: "Send the notification to Aaron"
+        service: notify.aaron
+        data:
+          message: >
+            {% if trigger.event.event_type == "SIMPLISAFE_EVENT" %}
+              {% set message = trigger.event.data.last_event_info %}
+            {% else %}
+              {% set message = trigger.event.data.message %}
+            {% endif %}
+            📥 SimpliSafe Message: {{ message }}
+
+  - alias: "Security: Notify when a leak is detected"
+    id: "security_notify_when_a_leak_is_detected"
+
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.basement_sensor_leak_detector
+        to: "on"
+
+      - platform: state
+        entity_id: binary_sensor.guardian_b4e62d98118d_leak_detected
+        to: "on"
+
+      - platform: state
+        entity_id: binary_sensor.kitchen_sink_sensor_leak_detector
+        to: "on"
+
+    action:
+      repeat:
+        sequence:
+          - alias: "Send the notification"
+            service: notify.everyone
+            data:
+              message: >-
+                💦 "{{ trigger.to_state.attributes.friendly_name }}" reported
+                a leak!
+              title: Leak Detected
+              data:
+                push:
+                  interruption-level: critical
+
+          - alias: "Wait 1 minute before notifying again"
+            delay: "00:01:00"
+        until:
+          - condition: template
+            value_template: "{{ states(trigger.entity_id) == 'off' }}"
+
+  - alias: "Security: Notify when smoke is detected"
+    id: "security_notify_when_smoke_is_detected"
+
+    trigger:
+      - platform: state
+        entity_id: group.smoke_detectors
+        to: "on"
+
+    action:
+      - repeat:
+          sequence:
+            - alias: "Send the notification"
+              service: notify.everyone
+              data:
+                message: "🚨 Smoke/CO has been detected."
+                title: Security Alert
+                data:
+                  push:
+                    interruption_level: critical
+
+            - alias: "Delay for 1 minute"
+              delay: "00:01:00"
+          until:
+            - condition: state
+              entity_id: group.smoke_detectors
+              state: "off"
+
+  - alias: "Security: Notify when the alarm is triggered"
+    id: "security_notify_when_the_alarm_is_triggered"
+
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.123_main_street
+        to: triggered
+
+    action:
+      - alias: "Set variables for actionable notifications"
+        variables:
+          action_disarm: "{{ 'DISARM_ALARM_' ~ context.id }}"
+
+      - alias: "Start the notification sequence"
+        repeat:
+          sequence:
+            - alias: "Send the notification"
+              service: notify.everyone
+              data:
+                message: "🚨 The alarm has been triggered."
+                title: Security Alert
+                data:
+                  actions:
+                    - action: "{{ action_disarm }}"
+                      title: Disarm
+                  push:
+                    interruption_level: critical
+
+            - alias: "Wait to see if the notification is responded to"
+              wait_for_trigger:
+                - platform: event
+                  event_type: mobile_app_notification_action
+                  event_data:
+                    action: "{{ action_disarm }}"
+              timeout: "00:01:00"
+
+            - if:
+                - alias: "Was the notification responded to?"
+                  condition: template
+                  value_template: "{{ wait.trigger is not none }}"
+              then:
+                - alias: "Disarm the alarm"
+                  service: alarm_control_panel.disarm
+                  target:
+                    entity_id: alarm_control_panel.123_main_street
+
+                - stop: "The security system has been disarmed."
+          until:
+            - condition: not
+              conditions:
+                condition: state
+                entity_id: alarm_control_panel.123_main_street
+                state: triggered
+
+  - alias: "Security: Notify when the house is empty and insecure"
+    id: "security_notify_when_the_house_is_empty_and_insecure"
+
+    trigger:
+      - platform: state
+        entity_id: sensor.proximity_zone
+        from: Home
+        for: "00:05:00"
+
+    condition:
+      - condition: state
+        entity_id: binary_sensor.secure_status
+        state: "off"
+
+    action:
+      - alias: "Set variables for actionable notifications"
+        variables:
+          action_lock_up: "{{ 'LOCK_UP_' ~ context.id }}"
+
+      - alias: "Start the notification sequence"
+        repeat:
+          while:
+            - or:
+                - condition: state
+                  entity_id: sensor.proximity_zone
+                  state: Home
+
+                - condition: state
+                  entity_id: binary_sensor.secure_status
+                  state: "on"
+          sequence:
+            - alias: "Send the notification"
+              service: notify.everyone
+              data:
+                message: "🚨 No one is home and the house isn't secure."
+                title: Security Alert
+                data:
+                  actions:
+                    - action: "{{ action_lock_up }}"
+                      title: Lock Up
+                  push:
+                    interruption_level: critical
+
+            - alias: "Wait to see if the notification is responded to"
+              wait_for_trigger:
+                - platform: event
+                  event_type: mobile_app_notification_action
+                  event_data:
+                    action: "{{ action_lock_up }}"
+              timeout: "00:05:00"
+
+            - if:
+                - alias: "Was the notification responded to?"
+                  condition: template
+                  value_template: "{{ wait.trigger is not none }}"
+              then:
+                - alias: "Lock up the house"
+                  service: script.turn_on
+                  target:
+                    entity_id: script.depart_home_mode
+
+                - stop: "The house has been locked up."
+
+  - alias: "Security: Notify when the overall security status changes"
+    id: "security_notify_when_the_overall_security_status_changes"
+
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.secure_status
+        to: "off"
+        for: "00:03:00"
+
+    action:
+      - alias: "Send the notification"
+        service: notify.aaron
+        data:
+          title: Security Update
+          message: "🔐 New state: {{ trigger.to_state.state }}"
+
+  - alias: "Security: Simulate someone being home"
+    id: "security_simulate_someone_being_home"
+    mode: parallel
+
+    trigger:
+      - platform: state
+        id: replay
+        entity_id:
+          - sensor.replay_aaron_bedside_table_left
+          - sensor.replay_aaron_bedside_table_right
+          - sensor.replay_bar_cart_leds
+          - sensor.replay_basement_cantina_lights
+          - sensor.replay_basement_overhead_lights
+          - sensor.replay_basement_stairway_lights
+          - sensor.replay_basement_tv
+          - sensor.replay_christmas_tree
+          - sensor.replay_garage_lights
+          - sensor.replay_kitchen_cabinet_lights
+          - sensor.replay_kitchen_can_lights
+          - sensor.replay_kitchen_pendant_lights
+          - sensor.replay_kitchen_table_light
+          - sensor.replay_laundry_light
+          - sensor.replay_living_room_tv
+          - sensor.replay_master_bathroom_overhead_lights
+          - sensor.replay_master_bathroom_vanity_lights
+          - sensor.replay_mud_counter_lights
+          - sensor.replay_outdoor_lights
+          - sensor.replay_reading_lamp
+          - sensor.replay_sofa_lamp
+          - sensor.replay_upstairs_stairway_lights
+
+    variables:
+      trigger_entity_map:
+        - replay_sensor: sensor.replay_aaron_bedside_table_left
+          entity: switch.aaron_bedside_table_left
+        - replay_sensor: sensor.replay_aaron_bedside_table_right
+          entity: switch.aaron_bedside_table_right
+        - replay_sensor: sensor.replay_bar_cart_leds
+          entity: switch.bar_cart_leds
+        - replay_sensor: sensor.replay_basement_cantina_lights
+          entity: switch.basement_cantina_lights
+        - replay_sensor: sensor.replay_basement_overhead_lights
+          entity: switch.basement_overhead_lights
+        - replay_sensor: sensor.replay_basement_stairway_lights
+          entity: switch.basement_stairway_lights
+        - replay_sensor: sensor.replay_basement_tv
+          entity: switch.basement_tv
+        - replay_sensor: sensor.replay_christmas_tree
+          entity: switch.christmas_tree
+        - replay_sensor: sensor.replay_garage_lights
+          entity: switch.garage_lights
+        - replay_sensor: sensor.replay_kitchen_cabinet_lights
+          entity: switch.kitchen_cabinet_lights
+        - replay_sensor: sensor.replay_kitchen_can_lights
+          entity: light.kitchen_can_lights
+        - replay_sensor: sensor.replay_kitchen_pendant_lights
+          entity: switch.kitchen_pendant_lights
+        - replay_sensor: sensor.replay_kitchen_table_light
+          entity: light.kitchen_table_light
+        - replay_sensor: sensor.replay_laundry_light
+          entity: switch.laundry_light
+        - replay_sensor: sensor.replay_living_room_tv
+          entity: switch.living_room_tv
+        - replay_sensor: sensor.replay_master_bathroom_overhead_lights
+          entity: light.master_bathroom_overhead_lights
+        - replay_sensor: sensor.replay_master_bathroom_vanity_lights
+          entity: light.master_bathroom_vanity_lights
+        - replay_sensor: sensor.replay_mud_counter_lights
+          entity: switch.mud_counter_lights
+        - replay_sensor: sensor.replay_outdoor_lights
+          entity: group.outdoor_lights
+        - replay_sensor: sensor.replay_reading_lamp
+          entity: switch.reading_lamp
+        - replay_sensor: sensor.replay_sofa_lamp
+          entity: switch.sofa_lamp
+        - replay_sensor: sensor.replay_upstairs_stairway_lights
+          entity: switch.upstairs_stairway_lights
+
+    action:
+      - if:
+          - alias: "If a replay occurs, adjust the corresponding entity"
+            condition: trigger
+            id: replay
+        then:
+          - alias: "Toggle the entity"
+            service: >
+              {% if trigger.to_state.state == "0" %}
+                homeassistant.turn_off
+              {% else %}
+                homeassistant.turn_on
+              {% endif %}
+            target:
+              entity_id: >
+                {{
+                  trigger_entity_map
+                  | selectattr("replay_sensor", "equalto", trigger.entity_id)
+                  | map(attribute="entity")
+                  | first
+                }}
+        else:
+          - alias: "Step through each replay/entity and adjust"
+            repeat:
+              for_each: "{{ trigger_entity_map }}"
+              sequence:
+                - alias: "Set the entity"
+                  service: >
+                    {% if states(repeat.item.replay_sensor) == "0" %}
+                      homeassistant.turn_off
+                    {% else %}
+                      homeassistant.turn_on
+                    {% endif %}
+                  target:
+                    entity_id: "{{ repeat.item.entity }}"
+
+binary_sensor:
+  - platform: template
+    sensors:
+      secure_status:
+        friendly_name: Security Status
+        value_template: >
+          {{
+            is_state("lock.123_main_street_patio_door", "locked")
+            and is_state("lock.front_door_lock", "locked")
+            and is_state("lock.garage_fire_door_lock", "locked")
+            and (
+              (
+                is_state(
+                  "alarm_control_panel.123_main_street",
+                  "armed_home"
+                )
+                and is_state("sensor.proximity_zone", "Home")
+              )
+              or
+              (
+                is_state(
+                  "alarm_control_panel.123_main_street",
+                  "armed_away"
+                )
+                and not is_state("sensor.proximity_zone", "Home")
+              )
+              or
+              (
+                is_state(
+                  "alarm_control_panel.123_main_street",
+                  "armed_home"
+                )
+                and is_state("vacuum.rockrobo", "cleaning")
+              )
+              or
+              (
+                is_state(
+                  "alarm_control_panel.123_main_street",
+                  "armed_home"
+                )
+                and is_state("device_tracker.bzndrxez_teddy", "home")
+              )
+            )
+            and is_state("cover.wemos_d1_mini_garage_controller", "closed")
+          }}
+
+group:
+  security_devices:
+    entities:
+      - alarm_control_panel.123_main_street
+      - cover.wemos_d1_mini_garage_controller
+      - lock.123_main_street_patio_door
+      - lock.front_door_lock
+      - lock.garage_fire_door_lock
+
+  smoke_detectors:
+    entities:
+      - binary_sensor.basement_sensor_smoke_carbon_monoxide_detector
+      - binary_sensor.basement_firefighter_smoke_alarm_smoke_detected
+      - binary_sensor.guest_bedroom_sensor_smoke_carbon_monoxide_detector
+      - binary_sensor.kitchen_sensor_smoke_carbon_monoxide_detector
+      - binary_sensor.upstairs_hallway_sensor_smoke_carbon_monoxide_detector
+
+script:
+  arm_alarm:
+    alias: "Arm the alarm appropriately"
+
+    sequence:
+      - if:
+          - alias: "Is Teddy home?"
+            condition: state
+            entity_id: device_tracker.bzndrxez_teddy
+            state: home
+        then:
+          - alias: "Arm the alarm in home mode"
+            service: alarm_control_panel.alarm_arm_home
+            target:
+              entity_id: alarm_control_panel.123_main_street
+        else:
+          - alias: "Arm the alarm in away mode"
+            service: alarm_control_panel.alarm_arm_away
+            target:
+              entity_id: alarm_control_panel.123_main_street
+
+  simulate_watching_roku:
+    alias: "Simulate Watching a Roku"
+
+    fields:
+      app:
+        description: The Roku app to select
+        example: Netflix
+
+      harmony_remote:
+        description: The Harmony Hub remote entity
+        example: remote.living_room_tv
+
+      harmony_sound_device_id:
+        description: A sound device on a Harmony remote
+        example: "31562232"
+
+      roku_media_player:
+        description: The Roku media player entity
+        example: media_player.living_room_roku
+
+      roku_remote:
+        description: The Roku remote entity
+        example: remote.living_room_roku
+
+    sequence:
+      - alias: "Turn the TV on"
+        service: remote.turn_on
+        target:
+          entity_id: "{{ harmony_remote }}"
+
+      - alias: "Delay for 10 seconds"
+        delay: "00:00:05"
+
+      - alias: "Mute the TV"
+        service: remote.send_command
+        target:
+          entity_id: "{{ harmony_remote }}"
+        data:
+          device: "{{ harmony_sound_device_id }}"
+          command: Mute
+
+      - alias: "Delay for 10 seconds"
+        delay: "00:00:05"
+
+      - alias: "Highlight the appropriate Roku app"
+        service: media_player.select_source
+        target:
+          entity_id: "{{ roku_media_player }}"
+        data:
+          source: "{{ app }}"
+
+      - alias: "Delay for 15 seconds"
+        delay: "00:00:15"
+
+      - alias: "Select the highlighted Roku app"
+        service: remote.send_command
+        target:
+          entity_id: "{{ roku_remote }}"
+        data:
+          command: Select
+
+  turn_roku_off:
+    alias: Turn a Roku off
+
+    fields:
+      harmony_remote:
+        description: The Harmony Hub remote entity
+        example: remote.living_room_tv
+
+      roku_remote:
+        description: The Roku remote entity
+        example: remote.living_room_roku
+
+    sequence:
+      - alias: "Return to the Roku home screen"
+        service: remote.send_command
+        target:
+          entity_id: "{{ roku_remote }}"
+        data:
+          command: Home
+
+      - alias: "Delay for 3 seconds"
+        delay: "00:00:03"
+
+      - alias: "Turn the TV off"
+        service: remote.turn_off
+        target:
+          entity_id: "{{ harmony_remote }}"
+
+sensor:
+  - platform: history_stats
+    name: "Replay Aaron Bedside Table Left"
+    entity_id: switch.aaron_bedside_table_left
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Aaron Bedside Table Right"
+    entity_id: switch.aaron_bedside_table_right
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Bar Cart LEDs"
+    entity_id: switch.bar_cart_leds
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Basement Cantina Lights"
+    entity_id: switch.basement_cantina_cantina_lights
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Basement Overhead Lights"
+    entity_id: switch.basement_overhead_cantina_lights
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Basement Stairway Lights"
+    entity_id: switch.basement_stairway_cantina_lights
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Basement TV"
+    entity_id: remote.basement_tv
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Christmas Tree"
+    entity_id: switch.christmas_tree
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Garage Lights"
+    entity_id: switch.garage_lights
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Kitchen Can Lights"
+    entity_id: light.kitchen_can_lights
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Kitchen Cabinet Lights"
+    entity_id: switch.kitchen_cabinet_lights
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Kitchen Pendant Lights"
+    entity_id: switch.kitchen_pendant_lights
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Kitchen Table Light"
+    entity_id: light.kitchen_table_light
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Laundry Light"
+    entity_id: switch.laundry_light
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Living Room TV"
+    entity_id: remote.living_room_tv
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Master Bathroom Overhead Lights"
+    entity_id: light.master_bathroom_overhead_lights
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Master Bathroom Vanity Lights"
+    entity_id: light.master_bathroom_vanity_lights
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Mud Counter Lights"
+    entity_id: switch.mud_counter_lights
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Outdoor Lights"
+    entity_id: group.outdoor_lights
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Reading Lamp"
+    entity_id: switch.reading_lamp
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Sofa Lamp"
+    entity_id: switch.sofa_lamp
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+  - platform: history_stats
+    name: "Replay Upstairs Stairway Lights"
+    entity_id: switch.upstairs_stairway_lights
+    state: "on"
+    type: count
+    start: >
+      {{ now() - timedelta(weeks=1) }}
+    duration: 00:00:30
+
+switch:
+  - platform: template
+    switches:
+      basement_tv:
+        friendly_name: "Simulated Basement TV"
+        value_template: "{{ is_state('remote.basement_tv', 'on') }}"
+
+        turn_on:
+          service: script.turn_on
+          target:
+            entity_id: script.simulate_watching_roku
+          data:
+            variables:
+              app: Denver News from 9NEWS KUSA
+              harmony_remote: remote.basement_tv
+              harmony_sound_device_id: "60087285"
+              roku_media_player: media_player.basement_roku
+              roku_remote: remote.basement_roku
+
+        turn_off:
+          service: script.turn_on
+          target:
+            entity_id: script.turn_roku_off
+          data:
+            variables:
+              harmony_remote: remote.basement_tv
+              roku_remote: remote.basement_roku
+
+      living_room_tv:
+        friendly_name: "Simulated Living Room TV"
+        value_template: "{{ is_state('remote.living_room_tv', 'on') }}"
+
+        turn_on:
+          service: script.turn_on
+          target:
+            entity_id: script.simulate_watching_roku
+          data:
+            variables:
+              app: Denver News from 9NEWS KUSA
+              harmony_remote: remote.living_room_tv
+              harmony_sound_device_id: "31562232"
+              roku_media_player: media_player.living_room_roku
+              roku_remote: remote.living_room_roku
+
+        turn_off:
+          service: script.turn_on
+          target:
+            entity_id: script.turn_roku_off
+          data:
+            variables:
+              harmony_remote: remote.living_room_tv
+              roku_remote: remote.living_room_roku
+
+      simplisafe_audible_notifications:
+        friendly_name: "SimpliSafe Audible Notifications"
+
+        turn_on:
+          service: simplisafe.set_system_properties
+          data:
+            device_id: 936e2eebe6c64edfb380853bcab5fe8c
+            chime_volume: medium
+            voice_prompt_volume: medium
+
+        turn_off:
+          service: simplisafe.set_system_properties
+          data:
+            device_id: 936e2eebe6c64edfb380853bcab5fe8c
+            chime_volume: "off"
+            voice_prompt_volume: "off"

@@ -1,0 +1,32 @@
+---
+# Base Configuration:
+homeassistant:
+  auth_providers: !include conf/auth_providers.yaml
+  customize: !include customize.yaml
+  elevation: !secret base_elevation
+  external_url: !secret hass_url_external
+  internal_url: !secret hass_url_internal
+  latitude: !secret base_latitude
+  longitude: !secret base_longitude
+  name: !secret base_name
+  packages: !include_dir_named conf/packages/
+  temperature_unit: F
+  time_zone: !secret base_time_zone
+  unit_system: imperial
+
+# Core Configuration
+conversation:
+default_config:
+frontend: !include conf/frontend.yaml
+http: !include conf/http.yaml
+logger: !include conf/logger.yaml
+lovelace:
+panel_iframe: !include conf/panel-iframe.yaml
+recorder: !include conf/recorder.yaml
+stream:
+scene: !include scenes.yaml
+
+# Integrations:
+ffmpeg: !include conf/ffmpeg.yaml
+proximity: !include conf/proximity.yaml
+zone: !include conf/zones.yaml

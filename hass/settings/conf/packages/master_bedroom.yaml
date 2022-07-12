@@ -1,0 +1,371 @@
+---
+automation:
+  - alias: "Master Bedroom: Cycle toilet fan during the day"
+    id: "master_bedroom_cycle_toilet_fan_during_the_day"
+
+    trigger:
+      - platform: time_pattern
+        hours: "/1"
+        minutes: 5
+
+    action:
+      - alias: "Set the input number"
+        service: input_number.set_value
+        target:
+          entity_id: input_number.master_toilet_fan_timer
+        data:
+          value: 15
+
+  - alias: "Master Bedroom: Manage the Dyson fan schedule"
+    id: "master_bedroom_manage_the_dyson_fan_schedule"
+
+    trigger:
+      - platform: numeric_state
+        id: good_humidity
+        entity_id: sensor.pure_humidify_cool_humidity
+        above: 35
+        for: "00:05:00"
+
+      - platform: numeric_state
+        id: low_humidity
+        entity_id: sensor.pure_humidify_cool_humidity
+        below: 35
+        for: "00:05:00"
+
+      - platform: state
+        id: away_mode_off
+        entity_id: input_boolean.climate_away_mode
+        to: "off"
+
+      - platform: state
+        id: away_mode_on
+        entity_id: input_boolean.climate_away_mode
+        to: "on"
+
+      - platform: state
+        entity_id:
+          - binary_sensor.in_bed
+          - input_number.daytime_dyson_fan_speed
+          - input_number.nighttime_dyson_fan_speed
+
+    action:
+      choose:
+        - alias: "Handle turning Climate Away Mode on"
+          conditions:
+            - condition: trigger
+              id: away_mode_on
+
+          sequence:
+            - alias: "Turn our bedroom fan off"
+              service: fan.turn_off
+              target:
+                entity_id: fan.pure_humidify_cool
+
+        - alias: "Handle turning Climate Away Mode off"
+          conditions:
+            - condition: trigger
+              id: away_mode_off
+
+          sequence:
+            - alias: "Turn our bedroom fan on "
+              service: fan.turn_on
+              target:
+                entity_id: fan.pure_humidify_cool
+
+        - alias: "Handle good humidity"
+          conditions:
+            - condition: trigger
+              id: good_humidity
+
+          sequence:
+            - alias: "Turn our the fan's humidifier off"
+              service: humidifier.turn_off
+              target:
+                entity_id: humidifier.pure_humidify_cool
+
+        - alias: "Handle low humidity"
+          conditions:
+            - condition: trigger
+              id: low_humidity
+
+          sequence:
+            - alias: "Turn our the fan's humidifier on"
+              service: humidifier.turn_on
+              target:
+                entity_id: humidifier.pure_humidify_cool
+
+        - alias: "Handle our daytime-and-at-home fan schedule"
+          conditions:
+            - condition: state
+              entity_id: binary_sensor.in_bed
+              state: "off"
+
+            - condition: state
+              entity_id: input_boolean.climate_away_mode
+              state: "off"
+
+          sequence:
+            - alias: "Turn Night Mode off"
+              service: switch.turn_off
+              target:
+                entity_id: switch.pure_humidify_cool_night_mode
+
+            - alias: "Set the fan speed"
+              service: fan.set_percentage
+              target:
+                entity_id: fan.pure_humidify_cool
+              data:
+                percentage: >
+                  {{ states("input_number.daytime_dyson_fan_speed") | int }}
+
+        - alias: "Handle our nighttime-and-at-home fan schedule"
+          conditions:
+            - condition: state
+              entity_id: binary_sensor.in_bed
+              state: "on"
+
+            - condition: state
+              entity_id: input_boolean.climate_away_mode
+              state: "off"
+
+          sequence:
+            - alias: "Turn Night Mode off"
+              service: switch.turn_on
+              target:
+                entity_id: switch.pure_humidify_cool_night_mode
+
+            - alias: "Set the fan speed"
+              service: fan.set_percentage
+              target:
+                entity_id: fan.pure_humidify_cool
+              data:
+                percentage: >
+                  {{ states("input_number.nighttime_dyson_fan_speed") | int }}
+
+  - alias: "Master Bedroom: Manage bathroom fan via switch double-tap"
+    id: "master_bedroom_manage_bathroom_fan_via_switch_double_tap"
+
+    use_blueprint:
+      path: bachya/zwave-double-tap.yaml
+
+      input:
+        ge_switch: 26da9edc7a5af4e09bae6ee15ea2d94c
+
+        down_action:
+          - alias: "Cancel the timer"
+            service: timer.cancel
+            target:
+              entity_id: timer.master_bathroom_fan_timer
+
+        up_action:
+          - alias: "Set the input number"
+            service: input_number.set_value
+            target:
+              entity_id: input_number.master_bathroom_fan_timer
+            data:
+              value: 30
+
+  - alias: "Master Bedroom: Manage bathroom fan sleep timer"
+    id: "master_bedroom_manage_bathroom_fan_sleep_timer"
+
+    use_blueprint:
+      path: bachya/sleep-timer.yaml
+
+      input:
+        input_number: input_number.master_bathroom_fan_timer
+
+        timer: timer.master_bathroom_fan_timer
+
+        timer_cancel_action:
+          - alias: "Turn the fan off"
+            service: switch.turn_off
+            target:
+              entity_id: switch.master_bathroom_fan
+
+        timer_expire_action:
+          - alias: "Turn the fan off"
+            service: switch.turn_off
+            target:
+              entity_id: switch.master_bathroom_fan
+
+        timer_start_action:
+          - alias: "Turn the fan on"
+            service: switch.turn_on
+            target:
+              entity_id: switch.master_bathroom_fan
+
+  - alias: "Master Bedroom: Manage salt lamp sleep timer"
+    id: "master_bedroom_manage_salt_lamp_sleep_timer"
+
+    use_blueprint:
+      path: bachya/sleep-timer.yaml
+
+      input:
+        input_number: input_number.master_bedroom_salt_lamp_timer
+
+        timer: timer.master_bedroom_salt_lamp_timer
+
+        timer_cancel_action:
+          - alias: "Turn the lamp off"
+            service: switch.turn_off
+            target:
+              entity_id: switch.aaron_bedside_table_right
+
+        timer_expire_action:
+          - alias: "Turn the lamp off"
+            service: switch.turn_off
+            target:
+              entity_id: switch.aaron_bedside_table_right
+
+        timer_start_action:
+          - alias: "Turn the lamp on"
+            service: switch.turn_on
+            target:
+              entity_id: switch.aaron_bedside_table_right
+
+  - alias: "Master Bedroom: Manage toilet fan via switch double-tap"
+    id: "master_bedroom_manage_toilet_fan_via_switch_double_tap"
+
+    use_blueprint:
+      path: bachya/zwave-double-tap.yaml
+
+      input:
+        ge_switch: 7adf54008205f0df3e350b1e913ce7ed
+
+        down_action:
+          - alias: "Cancel the timer"
+            service: timer.cancel
+            target:
+              entity_id: timer.master_toilet_fan_timer
+
+        up_action:
+          - alias: "Set the input number"
+            service: input_number.set_value
+            target:
+              entity_id: input_number.master_toilet_fan_timer
+            data:
+              value: 10
+
+  - alias: "Master Bedroom: Manage toilet fan sleep timer"
+    id: "master_bedroom_manage_toilet_fan_sleep_timer"
+
+    use_blueprint:
+      path: bachya/sleep-timer.yaml
+
+      input:
+        input_number: input_number.master_toilet_fan_timer
+
+        timer: timer.master_toilet_fan_timer
+
+        timer_cancel_action:
+          - alias: "Turn the fan off"
+            service: switch.turn_off
+            target:
+              entity_id: switch.master_toilet_fan
+
+        timer_expire_action:
+          - alias: "Turn the fan off"
+            service: switch.turn_off
+            target:
+              entity_id: switch.master_toilet_fan
+
+        timer_start_action:
+          - alias: "Turn the fan on"
+            service: switch.turn_on
+            target:
+              entity_id: switch.master_toilet_fan
+
+  - alias: "Master Bedroom: Turn Spouse's plug off if it's on when we leave"
+    id: "master_bedroom_turn_spouse_s_plug_off_if_it_s_on_when_we_leave"
+
+    trigger:
+      - platform: state
+        entity_id: sensor.proximity_zone
+        from: Home
+
+    condition:
+      - condition: numeric_state
+        entity_id: sensor.spouse_s_bathroom_outlet_power
+        above: 0
+
+    action:
+      - alias: "Send the notification"
+        service: notify.everyone
+        data:
+          title: Spouse's Plug
+          message: >
+            🔌 Spouse's plug was left on; turning it off since everyone is gone.
+
+      - alias: "Turn the plug off"
+        service: switch.turn_off
+        target:
+          entity_id: switch.spouse_s_bathroom_outlet
+
+  - alias: "Master Bedroom: Turn bathroom fan off after 2 hours"
+    id: "master_bedroom_turn_bathroom_fan_off_after_2_hours"
+
+    trigger:
+      - platform: state
+        entity_id: switch.master_bathroom_fan
+        to: "on"
+        for: "02:00:00"
+
+    action:
+      - alias: "Turn the fan off"
+        service: switch.turn_off
+        target:
+          entity_id: switch.master_bathroom_fan
+
+input_number:
+  daytime_dyson_fan_speed:
+    name: "Daytime Dyson Fan Speed"
+    min: 0
+    max: 100
+    step: 10
+    unit_of_measurement: "%"
+    icon: mdi:fan
+
+  master_bathroom_fan_timer:
+    name: Sleep Timer
+    initial: 0
+    min: 0
+    max: 90
+    step: 1
+    unit_of_measurement: minutes
+    icon: mdi:timer
+
+  master_toilet_fan_timer:
+    name: Sleep Timer
+    initial: 0
+    min: 0
+    max: 90
+    step: 1
+    unit_of_measurement: minutes
+    icon: mdi:timer
+
+  master_bedroom_salt_lamp_timer:
+    name: Sleep Timer
+    initial: 0
+    min: 0
+    max: 90
+    step: 1
+    unit_of_measurement: minutes
+    icon: mdi:timer
+
+  nighttime_dyson_fan_speed:
+    name: "Nighttime Dyson Fan Speed"
+    min: 0
+    max: 100
+    step: 10
+    unit_of_measurement: "%"
+    icon: mdi:fan
+
+timer:
+  master_bathroom_fan_timer:
+    name: Sleep Timer Remaining
+
+  master_bedroom_salt_lamp_timer:
+    name: Sleep Timer Remaining
+
+  master_toilet_fan_timer:
+    name: Sleep Timer Remaining

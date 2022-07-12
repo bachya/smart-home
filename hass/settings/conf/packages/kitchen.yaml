@@ -1,0 +1,159 @@
+---
+automation:
+  - alias: "Kitchen: Manage dishwasher state"
+    id: "kitchen_manage_dishwasher_state"
+    mode: restart
+
+    trigger:
+      - platform: numeric_state
+        id: high_power
+        entity_id: sensor.dishwasher_electric_consumed_w
+        above: 9
+
+      - platform: numeric_state
+        id: low_power
+        entity_id: sensor.dishwasher_electric_consumed_w
+        below: 4
+        for: "00:05:00"
+
+      - platform: state
+        id: clean
+        entity_id: input_select.dishwasher_status
+        to: Drying
+        for: "00:15:00"
+
+    action:
+      choose:
+        - alias: "Set the dishwasher to 'Running'"
+          conditions:
+            condition: trigger
+            id: high_power
+
+          sequence:
+            - alias: "Set the input select"
+              service: input_select.select_option
+              target:
+                entity_id: input_select.dishwasher_status
+              data:
+                option: Running
+
+        - alias: "Set the dishwasher to 'Drying'"
+          conditions:
+            - condition: trigger
+              id: low_power
+
+            - condition: state
+              entity_id: input_select.dishwasher_status
+              state: Running
+
+          sequence:
+            - alias: "Set the input select"
+              service: input_select.select_option
+              target:
+                entity_id: input_select.dishwasher_status
+              data:
+                option: Drying
+
+        - alias: "Set the dishwasher to 'Clean'"
+          conditions:
+            - condition: trigger
+              id: clean
+
+          sequence:
+            - alias: "Set the input select"
+              service: input_select.select_option
+              target:
+                entity_id: input_select.dishwasher_status
+              data:
+                option: Clean
+
+  - alias: "Kitchen: Notify when the dishwasher is clean"
+    id: "kitchen_notify_when_the_dishwasher_is_clean"
+
+    trigger:
+      - platform: homeassistant
+        event: start
+
+      - platform: state
+        entity_id: input_select.dishwasher_status
+        to: Clean
+        for: "00:15:00"
+
+    condition:
+      - condition: state
+        entity_id: input_select.dishwasher_status
+        state: Clean
+
+    action:
+      - alias: "Set variables for actionable notifications"
+        variables:
+          action_mark_dirty: "{{ 'MARK_DISHWASHER_DIRTY_' ~ context.id }}"
+
+      - alias: "Start the notification sequence"
+        repeat:
+          sequence:
+            - alias: "Send the notification"
+              service: script.turn_on
+              target:
+                entity_id: script.notify_everyone_at_home
+              data:
+                variables:
+                  actions:
+                    - action: "{{ action_mark_dirty }}"
+                      title: Mark Dishwasher as Dirty
+                  message: "🍽  The dishwasher is clean and can be emptied."
+                  title: Dishwasher Done
+
+            - alias: "Wait to see if the notification is responded to"
+              wait_for_trigger:
+                - platform: event
+                  event_type: mobile_app_notification_action
+                  event_data:
+                    action: "{{ action_mark_dirty }}"
+              timeout: "02:00:00"
+
+            - if:
+                - alias: "Was the notification responded to?"
+                  condition: template
+                  value_template: "{{ wait.trigger is not none }}"
+              then:
+                - alias: "Mark the dishwasher as empty"
+                  service: input_select.select_option
+                  data:
+                    entity_id: input_select.dishwasher_status
+                    option: Dirty
+
+                - stop: "The dishwasher has been marked as dirty."
+          until:
+            - condition: state
+              entity_id: input_select.dishwasher_status
+              state: Dirty
+
+group:
+  kitchen_lights:
+    entities:
+      - light.kitchen_can_lights
+      - switch.bar_cart_leds
+      - switch.kitchen_pendant_lights
+      - switch.kitchen_cabinet_lights
+      - light.kitchen_table_light
+      - switch.mud_counter_lights
+
+input_select:
+  dishwasher_status:
+    name: Status
+    options:
+      - Dirty
+      - Running
+      - Drying
+      - Clean
+
+script:
+  empty_dishwasher:
+    alias: "Empty Dishwasher"
+    sequence:
+      - alias: "Set the input select"
+        service: input_select.select_option
+        data:
+          entity_id: input_select.dishwasher_status
+          option: Dirty

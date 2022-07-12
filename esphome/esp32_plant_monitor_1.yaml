@@ -1,0 +1,24 @@
+---
+packages:
+  device_base: !include common/device_base.yaml
+
+substitutions:
+  device_name: esp32-plant-monitor1
+  device_friendly_name: ESP32 Plant Monitor 1
+  device_static_ip: 172.16.20.197
+
+esp32_ble_tracker:
+
+esphome:
+  board: nodemcu-32s
+  platform: ESP32
+
+sensor:
+  - conductivity:
+      name: Fiddle Leaf Fig Conductivity
+    mac_address: XX:XX:XX:XX:XX:XX
+    moisture:
+      name: Fiddle Leaf Fig Moisture
+    platform: xiaomi_hhccjcy01
+    temperature:
+      name: Fiddle Leaf Fig Temperature

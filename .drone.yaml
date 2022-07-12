@@ -1,0 +1,212 @@
+---
+kind: pipeline
+name: Pre-Flight
+
+trigger:
+  event:
+    - push
+
+steps:
+  - name: Restore .pre-commit Cache
+    image: meltwater/drone-cache:master-9a52545
+    settings:
+      archive_format: gzip
+      backend: filesystem
+      cache_key: pre_commit
+      mount:
+        - /drone/src/.pre-commit-cache
+      restore: true
+    volumes:
+      - name: cache
+        path: /tmp/cache
+
+  - name: Run All .pre-commit Hooks
+    image: python:3
+    environment:
+      PRE_COMMIT_HOME: /drone/src/.pre-commit-cache
+    commands:
+      - pip3 install pre-commit
+      - pre-commit install-hooks --config .pre-commit-config.yaml
+      - pre-commit run --all-files
+
+  - name: Rebuild .pre-commit Cache
+    image: meltwater/drone-cache:master-9a52545
+    settings:
+      archive_format: gzip
+      backend: filesystem
+      cache_key: pre_commit
+      mount:
+        - /drone/src/.pre-commit-cache
+      rebuild: true
+    volumes:
+      - name: cache
+        path: /tmp/cache
+
+  - name: Validate docker-compose.yml
+    image: wernight/docker-compose:1.24.0
+    commands:
+      - docker-compose config -q
+
+volumes:
+  - name: cache
+    host:
+      path: /var/lib/cache
+
+---
+kind: pipeline
+name: ESPHome
+
+trigger:
+  event:
+    - push
+
+depends_on:
+  - Pre-Flight
+
+steps:
+  - name: "Config Check: Beta"
+    image: esphome/esphome:beta
+    pull: always
+    failure: ignore
+    commands:
+      - "for file in $(
+        find /drone/src/esphome
+        -type f
+        -name \"*.yaml\"
+        -not \ -name \"secrets.yaml\"
+        -not -name \".*.yaml\"
+        ); do esphome config \"$file\"; done"
+
+  - name: "Config Check: Latest"
+    image: esphome/esphome:latest
+    pull: always
+    commands:
+      - "for file in $(
+        find /drone/src/esphome
+        -type f
+        -name \"*.yaml\"
+        -not \ -name \"secrets.yaml\"
+        -not -name \".*.yaml\"
+        ); do esphome config \"$file\"; done"
+
+---
+kind: pipeline
+name: Fail2Ban
+
+trigger:
+  event:
+    - push
+
+depends_on:
+  - Pre-Flight
+
+steps:
+  - name: Config Check
+    image: alpine:3.10.1
+    commands:
+      - apk update && apk add --no-cache fail2ban
+      - ln -s ./fail2ban/settings /etc/fail2ban
+      - touch /var/log/messages
+      - mkdir -p /var/log/nginx
+      - touch /var/log/nginx/access.log
+      - touch /var/log/nginx/error.log
+      - fail2ban-client -t
+
+---
+kind: pipeline
+name: Home Assistant
+
+trigger:
+  event:
+    - push
+
+depends_on:
+  - Pre-Flight
+
+steps:
+  - name: "Config Check: Beta"
+    image: homeassistant/home-assistant:beta
+    pull: always
+    failure: ignore
+    commands:
+      - cd /usr/src/homeassistant
+      - "python -m homeassistant -c /drone/src/hass/settings \
+        --script check_config"
+
+  - name: "Config Check: RC"
+    image: homeassistant/home-assistant:rc
+    pull: always
+    failure: ignore
+    commands:
+      - cd /usr/src/homeassistant
+      - "python -m homeassistant -c /drone/src/hass/settings \
+        --script check_config"
+
+  - name: "Config Check: Latest"
+    image: homeassistant/home-assistant:latest
+    pull: always
+    commands:
+      - cd /usr/src/homeassistant
+      - "python -m homeassistant -c /drone/src/hass/settings \
+        --script check_config"
+
+---
+kind: pipeline
+name: Build Notification
+
+trigger:
+  event:
+    - push
+  status:
+    - success
+    - failure
+
+depends_on:
+  - ESPHome
+  - Fail2Ban
+  - Home Assistant
+
+steps:
+  - name: Send Notification
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: slack_webhook
+      channel:
+        from_secret: slack_channel_name
+      template: >-
+        {{#success build.status}}
+          `{{repo.name}}/{{build.branch}}`: Build #{{build.number}}
+          successful ({{build.link}})
+        {{else}}
+          `{{repo.name}}/{{build.branch}}`: Build #{{build.number}}
+          failed ({{build.link}})
+        {{/success}}
+    when:
+      status:
+        - failure
+        - success
+
+---
+kind: pipeline
+name: Deploy
+
+trigger:
+  event:
+    - promote
+  target:
+    - production
+
+steps:
+  - name: Deploy
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: deploy_ssh_host
+      username:
+        from_secret: deploy_ssh_username
+      port:
+        from_secret: deploy_ssh_port
+      key:
+        from_secret: deploy_ssh_key
+      command_timeout: 5m

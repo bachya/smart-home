@@ -1,0 +1,129 @@
+---
+automation:
+  - alias: "Sprinkler System: Manage Flower Box sleep timer"
+    id: "sprinkler_system_manage_flower_box_sleep_timer"
+
+    use_blueprint:
+      path: bachya/sleep-timer.yaml
+
+      input:
+        input_number: input_number.flower_box_timer
+
+        timer: timer.flower_box_timer
+
+        timer_cancel_action:
+          - alias: "Stop the zone"
+            service: rainmachine.stop_zone
+            target:
+              entity_id: switch.home_flower_box
+
+        timer_expire_action:
+          - alias: "Stop the zone"
+            service: rainmachine.stop_zone
+            target:
+              entity_id: switch.home_flower_box
+
+        timer_start_action:
+          - alias: "Set needed variables"
+            variables:
+              input: !input input_number
+
+          - alias: "Start the zone"
+            service: rainmachine.start_zone
+            target:
+              entity_id: switch.home_flower_box
+            data:
+              zone_run_time: >-
+                {{ states("input_number.flower_box_timer") | int * 60 }}
+
+  - alias: "Sprinkler System: Manage Landscaping sleep timer"
+    id: "sprinkler_system_manage_landscaping_sleep_timer"
+
+    use_blueprint:
+      path: bachya/sleep-timer.yaml
+
+      input:
+        input_number: input_number.landscaping_timer
+
+        timer: timer.landscaping_timer
+
+        timer_cancel_action:
+          - alias: "Stop the zone"
+            service: rainmachine.stop_zone
+            target:
+              entity_id: switch.home_landscaping
+
+        timer_expire_action:
+          - alias: "Stop the zone"
+            service: rainmachine.stop_zone
+            target:
+              entity_id: switch.home_landscaping
+
+        timer_start_action:
+          - alias: "Set needed variables"
+            variables:
+              input: !input input_number
+
+          - alias: "Start the zone"
+            service: rainmachine.start_zone
+            target:
+              entity_id: switch.home_landscaping
+            data: >-
+              {{ states("input_number.landscaping_timer") | int * 60 }}
+
+  - alias: "Sprinkler System: Send data from Ambient Weather to RainMachine"
+    id: "sprinkler_system_send_data_from_ambient_weather_to_rainmachine"
+
+    trigger:
+      - platform: state
+        entity_id:
+          - sensor.side_yard_abs_pressure
+          - sensor.side_yard_dew_point
+          - sensor.side_yard_event_rain
+          - sensor.side_yard_solar_rad
+          - sensor.side_yard_temp
+          - sensor.side_yard_wind_speed
+
+    action:
+      - alias: "Send data to RainMachine"
+        service: rainmachine.push_weather_data
+        data:
+          device_id: f9e1ef4a97bcfe0bce7bd6c13f06145d
+          dewpoint: >-
+            {{ (states("sensor.side_yard_dew_point")|float - 32) * (5/9) }}
+          rain: >-
+            {{ states("sensor.side_yard_event_rain")|float * 25.4 }}
+          pressure: >-
+            {{ states("sensor.side_yard_abs_pressure")|float * 3.386 }}
+          solarrad: >-
+            {{ states("sensor.side_yard_solar_rad")|float * 0.0036 }}
+          temperature: >-
+            {{ (states("sensor.side_yard_temp")|float - 32) * (5/9) }}
+          wind: >-
+            {{ states("sensor.side_yard_wind_speed")|float / 2.237}}
+
+input_number:
+  flower_box_timer:
+    name: Flower Box Timer
+    initial: 0
+    min: 0
+    max: 60
+    step: 5
+    unit_of_measurement: minutes
+    icon: mdi:timer
+
+  landscaping_timer:
+    name: Landscaping Timer
+    initial: 0
+    min: 0
+    max: 60
+    step: 5
+    unit_of_measurement: minutes
+    icon: mdi:timer
+
+timer:
+  flower_box_timer:
+    name: Sleep Timer Remaining
+
+  landscaping_timer:
+    name: Sleep Timer Remaining

@@ -1,0 +1,105 @@
+---
+automation:
+  - alias: "3D Printer: Notify on state change"
+    id: "3d_printer_notify_on_state_change"
+
+    trigger:
+      - platform: state
+        entity_id: sensor.octoprint_current_state
+        id: printing_started
+        from: Operational
+        to: Printing
+
+      - platform: state
+        entity_id: sensor.octoprint_current_state
+        id: printing_stoppped
+        from: Printing
+        to: Operational
+
+    action:
+      - if:
+          - alias: "Notify Aaron (if at home) that a print is complete"
+            condition: trigger
+            id: printing_stoppped
+        then:
+          - alias: "Send the notification"
+            service: script.turn_on
+            target:
+              entity_id: script.notify_person_if_at_home
+            data:
+              variables:
+                name: aaron
+                message: "🦿 Print is complete!"
+                title: 3D Printer
+        else:
+          - alias: "Send the notification"
+            service: script.turn_on
+            target:
+              entity_id: script.notify_person_if_at_home
+            data:
+              variables:
+                name: aaron
+                message: "🦿 Print has started..."
+                title: 3D Printer
+
+  - alias: "3D Printer: Turn off when print completes"
+    id: "3d_printer_turn_off_when_print_completes"
+
+    trigger:
+      - platform: state
+        entity_id: sensor.octoprint_current_state
+        from: Printing
+        to: Operational
+        for: "00:10:00"
+
+    action:
+      - alias: "Notify Aaron (if at home) that the printer is turning off"
+        service: script.turn_on
+        target:
+          entity_id: script.notify_person_if_at_home
+        data:
+          variables:
+            name: aaron
+            message: "🦿 Turning printer off."
+            title: 3D Printer
+
+      - alias: "Turn the printer off"
+        service: switch.turn_off
+        target:
+          entity_id: switch.toggle_3d_printer
+
+rest_command:
+  turn_off_octopi:
+    url: "http://octopi.phil.iot/api/system/commands/core/shutdown"
+    method: post
+    headers:
+      Host: octopi.phil.iot
+      X-Api-Key: !secret octoprint_api_key
+
+switch:
+  - platform: template
+    switches:
+      toggle_3d_printer:
+        friendly_name: Power
+
+        value_template: >
+          {{ not is_state("sensor.ender_3_state", "unavailable") and
+            is_state("switch.3d_printer", "on") }}
+
+        turn_off:
+          - alias: "Shut OctoPi down"
+            service: rest_command.turn_off_octopi
+
+          - alias: "Delay for 10 seconds"
+            delay: "00:00:10"
+
+          - alias: "Turn the printer's power off"
+            service: switch.turn_off
+            target:
+              entity_id: switch.3d_printer
+
+        turn_on:
+          - alias: "Turn the printer's power on"
+            service: switch.turn_on
+            target:
+              entity_id: switch.3d_printer

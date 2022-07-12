@@ -1,0 +1,67 @@
+---
+mqtt:
+  sensor:
+    - device_class: energy
+      availability_topic: rtlamr/status
+      json_attributes_topic: rtlamr/101905796/attributes
+      name: Electricity Meter
+      state_class: total_increasing
+      state_topic: rtlamr/101905796/state
+      unique_id: electricity_meter_01
+      unit_of_measurement: kWh
+      value_template: "{{ value | float / 1000 }}"
+
+    - device_class: gas
+      availability_topic: rtlamr/status
+      json_attributes_topic: rtlamr/51643176/attributes
+      name: Gas Meter
+      state_class: total_increasing
+      state_topic: rtlamr/51643176/state
+      unique_id: gas_meter_01
+      unit_of_measurement: m³
+      value_template: "{{ value | float / 100 * 2.83168 }}"
+
+sensor:
+  - platform: integration
+    source: sensor.bar_cart_leds_power
+    name: "Bar Cart LEDs: Energy Spent"
+    unit_prefix: k
+    round: 2
+
+  - platform: integration
+    source: sensor.basement_lights_power
+    name: "Basement Lights: Energy Spent"
+    unit_prefix: k
+    round: 2
+
+  - platform: integration
+    source: sensor.spouse_s_bathroom_outlet_power
+    name: "Spouse's Bathroom Outlet: Energy Spent"
+    unit_prefix: k
+    round: 2
+
+  - platform: integration
+    source: sensor.christmas_tree_power
+    name: "Christmas Tree: Energy Spent"
+    unit_prefix: k
+    round: 2
+
+  - platform: integration
+    source: sensor.sofa_lamp_power
+    name: "Sofa Lamp: Energy Spent"
+    unit_prefix: k
+    round: 2
+
+  - platform: integration
+    source: sensor.envoy_202142004921_current_power_production
+    method: left
+    name: "Solar: Energy Produced"
+    unit_prefix: k
+    unit_time: h
+    round: 2
+
+  - platform: integration
+    source: sensor.reading_lamp_power
+    name: "Reading Lamp: Energy Spent"
+    unit_prefix: k
+    round: 2

@@ -1,0 +1,76 @@
+---
+packages:
+  device_base: !include ../common/device_base.yaml
+
+binary_sensor:
+  - name: Power Button
+    on_press:
+      - switch.toggle: relay
+    pin:
+      number: GPIO3
+    platform: gpio
+
+esphome:
+  board: esp8285
+  platform: ESP8266
+
+sensor:
+  - cf1_pin: GPIO05
+    cf_pin: GPIO04
+    current:
+      accuracy_decimals: 3
+      filters:
+        - calibrate_linear:
+            - 0.0 -> 0.013
+            - 0.09994 -> 0.077
+            - 0.10139 -> 0.077
+            - 0.10284 -> 0.077
+        - lambda: if (x < 0.01) return 0; else return (x - 0.013);
+      name: ${device_friendly_name} Current
+    platform: hlw8012
+
+    power:
+      accuracy_decimals: 0
+      filters:
+        - calibrate_linear:
+            - 0.0 -> 0.5
+            - 7.24053 -> 5.3
+            - 8.27489 -> 5.3
+        - lambda: if (x < 2) return 0; else return (x - 0.5);
+      name: ${device_friendly_name} Power
+
+    sel_pin:
+      inverted: true
+      number: GPIO12
+
+    update_interval: 10s
+
+    voltage:
+      accuracy_decimals: 1
+      filters:
+        - calibrate_linear:
+            - 0.0 -> 0.0
+            - 128.88396 -> 119.8
+            - 128.96568 -> 119.8
+            - 129.04739 -> 119.9
+      name: ${device_friendly_name} Voltage
+
+status_led:
+  pin:
+    inverted: true
+    number: GPIO1
+
+switch:
+  - id: led
+    inverted: true
+    pin: GPIO13
+    platform: gpio
+
+  - id: relay
+    name: ${device_friendly_name}
+    on_turn_off:
+      - switch.turn_off: led
+    on_turn_on:
+      - switch.turn_on: led
+    pin: GPIO14
+    platform: gpio

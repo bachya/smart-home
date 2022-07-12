@@ -1,0 +1,52 @@
+---
+blueprint:
+  name: Z-Wave Double Tap
+  description: Perform actions when double-tapping a GE Z-Wave switch up or down
+  domain: automation
+
+  input:
+    ge_switch:
+      name: GE Z-Wave Switch
+      description: The GE Z-Wave Switch to interact with.
+      selector:
+        device:
+          integration: zwave_js
+          manufacturer: "GE/Jasco"
+          model: "14291 / ZW4005"
+
+    down_action:
+      name: Action on Double-Tap Down
+      description: The action(s) to run when the switch is double-tapped down
+      default: []
+      selector:
+        action: {}
+
+    up_action:
+      name: Action on Double-Tap Up
+      description: The action(s) to run when the switch is double-tapped up
+      default: []
+      selector:
+        action: {}
+
+mode: restart
+
+trigger:
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      command_class_name: Basic
+      device_id: !input ge_switch
+
+action:
+  - alias: "Set some variables"
+    variables:
+      value: "{{ trigger.event.data.value | int }}"
+
+  - choose:
+      - alias: "Handle a down double-tap"
+        conditions: "{{ value == 0 }}"
+        sequence: !input down_action
+
+      - alias: "Handle an up double-tap"
+        conditions: "{{ value == 255 }}"
+        sequence: !input up_action

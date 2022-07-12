@@ -1,0 +1,378 @@
+---
+automation:
+  - alias: "Wolfie: Adjust alarm during cleanup"
+    id: "wolfie_adjust_alarm_during_cleanup"
+
+    trigger:
+      - platform: state
+        entity_id: vacuum.rockrobo
+        to: ~
+
+      - platform: state
+        entity_id: alarm_control_panel.123_main_street
+        to: armed_away
+
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: alarm_control_panel.123_main_street
+                state: armed_away
+
+              - condition: state
+                entity_id: vacuum.rockrobo
+                state: cleaning
+
+            sequence:
+              - alias: "Send the notification"
+                service: notify.everyone
+                data:
+                  title: Security Update
+                  message: >
+                    🤖 Temporarily arming the security system to "home" while
+                    Wolfie cleans.
+
+              - alias: "Pause Wolfie"
+                service: vacuum.pause
+                target:
+                  entity_id: vacuum.rockrobo
+
+              - alias: "Arm the alarm in home mode"
+                service: alarm_control_panel.alarm_arm_home
+                target:
+                  entity_id: alarm_control_panel.123_main_street
+
+              - alias: "Wait until the alarm arming is complete"
+                wait_template: >
+                  {{ is_state(
+                    "alarm_control_panel.123_main_street", "armed_home"
+                  ) }}
+                timeout: "00:01:00"
+                continue_on_timeout: false
+
+              - alias: "Start Wolfie"
+                service: vacuum.start
+                target:
+                  entity_id: vacuum.rockrobo
+
+              - alias: "Wait until Wolfie has returned to the dock"
+                wait_template: >
+                  {{ is_state(
+                    "vacuum.rockrobo", "docked"
+                  ) }}
+
+              - alias: "Send the notification"
+                service: notify.everyone
+                data:
+                  title: Security Update
+                  message: >
+                    🤖 Re-arming the security system now that Wolfie is done
+                    cleaning.
+
+              - alias: "Arm the alarm"
+                service: script.turn_on
+                target:
+                  entity_id: script.arm_alarm
+
+  - alias: "Wolfie: Manage bin state"
+    id: "wolfie_manage_bin_state"
+
+    trigger:
+      - platform: state
+        entity_id: vacuum.rockrobo
+
+      - platform: state
+        entity_id: alarm_control_panel.123_main_street
+
+    condition:
+      - condition: template
+        value_template: >
+          {{
+            trigger.from_state.state != "unavailable"
+            and trigger.to_state.state != "unavailable"
+            and trigger.from_state.state != trigger.to_state.state
+          }}
+
+    action:
+      - choose:
+          - alias: "Note that Wolfie is running (since the WiFi is flaky)"
+            conditions:
+              condition: state
+              entity_id: vacuum.rockrobo
+              state: cleaning
+
+            sequence:
+              - alias: "Set the 'is Wolfie running?' input boolean to true"
+                service: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.wolfie_running
+
+          - alias: "Alter the bin state when Wolfie returns to the dock"
+            conditions:
+              - condition: state
+                entity_id: vacuum.rockrobo
+                state: docked
+
+              - condition: state
+                entity_id: input_boolean.wolfie_running
+                state: "on"
+
+            sequence:
+              - alias: "Set the bin input select"
+                service: input_select.select_option
+                target:
+                  entity_id: input_select.wolfie_bin_status
+                data:
+                  option: Full
+
+              - alias: "Set the 'is Wolfie running?' input boolean to false"
+                service: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.wolfie_running
+
+  - alias: "Wolfie: Notify when a new consumable is needed"
+    id: "wolfie_notify_when_a_new_consumable_is_needed"
+
+    trigger:
+      - platform: numeric_state
+        entity_id:
+          - sensor.vacuum_filter_remaining
+          - sensor.vacuum_main_brush_remaining
+          - sensor.vacuum_sensor_dirtiness_remaining
+          - sensor.vacuum_side_brush_remaining
+        below: 5
+
+    condition:
+      # This automation can get very chatty, so we only allow a notification
+      # once per day:
+      condition: template
+      value_template: >
+        {{
+          as_timestamp(
+            state_attr(
+              "automation.wolfie_notify_when_a_new_consumable_is_needed",
+              "last_triggered"
+            )
+          ) | timestamp_custom('%-d')
+          != as_timestamp(now()) | timestamp_custom('%-d')
+        }}
+
+    action:
+      - alias: "Send the notification"
+        service: script.turn_on
+        target:
+          entity_id: script.notify_everyone_at_home
+        data:
+          variables:
+            title: Wolfie Consumable Update
+            message: >
+              {% set eid = trigger.entity_id %}
+              {% if eid == "sensor.vacuum_filter_remaining" %}
+                {% set name = "a new filter" %}
+              {% elif eid == "sensor.vacuum_main_brush_remaining" %}
+                {% set name = "a new main brush" %}
+              {% elif eid == "sensor.vacuum_sensor_dirtiness_remaining" %}
+                {% set name = "to have his sensors cleaned" %}
+              {% elif eid == "sensor.vacuum_side_brush_remaining" %}
+                {% set name = "a new side brush" %}
+              {% endif %}
+
+              🤖 Wolfie needs {{ name }}!
+
+  - alias: "Wolfie: Notify when he gets stuck"
+    id: "wolfie_notify_when_he_gets_stuck"
+
+    trigger:
+      - platform: state
+        entity_id: vacuum.rockrobo
+        to: error
+
+    action:
+      - repeat:
+          sequence:
+            - alias: "Send the notification"
+              service: script.turn_on
+              target:
+                entity_id: script.notify_everyone_at_home
+              data:
+                variables:
+                  interruption_level: time-sensitive
+                  message: "🤖 Wolfie is stuck on something and needs help."
+                  title: Vacuuming Stopped
+
+            - alias: "Delay for 10 minutes"
+              delay: "00:10:00"
+          until:
+            - condition: not
+              conditions:
+                condition: state
+                entity_id: vacuum.rockrobo
+                state: error
+
+  - alias: "Wolfie: Notify when the cleanup is complete"
+    id: "wolfie_notify_when_the_cleanup_is_complete"
+
+    trigger:
+      - platform: homeassistant
+        event: start
+
+      - platform: state
+        entity_id: input_select.wolfie_bin_status
+        to: Full
+
+    condition:
+      - condition: state
+        entity_id: input_select.wolfie_bin_status
+        state: Full
+
+    action:
+      - alias: "Set variables for actionable notifications"
+        variables:
+          action_empty: "{{ 'EMPTY_WOLFIE_BIN_' ~ context.id }}"
+
+      - repeat:
+          sequence:
+            - alias: "Send the notification"
+              service: script.turn_on
+              target:
+                entity_id: script.notify_everyone_at_home
+              data:
+                variables:
+                  actions:
+                    - action: "{{ action_empty }}"
+                      title: Mark Bin as Empty
+                  message: "🤖 Wolfie has finished cleaning and can be emptied."
+                  title: Vacuuming Complete
+
+            - alias: "Wait to see if the notification is responded to"
+              wait_for_trigger:
+                - platform: event
+                  event_type: mobile_app_notification_action
+                  event_data:
+                    action: "{{ action_empty }}"
+              timeout: "02:00:00"
+
+            - if:
+                - alias: "Was the notification responded to?"
+                  condition: template
+                  value_template: "{{ wait.trigger is not none }}"
+              then:
+                - alias: "Mark the bin as empty"
+                  service: input_select.select_option
+                  data:
+                    entity_id: input_select.wolfie_bin_status
+                    option: Empty
+
+                - stop: "Wolfie's bin has been marked as empty."
+          until:
+            - condition: state
+              entity_id: input_select.wolfie_bin_status
+              state: Empty
+
+input_boolean:
+  wolfie_running:
+    icon: mdi:robot-vacuum
+    name: Wolfie Running
+
+input_select:
+  wolfie_bin_status:
+    name: Bin Status
+    options:
+      - Empty
+      - Full
+
+script:
+  empty_wolfie:
+    alias: "Empty Wolfie"
+    sequence:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.wolfie_bin_status
+          option: Empty
+
+sensor:
+  - platform: template
+    sensors:
+      vacuum_filter_remaining:
+        friendly_name: Filter
+        value_template: >
+          {{ state_attr("vacuum.rockrobo", "filter") }}
+        unit_of_measurement: hours
+        icon_template: mdi:timer-sand
+
+      vacuum_main_brush_remaining:
+        friendly_name: Main Brush
+        value_template: >
+          {{ state_attr("vacuum.rockrobo", "mainBrush") }}
+        unit_of_measurement: hours
+        icon_template: mdi:timer-sand
+
+      vacuum_sensor_dirtiness_remaining:
+        friendly_name: Sensor Dirtiness
+        value_template: >
+          {{ state_attr("vacuum.rockrobo", "sensor") }}
+        unit_of_measurement: hours
+        icon_template: mdi:timer-sand
+
+      vacuum_side_brush_remaining:
+        friendly_name: Side Brush
+        value_template: >
+          {{ state_attr("vacuum.rockrobo", "sideBrush") }}
+        unit_of_measurement: hours
+        icon_template: mdi:timer-sand
+
+      vacuum_status:
+        friendly_name: Status
+        value_template: >
+          {{ states("vacuum.rockrobo") | title }}
+        icon_template: >
+          {% if is_state("vacuum.rockrobo", "docked")  %}
+            mdi:battery-charging
+          {% elif is_state("vacuum.rockrobo", "cleaning")  %}
+            mdi:move-resize
+          {% elif is_state("vacuum.rockrobo", "returning")  %}
+            mdi:keyboard-return
+          {% elif is_state("vacuum.rockrobo", "idle")  %}
+            mdi:dots-horizontal
+          {% elif is_state("vacuum.rockrobo", "paused")  %}
+            mdi:pause-circle
+          {% else %}
+            mdi:help-circle
+          {% endif %}
+
+      vacuum_fan_speed:
+        friendly_name: Fan Speed
+        value_template: >
+          {{ state_attr("vacuum.rockrobo", "fan_speed") | title }}
+        icon_template: mdi:speedometer
+
+      vacuum_battery:
+        friendly_name: Vacuum Battery
+        value_template: >
+          {{ state_attr("vacuum.rockrobo", "battery_level") }}
+        unit_of_measurement: "%"
+        device_class: battery
+
+      vacuum_cleaning_time:
+        friendly_name: Time of Last Cycle
+        value_template: >
+          {{ state_attr("vacuum.rockrobo", "currentCleanTime") }}
+        icon_template: mdi:timer
+        unit_of_measurement: minutes
+
+      vacuum_cleaned_area:
+        friendly_name: Area of Last Cycle
+        unit_of_measurement: m ²
+        value_template: >
+          {{ state_attr("vacuum.rockrobo", "currentCleanArea") }}
+        icon_template: mdi:ruler
+
+      vacuum_last_run:
+        friendly_name: Last Run Date/Time
+        value_template: >
+          {{
+            state_attr("vacuum.rockrobo", "last_run_stats")["endTime"]
+            | multiply(0.001)
+            | timestamp_custom("%m/%d, %I:%M %p")
+          }}
+        icon_template: mdi:calendar-check

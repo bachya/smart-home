@@ -1,0 +1,385 @@
+---
+automation:
+  - alias: "Modes: Automatically handle sunrise"
+    id: "modes_automatically_handle_sunrise"
+
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.daytime
+        to: "on"
+
+    action:
+      - alias: "Turn 'Good Morning' mode on"
+        service: script.turn_on
+        target:
+          entity_id: script.good_morning_mode
+
+  - alias: "Modes: Automatically handle sunset"
+    id: "modes_automatically_handle_sunset"
+
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.is_dark_outside
+        to: "on"
+
+      - platform: sun
+        event: sunset
+
+    condition:
+      - condition: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 40
+
+      - condition: state
+        entity_id: sun.sun
+        attribute: rising
+        state: false
+
+    action:
+      - alias: "Turn 'Sunset' mode on"
+        service: script.turn_on
+        target:
+          entity_id: script.sunset_mode
+
+  - alias: "Modes: Manage iOS actions"
+    id: "modes_manage_ios_actions"
+
+    trigger:
+      - platform: event
+        event_type: ios.action_fired
+
+    action:
+      - alias: "Turn the appropriate mode on"
+        service: script.turn_on
+        target:
+          entity_id: >-
+            {% if trigger.event.data.actionName == "Depart Home" %}
+              script.depart_home_mode
+            {% elif trigger.event.data.actionName == "Drive Home" %}
+              script.drive_home_mode
+            {% elif trigger.event.data.actionName == "Good Morning" %}
+              script.good_morning_mode
+            {% elif trigger.event.data.actionName == "Good Night" %}
+              script.good_night_mode
+            {% elif trigger.event.data.actionName == "Walk Home" %}
+              script.walk_home_mode
+            {% endif %}
+
+  - alias: "Modes: Manage Vacation Mode"
+    id: "modes_manage_vacation_mode"
+
+    trigger:
+      - platform: state
+        entity_id: input_boolean.vacation_mode
+
+    action:
+      - if:
+          - alias: "Vacation Mode is on"
+            condition: state
+            entity_id: input_boolean.vacation_mode
+            state: "on"
+        then:
+          - alias: "Turn the water main and humidistat off"
+            service: homeassistant.turn_off
+            target:
+              entity_id:
+                - switch.guardian_b4e62d98118d_valve
+                - switch.humidistat_switchbot
+
+input_boolean:
+  vacation_mode:
+    name: "Vacation Mode"
+
+ios:
+  actions:
+    - name: Depart Home
+      background_color: "#95a5a9"
+      label:
+        text: "Depart Home"
+        color: "#efe6dd"
+      icon:
+        icon: garage
+        color: "#efe6dd"
+
+    - name: Drive Home
+      background_color: "#7c8596"
+      label:
+        text: "Drive Home"
+        color: "#efe6dd"
+      icon:
+        icon: garage-open
+        color: "#efe6dd"
+
+    - name: Good Morning
+      background_color: "#855954"
+      label:
+        text: "Good Morning"
+        color: "#efe6dd"
+      icon:
+        icon: white-balance-sunny
+        color: "#efe6dd"
+
+    - name: Good Night
+      background_color: "#7e84b6"
+      label:
+        text: "Good Night"
+        color: "#efe6dd"
+      icon:
+        icon: sleep
+        color: "#efe6dd"
+
+    - name: Walk Home
+      background_color: "#7488b4"
+      label:
+        text: "Walk Home"
+        color: "#efe6dd"
+      icon:
+        icon: door-open
+        color: "#efe6dd"
+
+scene:
+  - name: Depart Home
+    entities:
+      cover.wemos_d1_mini_garage_controller: closed
+      light.master_toilet_light: "off"
+      lock.123_main_street_patio_door: locked
+      lock.front_door_lock: locked
+      lock.garage_fire_door_lock: locked
+      media_player.living_room: paused
+      media_player.main_level_outdoors: paused
+      media_player.master_bedroom_bathroom: paused
+      media_player.office: paused
+      media_player.sonos_roam: paused
+      switch.fireplace: "off"
+
+  - name: Drive Home
+    entities:
+      alarm_control_panel.123_main_street: disarmed
+      cover.wemos_d1_mini_garage_controller: open
+      lock.garage_fire_door_lock: unlocked
+
+  - name: Good Morning
+    entities:
+      automation.master_bedroom_cycle_toilet_fan_during_the_day: "on"
+      switch.christmas_tree: "on"
+      switch.kitchen_pendant_lights: "on"
+      switch.simplisafe_audible_notifications: "on"
+
+  - name: Good Night
+    entities:
+      alarm_control_panel.123_main_street: armed_home
+      automation.master_bedroom_cycle_toilet_fan_during_the_day: "off"
+      cover.wemos_d1_mini_garage_controller: closed
+      group.basement_lights: "off"
+      group.kitchen_lights: "off"
+      group.living_room_lights: "off"
+      group.outdoor_lights: "off"
+      lock.123_main_street_patio_door: locked
+      media_player.living_room: paused
+      media_player.main_level_outdoors: paused
+      media_player.master_bedroom_bathroom: paused
+      media_player.office: paused
+      media_player.sonos_roam: paused
+      remote.basement_tv: "off"
+      remote.living_room_tv: "off"
+      switch.basement_cantina_lights: "off"
+      switch.fireplace: "off"
+      switch.garage_lights: "off"
+      switch.laundry_light: "off"
+      switch.master_patio_outdoor_plug: "off"
+      switch.simplisafe_audible_notifications: "off"
+      switch.upstairs_stairway_lights: "on"
+
+  - name: Sunset
+    entities:
+      automation.master_bedroom_cycle_toilet_fan_during_the_day: "off"
+      group.outdoor_lights: "on"
+      switch.aaron_bedside_table_right: "on"
+      switch.bar_cart_leds: "on"
+      switch.christmas_tree: "on"
+      switch.kitchen_pendant_lights: "on"
+      switch.kitchen_cabinet_lights: "on"
+      switch.master_patio_outdoor_plug: "on"
+      switch.reading_lamp: "on"
+
+  - name: Walk Home
+    entities:
+      alarm_control_panel.123_main_street: disarmed
+      lock.front_door_lock: unlocked
+
+script:
+  depart_home_mode:
+    alias: "Depart Home Mode"
+    description: "Alter the home when we leave"
+
+    sequence:
+      - if:
+          - alias: "Limit what we do if someone is still home"
+            condition: state
+            entity_id: sensor.proximity_zone
+            state: Home
+        then:
+          - alias: "Close the garage"
+            service: cover.close_cover
+            target:
+              entity_id: cover.wemos_d1_mini_garage_controller
+        else:
+          - parallel:
+              - alias: "Activate the 'Depart Home' scene"
+                scene: scene.depart_home
+
+              - alias: "Arm the alarm"
+                service: script.turn_on
+                target:
+                  entity_id: script.arm_alarm
+
+              - alias: "Notify if Teddy isn't home"
+                service: script.turn_on
+                target:
+                  entity_id: script.notify_if_teddy_isnt_home
+
+          - alias: "Delay a random (but short) amount of time"
+            delay:
+              minutes: "{{ range(1, 3) | random() }}"
+              seconds: "{{ range(0, 59) | random() }}"
+
+          - alias: "Start simulating someone being at home"
+            service: automation.trigger
+            target:
+              entity_id: automation.security_simulate_someone_being_home
+
+          - alias: "Send a notification that at-home simulation is starting"
+            service: notify.everyone
+            data:
+              title: Security Update
+              message: "🦾 The simulation of someone being at home has started."
+
+  drive_home_mode:
+    alias: "Drive Home Mode"
+    description: "Alter the home when we arrive via the garage door"
+
+    sequence:
+      - parallel:
+          - alias: "Activate the 'Drive Home' scene"
+            scene: scene.drive_home
+
+          - if:
+              - alias: "Is it after sunset?"
+                condition: sun
+                after: sunset
+            then:
+              - alias: "Activate the 'Sunset' scene"
+                scene: scene.sunset
+
+  good_morning_mode:
+    alias: "Good Morning Mode"
+    description: "Alter the home at when we get up in the morning"
+
+    sequence:
+      - parallel:
+          - alias: "Activate the 'Good Morning' scene"
+            scene: scene.good_morning
+
+          - alias: "Set our dimmer defaults to be brighter"
+            service: zwave_js.set_value
+            data:
+              command_class: "112"
+              property: "18"
+              value: 75
+              endpoint: "0"
+            target:
+              entity_id:
+                - light.kitchen_can_lights
+                - light.kitchen_table_light
+                - light.master_bathroom_overhead_lights
+                - light.master_bathroom_vanity_lights
+                - light.master_toilet_light
+
+  good_night_mode:
+    alias: "Good Night Mode"
+    description: "Alter the home when we're going to bed"
+
+    sequence:
+      - parallel:
+          - alias: "Activate the 'Good Night' scene"
+            scene: scene.good_night
+
+          - alias: "Notify if Teddy isn't home"
+            service: script.turn_on
+            target:
+              entity_id: script.notify_if_teddy_isnt_home
+
+      - alias: "Lock Z-Wave locks separately"
+        service: lock.lock
+        target:
+          entity_id:
+            - lock.front_door_lock
+            - lock.garage_fire_door_lock
+
+      - alias: "Wait a random amount of time"
+        delay:
+          minutes: "{{ range(3, 10) | random() }}"
+          seconds: "{{ range(0, 59) | random() }}"
+
+      - alias: "Turn the landing lights off"
+        service: switch.turn_off
+        target:
+          entity_id: switch.upstairs_stairway_lights
+
+  notify_if_teddy_isnt_home:
+    alias: "Notify us if Teddy isn't home"
+    description: "Alter the home when we arrive via the garage door"
+
+    sequence:
+      - alias: "Are we ensuring that Teddy isn't home?"
+        condition: state
+        entity_id: device_tracker.bzndrxez_teddy
+        state: not_home
+
+      - alias: "Send the notification"
+        service: notify.everyone
+        data:
+          title: Teddy
+          message: "🐈 Be advised that Teddy isn't home!"
+
+  sunset_mode:
+    alias: "Sunset Mode"
+    description: "Alter the home at sunset"
+
+    sequence:
+      - parallel:
+          - alias: "Activate the 'Sunset' scene"
+            scene: scene.sunset
+
+          - alias: "Set our dimmer defaults to be softer"
+            service: zwave_js.set_value
+            data:
+              command_class: "112"
+              property: "18"
+              value: 15
+              endpoint: "0"
+            target:
+              entity_id:
+                - light.kitchen_can_lights
+                - light.kitchen_table_light
+                - light.master_bathroom_overhead_lights
+                - light.master_bathroom_vanity_lights
+                - light.master_toilet_light
+
+  walk_home_mode:
+    alias: "Walk Home Mode"
+    description: "Alter the home when we arrive via the front door"
+
+    sequence:
+      - parallel:
+          - alias: "Activate the 'Walk Home' scene"
+            scene: scene.walk_home
+
+          - if:
+              - alias: "Is it after sunset?"
+                condition: sun
+                after: sunset
+            then:
+              - alias: "Activate the 'Sunset' scene"
+                scene: scene.sunset

@@ -1,0 +1,26 @@
+---
+packages:
+  device_base: !include common/device_base.yaml
+
+substitutions:
+  device_name: master-bathroom-climate-sensor
+  device_friendly_name: Master Bathroom Climate Sensor
+  device_static_ip: 172.16.20.226
+
+esphome:
+  board: d1_mini
+  platform: ESP8266
+
+i2c:
+  scl: GPIO5
+  sda: GPIO4
+
+sensor:
+  - address: 118
+    humidity:
+      name: Master Bathroom Humidity
+    platform: bme280
+    pressure:
+      name: Master Bathroom Pressure
+    temperature:
+      name: Master Bathroom Temperature

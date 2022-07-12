@@ -1,0 +1,36 @@
+---
+packages:
+  device_base: !include ../common/device_base.yaml
+
+binary_sensor:
+  - name: Power Button
+    on_press:
+      - switch.toggle: relay
+    pin:
+      inverted: true
+      number: GPIO4
+    platform: gpio
+
+esphome:
+  board: esp8285
+  platform: ESP8266
+
+status_led:
+  pin:
+    inverted: true
+    number: GPIO1
+
+switch:
+  - id: led
+    inverted: true
+    pin: GPIO13
+    platform: gpio
+
+  - id: relay
+    name: ${device_friendly_name}
+    on_turn_off:
+      - switch.turn_off: led
+    on_turn_on:
+      - switch.turn_on: led
+    pin: GPIO14
+    platform: gpio

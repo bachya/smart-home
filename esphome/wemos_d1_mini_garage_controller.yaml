@@ -1,0 +1,141 @@
+---
+packages:
+  device_base: !include common/device_base.yaml
+
+substitutions:
+  device_name: wemos-d1-mini-garage-controller
+  device_friendly_name: Wemos D1 Mini Garage Controller
+  device_static_ip: 172.16.20.101
+
+binary_sensor:
+  - id: garage_door_open
+    name: Wemos D1 Mini Garage Controller Open
+    on_press:
+      then:
+        - lambda: |-
+            id(garage_door_cover).current_operation = esphome::cover::COVER_OPERATION_IDLE;
+            id(garage_door_cover).publish_state();
+    on_release:
+      then:
+        - lambda: |-
+            id(garage_door_cover).current_operation = esphome::cover::COVER_OPERATION_CLOSING;
+            id(garage_door_cover).publish_state();
+    pin:
+      inverted: true
+      mode: INPUT_PULLUP
+      number: GPIO2
+    platform: gpio
+
+  - id: garage_door_closed
+    name: Wemos D1 Mini Garage Controller Closed
+    on_press:
+      then:
+        - lambda: |-
+            id(garage_door_cover).current_operation = esphome::cover::COVER_OPERATION_IDLE;
+            id(garage_door_cover).publish_state();
+    on_release:
+      then:
+        - lambda: |-
+            id(garage_door_cover).current_operation = esphome::cover::COVER_OPERATION_OPENING;
+            id(garage_door_cover).publish_state();
+    pin:
+      inverted: true
+      mode: INPUT_PULLUP
+      number: GPIO13
+    platform: gpio
+
+  - device_class: occupancy
+    lambda: |-
+      if (id(aaron_parking_spot_distance).state > 2.50) {
+        return false;
+      } else {
+        return true;
+      }
+    name: Aaron's Parking Spot Occupied
+    platform: template
+
+  - device_class: occupancy
+    lambda: |-
+      if (id(spouse_parking_spot_distance).state > 2.50) {
+        return false;
+      } else {
+        return true;
+      }
+    name: Spouse's Parking Spot Occupied
+    platform: template
+
+cover:
+  - close_action:
+      - if:
+          condition:
+            or:
+              - binary_sensor.is_on: garage_door_closed
+              - lambda: |-
+                  return id(garage_door_cover).current_operation == esphome::cover::COVER_OPERATION_CLOSING;
+          else:
+            - switch.turn_on: relay
+            - delay: 200ms
+            - switch.turn_off: relay
+    device_class: garage
+    id: garage_door_cover
+    lambda: |-
+      if (id(garage_door_closed).state) {
+        return COVER_CLOSED;
+      } else {
+        return COVER_OPEN;
+      }
+    name: Wemos D1 Mini Garage Controller
+    open_action:
+      - if:
+          condition:
+            or:
+              - binary_sensor.is_on: garage_door_open
+              - lambda: |-
+                  return id(garage_door_cover).current_operation == esphome::cover::COVER_OPERATION_OPENING;
+          else:
+            - switch.turn_on: relay
+            - delay: 200ms
+            - switch.turn_off: relay
+    stop_action:
+      - switch.turn_off: relay
+      - switch.turn_on: relay
+      - delay: 200ms
+      - switch.turn_off: relay
+    platform: template
+
+esphome:
+  board: d1_mini
+  platform: ESP8266
+
+sensor:
+  - echo_pin: GPIO16
+    filters:
+      - median:
+          send_every: 4
+          send_first_at: 3
+          window_size: 7
+    id: aaron_parking_spot_distance
+    name: Aaron's Parking Spot Distance
+    platform: ultrasonic
+    timeout: 4m
+    trigger_pin: GPIO14
+    update_interval: 10s
+
+  - echo_pin: GPIO15
+    filters:
+      - median:
+          send_every: 4
+          send_first_at: 3
+          window_size: 7
+    id: spouse_parking_spot_distance
+    name: Spouse's Parking Spot Distance
+    platform: ultrasonic
+    timeout: 4m
+    trigger_pin: GPIO4
+    update_interval: 10s
+
+switch:
+  - id: relay
+    name: Wemos D1 Mini Garage Controller Relay
+    pin: GPIO5
+    platform: gpio

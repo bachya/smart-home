@@ -1,0 +1,15 @@
+---
+packages:
+  desk_config: >-
+    github://tjhorner/esphome-standing-desk/configs/desks/uplift_v2.yaml
+  device_base: !include common/device_base.yaml
+  standing_desk: github://tjhorner/esphome-standing-desk/configs/template.yaml
+
+substitutions:
+  device_name: fully-jarvis-desk-controller
+  device_friendly_name: Fully Jarvis Desk Controller
+  device_static_ip: 172.16.20.222
+
+esphome:
+  board: d1_mini
+  platform: ESP8266

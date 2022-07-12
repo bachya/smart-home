@@ -1,0 +1,309 @@
+---
+automation:
+  - alias: "Guests: Entry Shortcut"
+    id: "guests_entry_shortcut"
+    mode: restart
+
+    trigger:
+      - platform: webhook
+        webhook_id: guest_entry_shortcut_1
+      - platform: webhook
+        webhook_id: guest_entry_shortcut_2
+      - platform: webhook
+        webhook_id: guest_entry_shortcut_3
+      - platform: webhook
+        webhook_id: guest_entry_shortcut_4
+
+    action:
+      - alias: "Execute the script"
+        service: script.turn_on
+        target:
+          entity_id: script.guest_entry
+        data:
+          variables:
+            access_code: "{{ trigger.json.access_code }}"
+            action: "{{ trigger.json.action }}"
+            webhook_id: "{{ trigger.webhook_id }}"
+
+group:
+  guest_unfriendly_automations:
+    entities:
+      - automation.garage_lock_fire_door_when_garage_door_is_left_open
+      - automation.garage_notify_when_the_garage_door_is_left_open
+      - automation.presence_alter_automations_based_on_whether_anyone_is_home
+      - automation.security_automatically_lock_up_the_house_when_appropriate
+      - automation.security_notify_when_the_house_is_empty_and_insecure
+      - automation.security_simulate_someone_being_home
+      - input_boolean.climate_away_mode
+
+input_boolean:
+  guest_entry_shortcut_1_enabled:
+    name: Enabled
+  guest_entry_shortcut_1_include_front_door:
+    name: Include Front Door
+  guest_entry_shortcut_1_include_garage_door:
+    name: Include Garage Door
+  guest_entry_shortcut_1_include_garage_fire_door:
+    name: Include Garage Fire Door
+  guest_entry_shortcut_1_include_security_system:
+    name: Include Security System
+  guest_entry_shortcut_2_enabled:
+    name: Enabled
+  guest_entry_shortcut_2_include_front_door:
+    name: Include Front Door
+  guest_entry_shortcut_2_include_garage_door:
+    name: Include Garage Door
+  guest_entry_shortcut_2_include_garage_fire_door:
+    name: Include Garage Fire Door
+  guest_entry_shortcut_2_include_security_system:
+    name: Include Security System
+  guest_entry_shortcut_3_enabled:
+    name: Enabled
+  guest_entry_shortcut_3_include_front_door:
+    name: Include Front Door
+  guest_entry_shortcut_3_include_garage_door:
+    name: Include Garage Door
+  guest_entry_shortcut_3_include_garage_fire_door:
+    name: Include Garage Fire Door
+  guest_entry_shortcut_3_include_security_system:
+    name: Include Security System
+  guest_entry_shortcut_4_enabled:
+    name: Enabled
+  guest_entry_shortcut_4_include_front_door:
+    name: Include Front Door
+  guest_entry_shortcut_4_include_garage_door:
+    name: Include Garage Door
+  guest_entry_shortcut_4_include_garage_fire_door:
+    name: Include Garage Fire Door
+  guest_entry_shortcut_4_include_security_system:
+    name: Include Security System
+
+input_datetime:
+  guest_entry_shortcut_1_window_end:
+    name: Window End
+    has_date: true
+    has_time: true
+  guest_entry_shortcut_1_window_start:
+    name: Window Start
+    has_date: true
+    has_time: true
+  guest_entry_shortcut_2_window_end:
+    name: Window End
+    has_date: true
+    has_time: true
+  guest_entry_shortcut_2_window_start:
+    name: Window Start
+    has_date: true
+    has_time: true
+  guest_entry_shortcut_3_window_end:
+    name: Window End
+    has_date: true
+    has_time: true
+  guest_entry_shortcut_3_window_start:
+    name: Window Start
+    has_date: true
+    has_time: true
+  guest_entry_shortcut_4_window_end:
+    name: Window End
+    has_date: true
+    has_time: true
+  guest_entry_shortcut_4_window_start:
+    name: Window Start
+    has_date: true
+    has_time: true
+
+input_select:
+  guest_entry_shortcut_1_type:
+    name: Type
+    options:
+      - Until Disabled
+      - During Window
+  guest_entry_shortcut_2_type:
+    name: Type
+    options:
+      - Until Disabled
+      - During Window
+  guest_entry_shortcut_3_type:
+    name: Type
+    options:
+      - Until Disabled
+      - During Window
+  guest_entry_shortcut_4_type:
+    name: Type
+    options:
+      - Until Disabled
+      - During Window
+
+input_text:
+  guest_entry_shortcut_1_access_code:
+    name: Access Code
+  guest_entry_shortcut_1_name:
+    name: Name
+  guest_entry_shortcut_2_access_code:
+    name: Access Code
+  guest_entry_shortcut_2_name:
+    name: Name
+  guest_entry_shortcut_3_access_code:
+    name: Access Code
+  guest_entry_shortcut_3_name:
+    name: Name
+  guest_entry_shortcut_4_access_code:
+    name: Access Code
+  guest_entry_shortcut_4_name:
+    name: Name
+
+script:
+  guest_entry:
+    alias: "Guest Entry"
+    description: "Allow a guest to enter the front door"
+
+    fields:
+      access_code:
+        description: The provided access code
+        example: ABCD1234
+      action:
+        description: The action to take (enter or exit)
+        example: enter
+      webhook_id:
+        description: The ID of the webhook that triggered the script
+        example: guest_entry_shortcut_1
+
+    sequence:
+      - alias: "Store entity IDs for the shortcut"
+        variables:
+          access_code_entity_id: "input_text.{{ webhook_id }}_access_code"
+          enabled_entity_id: "input_boolean.{{ webhook_id }}_enabled"
+          include_front_door_entity_id: >-
+            input_boolean.{{ webhook_id }}_include_front_door
+          include_garage_door_entity_id: >-
+            input_boolean.{{ webhook_id }}_include_garage_door
+          include_garage_fire_door_entity_id: >-
+            input_boolean.{{ webhook_id }}_include_garage_fire_door
+          include_security_system_entity_id: >-
+            input_boolean.{{ webhook_id }}_include_security_system
+          name_entity_id: "input_text.{{ webhook_id }}_name"
+          type_entity_id: "input_select.{{ webhook_id }}_type"
+          window_end_entity_id: "input_datetime.{{ webhook_id }}_window_end"
+          window_start_entity_id: "input_datetime.{{ webhook_id }}_window_start"
+
+      - alias: "Determine the guest name or set a default"
+        variables:
+          guest_name: >-
+            {% set input_name = states(name_entity_id) %}
+            {% if input_name %}
+              {{ input_name }}
+            {% else %}
+              Trigger ID: {{ webhook_id }}
+            {% endif %}
+
+      - alias: "Is the shortcut enabled?"
+        condition: "{{ states(enabled_entity_id) == 'on' }}"
+
+      - alias: "Does the access code match this shortcut's?"
+        condition: >-
+          {{ states(access_code_entity_id)|string == access_code|string }}
+
+      - alias: "Should the shortcut be active?"
+        condition: >-
+          {{
+            states(type_entity_id) == "Until Disabled"
+            or
+            (
+              as_local(
+                as_datetime(states(window_start_entity_id))
+              ) <= now() <=
+              as_local(
+                as_datetime(states(window_end_entity_id))
+              )
+            )
+          }}
+
+      - alias: "Is at least one security device targeted?"
+        condition: >-
+          {{
+            is_state(include_front_door_entity_id, "on")
+            or is_state(include_garage_door_entity_id, "on")
+            or is_state(include_garage_fire_door_entity_id, "on")
+            or is_state(include_security_system_entity_id, "on")
+          }}
+
+      - if:
+          - alias: "If someone is entering"
+            condition: template
+            value_template: "{{ action == 'enter' }}"
+        then:
+          - alias: "Turn off any TVs that might be on from at-home simulation"
+            service: remote.turn_off
+            target:
+              entity_id:
+                - remote.basement_tv
+                - remote.living_room_tv
+
+          - if:
+              - alias: "If we include the front door"
+                condition: template
+                value_template: >-
+                  {{ states(include_front_door_entity_id) == "on" }}
+            then:
+              - alias: "Alter the entity based on the action"
+                service: lock.unlock
+                target:
+                  entity_id: lock.front_door_lock
+
+          - if:
+              - alias: "If we include the garage door"
+                condition: template
+                value_template: >-
+                  {{ states(include_garage_door_entity_id) == "on" }}
+            then:
+              - alias: "Alter the entity based on the action"
+                service: cover.open_cover
+                target:
+                  entity_id: cover.wemos_d1_mini_garage_controller
+
+          - if:
+              - alias: "If we include the garage fire door"
+                condition: template
+                value_template: >-
+                  {{ states(include_garage_fire_door_entity_id) == "on" }}
+            then:
+              - alias: "Alter the entity based on the action"
+                service: lock.unlock
+                target:
+                  entity_id: lock.garage_fire_door_lock
+
+          - if:
+              - alias: "If we include the security system"
+                condition: template
+                value_template: >-
+                  {{ states(include_security_system_entity_id) == "on" }}
+            then:
+              - alias: "Alter the entity based on the action"
+                service: alarm_control_panel.alarm_disarm
+                target:
+                  entity_id: alarm_control_panel.123_main_street
+          - alias: "Turn off automations that are unfriendly to guests"
+            service: homeassistant.turn_off
+            target:
+              entity_id: group.guest_unfriendly_automations
+        else:
+          - alias: "Reactivate automations"
+            service: homeassistant.turn_on
+            target:
+              entity_id: group.guest_unfriendly_automations
+
+          - alias: "Lock up the house"
+            service: script.turn_on
+            target:
+              entity_id: script.depart_home_mode
+
+      - alias: "Notify us about the guest activity"
+        service: notify.everyone
+        data:
+          title: Guest Mode
+          message: >-
+            {% if action == "enter" %}
+              {{ guest_name }} just entered.
+            {% else %}
+              {{ guest_name }} just left.
+            {% endif %}

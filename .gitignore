@@ -1,0 +1,9 @@
+*.pyc
+.DS_Store
+Pipfile.lock
+script/*
+hass/settings/custom_components/hacs
+nest.conf
+secrets.yaml
+ssh_keys
+tags*

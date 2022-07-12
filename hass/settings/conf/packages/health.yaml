@@ -1,0 +1,56 @@
+---
+automation:
+  - alias: "Health: Notify Aaron to take allergy meds on appropriate mornings"
+    id: "health_notify_aaron_to_take_allergy_meds_on_appropriate_mornings"
+
+    trigger:
+      - platform: state
+        entity_id: sun.sun
+        to: above_horizon
+
+    condition:
+      - condition: numeric_state
+        entity_id: sensor.allergy_index_today
+        above: 8
+
+    action:
+      - alias: "Send the notification"
+        service: script.turn_on
+        target:
+          entity_id: script.notify_person_if_at_home
+        data:
+          variables:
+            name: aaron
+            title: Bad Allergies Today
+            message: >
+              🤧 Today's allergy index is
+              {{ states("sensor.allergy_index_today") }}. You might want to take
+              some meds!
+
+  - alias: "Health: Update OpenUV every 1 hour during the daytime"
+    id: "health_update_openuv_every_1_hour_during_the_daytime"
+    initial_state: true
+
+    trigger:
+      - platform: time_pattern
+        hours: "/1"
+
+    condition:
+      - and:
+          - condition: sun
+            after: sunrise
+
+          - condition: sun
+            before: sunset
+
+    action:
+      - alias: "Trigger the update"
+        service: openuv.update_data
+
+sensor:
+  - platform: min_max
+    name: Average Indoor Air Quality
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.office_node_pro_air_quality_index

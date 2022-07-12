@@ -1,0 +1,570 @@
+---
+automation:
+  - alias: "Climate: Schedule"
+    id: "climate_schedule"
+    mode: queued
+
+    trigger:
+      - platform: state
+        entity_id: climate.thermostat
+        to:
+
+      - platform: state
+        id: away_mode
+        entity_id: input_boolean.climate_away_mode
+
+      - platform: state
+        entity_id:
+          - binary_sensor.in_bed
+          - input_number.daytime_temperature_ac
+          - input_number.daytime_temperature_heat
+          - input_number.nighttime_temperature_ac
+          - input_number.nighttime_temperature_heat
+          - input_number.thermostat_eco_high_threshold
+          - input_number.thermostat_eco_low_threshold
+          - sensor.average_indoor_temperature
+          - sensor.main_level_temperature
+          - sensor.upstairs_temperature
+
+    action:
+      choose:
+        - alias: "Handle Climate Away Mode"
+          conditions:
+            - condition: trigger
+              id: away_mode
+
+          sequence:
+            - if:
+                - alias: "Climate Away Mode is on"
+                  condition: state
+                  entity_id: input_boolean.climate_away_mode
+                  state: "on"
+              then:
+                - alias: "Save the current thermostat mode"
+                  service: input_select.select_option
+                  target:
+                    entity_id: input_select.last_hvac_mode
+                  data:
+                    option: "{{ states('climate.thermostat') }}"
+
+                - alias: "Set the thermostat mode to auto"
+                  service: climate.set_hvac_mode
+                  target:
+                    entity_id: climate.thermostat
+                  data:
+                    hvac_mode: heat_cool
+
+                - alias: "Wait until the thermostat is set to auto mode"
+                  wait_template: >
+                    {{
+                      is_state("climate.thermostat", "heat_cool")
+                    }}
+
+                - alias: "Set the high and low temperatures for auto mode"
+                  service: climate.set_temperature
+                  target:
+                    entity_id: climate.thermostat
+                  data:
+                    target_temp_high: >
+                      {{
+                        states(
+                          "input_number.thermostat_eco_high_threshold"
+                        ) | float
+                      }}
+                    target_temp_low: >
+                      {{
+                        states(
+                          "input_number.thermostat_eco_low_threshold"
+                        ) | float
+                      }}
+              else:
+                - alias: "Set the thermostat mode to what we saved before"
+                  service: climate.set_hvac_mode
+                  target:
+                    entity_id: climate.thermostat
+                  data:
+                    hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
+
+      default:
+        - alias: "Halt if climate away mode is on (since it will handle itself)"
+          condition: state
+          entity_id: input_boolean.climate_away_mode
+          state: "off"
+
+        - alias: "Figure out the target temperature"
+          variables:
+            target: >-
+              {% if states("climate.thermostat") == "cool" %}
+                {% if states("binary_sensor.in_bed") == "on" %}
+                  {{ states("input_number.nighttime_temperature_ac") }}
+                {% else %}
+                  {{ states("input_number.daytime_temperature_ac") }}
+                {% endif %}
+              {% else %}
+                {% if states("binary_sensor.in_bed") == "on" %}
+                  {{ states("input_number.nighttime_temperature_heat") }}
+                {% else %}
+                  {{ states("input_number.daytime_temperature_heat") }}
+                {% endif %}
+              {% endif %}
+
+        - alias: "Halt if we're already at the target temperature"
+          condition: template
+          value_template: >-
+            {{
+              state_attr("climate.thermostat", "temperature") != target
+            }}
+
+        - if:
+            - alias: "Handle an adjusted temperature"
+              condition: state
+              entity_id: input_boolean.use_adjusted_temperature
+              state: "on"
+          then:
+            - alias: "Set the target thermostat temperature"
+              service: script.turn_on
+              target:
+                entity_id: script.set_adjusted_thermostat_temperature
+              data:
+                variables:
+                  target: "{{ target }}"
+          else:
+            - alias: "Set the target thermostat temperature"
+              service: climate.set_temperature
+              target:
+                entity_id: climate.thermostat
+              data:
+                temperature: "{{ target }}"
+
+  - alias: "Climate: Alter Away Mode based on proximity"
+    id: "climate_alter_away_mode_based_on_proximity"
+
+    trigger:
+      - platform: state
+        entity_id:
+          - input_number.outdoor_extreme_high_threshold
+          - input_number.outdoor_extreme_low_threshold
+          - input_number.thermostat_eco_high_threshold
+          - input_number.thermostat_eco_low_threshold
+          - sensor.feelslike
+          - sensor.proximity_zone
+
+    action:
+      - choose:
+          - alias: "Handle our arrival with 'normal' outdoor temperatures"
+            conditions:
+              - or:
+                  - condition: state
+                    entity_id: sensor.proximity_zone
+                    state: Nearby
+
+                  - condition: state
+                    entity_id: sensor.proximity_zone
+                    state: Home
+
+              - condition: template
+                value_template: >
+                  {{
+                    states("input_number.outdoor_extreme_low_threshold") <=
+                    states("sensor.feelslike") <=
+                    states("input_number.outdoor_extreme_high_threshold")
+                  }}
+
+            sequence:
+              - alias: "Turn Climate Away Mode off"
+                service: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.climate_away_mode
+
+          - alias: "Handle our departure with 'normal' outdoor temperatures"
+            conditions:
+              - condition: not
+                conditions:
+                  - condition: state
+                    entity_id: sensor.proximity_zone
+                    state: Home
+
+              - condition: template
+                value_template: >
+                  {{
+                    states("input_number.outdoor_extreme_low_threshold") <=
+                    states("sensor.feelslike") <=
+                    states("input_number.outdoor_extreme_high_threshold")
+                  }}
+
+            sequence:
+              - alias: "Turn Climate Away Mode on"
+                service: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.climate_away_mode
+
+          - alias: "Handle our arrival with 'extreme' outdoor temperatures"
+            conditions:
+              - condition: not
+                conditions:
+                  - condition: state
+                    entity_id: sensor.proximity_zone
+                    state: Away
+
+              - condition: template
+                value_template: >
+                  {{
+                    states(
+                      "sensor.feelslike"
+                    ) <= states(
+                      "input_number.outdoor_extreme_low_threshold"
+                    )
+                    or states(
+                      "sensor.feelslike"
+                    ) >= states(
+                      "input_number.outdoor_extreme_high_threshold"
+                    )
+                  }}
+
+            sequence:
+              - alias: "Turn Climate Away Mode off"
+                service: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.climate_away_mode
+
+          - alias: "Handle our departure with 'extreme' outdoor temperatures"
+            conditions:
+              - condition: state
+                entity_id: sensor.proximity_zone
+                state: Away
+
+              - condition: template
+                value_template: >
+                  {{
+                    states(
+                      "sensor.feelslike"
+                    ) <= states(
+                      "input_number.outdoor_extreme_low_threshold"
+                    )
+                    or states(
+                      "sensor.feelslike"
+                    ) >= states(
+                      "input_number.outdoor_extreme_high_threshold"
+                    )
+                  }}
+
+            sequence:
+              - alias: "Turn Climate Away Mode on"
+                service: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.climate_away_mode
+
+  - alias: "Climate: Manage thermostat sleep timer"
+    id: "climate_manage_thermostat_sleep_timer"
+
+    use_blueprint:
+      path: bachya/sleep-timer.yaml
+
+      input:
+        input_number: input_number.thermostat_sleep_timer
+        timer: timer.thermostat_sleep_timer
+        timer_cancel_action:
+          - alias: "Set the thermostat mode to what we saved before"
+            service: climate.set_hvac_mode
+            target:
+              entity_id: climate.thermostat
+            data:
+              hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
+
+        timer_expire_action:
+          - alias: "Set the thermostat mode to what we saved before"
+            service: climate.set_hvac_mode
+            target:
+              entity_id: climate.thermostat
+            data:
+              hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
+
+        timer_start_action:
+          - alias: "Save the current thermostat mode so we can use it alter"
+            service: input_select.select_option
+            target:
+              entity_id: input_select.last_hvac_mode
+            data:
+              option: "{{ states('climate.thermostat') }}"
+
+          - alias: "Set the thermostat mode to off"
+            service: climate.set_hvac_mode
+            target:
+              entity_id: climate.thermostat
+            data:
+              hvac_mode: "off"
+
+input_boolean:
+  climate_away_mode:
+    name: "Climate Away Mode"
+    icon: mdi:home-search
+  use_adjusted_temperature:
+    name: "Use Adjusted Temperature"
+
+input_number:
+  daytime_temperature_ac:
+    name: "Daytime Temperature (A/C)"
+    min: 65
+    max: 76
+    step: 1
+    unit_of_measurement: °F
+    icon: mdi:thermostat
+
+  daytime_temperature_heat:
+    name: "Daytime Temperature (Heat)"
+    min: 65
+    max: 76
+    step: 1
+    unit_of_measurement: °F
+    icon: mdi:thermostat
+
+  nighttime_temperature_ac:
+    name: "Nighttime Temperature (A/C)"
+    min: 65
+    max: 76
+    step: 1
+    unit_of_measurement: °F
+    icon: mdi:thermostat
+
+  nighttime_temperature_heat:
+    name: "Nighttime Temperature (Heat)"
+    min: 65
+    max: 76
+    step: 1
+    unit_of_measurement: °F
+    icon: mdi:thermostat
+
+  outdoor_extreme_high_threshold:
+    name: "Outdoor: Extreme High"
+    min: 20
+    max: 100
+    step: 1
+    unit_of_measurement: °F
+    icon: mdi:thermometer-chevron-up
+
+  outdoor_extreme_low_threshold:
+    name: "Outdoor: Extreme Low"
+    min: 20
+    max: 100
+    step: 1
+    unit_of_measurement: °F
+    icon: mdi:thermometer-chevron-down
+
+  thermostat_eco_high_threshold:
+    name: "Eco: High"
+    min: 50
+    max: 80
+    step: 1
+    unit_of_measurement: °F
+    icon: mdi:thermostat
+
+  thermostat_eco_low_threshold:
+    name: "Eco: Low"
+    min: 50
+    max: 80
+    step: 1
+    unit_of_measurement: °F
+    icon: mdi:thermostat
+
+  thermostat_sleep_timer:
+    name: Sleep Timer
+    initial: 0
+    min: 0
+    max: 90
+    step: 1
+    unit_of_measurement: minutes
+    icon: mdi:timer
+
+input_select:
+  last_hvac_mode:
+    options:
+      - "off"
+      - cool
+      - heat
+
+script:
+  set_adjusted_thermostat_temperature:
+    alias: "Set Adjusted Thermostat Temperature"
+
+    fields:
+      target:
+        description: The unadjusted target temperature
+        example: 68
+        selector:
+          number:
+            min: 45
+            max: 95
+            step: 1
+            unit_of_measurement: °F
+            mode: slider
+
+    variables:
+      current_temperature: >-
+        {{ state_attr("climate.thermostat", "current_temperature") | float }}
+      hvac_mode: "{{ states('climate.thermostat') }}"
+      main_level_temperature: >-
+        {{ states('sensor.main_level_temperature') | float }}
+      upstairs_temperature: >-
+        {{ states('sensor.upstairs_temperature') | float }}
+
+    sequence:
+      - alias: "Figure out the offset"
+        variables:
+          adjusted_setpoint: >-
+            {% if hvac_mode == "cool" %}
+              {{
+                target - (current_temperature - upstairs_temperature)
+                | abs
+                | round
+              }}
+            {% elif hvac_mode == "heat" %}
+              {{
+                target + (current_temperature - main_level_temperature)
+                | abs
+                | round
+              }}
+            {% else %}
+              {{ target }}
+            {% endif %}
+
+      - alias: "Abort if we're already at the offset"
+        condition: template
+        value_template: >-
+          {{
+            state_attr("climate.thermostat", "temperature") != adjusted_setpoint
+          }}
+
+      - alias: "Set the thermostat's adjusted setpoint"
+        service: climate.set_temperature
+        target:
+          entity_id: climate.thermostat
+        data:
+          temperature: "{{ adjusted_setpoint }}"
+
+      - alias: "Log the change in the logbook"
+        service: logbook.log
+        data:
+          name: Thermostat
+          message: >-
+            changed to an adjusted setpoint
+            ({{ target }}°F -> {{ adjusted_setpoint }}°F)
+          entity_id: climate.thermostat
+
+sensor:
+  - platform: min_max
+    name: Average Indoor Humidity
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.bedroom_humidity
+      - sensor.humidityin
+      - sensor.master_bathroom_humidity
+      - sensor.office_node_pro_humidity
+      - sensor.pure_humidify_cool_humidity
+      - sensor.thermostat_humidity
+
+  - platform: season
+
+  - platform: template
+    sensors:
+      friendly_season:
+        friendly_name: Season
+        value_template: "{{ states('sensor.season') | title }}"
+        icon_template: >
+          {% if is_state("sensor.season", "spring") %}
+            mdi:flower
+          {% elif is_state("sensor.season", "summer") %}
+            mdi:sunglasses
+          {% elif is_state("sensor.season", "autumn") %}
+            mdi:leaf
+          {% else %}
+            mdi:snowflake
+          {% endif %}
+      moon_phase:
+        friendly_name: Moon Phase
+        value_template: >
+          {{ states("sensor.moon") | replace('_', ' ') | title }}
+        icon_template: mdi:weather-night
+      sunrise:
+        friendly_name: Next Sunrise
+        value_template: >
+          {{ as_timestamp(
+            state_attr("sun.sun", "next_rising")
+          ) | timestamp_custom(' %I:%M %p') | replace(' 0', '') }}
+        icon_template: mdi:weather-sunset-up
+      sunset:
+        friendly_name: Next Sunset
+        value_template: >
+          {{ as_timestamp(
+            state_attr("sun.sun", "next_setting")
+          ) | timestamp_custom(' %I:%M %p') | replace(' 0', '') }}
+        icon_template: mdi:weather-sunset-down
+
+  - platform: min_max
+    name: Average Indoor Temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.basement_firefighter_air_temperature
+      - sensor.fiddle_leaf_fig_temperature
+      - sensor.guest_bedroom_sensor_temperature
+      - sensor.kitchen_sensor_temperature
+      - sensor.kitchen_sink_sensor_temperature
+      - sensor.master_bathroom_temperature
+      - sensor.office_node_pro_temperature
+      - sensor.pure_humidify_cool_temperature
+      - sensor.side_yard_inside_temp
+      - sensor.thermostat_air_temperature
+      - sensor.upstairs_hallway_sensor_temperature
+
+  - platform: min_max
+    name: Basement Temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.basement_sensor_temperature
+      - sensor.basement_firefighter_air_temperature
+      - sensor.guardian_b4e62d98118d_temperature
+
+  - platform: min_max
+    name: Kitchen Temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.kitchen_sensor_temperature
+      - sensor.kitchen_sink_sensor_temperature
+      - sensor.thermostat_air_temperature
+
+  - platform: min_max
+    name: Main Level Temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.fiddle_leaf_fig_temperature
+      - sensor.kitchen_sensor_temperature
+      - sensor.kitchen_sink_sensor_temperature
+      - sensor.thermostat_air_temperature
+
+  - platform: min_max
+    name: Office Temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.office_node_pro_temperature
+      - sensor.side_yard_inside_temp
+
+  - platform: min_max
+    name: Upstairs Temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.guest_bedroom_sensor_temperature
+      - sensor.master_bathroom_temperature
+      - sensor.office_node_pro_temperature
+      - sensor.pure_humidify_cool_temperature
+      - sensor.side_yard_inside_temp
+      - sensor.upstairs_hallway_sensor_temperature
+
+timer:
+  thermostat_sleep_timer:
+    name: Sleep Timer Remaining

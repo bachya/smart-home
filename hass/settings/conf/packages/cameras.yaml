@@ -1,0 +1,21 @@
+---
+camera:
+  - platform: ffmpeg
+    name: Basement Camera
+    input: -rtsp_transport tcp -i rtsp://basement-yi-camera.phil.iot/ch0_0.h264
+
+  - platform: ffmpeg
+    name: Garage Camera
+    input: >-
+      -rtsp_transport tcp
+      -i rtsp://garage-wyze-camera.phil.iot:8554/unicast
+
+  - platform: ffmpeg
+    name: Kitchen Camera
+    input: -rtsp_transport tcp -i rtsp://kitchen-yi-camera.phil.iot/ch0_0.h264
+
+  - platform: ffmpeg
+    name: Guest Bedroom Camera
+    input: >-
+      -rtsp_transport tcp
+      -i rtsp://guest-bedroom-wyze-camera.phil.iot:8554/unicast

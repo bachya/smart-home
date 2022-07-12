@@ -1,0 +1,158 @@
+---
+automation:
+  - alias: "Garage: Lock fire door when garage door is left open"
+    id: "garage_lock_fire_door_when_garage_door_is_left_open"
+
+    trigger:
+      - platform: state
+        entity_id: cover.wemos_d1_mini_garage_controller
+        from: closed
+        for: "00:10:00"
+
+      - platform: state
+        entity_id: lock.garage_fire_door_lock
+        to: unlocked
+        for: "00:10:00"
+
+    action:
+      - if:
+          - alias: "Is the garage door open"
+            condition: state
+            entity_id: cover.wemos_d1_mini_garage_controller
+            state: open
+        then:
+          - alias: "Lock the door"
+            service: lock.lock
+            target:
+              entity_id: lock.garage_fire_door_lock
+
+  - alias: "Garage: Notify when cars are missing at night"
+    id: "garage_notify_when_cars_are_missing_at_night"
+
+    trigger:
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: script
+          service: good_night_mode
+
+    condition:
+      - or:
+          - condition: state
+            entity_id: binary_sensor.aaron_s_parking_spot_occupied
+            state: "off"
+
+          - condition: state
+            entity_id: binary_sensor.spouse_s_parking_spot_occupied
+            state: "off"
+
+    action:
+      - alias: "Send the notification"
+        service: script.turn_on
+        target:
+          entity_id: script.notify_everyone_at_home
+        data:
+          variables:
+            interruption_level: critical
+            message: >
+              🚗 A car isn't in the garage; should it be?
+            title: Car Missing?
+
+  - alias: "Garage: Notify when the garage door is left open"
+    id: "garage_notify_when_the_garage_door_is_left_open"
+
+    trigger:
+      - platform: state
+        entity_id: cover.wemos_d1_mini_garage_controller
+        from: closed
+        for: "00:10:00"
+
+    action:
+      - alias: "Set variables for actionable notifications"
+        variables:
+          action_close: "{{ 'CLOSE_GARAGE_' ~ context.id }}"
+
+      - alias: "Start the notification sequence"
+        repeat:
+          sequence:
+            - alias: "Send the notification"
+              service: notify.everyone
+              data:
+                message: "🚗 The garage has been left open."
+                title: Security Alert
+                data:
+                  actions:
+                    - action: "{{ action_close }}"
+                      title: Close
+                  push:
+                    interruption_level: critical
+
+            - alias: "Wait to see if the notification is responded to"
+              wait_for_trigger:
+                - platform: event
+                  event_type: mobile_app_notification_action
+                  event_data:
+                    action: "{{ action_close }}"
+              timeout: "00:10:00"
+
+            - if:
+                - alias: "Was the notification responded to?"
+                  condition: template
+                  value_template: "{{ wait.trigger is not none }}"
+              then:
+                - alias: "Close the garage"
+                  service: cover.close_cover
+                  target:
+                    entity_id: cover.wemos_d1_mini_garage_controller
+
+                - stop: "The garage has been closed."
+          until:
+            - condition: not
+              conditions:
+                - condition: state
+                  entity_id: cover.wemos_d1_mini_garage_controller
+                  state: open
+
+  - alias: "Garage: Turn overhead lights off after the garage door closes"
+    id: "garage_turn_overhead_lights_off_after_the_garage_door_closes"
+
+    trigger:
+      - platform: state
+        entity_id: cover.wemos_d1_mini_garage_controller
+        to: closed
+        for: "00:10:00"
+
+    action:
+      - alias: "Turn the garage lights off"
+        service: switch.turn_off
+        target:
+          entity_id: switch.garage_lights
+
+  - alias: "Garage: Turn overhead lights on when it's dark"
+    id: "garage_turn_overhead_lights_on_when_it_s_dark"
+
+    trigger:
+      - platform: state
+        entity_id: cover.wemos_d1_mini_garage_controller
+        from: closed
+
+      - platform: state
+        entity_id: binary_sensor.is_dark_outside
+        to: "on"
+
+    condition:
+      - condition: not
+        conditions:
+          condition: state
+          entity_id: cover.wemos_d1_mini_garage_controller
+          state: closed
+
+      - condition: state
+        entity_id: binary_sensor.is_dark_outside
+        state: "on"
+
+    action:
+      - alias: "Turn the garage lights on"
+        service: switch.turn_on
+        target:
+          entity_id: switch.garage_lights

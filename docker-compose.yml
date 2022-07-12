@@ -1,0 +1,105 @@
+---
+version: "3"
+
+services:
+  ecowitt2mqtt:
+    depends_on:
+      - vernemq
+    environment:
+      ECOWITT2MQTT_HASS_DISCOVERY: "true"
+      ECOWITT2MQTT_MQTT_BROKER: vernemq
+      ECOWITT2MQTT_MQTT_PASSWORD: ${VERNEMQ_PASSWORD_ECOWITT}
+      ECOWITT2MQTT_MQTT_USERNAME: ecowitt
+    image: bachya/ecowitt2mqtt:${ECOWITT2MQTT_VERSION}
+    ports:
+      - 8080:8080/tcp
+    restart: unless-stopped
+
+  esphome:
+    environment:
+      PASSWORD: "${ESPHOME_PASSWORD}"
+      USERNAME: "${ESPHOME_USERNAME}"
+    image: esphome/esphome:${ESPHOME_VERSION}
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./esphome:/config
+
+  hass:
+    depends_on:
+      - hass-db
+      - vernemq
+      - zwave-js
+    image: ghcr.io/home-assistant/home-assistant:${HOME_ASSISTANT_CORE_VERSION}
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./hass/settings/blueprints:/config/blueprints
+      - ./hass/settings/conf:/config/conf
+      - ./hass/settings/configuration.yaml:/config/configuration.yaml
+      - ./hass/settings/custom_components:/config/custom_components
+      - ./hass/settings/scenes.yaml:/config/scenes.yaml
+      - ./hass/settings/secrets.yaml:/config/secrets.yaml
+      - hass-config:/config
+
+  hass-db:
+    environment:
+      POSTGRES_DB: ${HASS_DB_NAME}
+      POSTGRES_PASSWORD: ${HASS_DB_PASSWORD}
+      POSTGRES_USER: ${HASS_DB_USER}
+    healthcheck:
+      interval: 5s
+      retries: 3
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${HASS_DB_USER}
+      timeout: 10s
+    image: postgres:${POSTGRES_VERSION}-alpine
+    ports:
+      - 5432:5432/tcp
+    restart: unless-stopped
+    volumes:
+      - hass-db-data:/var/lib/postgresql/data
+
+  vernemq:
+    environment:
+      DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
+      DOCKER_VERNEMQ_PLUGINS.vmq_bridge: "on"
+      DOCKER_VERNEMQ_USER_ECOWITT: ${VERNEMQ_PASSWORD_ECOWITT}
+      DOCKER_VERNEMQ_USER_HASS: ${VERNEMQ_PASSWORD_HASS}
+      DOCKER_VERNEMQ_USER_RTLAMR: ${VERNEMQ_PASSWORD_RTLAMR}
+      DOCKER_VERNEMQ_USER_SWITCHBOT: ${VERNEMQ_PASSWORD_SWITCHBOT}
+      DOCKER_VERNEMQ_USER_VALETUDO: ${VERNEMQ_PASSWORD_VALETUDO}
+    healthcheck:
+      interval: 5s
+      retries: 3
+      test:
+        - CMD-SHELL
+        - vernemq ping | grep -q pong
+      timeout: 10s
+    image: vernemq/vernemq:${VERNEMQ_VERSION}-alpine
+    ports:
+      - 1883:1883/tcp
+    restart: unless-stopped
+    user: root
+    volumes:
+      - /etc/ssl:/etc/ssl:ro
+      - /usr/share/ca-certificates:/usr/share/ca-certificates:ro
+
+  zwave-js:
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    environment:
+      NETWORK_KEY: ${ZWAVE_JS_NETWORK_KEY}
+    image: zwavejs/zwavejs2mqtt:${ZJS2M_VERSION}
+    ports:
+      - 127.0.0.1:3000:3000/tcp
+      - 8091:8091/tcp
+    restart: unless-stopped
+    volumes:
+      - zwave-js-config:/usr/src/app/store
+
+volumes:
+  hass-config:
+  hass-db-data:
+  zwave-js-config:

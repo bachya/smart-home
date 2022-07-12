@@ -1,0 +1,202 @@
+---
+automation:
+  - alias: "Basement: Reboot Guardian every night at 2am"
+    id: "basement_reboot_guardian_every_night_at_2am"
+
+    trigger:
+      - platform: time
+        at: "02:00:00"
+
+    action:
+      - alias: "Reboot the Guardian"
+        service: guardian.reboot
+        data:
+          device_id: 3c34a53e83b4583eef666aafcdafaefc
+
+  - alias: "Basement: Retrieve humidistat Switchbot's battery level every hour"
+    id: "basement_retrieve_humidistat_switchbot's_battery_level_every_hour"
+    initial_state: true
+
+    trigger:
+      - platform: time_pattern
+        hours: "/1"
+
+    action:
+      - alias: "Send the battery level MQTT request"
+        service: mqtt.publish
+        data:
+          topic: !secret humidistat_switchbot_device_info_command_topic
+
+  - alias: "Basement: Manage Fully Standing Desk presets"
+    id: "basement_manage_fully_standing_desk_presets"
+
+    variables:
+      preset_map:
+        - input_select_option: "Aaron: Sitting"
+          height: "29.0"
+        - input_select_option: "Aaron: Standing"
+          height: "46.2"
+
+    trigger:
+      - platform: state
+        id: height_changed
+        entity_id: sensor.desk_height
+
+      - platform: state
+        id: select_preset
+        entity_id: input_select.fully_standing_desk_presets
+        not_to: Custom
+
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: height_changed
+
+            sequence:
+              - if:
+                  - alias: "Are we at a custom height?"
+                    condition: template
+                    value_template: >-
+                      {{
+                        states("sensor.desk_height")
+                        not in preset_map|map(attribute="height")
+                      }}
+                then:
+                  - alias: "Set the input select to 'Custom'"
+                    service: input_select.select_option
+                    target:
+                      entity_id: input_select.fully_standing_desk_presets
+                    data:
+                      option: Custom
+                else:
+                  - alias: "Set the input select to 'Custom'"
+                    service: input_select.select_option
+                    target:
+                      entity_id: input_select.fully_standing_desk_presets
+                    data:
+                      option: >-
+                        {{
+                          preset_map
+                          | selectattr(
+                            "height",
+                            "equalto",
+                            states("sensor.desk_height")
+                          )
+                          | map(attribute="input_select_option")
+                          | first
+                        }}
+
+          - conditions:
+              - condition: trigger
+                id: select_preset
+
+            sequence:
+              - alias: "Set the desk height"
+                service: number.set_value
+                target:
+                  entity_id: number.target_desk_height
+                data:
+                  value: >-
+                    {{
+                      preset_map
+                      | selectattr(
+                        "input_select_option",
+                        "equalto",
+                        states(trigger.entity_id)
+                      )
+                      | map(attribute="height")
+                      | first
+                    }}
+
+binary_sensor:
+  - platform: template
+    sensors:
+      sump_pump_on:
+        friendly_name: Sump Pump On
+        value_template: >
+          {{ states("sensor.sump_pump_electric_consumed_w") | int > 0 }}
+
+group:
+  basement_lights:
+    name: Basement Lights
+    entities:
+      - switch.basement_cantina_lights
+      - switch.basement_overhead_lights
+      - switch.basement_stairway_lights
+
+input_select:
+  fully_standing_desk_presets:
+    name: Fully Standing Desk Presets
+    options:
+      - "Aaron: Sitting"
+      - "Aaron: Standing"
+      - "Custom"
+
+scene:
+  - name: Enter Basement Workspace
+    entities:
+      input_select.fully_standing_desk_presets: "Aaron: Standing"
+      switch.basement_cantina_lights: "on"
+      switch.basement_overhead_lights: "on"
+      media_player.basement_roku:
+        source: Jellyfin
+        state: "on"
+      remote.basement_tv: "on"
+
+  - name: Exit Basement Workspace
+    entities:
+      switch.basement_cantina_lights: "off"
+      switch.basement_overhead_lights: "off"
+      media_player.basement_roku:
+        source: Roku
+        state: "off"
+      remote.basement_tv: "off"
+
+sensor:
+  - platform: history_stats
+    name: Sump Pump Runs (Today)
+    entity_id: binary_sensor.sump_pump_on
+    state: "on"
+    type: count
+    start: >
+      {{ now().replace(hour=0, minute=0, second=0) }}
+    end: "{{ now() }}"
+
+  - platform: history_stats
+    name: Sump Pump Runs (This Week)
+    entity_id: binary_sensor.sump_pump_on
+    state: "on"
+    type: count
+    start: >
+      {{
+        as_timestamp(now().replace(hour=0, minute=0, second=0))
+        - now().weekday() * 86400
+      }}
+    end: "{{ now() }}"
+
+  - platform: min_max
+    name: Average Basement Temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.basement_sensor_temperature
+      - sensor.basement_firefighter_air_temperature
+
+  - platform: mqtt
+    name: Humidistat Switchbot Battery
+    state_topic: !secret humidistat_switchbot_battery_percentage_topic
+    device_class: battery
+    unit_of_measurement: "%"
+
+switch:
+  - platform: mqtt
+    command_topic: !secret humidistat_switchbot_command_topic
+    device_class: switch
+    icon: mdi:air-humidifier
+    name: Humidistat Switchbot
+    payload_off: "OFF"
+    payload_on: "ON"
+    state_off: "OFF"
+    state_on: "ON"
+    state_topic: !secret humidistat_switchbot_state_topic

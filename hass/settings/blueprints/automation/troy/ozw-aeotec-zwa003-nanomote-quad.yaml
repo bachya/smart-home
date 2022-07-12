@@ -1,0 +1,63 @@
+---
+blueprint:
+  name: Aeotec ZWA003 NanoMote Quad
+  description: Create automations for the Aeotec ZWA003 NanoMote Quad using the
+    OZW integration.
+  domain: automation
+  input:
+    aeotec_nanomote:
+      name: Aeotec NanoMote Quad
+      description: The NanoMote Quad to interact with.
+      selector:
+        device:
+          integration: zwave_js
+          manufacturer: Aeotec Ltd.
+          model: Aeotec NanoMote Quad
+    button_1:
+      name: Press Button One
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: {}
+    button_2:
+      name: Press Button Two
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: {}
+    button_3:
+      name: Press Button Three
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: {}
+    button_4:
+      name: Press Button Four
+      description: Action to run on button press.
+      default: []
+      selector:
+        action: {}
+
+mode: single
+
+max_exceeded: silent
+
+trigger:
+  platform: event
+  event_type: zwave_js_value_notification
+  event_data:
+    command_class_name: Central Scene
+    device_id: !input aeotec_nanomote
+
+action:
+  - variables:
+      scene_id: "{{ trigger.event.data.property_key_name }}"
+  - choose:
+      - conditions: "{{ scene_id == '001' }}"
+        sequence: !input button_1
+      - conditions: "{{ scene_id == '002' }}"
+        sequence: !input button_2
+      - conditions: "{{ scene_id == '003' }}"
+        sequence: !input button_3
+      - conditions: "{{ scene_id == '004' }}"
+        sequence: !input button_4

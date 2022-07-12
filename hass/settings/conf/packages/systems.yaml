@@ -1,0 +1,173 @@
+---
+automation:
+  - alias: "Systems: Forward HASS persistent notifications to Aaron"
+    id: "systems_forward_hass_persistent_notifications_to_aaron"
+
+    trigger:
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: persistent_notification
+          service: create
+
+    action:
+      - alias: "Send the notification"
+        service: notify.aaron
+        data:
+          title: Home Assistant Notification
+          message: "📥 {{ trigger.event.data.service_data.message }}"
+
+  - alias: "Systems: Heal battery-powered Z-Wave nodes when appropriate"
+    id: "systems_heal_battery-powered_z_wave_nodes_when_appropriate"
+
+    trigger:
+      - platform: state
+        entity_id:
+          - lock.front_door_lock
+          - lock.garage_fire_door_lock
+        to: unavailable
+        for: "00:01:00"
+
+    action:
+      - alias: "Ping the node"
+        service: zwave_js.ping
+        target:
+          entity_id: "{{ trigger.entity_id }}"
+
+  - alias: "Systems: Notify Aaron about HACS updates"
+    id: "systems_notify_aaron_about_hacs_updates"
+
+    trigger:
+      - platform: state
+        entity_id: sensor.hacs
+
+    condition:
+      - condition: numeric_state
+        entity_id: sensor.hacs
+        above: 0
+
+    action:
+      - alias: "Send the notification"
+        service: notify.aaron
+        data:
+          title: HACS Updates
+          message: "💿 There are {{ trigger.to_state.state }} updates."
+
+  - alias: "Systems: Notify when a battery is low"
+    id: "systems_notify_when_a_battery_is_low"
+
+    trigger:
+      - platform: numeric_state
+        entity_id:
+          - sensor.aaron_bedside_nanomote_battery_level
+          - sensor.fiddle_leaf_fig_battery
+          - sensor.humidistat_switchbot_battery
+          - sensor.office_node_pro_battery
+          - sensor.sonos_roam_battery
+          - sensor.teddy_battery_level
+          - sensor.vacuum_battery
+        below: 20
+        for: "01:01:00"
+
+      - platform: state
+        entity_id:
+          - binary_sensor.basement_firefighter_low_battery_level
+          - binary_sensor.basement_sensor_low_battery
+          - binary_sensor.front_door_lock_low_battery_level
+          - binary_sensor.garage_fire_door_lock_low_battery_level
+          - binary_sensor.guest_bedroom_sensor_low_battery
+          - binary_sensor.kitchen_sensor_low_battery
+          - binary_sensor.kitchen_sink_sensor_low_battery
+          - binary_sensor.upstairs_hallway_sensor_low_battery
+          - binary_sensor.wh65batt
+        to: "on"
+        for: "01:01:00"
+
+    action:
+      - alias: "Send the notification"
+        service: script.turn_on
+        target:
+          entity_id: script.notify_everyone_at_home
+        data:
+          variables:
+            title: Low Battery
+            message: >
+              🔋 The battery for {{ trigger.to_state.attributes.friendly_name }}
+              is low.
+
+  - alias: "Systems: Notify when a sensor goes offline"
+    id: "systems_notify_when_a_sensor_goes_offline"
+
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.3d_printer_status
+          - binary_sensor.bar_cart_leds_status
+          - binary_sensor.basement_cantina_lights_status
+          - binary_sensor.basement_sensor_missing
+          - binary_sensor.spouse_s_bathroom_outlet_status
+          - binary_sensor.christmas_tree_status
+          - binary_sensor.esp32_plant_monitor_1_status
+          - binary_sensor.fully_jarvis_desk_controller_status
+          - binary_sensor.guest_bedroom_sensor_missing
+          - binary_sensor.kitchen_sensor_missing
+          - binary_sensor.master_bathroom_climate_sensor_status
+          - binary_sensor.master_bathroom_climate_sensor_status
+          - binary_sensor.reading_lamp_status
+          - binary_sensor.sofa_lamp_status
+          - binary_sensor.upstairs_hallway_sensor_missing
+          - binary_sensor.wemos_d1_mini_garage_controller_status
+        to: "off"
+        for: "00:05:00"
+
+    action:
+      - alias: "Send the notification"
+        service: script.turn_on
+        target:
+          entity_id: script.notify_everyone_at_home
+        data:
+          variables:
+            title: Device Offline
+            message: >-
+              🤔{{ trigger.to_state.attributes.friendly_name }} isn't
+              responding and may be offline.
+
+  - alias: "Systems: Reset various systems every day at midnight"
+    id: "systems_reset_various_systems_every_day_at_midnight"
+
+    trigger:
+      - platform: time
+        at: "01:00:00"
+
+    action:
+      - alias: "Ensue AdGuardHome is enabled"
+        service: switch.turn_on
+        target:
+          entity_id: switch.adguard_protection
+
+sensor:
+  - platform: filter
+    name: Filtered Speedtest Download
+    entity_id: sensor.speedtest_download
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 2
+
+  - platform: filter
+    name: Filtered Speedtest Ping
+    entity_id: sensor.speedtest_ping
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 2
+
+  - platform: filter
+    name: Filtered Speedtest Upload
+    entity_id: sensor.speedtest_upload
+    filters:
+      - filter: lowpass
+        time_constant: 10
+        precision: 2
+
+  - platform: uptime

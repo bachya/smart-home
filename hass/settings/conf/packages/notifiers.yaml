@@ -1,0 +1,96 @@
+---
+notify:
+  - platform: group
+    name: aaron
+    services:
+      - service: mobile_app_aarons_iphone
+      - service: mobile_app_aaron_personal_macbook
+
+  - platform: group
+    name: spouse
+    services:
+      - service: mobile_app_spouses_iphone
+
+  - platform: group
+    name: everyone
+    services:
+      - service: mobile_app_aarons_iphone
+      - service: mobile_app_aaron_personal_macbook
+      - service: mobile_app_spouses_iphone
+
+script:
+  notify_everyone_at_home:
+    alias: "Notify Everyone at Home"
+
+    fields:
+      interruption_level:
+        description: The interruption level to set
+        example: critical
+
+      message:
+        description: The message to send
+        example: Your hair is on fire!
+
+      title:
+        description: The optional title to include
+        example: Heads Up
+
+      actions:
+        description: Notification actions to include
+
+    sequence:
+      - repeat:
+          for_each:
+            - aaron
+            - spouse
+          sequence:
+            - alias: "Notify the person if they're at home"
+              service: script.turn_on
+              target:
+                entity_id: script.notify_person_if_at_home
+              data:
+                variables:
+                  actions: "{{ actions }}"
+                  interruption_level: "{{ interruption_level }}"
+                  message: "{{ message }}"
+                  name: "{{ repeat.item }}"
+                  title: "{{ title }}"
+
+  notify_person_if_at_home:
+    alias: "Notify Person if at Home"
+
+    fields:
+      interruption_level:
+        description: The interruption level to set
+        example: critical
+
+      message:
+        description: The message to send
+        example: Your hair is on fire!
+
+      name:
+        description: The lowercase name of the person to notify
+        example: aaron
+
+      title:
+        description: The optional title to include
+        example: Heads Up
+
+      actions:
+        description: Notification actions to include
+
+    sequence:
+      - alias: "Is the person at home?"
+        condition: template
+        value_template: "{{ states('person.' + name) == 'home' }}"
+
+      - alias: "Send the message"
+        service: "notify.{{ name }}"
+        data:
+          message: "{{ message }}"
+          title: "{{ title }}"
+          data:
+            actions: "{{ actions }}"
+            push:
+              interruption-level: "{{ interruption_level }}"
+            tag: "{{ message }}"
