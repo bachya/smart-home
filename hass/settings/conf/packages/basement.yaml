@@ -100,20 +100,14 @@ automation:
 
     trigger:
       - platform: state
-        id: entering
         entity_id: input_boolean.using_basement_workspace
-        to: "on"
-
-      - platform: state
-        id: exiting
-        entity_id: input_boolean.using_basement_workspace
-        to: "off"
 
     action:
       - if:
           - alias: "We are entering the workspace"
-            condition: trigger
-            id: entering
+            condition: state
+            entity_id: input_boolean.using_basement_workspace
+            state: "on"
         then:
           - parallel:
               - alias: "Active the 'Enter Basement Workspace' scene"
