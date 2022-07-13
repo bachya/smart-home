@@ -13,20 +13,6 @@ automation:
         data:
           device_id: 3c34a53e83b4583eef666aafcdafaefc
 
-  - alias: "Basement: Retrieve humidistat Switchbot's battery level every hour"
-    id: "basement_retrieve_humidistat_switchbot's_battery_level_every_hour"
-    initial_state: true
-
-    trigger:
-      - platform: time_pattern
-        hours: "/1"
-
-    action:
-      - alias: "Send the battery level MQTT request"
-        service: mqtt.publish
-        data:
-          topic: !secret humidistat_switchbot_device_info_command_topic
-
   - alias: "Basement: Manage Fully Standing Desk presets"
     id: "basement_manage_fully_standing_desk_presets"
 
@@ -109,6 +95,133 @@ automation:
                       | first
                     }}
 
+  - alias: "Basement: Manage Workspace"
+    id: "basement_manage_workspace"
+
+    trigger:
+      - platform: state
+        id: entering
+        entity_id: input_boolean.using_basement_workspace
+        to: "on"
+
+      - platform: state
+        id: exiting
+        entity_id: input_boolean.using_basement_workspace
+        to: "off"
+
+    action:
+      - if:
+          - alias: "We are entering the workspace"
+            condition: trigger
+            id: entering
+        then:
+          - parallel:
+              - alias: "Active the 'Enter Basement Workspace' scene"
+                scene: scene.enter_basement_workspace
+
+              - alias: "Start the toggle cycle"
+                repeat:
+                  sequence:
+                    - alias: "Start a 45-minute timer"
+                      delay: "00:45:00"
+
+                    - alias: "Ensure that someone is still using the workspace"
+                      condition: state
+                      entity_id: input_boolean.using_basement_workspace
+                      state: "on"
+
+                    - alias: "Set variables for actionable notifications"
+                      variables:
+                        action_toggle_desk: >-
+                          {{ 'TOGGLE_STANDING_DESK_' ~ context.id }}
+
+                    - alias: "Send the notification"
+                      service: notify.aaron
+                      data:
+                        message: >-
+                          {%
+                            if states(
+                              "input_select.fully_standing_desk_presets"
+                            ) == "Aaron: Sitting"
+                          %}
+                            🧍🏼‍♂️ Let's stretch those legs!
+                          {% else %}
+                            🧑🏻‍💻 Take a load off!
+                          {% endif %}
+                        title: >-
+                          {%
+                            if states(
+                              "input_select.fully_standing_desk_presets"
+                            ) == "Aaron: Sitting"
+                          %}
+                            Time to Stand
+                          {% else %}
+                            Time to Sit
+                          {% endif %}
+                        data:
+                          actions:
+                            - action: "{{ action_toggle_desk }}"
+                              title: >-
+                                {%
+                                  if states(
+                                    "input_select.fully_standing_desk_presets"
+                                  ) == "Aaron: Sitting"
+                                %}
+                                  Raise the Desk
+                                {% else %}
+                                  Lower the Desk
+                                {% endif %}
+
+                    - alias: "Wait to see if the notification is responded to"
+                      wait_for_trigger:
+                        - platform: event
+                          event_type: mobile_app_notification_action
+                          event_data:
+                            action: "{{ action_toggle_desk }}"
+                      timeout: "00:01:00"
+
+                    - if:
+                        - alias: "Was the notification responded to?"
+                          condition: template
+                          value_template: "{{ wait.trigger is not none }}"
+                      then:
+                        - alias: "Toggle the standing desk"
+                          service: input_select.select_option
+                          target:
+                            entity_id: input_select.fully_standing_desk_presets
+                          data:
+                            option: >-
+                              {%
+                                if states(
+                                  "input_select.fully_standing_desk_presets"
+                                ) == "Aaron: Sitting"
+                              %}
+                                Aaron: Standing
+                              {% else %}
+                                Aaron: Sitting
+                              {% endif %}
+                  until:
+                    - condition: state
+                      entity_id: input_boolean.using_basement_workspace
+                      state: "off"
+        else:
+          - alias: "Active the 'Exit Basement Workspace' scene"
+            scene: scene.exit_basement_workspace
+
+  - alias: "Basement: Retrieve humidistat Switchbot's battery level every hour"
+    id: "basement_retrieve_humidistat_switchbot's_battery_level_every_hour"
+    initial_state: true
+
+    trigger:
+      - platform: time_pattern
+        hours: "/1"
+
+    action:
+      - alias: "Send the battery level MQTT request"
+        service: mqtt.publish
+        data:
+          topic: !secret humidistat_switchbot_device_info_command_topic
+
 group:
   basement_lights:
     name: Basement Lights
@@ -116,6 +229,10 @@ group:
       - switch.basement_cantina_lights
       - switch.basement_overhead_lights
       - switch.basement_stairway_lights
+
+input_boolean:
+  using_basement_workspace:
+    name: Using Basment Workspace
 
 input_select:
   fully_standing_desk_presets:
@@ -166,6 +283,14 @@ sensor:
       }}
     end: "{{ now() }}"
 
+  - platform: history_stats
+    name: Time at Standing Desk Today
+    entity_id: binary_sensor.using_standing_desk
+    state: "on"
+    type: time
+    start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+
   - platform: min_max
     name: Average Basement Temperature
     type: mean
@@ -198,5 +323,15 @@ template:
       state: >
         {{ states("sensor.sump_pump_electric_consumed_w") | int > 0 }}
       unique_id: sump_pump_on
+
+    - name: Using Standing Desk
+      state: >
+        {{
+          states("input_boolean.using_basement_workspace") == "on"
+          and
+          states("input_select.fully_standing_desk_presets")
+            == "Aaron: Standing"
+        }}
+      unique_id: using_standing_desk
 
   unique_id: basement
