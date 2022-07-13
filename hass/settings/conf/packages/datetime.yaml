@@ -1,5 +1,5 @@
 ---
-binary-sensor:
+binary_sensor:
   - platform: tod
     name: Daytime (Workday)
     after: sunrise
