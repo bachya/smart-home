@@ -8,6 +8,7 @@ automation:
         id: departing
         entity_id: sensor.proximity_zone
         from: Home
+        for: "00:00:10"
 
       - platform: state
         id: in_bed
