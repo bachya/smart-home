@@ -465,41 +465,6 @@ sensor:
 
   - platform: season
 
-  - platform: template
-    sensors:
-      friendly_season:
-        friendly_name: Season
-        value_template: "{{ states('sensor.season') | title }}"
-        icon_template: >
-          {% if is_state("sensor.season", "spring") %}
-            mdi:flower
-          {% elif is_state("sensor.season", "summer") %}
-            mdi:sunglasses
-          {% elif is_state("sensor.season", "autumn") %}
-            mdi:leaf
-          {% else %}
-            mdi:snowflake
-          {% endif %}
-      moon_phase:
-        friendly_name: Moon Phase
-        value_template: >
-          {{ states("sensor.moon") | replace('_', ' ') | title }}
-        icon_template: mdi:weather-night
-      sunrise:
-        friendly_name: Next Sunrise
-        value_template: >
-          {{ as_timestamp(
-            state_attr("sun.sun", "next_rising")
-          ) | timestamp_custom(' %I:%M %p') | replace(' 0', '') }}
-        icon_template: mdi:weather-sunset-up
-      sunset:
-        friendly_name: Next Sunset
-        value_template: >
-          {{ as_timestamp(
-            state_attr("sun.sun", "next_setting")
-          ) | timestamp_custom(' %I:%M %p') | replace(' 0', '') }}
-        icon_template: mdi:weather-sunset-down
-
   - platform: min_max
     name: Average Indoor Temperature
     type: mean
@@ -564,6 +529,43 @@ sensor:
       - sensor.pure_humidify_cool_temperature
       - sensor.side_yard_inside_temp
       - sensor.upstairs_hallway_sensor_temperature
+
+template:
+  sensor:
+    - name: Moon Phase
+      state: >
+        {{ states("sensor.moon") | replace('_', ' ') | title }}
+      unique_id: moon_phase
+
+    - name: Next Sunrise
+      state: >
+        {{ as_timestamp(
+          state_attr("sun.sun", "next_rising")
+        ) | timestamp_custom(' %I:%M %p') | replace(' 0', '') }}
+      unique_id: next_sunrise
+
+    - name: Next Sunset
+      state: >
+        {{ as_timestamp(
+          state_attr("sun.sun", "next_setting")
+        ) | timestamp_custom(' %I:%M %p') | replace(' 0', '') }}
+      unique_id: next_sunset
+
+    - name: Season
+      icon: >
+        {% if is_state("sensor.season", "spring") %}
+          mdi:flower
+        {% elif is_state("sensor.season", "summer") %}
+          mdi:sunglasses
+        {% elif is_state("sensor.season", "autumn") %}
+          mdi:leaf
+        {% else %}
+          mdi:snowflake
+        {% endif %}
+      state: "{{ states('sensor.season') | title }}"
+      unique_id: season
+
+  unique_id: climate
 
 timer:
   thermostat_sleep_timer:

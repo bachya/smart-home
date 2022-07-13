@@ -1,16 +1,5 @@
 ---
-binary_sensor:
-  - platform: template
-    sensors:
-      daytime:
-        friendly_name: Daytime
-        value_template: >
-          {% if states("binary_sensor.workday_sensor") == "on" %}
-            {{ states("binary_sensor.daytime_workday") }}
-          {% else %}
-            {{ states("binary_sensor.daytime_holiday") }}
-          {% endif %}
-
+binary-sensor:
   - platform: tod
     name: Daytime (Workday)
     after: sunrise
@@ -26,3 +15,16 @@ binary_sensor:
   - platform: workday
     country: US
     province: CO
+
+template:
+  binary_sensor:
+    - name: Daytime
+      state: >
+        {% if states("binary_sensor.workday_sensor") == "on" %}
+          {{ states("binary_sensor.daytime_workday") }}
+        {% else %}
+          {{ states("binary_sensor.daytime_holiday") }}
+        {% endif %}
+      unique_id: daytime
+
+  unique_id: datetime

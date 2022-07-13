@@ -109,14 +109,6 @@ automation:
                       | first
                     }}
 
-binary_sensor:
-  - platform: template
-    sensors:
-      sump_pump_on:
-        friendly_name: Sump Pump On
-        value_template: >
-          {{ states("sensor.sump_pump_electric_consumed_w") | int > 0 }}
-
 group:
   basement_lights:
     name: Basement Lights
@@ -200,3 +192,12 @@ switch:
     state_off: "OFF"
     state_on: "ON"
     state_topic: !secret humidistat_switchbot_state_topic
+
+template:
+  binary_sensor:
+    - name: Sump Pump On
+      state: >
+        {{ states("sensor.sump_pump_electric_consumed_w") | int > 0 }}
+      unique_id: sump_pump_on
+
+  unique_id: basement

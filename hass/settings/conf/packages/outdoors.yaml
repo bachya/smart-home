@@ -1,15 +1,4 @@
 ---
-binary_sensor:
-  - platform: template
-    sensors:
-      is_dark_outside:
-        friendly_name: "Is it dark outside?"
-        value_template: >
-          {{
-            states("sensor.solarradiation_perceived") | float
-            < states("input_number.local_sunset_brightness") | int
-          }}
-
 group:
   outdoor_lights:
     entities:
@@ -27,3 +16,15 @@ input_number:
     step: 1
     unit_of_measurement: "%"
     icon: mdi:brightness-percent
+
+template:
+  binary_sensor:
+    - name: Is Dark Outside
+      state: >
+        {{
+          states("sensor.solarradiation_perceived") | float
+          < states("input_number.local_sunset_brightness") | int
+        }}
+      unique_id: is_dark_outside
+
+  unique_id: outdoors

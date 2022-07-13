@@ -101,37 +101,6 @@ automation:
               }}
             title: Tomorrow's Trash Pickup
 
-binary_sensor:
-  - platform: template
-    sensors:
-      recollect_next_pickup_includes_extra_trash:
-        friendly_name: Extra Trash
-        value_template: >
-          {{ "ExtraTrash_Day" in state_attr(
-            "sensor.recollect_waste", "pickup_types"
-          ) }}
-
-      recollect_next_pickup_includes_recycling:
-        friendly_name: Recycling
-        value_template: >
-          {{ "recycle" in state_attr(
-            "sensor.recollect_waste", "pickup_types"
-          ) }}
-
-      recollect_next_pickup_includes_trash:
-        friendly_name: Trash
-        value_template: >
-          {{ "garbage" in state_attr(
-            "sensor.recollect_waste", "pickup_types"
-          ) }}
-
-      ridwell_next_pickup_scheduled:
-        friendly_name: Ridwell Next Pickup Scheduled
-        value_template: >
-          {{
-            state_attr("sensor.ridwell_pickup", "pickup_state") == "scheduled"
-          }}
-
 group:
   trash_sensors:
     name: Trash Sensors
@@ -140,16 +109,46 @@ group:
       - binary_sensor.recollect_next_pickup_includes_recycling
       - binary_sensor.recollect_next_pickup_includes_trash
 
-sensor:
-  - platform: template
-    sensors:
-      ridwell_rotating_pickup:
-        friendly_name: Ridwell Next Rotating Pickup
-        value_template: >
-          {% for name, attrs in state_attr(
-            "sensor.ridwell_pickup", "pickup_types"
-          ).items() -%}
-            {% if attrs["category"] == "rotating" %}
-              {{ name }}
-            {% endif %}
-          {% endfor %}
+template:
+  binary_sensor:
+    - name: Recollect Next Pickup Includes Extra Trash
+      state: >
+        {{ "ExtraTrash_Day" in state_attr(
+          "sensor.recollect_waste", "pickup_types"
+        ) }}
+      unique_id: recollect_next_pickup_includes_extra_trash
+
+    - name: Recollect Next Pickup Includes Recycling
+      state: >
+        {{ "recycle" in state_attr(
+          "sensor.recollect_waste", "pickup_types"
+        ) }}
+      unique_id: recollect_next_pickup_includes_recycling
+
+    - name: Recollect Next Pickup Includes Trash
+      state: >
+        {{ "garbage" in state_attr(
+          "sensor.recollect_waste", "pickup_types"
+        ) }}
+      unique_id: recollect_next_pickup_includes_trash
+
+    - name: Ridwell Next Pickup Scheduled
+      state: >
+        {{
+          state_attr("sensor.ridwell_pickup", "pickup_state") == "scheduled"
+        }}
+      unique_id: ridwell_next_pickup_scheduled
+
+  sensor:
+    - name: Ridwell iotating Pickup
+      state: >
+        {% for name, attrs in state_attr(
+          "sensor.ridwell_pickup", "pickup_types"
+        ).items() -%}
+          {% if attrs["category"] == "rotating" %}
+            {{ name }}
+          {% endif %}
+        {% endfor %}
+      unique_id: ridwell_next_rotating_pickup
+
+  unique_id: trash

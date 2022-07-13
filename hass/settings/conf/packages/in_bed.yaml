@@ -23,31 +23,33 @@ binary_sensor:
         prob_given_true: 0.900
         prob_given_false: 0.714
 
-  - platform: template
-    sensors:
-      in_bed:
-        friendly_name: In Bed
-        value_template: >-
-          {{
-            is_state("sensor.proximity_zone", "Home") and
-            is_state("binary_sensor.in_bed_estimate", "on")
-          }}
+template:
+  binary_sensor:
+    - name: In Bed
+      state: >-
+        {{
+          is_state("sensor.proximity_zone", "Home") and
+          is_state("binary_sensor.in_bed_estimate", "on")
+        }}
+      unique_id: in_bed
 
-      listening_to_music:
-        friendly_name: Listening to Music
-        value_template: >-
-          {{
-            is_state("media_player.main_level_outdoors", "playing") or
-            is_state("media_player.office", "playing") or
-            is_state("media_player.sonos_roam", "playing")
-          }}
+    - name: Listening to Music
+      state: >-
+        {{
+          is_state("media_player.main_level_outdoors", "playing") or
+          is_state("media_player.office", "playing") or
+          is_state("media_player.sonos_roam", "playing")
+        }}
+      unique_id: listening_to_music
 
-      watching_tv:
-        friendly_name: Watching TV
-        value_template: >-
-          {{
-            is_state("media_player.basement_roku", "playing") or
-            is_state("remote.basement_tv", "on") or
-            is_state("media_player.living_room_roku", "playing") or
-            is_state("remote.living_room_tv", "on")
-          }}
+    - name: Watching TV
+      state: >-
+        {{
+          is_state("media_player.basement_roku", "playing") or
+          is_state("remote.basement_tv", "on") or
+          is_state("media_player.living_room_roku", "playing") or
+          is_state("remote.living_room_tv", "on")
+        }}
+      unique_id: watching_tv
+
+  unique_id: in_bed

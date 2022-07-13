@@ -290,89 +290,70 @@ script:
           entity_id: input_select.wolfie_bin_status
           option: Empty
 
-sensor:
-  - platform: template
-    sensors:
-      vacuum_filter_remaining:
-        friendly_name: Filter
-        value_template: >
-          {{ state_attr("vacuum.rockrobo", "filter") }}
-        unit_of_measurement: hours
-        icon_template: mdi:timer-sand
+template:
+  sensor:
+    - name: Vacuum Filter Remaining
+      state: >
+        {{ state_attr("vacuum.rockrobo", "filter") }}
+      unique_id: vacuum_filter_remaining
+      unit_of_measurement: hours
 
-      vacuum_main_brush_remaining:
-        friendly_name: Main Brush
-        value_template: >
-          {{ state_attr("vacuum.rockrobo", "mainBrush") }}
-        unit_of_measurement: hours
-        icon_template: mdi:timer-sand
+    - name: Vacuum Main Brush Remaining
+      state: >
+        {{ state_attr("vacuum.rockrobo", "mainBrush") }}
+      unique_id: vacuum_main_brush_remaing
+      unit_of_measurement: hours
 
-      vacuum_sensor_dirtiness_remaining:
-        friendly_name: Sensor Dirtiness
-        value_template: >
-          {{ state_attr("vacuum.rockrobo", "sensor") }}
-        unit_of_measurement: hours
-        icon_template: mdi:timer-sand
+    - name: Vacuum Sensor Dirtiness Remaining
+      state: >
+        {{ state_attr("vacuum.rockrobo", "sensor") }}
+      unique_id: vacuum_sensor_dirtiness_remaining
+      unit_of_measurement: hours
 
-      vacuum_side_brush_remaining:
-        friendly_name: Side Brush
-        value_template: >
-          {{ state_attr("vacuum.rockrobo", "sideBrush") }}
-        unit_of_measurement: hours
-        icon_template: mdi:timer-sand
+    - name: Vacuum Side Brush Remaining
+      state: >
+        {{ state_attr("vacuum.rockrobo", "sideBrush") }}
+      unique_id: vacuum_side_brush_remaining
+      unit_of_measurement: hours
 
-      vacuum_status:
-        friendly_name: Status
-        value_template: >
-          {{ states("vacuum.rockrobo") | title }}
-        icon_template: >
-          {% if is_state("vacuum.rockrobo", "docked")  %}
-            mdi:battery-charging
-          {% elif is_state("vacuum.rockrobo", "cleaning")  %}
-            mdi:move-resize
-          {% elif is_state("vacuum.rockrobo", "returning")  %}
-            mdi:keyboard-return
-          {% elif is_state("vacuum.rockrobo", "idle")  %}
-            mdi:dots-horizontal
-          {% elif is_state("vacuum.rockrobo", "paused")  %}
-            mdi:pause-circle
-          {% else %}
-            mdi:help-circle
-          {% endif %}
+    - name: Vacuum Fan Speed
+      icon: >-
+        {% set speed = state_attr("vacuum.rockrobo", "fan_speed") %}
+        {% if speed == "low" %}
+          mdi:fan-speed-1
+        {% elif speed == "medium" %}
+          mdi:fan-speed-2
+        {% else %}
+          mdi:fan-speed-3
+        {% endif %}
+      state: >
+        {{ state_attr("vacuum.rockrobo", "fan_speed") | title }}
+      unique_id: vacuum_fan_speed
 
-      vacuum_fan_speed:
-        friendly_name: Fan Speed
-        value_template: >
-          {{ state_attr("vacuum.rockrobo", "fan_speed") | title }}
-        icon_template: mdi:speedometer
+    - name: Vacuum Battery
+      device_class: battery
+      state: >
+        {{ state_attr("vacuum.rockrobo", "battery_level") }}
+      unique_id: vacuum_battery
+      unit_of_measurement: "%"
 
-      vacuum_battery:
-        friendly_name: Vacuum Battery
-        value_template: >
-          {{ state_attr("vacuum.rockrobo", "battery_level") }}
-        unit_of_measurement: "%"
-        device_class: battery
+    - name: Vacuum Cleaning Time
+      state: >
+        {{ state_attr("vacuum.rockrobo", "currentCleanTime") }}
+      unique_id: vacuum_cleaning_time
+      unit_of_measurement: minutes
 
-      vacuum_cleaning_time:
-        friendly_name: Time of Last Cycle
-        value_template: >
-          {{ state_attr("vacuum.rockrobo", "currentCleanTime") }}
-        icon_template: mdi:timer
-        unit_of_measurement: minutes
+    - name: Vacuum Cleaned Area
+      state: >
+        {{ state_attr("vacuum.rockrobo", "currentCleanArea") }}
+      unique_id: vacuum_cleaned_area
+      unit_of_measurement: m²
 
-      vacuum_cleaned_area:
-        friendly_name: Area of Last Cycle
-        unit_of_measurement: m ²
-        value_template: >
-          {{ state_attr("vacuum.rockrobo", "currentCleanArea") }}
-        icon_template: mdi:ruler
-
-      vacuum_last_run:
-        friendly_name: Last Run Date/Time
-        value_template: >
-          {{
-            state_attr("vacuum.rockrobo", "last_run_stats")["endTime"]
-            | multiply(0.001)
-            | timestamp_custom("%m/%d, %I:%M %p")
-          }}
-        icon_template: mdi:calendar-check
+    - name: Vacuum Last Run
+      state: >
+        {{
+          state_attr("vacuum.rockrobo", "last_run_stats")["endTime"]
+          | multiply(0.001)
+          | timestamp_custom("%m/%d, %I:%M %p")
+        }}
+      unique_id: vacuum_last_run

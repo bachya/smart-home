@@ -97,29 +97,26 @@ input_number:
     unit_of_measurement: miles
     icon: mdi:radius-outline
 
-sensor:
-  - platform: template
-    sensors:
-      proximity_zone:
-        friendly_name: Zone
-        value_template: >
-          {% set proximity = states("proximity.home") %}
-          {% if proximity == "not set" %}
-            # Default to Aaron's presence state if proximity isn't set up yet:
-            {{ states("person.aaron") | title }}
+template:
+  sensor:
+    - name: Proximity Zone
+      state: >
+        {% set proximity = states("proximity.home") %}
+        {% if proximity == "not set" %}
+          # Default to Aaron's presence state if proximity isn't set up yet:
+          {{ states("person.aaron") | title }}
+        {% else %}
+          {% set prox_mi = states("proximity.home")|int / 5280 %}
+          {% set home = states("input_number.home_radius")|int %}
+          {% set nearby = states("input_number.nearby_radius")|int %}
+          {% set edge = states("input_number.edge_radius")|int %}
+          {% if prox_mi <= home %}
+            Home
+          {% elif home < prox_mi <= nearby %}
+            Nearby
+          {% elif nearby < prox_mi <= edge %}
+            Edge
           {% else %}
-            {% set prox_mi = states("proximity.home")|int / 5280 %}
-            {% set home = states("input_number.home_radius")|int %}
-            {% set nearby = states("input_number.nearby_radius")|int %}
-            {% set edge = states("input_number.edge_radius")|int %}
-            {% if prox_mi <= home %}
-              Home
-            {% elif home < prox_mi <= nearby %}
-              Nearby
-            {% elif nearby < prox_mi <= edge %}
-              Edge
-            {% else %}
-              Away
-            {% endif %}
+            Away
           {% endif %}
-        icon_template: mdi:radius
+        {% endif %}

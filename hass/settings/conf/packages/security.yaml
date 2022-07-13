@@ -405,52 +405,6 @@ automation:
                   target:
                     entity_id: "{{ repeat.item.entity }}"
 
-binary_sensor:
-  - platform: template
-    sensors:
-      secure_status:
-        friendly_name: Security Status
-        value_template: >
-          {{
-            is_state("lock.123_main_street_patio_door", "locked")
-            and is_state("lock.front_door_lock", "locked")
-            and is_state("lock.garage_fire_door_lock", "locked")
-            and (
-              (
-                is_state(
-                  "alarm_control_panel.123_main_street",
-                  "armed_home"
-                )
-                and is_state("sensor.proximity_zone", "Home")
-              )
-              or
-              (
-                is_state(
-                  "alarm_control_panel.123_main_street",
-                  "armed_away"
-                )
-                and not is_state("sensor.proximity_zone", "Home")
-              )
-              or
-              (
-                is_state(
-                  "alarm_control_panel.123_main_street",
-                  "armed_home"
-                )
-                and is_state("vacuum.rockrobo", "cleaning")
-              )
-              or
-              (
-                is_state(
-                  "alarm_control_panel.123_main_street",
-                  "armed_home"
-                )
-                and is_state("device_tracker.bzndrxez_teddy", "home")
-              )
-            )
-            and is_state("cover.wemos_d1_mini_garage_controller", "closed")
-          }}
-
 group:
   security_devices:
     entities:
@@ -584,8 +538,7 @@ sensor:
     entity_id: switch.aaron_bedside_table_left
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -593,8 +546,7 @@ sensor:
     entity_id: switch.aaron_bedside_table_right
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -602,8 +554,7 @@ sensor:
     entity_id: switch.bar_cart_leds
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -611,8 +562,7 @@ sensor:
     entity_id: switch.basement_cantina_cantina_lights
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -620,8 +570,7 @@ sensor:
     entity_id: switch.basement_overhead_cantina_lights
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -629,8 +578,7 @@ sensor:
     entity_id: switch.basement_stairway_cantina_lights
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -638,8 +586,7 @@ sensor:
     entity_id: remote.basement_tv
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -647,8 +594,7 @@ sensor:
     entity_id: switch.christmas_tree
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -656,8 +602,7 @@ sensor:
     entity_id: switch.garage_lights
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -665,8 +610,7 @@ sensor:
     entity_id: light.kitchen_can_lights
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -674,8 +618,7 @@ sensor:
     entity_id: switch.kitchen_cabinet_lights
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -683,8 +626,7 @@ sensor:
     entity_id: switch.kitchen_pendant_lights
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -692,8 +634,7 @@ sensor:
     entity_id: light.kitchen_table_light
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -701,8 +642,7 @@ sensor:
     entity_id: switch.laundry_light
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -710,8 +650,7 @@ sensor:
     entity_id: remote.living_room_tv
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -719,8 +658,7 @@ sensor:
     entity_id: light.master_bathroom_overhead_lights
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -728,8 +666,7 @@ sensor:
     entity_id: light.master_bathroom_vanity_lights
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -737,8 +674,7 @@ sensor:
     entity_id: switch.mud_counter_lights
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -746,8 +682,7 @@ sensor:
     entity_id: group.outdoor_lights
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -755,8 +690,7 @@ sensor:
     entity_id: switch.reading_lamp
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -764,8 +698,7 @@ sensor:
     entity_id: switch.sofa_lamp
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
   - platform: history_stats
@@ -773,8 +706,7 @@ sensor:
     entity_id: switch.upstairs_stairway_lights
     state: "on"
     type: count
-    start: >
-      {{ now() - timedelta(weeks=1) }}
+    start: "{{ now() - timedelta(weeks=1) }}"
     duration: 00:00:30
 
 switch:
@@ -846,3 +778,48 @@ switch:
             device_id: 936e2eebe6c64edfb380853bcab5fe8c
             chime_volume: "off"
             voice_prompt_volume: "off"
+
+template:
+  binary_sensor:
+    - name: Secure Status
+      state: >
+        {{
+          is_state("lock.123_main_street_patio_door", "locked")
+          and is_state("lock.front_door_lock", "locked")
+          and is_state("lock.garage_fire_door_lock", "locked")
+          and (
+            (
+              is_state(
+                "alarm_control_panel.123_main_street",
+                "armed_home"
+              )
+              and is_state("sensor.proximity_zone", "Home")
+            )
+            or
+            (
+              is_state(
+                "alarm_control_panel.123_main_street",
+                "armed_away"
+              )
+              and not is_state("sensor.proximity_zone", "Home")
+            )
+            or
+            (
+              is_state(
+                "alarm_control_panel.123_main_street",
+                "armed_home"
+              )
+              and is_state("vacuum.rockrobo", "cleaning")
+            )
+            or
+            (
+              is_state(
+                "alarm_control_panel.123_main_street",
+                "armed_home"
+              )
+              and is_state("device_tracker.bzndrxez_teddy", "home")
+            )
+          )
+          and is_state("cover.wemos_d1_mini_garage_controller", "closed")
+        }}
+      unique_id: security_secure_status
