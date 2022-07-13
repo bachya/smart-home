@@ -151,8 +151,7 @@ sensor:
     entity_id: binary_sensor.sump_pump_on
     state: "on"
     type: count
-    start: >
-      {{ now().replace(hour=0, minute=0, second=0) }}
+    start: "{{ now().replace(hour=0, minute=0, second=0) }}"
     end: "{{ now() }}"
 
   - platform: history_stats
