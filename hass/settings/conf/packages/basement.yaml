@@ -97,6 +97,7 @@ automation:
 
   - alias: "Basement: Manage Workspace"
     id: "basement_manage_workspace"
+    mode: restart
 
     trigger:
       - platform: state
