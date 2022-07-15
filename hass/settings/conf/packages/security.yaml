@@ -75,6 +75,7 @@ automation:
 
   - alias: "Security: Forward SimpliSafe notifications to Aaron"
     id: "security_forward_simplisafe_notifications_to_aaron"
+    mode: restart
 
     trigger:
       - platform: event
@@ -84,16 +85,50 @@ automation:
         event_type: SIMPLISAFE_NOTIFICATION
 
     action:
-      - alias: "Send the notification to Aaron"
-        service: notify.aaron
-        data:
-          message: >
-            {% if trigger.event.event_type == "SIMPLISAFE_EVENT" %}
-              {% set message = trigger.event.data.last_event_info %}
-            {% else %}
-              {% set message = trigger.event.data.message %}
-            {% endif %}
-            📥 SimpliSafe Message: {{ message }}
+      - alias: "Set variables for possible actionable notification"
+        variables:
+          action_clear_notifications: >-
+            {{ "CLEAN_SS_NOTIFICATIONS_" ~ context.id }}
+
+      - if:
+          - alias: "Is this a clearable SimpliSafe notification?"
+            condition: template
+            value_template: >-
+              {{ trigger.event.event_type == "SIMPLISAFE_NOTIFICATION" }}
+        then:
+          - alias: "Send an actionable notification"
+            service: notify.aaron
+            data:
+              message: >
+                📥 SimpliSafe Message: {{ trigger.event.data.last_event_info }}
+              title: Security Notification
+              data:
+                actions:
+                  - action: "{{ action_clear_notifications }}"
+                    title: Clear Notifications
+          - alias: "Wait to see if the notification is responded to"
+            wait_for_trigger:
+              - platform: event
+                event_type: mobile_app_notification_action
+                event_data:
+                  action: "{{ action_clear_notifications }}"
+
+          - if:
+              - alias: "Was the notification responded to?"
+                condition: template
+                value_template: "{{ wait.trigger is not none }}"
+            then:
+              - alias: "Clear the notifications"
+                service: simplisafe.clear_notifications
+                data:
+                  device_id: 936e2eebe6c64edfb380853bcab5fe8c
+        else:
+          - alias: "Send a regular notification"
+            service: notify.aaron
+            data:
+              message: >
+                📥 SimpliSafe Message: {{ trigger.event.data.last_event_info }}
+              title: Security Notification
 
   - alias: "Security: Notify when a leak is detected"
     id: "security_notify_when_a_leak_is_detected"
