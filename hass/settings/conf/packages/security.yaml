@@ -451,6 +451,10 @@ automation:
         to: "on"
         for: "00:00:10"
 
+      - platform: state
+        entity_id: binary_sensor.doorbell_ringing_sensor
+        to: "on"  
+
     condition:
       - condition: state
         entity_id: binary_sensor.is_dark_outside
