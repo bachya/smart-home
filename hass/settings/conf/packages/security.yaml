@@ -106,6 +106,7 @@ automation:
                 actions:
                   - action: "{{ action_clear_notifications }}"
                     title: Clear Notifications
+
           - alias: "Wait to see if the notification is responded to"
             wait_for_trigger:
               - platform: event
