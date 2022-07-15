@@ -420,12 +420,11 @@ automation:
         entity_id: binary_sensor.is_dark_outside
         state: "on"
 
-    action:
-      - alias: "Is the light off?"
-        condition: state
+      - condition: state
         entity_id: switch.front_patio_light
         state: "off"
 
+    action:
       - alias: "Turn the light on"
         service: switch.turn_on
         target:
