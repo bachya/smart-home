@@ -405,6 +405,40 @@ automation:
                   target:
                     entity_id: "{{ repeat.item.entity }}"
 
+  - alias: "Security: Turn on front patio light with nighttime motion"
+    id: "security_turn_on_front_patio_light_with_nighttime_motion"
+    mode: restart
+
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.doorbell_motion_sensor
+        to: "on"
+        for: "00:00:10"
+
+    condition:
+      - condition: state
+        entity_id: binary_sensor.is_dark_outside
+        state: "on"
+
+    action:
+      - alias: "Is the light off?"
+        condition: state
+        entity_id: switch.front_patio_light
+        state: "off"
+
+      - alias: "Turn the light on"
+        service: switch.turn_on
+        target:
+          entity_id: switch.front_patio_light
+
+      - alias: "Keep the light on for 2 minutes"
+        delay: "00:02:00"
+
+      - alias: "Turn the light off"
+        service: switch.turn_off
+        target:
+          entity_id: switch.front_patio_light
+
 group:
   security_devices:
     entities:

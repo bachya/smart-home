@@ -41,6 +41,11 @@ automation:
                     - automation.security_notify_when_the_house_is_empty_and_insecure
                     - automation.security_notify_when_the_overall_security_status_changes
                     - automation.security_simulate_someone_being_home
+
+              - alias: "Set the Eufy base station to 'Away' mode"
+                service: alarm_control_panel.alarm_arm_away
+                target:
+                  entity_id: alarm_control_panel.eufy_base_station
         else:
           - parallel:
               - alias: "Turn various entities off"
@@ -64,6 +69,11 @@ automation:
                     - automation.security_notify_when_the_house_is_empty_and_insecure
                     - switch.guardian_b4e62d98118d_valve
                     - switch.humidistat_switchbot
+
+              - alias: "Set the Eufy base station to 'Home' mode"
+                service: alarm_control_panel.alarm_arm_home
+                target:
+                  entity_id: alarm_control_panel.eufy_base_station
 
 group:
   people:

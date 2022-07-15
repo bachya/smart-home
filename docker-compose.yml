@@ -15,6 +15,18 @@ services:
       - 8080:8080/tcp
     restart: unless-stopped
 
+  eufy-security-ws:
+    environment:
+      PASSWORD: ${EUFY_SECURITY_WS_PASSWORD}
+      TRUSTED_DEVICE_NAME: eufy-security-ws
+      USERNAME: ${EUFY_SECURITY_WS_USERNAME}
+    image: bropat/eufy-security-ws:${EUFY_SECURITY_WS_VERSION}
+    ports:
+      - 127.0.0.1:3001:3000/tcp
+    restart: unless-stopped
+    volumes:
+      - eufy-security-ws-data:/data
+
   esphome:
     environment:
       PASSWORD: "${ESPHOME_PASSWORD}"
@@ -102,4 +114,5 @@ services:
 volumes:
   hass-config:
   hass-db-data:
+  eufy-security-ws-data:
   zwave-js-config:
