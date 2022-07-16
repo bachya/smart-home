@@ -99,9 +99,9 @@ automation:
           - alias: "Send an actionable notification"
             service: notify.aaron
             data:
-              message: >
+              message: >-
                 📥 SimpliSafe Message: {{ trigger.event.data.last_event_info }}
-              title: Security Notification
+              title: Security Update
               data:
                 actions:
                   - action: "{{ action_clear_notifications }}"
@@ -127,9 +127,9 @@ automation:
           - alias: "Send a regular notification"
             service: notify.aaron
             data:
-              message: >
+              message: >-
                 📥 SimpliSafe Message: {{ trigger.event.data.last_event_info }}
-              title: Security Notification
+              title: Security Update
 
   - alias: "Security: Notify when a leak is detected"
     id: "security_notify_when_a_leak_is_detected"
@@ -453,7 +453,7 @@ automation:
 
       - platform: state
         entity_id: binary_sensor.doorbell_ringing_sensor
-        to: "on"  
+        to: "on"
 
     condition:
       - condition: state
