@@ -411,6 +411,16 @@ automation:
             condition: trigger
             id: replay
         then:
+          - alias: "Set the entity ID of the entity to influence"
+            variables:
+              target_entity_id: >-
+                {{
+                  trigger_entity_map
+                  | selectattr("replay_sensor", "equalto", trigger.entity_id)
+                  | map(attribute="entity")
+                  | first
+                }}
+
           - alias: "Toggle the entity"
             service: >
               {% if trigger.to_state.state == "0" %}
@@ -419,13 +429,16 @@ automation:
                 homeassistant.turn_on
               {% endif %}
             target:
-              entity_id: >
-                {{
-                  trigger_entity_map
-                  | selectattr("replay_sensor", "equalto", trigger.entity_id)
-                  | map(attribute="entity")
-                  | first
-                }}
+              entity_id: "{{ target_entity_id }}"
+
+          - alias: "Notify Aaron about the change"
+            service: notify.aaron
+            data:
+              message: >-
+                🦾 Simulation:
+                {{ state_attr(target_entity_id, "friendly_name") }} changed to
+                "{{ states(target_entity_id) }}"
+              title: Security Update
         else:
           - alias: "Step through each replay/entity and adjust"
             repeat:
