@@ -70,7 +70,7 @@ automation:
 
     trigger:
       - platform: time
-        at: "20:00:00"
+        at: "19:00:00"
 
     condition:
       - condition: template
