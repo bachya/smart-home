@@ -1,5 +1,28 @@
 ---
 automation:
+  - alias: "Trash: Automatically opt in to next Ridwell pickup"
+    id: "trash_automatically_opt_in_to_next_ridwell_pickup"
+
+    trigger:
+      - platform: state
+        entity_id: switch.opt_in_to_next_pickup
+        to: "off"
+        for: "24:00:00"
+
+    action:
+      - alias: "Opt in to the pickup"
+        service: switch.turn_on
+        target:
+          entity_id: script.opt_in_to_next_pickup
+
+      - alias: "Notify us about what the next pickup is"
+        service: notify.everyone
+        data:
+          title: Opting In to Next Ridwell Pickup
+          message: >
+            ♻️ Special Category:
+              {{ states("sensor.ridwell_next_rotating_pickup") | lower }}
+
   - alias: "Trash: Notify about next Ridwell pickup"
     id: "trash_notify_about_next_ridwell_pickup"
 
