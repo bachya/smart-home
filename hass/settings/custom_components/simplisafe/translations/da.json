@@ -1,0 +1,15 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Denne SimpliSafe-konto er allerede i brug."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "password": "Adgangskode",
+                    "username": "Emailadresse"
+                }
+            }
+        }
+    }
+}

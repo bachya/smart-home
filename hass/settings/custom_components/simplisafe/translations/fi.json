@@ -1,0 +1,12 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "password": "Salasana",
+                    "username": "S\u00e4hk\u00f6postiosoite"
+                }
+            }
+        }
+    }
+}
