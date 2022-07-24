@@ -18,7 +18,7 @@ automation:
 
       - platform: state
         id: teddy_departing
-        entity_id: sensor.proximity_zone
+        entity_id: device_tracker.bzndrxez_teddy
         from: Home
 
     condition:
