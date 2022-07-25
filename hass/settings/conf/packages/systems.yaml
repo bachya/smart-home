@@ -140,18 +140,24 @@ automation:
         at: "01:00:00"
 
     action:
-      - alias: "Ensue AdGuardHome is enabled"
-        service: homeassistant.turn_on
-        target:
-          entity_id:
-            - automation.security_automatically_lock_up_the_house_when_appropriate
-            - automation.security_forward_simplisafe_notifications_to_aaron
-            - automation.security_notify_when_a_leak_is_detected
-            - automation.security_notify_when_smoke_is_detected
-            - automation.security_notify_when_the_alarm_is_triggered
-            - automation.security_notify_when_the_house_is_empty_and_insecure
-            - automation.security_turn_on_front_patio_light_with_nighttime_motion
-            - switch.adguard_protection
+      - parallel:
+          - alias: "Turn various things off"
+            service: homeassistant.turn_off
+            target:
+              entity_id:
+                - switch.sonos_living_room_night_sound
+          - alias: "Turn various things on"
+            service: homeassistant.turn_on
+            target:
+              entity_id:
+                - automation.security_automatically_lock_up_the_house_when_appropriate
+                - automation.security_forward_simplisafe_notifications_to_aaron
+                - automation.security_notify_when_a_leak_is_detected
+                - automation.security_notify_when_smoke_is_detected
+                - automation.security_notify_when_the_alarm_is_triggered
+                - automation.security_notify_when_the_house_is_empty_and_insecure
+                - automation.security_turn_on_front_patio_light_with_nighttime_motion
+                - switch.adguard_protection
 
 sensor:
   - platform: filter
