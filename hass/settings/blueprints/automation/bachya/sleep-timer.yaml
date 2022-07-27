@@ -60,9 +60,7 @@ trigger:
 action:
   - choose:
       - alias: "Handle the idle state"
-        conditions:
-          - condition: template
-            value_template: '{{ trigger.to_state.state == "idle" }}'
+        conditions: "{{ trigger.to_state.state == 'idle' }}"
 
         sequence:
           - alias: "Set the input number"

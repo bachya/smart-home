@@ -39,11 +39,10 @@ automation:
     condition:
       - or:
           - condition: state
-            entity_id: binary_sensor.aaron_s_parking_spot_occupied
-            state: "off"
-
-          - condition: state
-            entity_id: binary_sensor.spouse_s_parking_spot_occupied
+            entity_id:
+              - binary_sensor.aaron_s_parking_spot_occupied
+              - binary_sensor.spouse_s_parking_spot_occupied
+            match: any
             state: "off"
 
     action:
@@ -96,9 +95,7 @@ automation:
               timeout: "00:10:00"
 
             - if:
-                - alias: "Was the notification responded to?"
-                  condition: template
-                  value_template: "{{ wait.trigger is not none }}"
+                - "{{ wait.trigger is not none }}"
               then:
                 - alias: "Close the garage"
                   service: cover.close_cover
@@ -107,11 +104,10 @@ automation:
 
                 - stop: "The garage has been closed."
           until:
-            - condition: not
-              conditions:
-                - condition: state
-                  entity_id: cover.wemos_d1_mini_garage_controller
-                  state: open
+            not:
+              - condition: state
+                entity_id: cover.wemos_d1_mini_garage_controller
+                state: open
 
   - alias: "Garage: Turn overhead lights off after the garage door closes"
     id: "garage_turn_overhead_lights_off_after_the_garage_door_closes"
@@ -141,11 +137,10 @@ automation:
         to: "on"
 
     condition:
-      - condition: not
-        conditions:
-          condition: state
-          entity_id: cover.wemos_d1_mini_garage_controller
-          state: closed
+      - not:
+          - condition: state
+            entity_id: cover.wemos_d1_mini_garage_controller
+            state: closed
 
       - condition: state
         entity_id: binary_sensor.is_dark_outside

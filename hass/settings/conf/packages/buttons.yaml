@@ -29,8 +29,7 @@ automation:
 
         button_4:
           - alias: "Is the thermostat on?"
-            condition: not
-            conditions:
+            not:
               - condition: state
                 entity_id: climate.thermostat
                 state: "off"

@@ -81,8 +81,7 @@ script:
 
     sequence:
       - alias: "Is the person at home?"
-        condition: template
-        value_template: "{{ states('person.' + name) == 'home' }}"
+        condition: "{{ states('person.' + name) == 'home' }}"
 
       - alias: "Send the message"
         service: "notify.{{ name }}"

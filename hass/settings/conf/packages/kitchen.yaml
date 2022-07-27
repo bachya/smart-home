@@ -113,9 +113,7 @@ automation:
               timeout: "02:00:00"
 
             - if:
-                - alias: "Was the notification responded to?"
-                  condition: template
-                  value_template: "{{ wait.trigger is not none }}"
+                - "{{ wait.trigger is not none }}"
               then:
                 - alias: "Mark the dishwasher as empty"
                   service: input_select.select_option

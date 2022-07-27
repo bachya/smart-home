@@ -85,13 +85,12 @@ automation:
         entity_id: alarm_control_panel.123_main_street
 
     condition:
-      - condition: template
-        value_template: >
-          {{
-            trigger.from_state.state != "unavailable"
-            and trigger.to_state.state != "unavailable"
-            and trigger.from_state.state != trigger.to_state.state
-          }}
+      - >-
+        {{
+          trigger.from_state.state != "unavailable"
+          and trigger.to_state.state != "unavailable"
+          and trigger.from_state.state != trigger.to_state.state
+        }}
 
     action:
       - choose:
@@ -145,17 +144,16 @@ automation:
     condition:
       # This automation can get very chatty, so we only allow a notification
       # once per day:
-      condition: template
-      value_template: >
-        {{
-          as_timestamp(
-            state_attr(
-              "automation.wolfie_notify_when_a_new_consumable_is_needed",
-              "last_triggered"
-            )
-          ) | timestamp_custom('%-d')
-          != as_timestamp(now()) | timestamp_custom('%-d')
-        }}
+      >-
+      {{
+        as_timestamp(
+          state_attr(
+            "automation.wolfie_notify_when_a_new_consumable_is_needed",
+            "last_triggered"
+          )
+        ) | timestamp_custom('%-d')
+        != as_timestamp(now()) | timestamp_custom('%-d')
+      }}
 
     action:
       - alias: "Send the notification"
@@ -203,9 +201,8 @@ automation:
             - alias: "Delay for 10 minutes"
               delay: "00:10:00"
           until:
-            - condition: not
-              conditions:
-                condition: state
+            not:
+              - condition: state
                 entity_id: vacuum.rockrobo
                 state: error
 
@@ -253,9 +250,7 @@ automation:
               timeout: "02:00:00"
 
             - if:
-                - alias: "Was the notification responded to?"
-                  condition: template
-                  value_template: "{{ wait.trigger is not none }}"
+                - "{{ wait.trigger is not none }}"
               then:
                 - alias: "Mark the bin as empty"
                   service: input_select.select_option

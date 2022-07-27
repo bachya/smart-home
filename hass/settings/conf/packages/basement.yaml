@@ -40,14 +40,13 @@ automation:
                 id: height_changed
 
             sequence:
-              - if:
-                  - alias: "Are we at a custom height?"
-                    condition: template
-                    value_template: >-
-                      {{
-                        states("sensor.desk_height")
-                        not in preset_map|map(attribute="height")
-                      }}
+              - alias: "Are we at a custom height?"
+                if:
+                  - >-
+                    {{
+                      states("sensor.desk_height")
+                      not in preset_map|map(attribute="height")
+                    }}
                 then:
                   - alias: "Set the input select to 'Custom'"
                     service: input_select.select_option
@@ -176,9 +175,7 @@ automation:
                       timeout: "00:01:00"
 
                     - if:
-                        - alias: "Was the notification responded to?"
-                          condition: template
-                          value_template: "{{ wait.trigger is not none }}"
+                        - "{{ wait.trigger is not none }}"
                       then:
                         - alias: "Toggle the standing desk"
                           service: input_select.select_option

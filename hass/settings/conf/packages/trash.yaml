@@ -41,29 +41,27 @@ automation:
               - condition: trigger
                 id: day_of_time
 
-              - condition: template
-                value_template: >
-                  {{
-                    (
-                      states("sensor.ridwell_pickup")
-                      | as_datetime
-                      | as_local - now()
-                    ).days == -1
-                  }}
+              - >-
+                {{
+                  (
+                    states("sensor.ridwell_pickup")
+                    | as_datetime
+                    | as_local - now()
+                  ).days == -1
+                }}
 
           - and:
               - condition: trigger
                 id: night_before_time
 
-              - condition: template
-                value_template: >
-                  {{
-                    (
-                      states("sensor.ridwell_pickup")
-                      | as_datetime
-                      | as_local - now()
-                    ).days == 0
-                  }}
+              - >-
+                {{
+                  (
+                    states("sensor.ridwell_pickup")
+                    | as_datetime
+                    | as_local - now()
+                  ).days == 0
+                }}
 
     action:
       - alias: "Send the notification"
@@ -96,16 +94,15 @@ automation:
         at: "19:00:00"
 
     condition:
-      - condition: template
-        value_template: >
-          {{
-            (
-              states("sensor.recollect_waste")
-              | as_datetime
-              | as_local
-              - now()
-            ).days == 0
-          }}
+      - >-
+        {{
+          (
+            states("sensor.recollect_waste")
+            | as_datetime
+            | as_local
+            - now()
+          ).days == 0
+        }}
 
     action:
       - alias: "Send the notification"

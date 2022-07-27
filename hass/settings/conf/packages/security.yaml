@@ -55,8 +55,7 @@ automation:
               - condition: trigger
                 id: teddy_departing
 
-              - condition: not
-                conditions:
+              - not:
                   - condition: state
                     entity_id: sensor.proximity_zone
                     state: Home
@@ -91,10 +90,7 @@ automation:
             {{ "CLEAN_SS_NOTIFICATIONS_" ~ context.id }}
 
       - if:
-          - alias: "Is this a clearable SimpliSafe notification?"
-            condition: template
-            value_template: >-
-              {{ trigger.event.event_type == "SIMPLISAFE_NOTIFICATION" }}
+          - "{{ trigger.event.event_type == 'SIMPLISAFE_NOTIFICATION' }}"
         then:
           - alias: "Send an actionable notification"
             service: notify.aaron
@@ -115,9 +111,7 @@ automation:
                   action: "{{ action_clear_notifications }}"
 
           - if:
-              - alias: "Was the notification responded to?"
-                condition: template
-                value_template: "{{ wait.trigger is not none }}"
+              - "{{ wait.trigger is not none }}"
             then:
               - alias: "Clear the notifications"
                 service: simplisafe.clear_notifications
@@ -164,8 +158,7 @@ automation:
           - alias: "Wait 1 minute before notifying again"
             delay: "00:01:00"
         until:
-          - condition: template
-            value_template: "{{ states(trigger.entity_id) == 'off' }}"
+          - "{{ states(trigger.entity_id) == 'off' }}"
 
   - alias: "Security: Notify when smoke is detected"
     id: "security_notify_when_smoke_is_detected"
@@ -231,9 +224,7 @@ automation:
               timeout: "00:01:00"
 
             - if:
-                - alias: "Was the notification responded to?"
-                  condition: template
-                  value_template: "{{ wait.trigger is not none }}"
+                - "{{ wait.trigger is not none }}"
               then:
                 - alias: "Disarm the alarm"
                   service: alarm_control_panel.disarm
@@ -242,9 +233,8 @@ automation:
 
                 - stop: "The security system has been disarmed."
           until:
-            - condition: not
-              conditions:
-                condition: state
+            not:
+              - condition: state
                 entity_id: alarm_control_panel.123_main_street
                 state: triggered
 
@@ -300,9 +290,7 @@ automation:
               timeout: "00:05:00"
 
             - if:
-                - alias: "Was the notification responded to?"
-                  condition: template
-                  value_template: "{{ wait.trigger is not none }}"
+                - "{{ wait.trigger is not none }}"
               then:
                 - alias: "Lock up the house"
                   service: script.turn_on

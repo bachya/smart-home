@@ -199,38 +199,33 @@ script:
       - alias: "Is the shortcut enabled?"
         condition: "{{ states(enabled_entity_id) == 'on' }}"
 
-      - alias: "Does the access code match this shortcut's?"
-        condition: >-
-          {{ states(access_code_entity_id)|string == access_code|string }}
+      - "{{ states(access_code_entity_id)|string == access_code|string }}"
 
-      - alias: "Should the shortcut be active?"
-        condition: >-
-          {{
-            states(type_entity_id) == "Until Disabled"
-            or
-            (
-              as_local(
-                as_datetime(states(window_start_entity_id))
-              ) <= now() <=
-              as_local(
-                as_datetime(states(window_end_entity_id))
-              )
+      - >-
+        {{
+          states(type_entity_id) == "Until Disabled"
+          or
+          (
+            as_local(
+              as_datetime(states(window_start_entity_id))
+            ) <= now() <=
+            as_local(
+              as_datetime(states(window_end_entity_id))
             )
-          }}
+          )
+        }}
 
-      - alias: "Is at least one security device targeted?"
-        condition: >-
-          {{
-            is_state(include_front_door_entity_id, "on")
-            or is_state(include_garage_door_entity_id, "on")
-            or is_state(include_garage_fire_door_entity_id, "on")
-            or is_state(include_security_system_entity_id, "on")
-          }}
+      - >-
+        {{
+          is_state(include_front_door_entity_id, "on")
+          or is_state(include_garage_door_entity_id, "on")
+          or is_state(include_garage_fire_door_entity_id, "on")
+          or is_state(include_security_system_entity_id, "on")
+        }}
 
-      - if:
-          - alias: "If someone is entering"
-            condition: template
-            value_template: "{{ action == 'enter' }}"
+      - alias: "If someone is entering"
+        if:
+          - "{{ action == 'enter' }}"
         then:
           - alias: "Turn off any TVs that might be on from at-home simulation"
             service: remote.turn_off
@@ -239,49 +234,42 @@ script:
                 - remote.basement_tv
                 - remote.living_room_tv
 
-          - if:
-              - alias: "If we include the front door"
-                condition: template
-                value_template: >-
-                  {{ states(include_front_door_entity_id) == "on" }}
+          - alias: "If the front door lock is included"
+            if:
+              - "{{ states(include_front_door_entity_id) == 'on' }}"
             then:
               - alias: "Alter the entity based on the action"
                 service: lock.unlock
                 target:
                   entity_id: lock.front_door_lock
 
-          - if:
-              - alias: "If we include the garage door"
-                condition: template
-                value_template: >-
-                  {{ states(include_garage_door_entity_id) == "on" }}
+          - alias: "If the garage door is included"
+            if:
+              - "{{ states(include_garage_door_entity_id) == 'on' }}"
             then:
               - alias: "Alter the entity based on the action"
                 service: cover.open_cover
                 target:
                   entity_id: cover.wemos_d1_mini_garage_controller
 
-          - if:
-              - alias: "If we include the garage fire door"
-                condition: template
-                value_template: >-
-                  {{ states(include_garage_fire_door_entity_id) == "on" }}
+          - alias: "If the garage fire door is included"
+            if:
+              - "{{ states(include_garage_fire_door_entity_id) == 'on' }}"
             then:
               - alias: "Alter the entity based on the action"
                 service: lock.unlock
                 target:
                   entity_id: lock.garage_fire_door_lock
 
-          - if:
-              - alias: "If we include the security system"
-                condition: template
-                value_template: >-
-                  {{ states(include_security_system_entity_id) == "on" }}
+          - alias: "If the security system is included"
+            if:
+              - "{{ states(include_security_system_entity_id) == 'on' }}"
             then:
               - alias: "Alter the entity based on the action"
                 service: alarm_control_panel.alarm_disarm
                 target:
                   entity_id: alarm_control_panel.123_main_street
+
           - alias: "Turn off automations that are unfriendly to guests"
             service: homeassistant.turn_off
             target:
