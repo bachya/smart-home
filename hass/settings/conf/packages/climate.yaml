@@ -2,7 +2,7 @@
 automation:
   - alias: "Climate: Schedule"
     id: "climate_schedule"
-    mode: queued
+    mode: restart
 
     trigger:
       - platform: state
@@ -10,21 +10,24 @@ automation:
         to:
 
       - platform: state
+        entity_id:
+          - binary_sensor.in_bed
+          - sensor.main_level_temperature
+          - sensor.upstairs_temperature
+
+      - platform: state
         id: away_mode
         entity_id: input_boolean.climate_away_mode
 
       - platform: state
+        id: configuration_change
         entity_id:
-          - binary_sensor.in_bed
           - input_number.daytime_temperature_ac
           - input_number.daytime_temperature_heat
           - input_number.nighttime_temperature_ac
           - input_number.nighttime_temperature_heat
           - input_number.thermostat_eco_high_threshold
           - input_number.thermostat_eco_low_threshold
-          - sensor.average_indoor_temperature
-          - sensor.main_level_temperature
-          - sensor.upstairs_temperature
 
     action:
       choose:
@@ -86,6 +89,26 @@ automation:
                     hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
 
       default:
+        - alias: "Set some variables"
+          variables:
+            hvac_mode: "{{ states('climate.thermostat') }}"
+
+        - alias: "Only proceed with an appropriate trigger"
+          condition: or
+          conditions:
+            - "{{ trigger.id == 'configuration_change' }}"
+            - "{{ trigger.entity_id == 'binary_sensor.in_bed' }}"
+            - >-
+              {{
+                hvac_mode == "cool"
+                and trigger.entity_id == "sensor.upstairs_temperature"
+              }}
+            - >-
+              {{
+                hvac_mode == "heat"
+                and trigger.entity_id == "sensor.main_level_temperature"
+              }}
+
         - alias: "Halt if climate away mode is on (since it will handle itself)"
           condition: state
           entity_id: input_boolean.climate_away_mode
@@ -94,7 +117,7 @@ automation:
         - alias: "Figure out the target temperature"
           variables:
             target: >-
-              {% if states("climate.thermostat") == "cool" %}
+              {% if hvac_mode == "cool" %}
                 {% if states("binary_sensor.in_bed") == "on" %}
                   {{ states("input_number.nighttime_temperature_ac") }}
                 {% else %}
