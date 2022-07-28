@@ -141,10 +141,9 @@ automation:
           - sensor.vacuum_side_brush_remaining
         below: 5
 
-    condition:
+    condition: >-
       # This automation can get very chatty, so we only allow a notification
       # once per day:
-      >-
       {{
         as_timestamp(
           state_attr(
@@ -201,8 +200,9 @@ automation:
             - alias: "Delay for 10 minutes"
               delay: "00:10:00"
           until:
-            not:
-              - condition: state
+            - condition: not
+              conditions:
+                condition: state
                 entity_id: vacuum.rockrobo
                 state: error
 

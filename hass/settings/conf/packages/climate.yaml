@@ -439,10 +439,10 @@ script:
               {{ target }}
             {% endif %}
 
-      - >-
-        {{
-          state_attr("climate.thermostat", "temperature") != adjusted_setpoint
-        }}
+      - condition: >-
+          {{
+            state_attr("climate.thermostat", "temperature") != adjusted_setpoint
+          }}
 
       - alias: "Set the thermostat's adjusted setpoint"
         service: climate.set_temperature

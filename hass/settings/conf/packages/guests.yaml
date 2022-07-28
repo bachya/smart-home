@@ -199,29 +199,30 @@ script:
       - alias: "Is the shortcut enabled?"
         condition: "{{ states(enabled_entity_id) == 'on' }}"
 
-      - "{{ states(access_code_entity_id)|string == access_code|string }}"
+      - condition: >-
+          {{ states(access_code_entity_id)|string == access_code|string }}
 
-      - >-
-        {{
-          states(type_entity_id) == "Until Disabled"
-          or
-          (
-            as_local(
-              as_datetime(states(window_start_entity_id))
-            ) <= now() <=
-            as_local(
-              as_datetime(states(window_end_entity_id))
+      - condition: >-
+          {{
+            states(type_entity_id) == "Until Disabled"
+            or
+            (
+              as_local(
+                as_datetime(states(window_start_entity_id))
+              ) <= now() <=
+              as_local(
+                as_datetime(states(window_end_entity_id))
+              )
             )
-          )
-        }}
+          }}
 
-      - >-
-        {{
-          is_state(include_front_door_entity_id, "on")
-          or is_state(include_garage_door_entity_id, "on")
-          or is_state(include_garage_fire_door_entity_id, "on")
-          or is_state(include_security_system_entity_id, "on")
-        }}
+      - condition: >-
+          {{
+            is_state(include_front_door_entity_id, "on")
+            or is_state(include_garage_door_entity_id, "on")
+            or is_state(include_garage_fire_door_entity_id, "on")
+            or is_state(include_security_system_entity_id, "on")
+          }}
 
       - alias: "If someone is entering"
         if:
